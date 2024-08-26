@@ -1,12 +1,19 @@
 using Microsoft.EntityFrameworkCore;
-using StudyFlow.Backend.Data;
+using StudyFlow.BLL.Interfaces;
+using StudyFlow.BLL.Services;
+using StudyFlow.DAL.Data;
+using StudyFlow.DAL.Interfaces;
+using StudyFlow.DAL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name=LocalConnection"));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddCors();
 builder.Services.AddLocalization();
 

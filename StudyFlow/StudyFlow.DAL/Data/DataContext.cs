@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using StudyFlow.Shared.Entities;
+using StudyFlow.DAL.Entities;
 
-namespace StudyFlow.Backend.Data;
+namespace StudyFlow.DAL.Data;
 
 public class DataContext : DbContext
 {
