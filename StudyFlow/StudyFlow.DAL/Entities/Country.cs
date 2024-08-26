@@ -18,6 +18,7 @@ public class Country
     public string Name { get; set; } = null!;
 
     [MaxLength(3)]
+    [MinLength(3)]
     [Required(ErrorMessage = "El código ISO del país es obligatorio.")]
     public string IsoCode { get; set; } = null!;
 }
