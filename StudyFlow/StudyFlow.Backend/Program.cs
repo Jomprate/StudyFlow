@@ -7,6 +7,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=LocalConnection"));
+builder.Services.AddCors();
+builder.Services.AddLocalization();
 
 var app = builder.Build();
 
@@ -25,6 +27,7 @@ app.MapControllers();
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
+    .WithOrigins("http://localhost:5173")
     .SetIsOriginAllowed(origin => true)
     .AllowCredentials());
 

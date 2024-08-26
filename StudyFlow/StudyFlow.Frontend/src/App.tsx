@@ -1,35 +1,93 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+//import { useState } from 'react'
+//import reactLogo from './assets/react.svg'
+//import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import axios from 'axios'
+import { Container, Header, Loader, Table } from 'semantic-ui-react';
+
+interface Country {
+    id: number;
+    name: string;
+    isoCode: string;
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+    //const [count, setCount] = useState(0)
+    //const [] = useState()
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const [countries, setCountries] = useState<Country[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios.get('https://localhost:7033/api/countries')
+            .then((res) => {
+                if (Array.isArray(res.data)) {
+                    setCountries(res.data);
+                } else {
+                    console.error("The response is not an array:", res.data);
+                }
+            })
+            .catch((error) => {
+                console.error("There was an error fetching the countries!", error);
+            })
+            .finally(() => {
+                setLoading(false); // Establece loading a false cuando la solicitud se completa
+            });
+    }, []);
+
+    return (
+        <Container>
+            <Header as="h1">Countries List</Header>
+            {loading ? (
+                <Loader active inline="centered">Loading...</Loader>
+            ) : (
+                countries.length > 0 ? (
+                    <Table celled>
+                        <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Name</Table.HeaderCell>
+                                <Table.HeaderCell>ISO Code</Table.HeaderCell>
+                            </Table.Row>
+                        </Table.Header>
+                        <Table.Body>
+                            {countries.map((country) => (
+                                <Table.Row key={country.id}>
+                                    <Table.Cell>{country.name}</Table.Cell>
+                                    <Table.Cell>{country.isoCode}</Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table>
+                ) : (
+                    <p>No countries found.</p>
+                )
+            )}
+        </Container>
+
+        //<>
+        //  <div>
+        //    <a href="https://vitejs.dev" target="_blank">
+        //      <img src={viteLogo} className="logo" alt="Vite logo" />
+        //    </a>
+        //    <a href="https://react.dev" target="_blank">
+        //      <img src={reactLogo} className="logo react" alt="React logo" />
+        //    </a>
+        //  </div>
+        //  <h1>Vite + React</h1>
+        //  <div className="card">
+        //    <button onClick={() => setCount((count) => count + 1)}>
+        //      count is {count}
+        //    </button>
+        //    <p>
+        //      Edit <code>src/App.tsx</code> and save to test HMR
+        //    </p>
+        //  </div>
+        //  <p className="read-the-docs">
+        //    Click on the Vite and React logos to learn more
+        //  </p>
+        //</>
+    )
 }
 
 export default App

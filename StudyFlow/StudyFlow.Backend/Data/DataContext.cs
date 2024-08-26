@@ -15,6 +15,11 @@ public class DataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Country>().HasIndex(x => x.Name).IsUnique();
+        modelBuilder.Entity<Country>()
+            .HasIndex(x => x.Name)
+            .IsUnique();
+        modelBuilder.Entity<Country>()
+            .HasIndex(x => x.IsoCode)
+            .IsUnique();
     }
 }

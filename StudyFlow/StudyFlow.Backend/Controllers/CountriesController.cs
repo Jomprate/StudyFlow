@@ -20,7 +20,6 @@ namespace StudyFlow.Backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAsync()
@@ -35,20 +34,6 @@ namespace StudyFlow.Backend.Controllers
                 }
 
                 return Ok(countries);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { Error = "Parámetro inválido.", Detalles = ex.Message });
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Error al interactuar con la base de datos.", Detalles = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Operación inválida.", Detalles = ex.Message });
             }
             catch (Exception ex)
             {
@@ -84,20 +69,6 @@ namespace StudyFlow.Backend.Controllers
 
                 return Ok(country);
             }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(new { Error = "Parámetro inválido.", Detalles = ex.Message });
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Error al interactuar con la base de datos.", Detalles = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Operación inválida.", Detalles = ex.Message });
-            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
@@ -107,18 +78,25 @@ namespace StudyFlow.Backend.Controllers
 
         #endregion GetCountryById
 
-        #region Create Country
+        #region CreateCountry
 
-        [HttpPost]
+        [HttpPost("//create")]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post(Country country)
         {
             try
             {
-                _context.Add(country);
+                if (country == null)
+                {
+                    return BadRequest(new { Error = "La solicitud contiene datos inválidos." });
+                }
+
+                await _context.Countries.AddAsync(country);
                 await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(Post), new { id = country.Id }, country);
+
+                return CreatedAtAction(nameof(GetByIdAsync), new { id = country.Id }, country);
             }
             catch (DbUpdateException ex)
             {
@@ -132,11 +110,11 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion Create Country
+        #endregion CreateCountry
 
         #region UpdateCountryNameById
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/name")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -169,16 +147,6 @@ namespace StudyFlow.Backend.Controllers
 
                 return Ok(new { Message = "El nombre del país fue actualizado con éxito." });
             }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Error al actualizar la base de datos.", Detalles = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Operación inválida.", Detalles = ex.Message });
-            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
@@ -187,6 +155,62 @@ namespace StudyFlow.Backend.Controllers
         }
 
         #endregion UpdateCountryNameById
+
+        #region UpdateCountryIsoCodeById
+
+        [HttpPut("{id}/isocode")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateCountryIsoCodeAsync(int id, [FromBody] string newIsoCode)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest(new { Error = "El ID proporcionado no es válido." });
+                }
+
+                if (string.IsNullOrWhiteSpace(newIsoCode))
+                {
+                    return BadRequest(new { Error = "El código ISO no puede estar vacío o ser solo espacios en blanco." });
+                }
+
+                if (newIsoCode.Length != 2 && newIsoCode.Length != 3)
+                {
+                    return BadRequest(new { Error = "El código ISO debe tener exactamente 2 o 3 caracteres." });
+                }
+
+                var country = await _context.Countries.FindAsync(id);
+
+                if (country == null)
+                {
+                    return NotFound(new { Error = $"No se encontró un país con el ID {id}." });
+                }
+
+                var existingCountry = await _context.Countries
+                    .FirstOrDefaultAsync(c => c.IsoCode == newIsoCode.ToUpper());
+                if (existingCountry != null && existingCountry.Id != id)
+                {
+                    return BadRequest(new { Error = "Ya existe un país con el mismo código ISO." });
+                }
+
+                country.IsoCode = newIsoCode.ToUpper();
+
+                _context.Countries.Update(country);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { Message = "El código ISO del país fue actualizado con éxito." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+            }
+        }
+
+        #endregion UpdateCountryIsoCodeById
 
         #region UpdateCountry
 
@@ -204,8 +228,7 @@ namespace StudyFlow.Backend.Controllers
                     return BadRequest(new { Error = "La solicitud contiene datos inválidos." });
                 }
 
-                var currentCountry = await _context.Countries
-                    .FirstOrDefaultAsync(c => c.Id == country.Id);
+                var currentCountry = await _context.Countries.FindAsync(country.Id);
 
                 if (currentCountry == null)
                 {
@@ -213,21 +236,12 @@ namespace StudyFlow.Backend.Controllers
                 }
 
                 currentCountry.Name = country.Name;
+                currentCountry.IsoCode = country.IsoCode;
 
                 _context.Countries.Update(currentCountry);
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Message = "El país fue actualizado con éxito." });
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Error al actualizar la base de datos.", Detalles = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Operación inválida.", Detalles = ex.Message });
             }
             catch (Exception ex)
             {
@@ -265,16 +279,6 @@ namespace StudyFlow.Backend.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new { Message = "El país fue borrado con éxito." });
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Error al borrar en la base de datos.", Detalles = ex.Message });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Operación inválida.", Detalles = ex.Message });
             }
             catch (Exception ex)
             {
