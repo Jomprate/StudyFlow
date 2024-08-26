@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StudyFlow.Shared.Entities;
+namespace StudyFlow.DAL.Entities;
 
 public interface ICountry
 {

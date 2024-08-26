@@ -2,20 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using StudyFlow.Backend.Data;
+using StudyFlow.DAL.Data;
 
 #nullable disable
 
-namespace StudyFlow.Backend.Migrations
+namespace StudyFlow.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240826034142_Countries")]
-    partial class Countries
+    partial class DataContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +21,7 @@ namespace StudyFlow.Backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StudyFlow.Shared.Entities.Country", b =>
+            modelBuilder.Entity("StudyFlow.DAL.Entities.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,6 +40,9 @@ namespace StudyFlow.Backend.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsoCode")
+                        .IsUnique();
 
                     b.HasIndex("Name")
                         .IsUnique();

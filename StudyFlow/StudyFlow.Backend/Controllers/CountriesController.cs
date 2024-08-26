@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StudyFlow.Backend.Data;
-using StudyFlow.Shared.Entities;
+using StudyFlow.BLL.Interfaces;
+using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.Backend.Controllers
 {
@@ -9,11 +8,11 @@ namespace StudyFlow.Backend.Controllers
     [Route("api/[controller]")]
     public class CountriesController : ControllerBase
     {
-        private readonly DataContext _context;
+        private readonly ICountryService _serviceCountry;
 
-        public CountriesController(DataContext context)
+        public CountriesController(ICountryService serviceCountry)
         {
-            _context = context;
+            _serviceCountry = serviceCountry;
         }
 
         #region GetAllCountries
@@ -26,14 +25,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                var countries = await _context.Countries.ToListAsync();
-
-                if (countries == null || countries.Count == 0)
-                {
-                    return NotFound(new { Error = "No se encontraron países en la base de datos." });
-                }
-
-                return Ok(countries);
+                return await _serviceCountry.GetAsync();
             }
             catch (Exception ex)
             {
@@ -55,19 +47,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest(new { Error = "El ID proporcionado no es válido." });
-                }
-
-                var country = await _context.Countries.FindAsync(id);
-
-                if (country == null)
-                {
-                    return NotFound(new { Error = $"No se encontró un país con el ID {id}." });
-                }
-
-                return Ok(country);
+                return await _serviceCountry.GetCountryAsync(id); ;
             }
             catch (Exception ex)
             {
@@ -88,20 +68,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (country == null)
-                {
-                    return BadRequest(new { Error = "La solicitud contiene datos inválidos." });
-                }
-
-                await _context.Countries.AddAsync(country);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = country.Id }, country);
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Ocurrió un error en la base de datos.", Detalles = ex.Message });
+                return await _serviceCountry.CreateCountryAsync(country);
             }
             catch (Exception ex)
             {
@@ -123,29 +90,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest(new { Error = "El ID proporcionado no es válido." });
-                }
-
-                if (string.IsNullOrWhiteSpace(newName))
-                {
-                    return BadRequest(new { Error = "El nombre del país no puede estar vacío o ser solo espacios en blanco." });
-                }
-
-                var country = await _context.Countries.FindAsync(id);
-
-                if (country == null)
-                {
-                    return NotFound(new { Error = $"No se encontró un país con el ID {id}." });
-                }
-
-                country.Name = newName;
-
-                _context.Countries.Update(country);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "El nombre del país fue actualizado con éxito." });
+                return await _serviceCountry.UpdateCountryNameAsync(id, newName);
             }
             catch (Exception ex)
             {
@@ -167,41 +112,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest(new { Error = "El ID proporcionado no es válido." });
-                }
-
-                if (string.IsNullOrWhiteSpace(newIsoCode))
-                {
-                    return BadRequest(new { Error = "El código ISO no puede estar vacío o ser solo espacios en blanco." });
-                }
-
-                if (newIsoCode.Length != 2 && newIsoCode.Length != 3)
-                {
-                    return BadRequest(new { Error = "El código ISO debe tener exactamente 2 o 3 caracteres." });
-                }
-
-                var country = await _context.Countries.FindAsync(id);
-
-                if (country == null)
-                {
-                    return NotFound(new { Error = $"No se encontró un país con el ID {id}." });
-                }
-
-                var existingCountry = await _context.Countries
-                    .FirstOrDefaultAsync(c => c.IsoCode == newIsoCode.ToUpper());
-                if (existingCountry != null && existingCountry.Id != id)
-                {
-                    return BadRequest(new { Error = "Ya existe un país con el mismo código ISO." });
-                }
-
-                country.IsoCode = newIsoCode.ToUpper();
-
-                _context.Countries.Update(country);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "El código ISO del país fue actualizado con éxito." });
+                return await _serviceCountry.UpdateCountryIsoCodeAsync(id, newIsoCode);
             }
             catch (Exception ex)
             {
@@ -223,25 +134,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (country == null || country.Id <= 0)
-                {
-                    return BadRequest(new { Error = "La solicitud contiene datos inválidos." });
-                }
-
-                var currentCountry = await _context.Countries.FindAsync(country.Id);
-
-                if (currentCountry == null)
-                {
-                    return NotFound(new { Error = $"No se encontró un país con el ID {country.Id}." });
-                }
-
-                currentCountry.Name = country.Name;
-                currentCountry.IsoCode = country.IsoCode;
-
-                _context.Countries.Update(currentCountry);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "El país fue actualizado con éxito." });
+                return await _serviceCountry.UpdateCountryAsync(country);
             }
             catch (Exception ex)
             {
@@ -263,22 +156,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest(new { Error = "El ID proporcionado no es válido." });
-                }
-
-                var country = await _context.Countries.FindAsync(id);
-
-                if (country == null)
-                {
-                    return NotFound(new { Error = $"No se encontró un país con el ID {id}." });
-                }
-
-                _context.Countries.Remove(country);
-                await _context.SaveChangesAsync();
-
-                return Ok(new { Message = "El país fue borrado con éxito." });
+                return await _serviceCountry.DeleteCountryAsync(id);
             }
             catch (Exception ex)
             {
