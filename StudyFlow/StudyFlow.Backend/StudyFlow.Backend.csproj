@@ -20,7 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StudyFlow.Shared\StudyFlow.Shared.csproj" />
+    <ProjectReference Include="..\StudyFlow.BLL\StudyFlow.BLL.csproj" />
+    <ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
   </ItemGroup>
 
 </Project>
