@@ -6,26 +6,26 @@ namespace StudyFlow.Backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CountriesController : ControllerBase
+    public class InstitutionsController : ControllerBase
     {
-        private readonly ICountryService _serviceCountry;
+        private readonly IInstitutionService _serviceInstitution;
 
-        public CountriesController(ICountryService serviceCountry)
+        public InstitutionsController(IInstitutionService serviceInstitution)
         {
-            _serviceCountry = serviceCountry;
+            _serviceInstitution = serviceInstitution;
         }
 
-        #region GetAllCountries
+        #region GetAllInstitutions
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetInstitutionsAsync()
         {
             try
             {
-                return await _serviceCountry.GetAsync();
+                return await _serviceInstitution.GetInstitutionsAsync();
             }
             catch (Exception ex)
             {
@@ -34,20 +34,20 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion GetAllCountries
+        #endregion GetAllInstitutions
 
-        #region GetCountryById
+        #region GetInstitutionById
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetInstitutionByIdAsync(int id)
         {
             try
             {
-                return await _serviceCountry.GetCountryAsync(id); ;
+                return await _serviceInstitution.GetInstitutionByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -56,19 +56,61 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion GetCountryById
+        #endregion GetInstitutionById
 
-        #region CreateCountry
+        #region GetInstitutionsByCountry
 
-        [HttpPost("/createCountry")]
+        [HttpGet("country")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetInstitutionsByCountryAsync([FromBody] Country country)
+        {
+            try
+            {
+                return await _serviceInstitution.GetInstitutionsByCountryAsync(country);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+            }
+        }
+
+        #endregion GetInstitutionsByCountry
+
+        #region GetInstitutionsByCountryAndName
+
+        [HttpGet("country/name")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetInstitutionsByCountryAndNameAsync([FromBody] Country country, [FromQuery] string institutionName)
+        {
+            try
+            {
+                return await _serviceInstitution.GetInstitutionsByCountryAndNameAsync(country, institutionName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+            }
+        }
+
+        #endregion GetInstitutionsByCountryAndName
+
+        #region CreateInstitution
+
+        [HttpPost("/CreateInstitution")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post(Country country)
+        public async Task<IActionResult> CreateInstitutionAsync([FromBody] Institution institution)
         {
             try
             {
-                return await _serviceCountry.CreateCountryAsync(country);
+                return await _serviceInstitution.CreateInstitutionAsync(institution);
             }
             catch (Exception ex)
             {
@@ -77,20 +119,42 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion CreateCountry
+        #endregion CreateInstitution
 
-        #region UpdateCountryNameById
+        #region UpdateInstitution
 
-        [HttpPut("{id}/name")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCountryNameAsync(int id, [FromBody] string newName)
+        public async Task<IActionResult> UpdateInstitutionAsync(int id, [FromBody] Institution institution)
         {
             try
             {
-                return await _serviceCountry.UpdateCountryNameAsync(id, newName);
+                if (institution == null)
+                {
+                    return BadRequest("Institution data is required.");
+                }
+
+                // Validar los datos requeridos
+                if (string.IsNullOrEmpty(institution.Name) || string.IsNullOrEmpty(institution.Address) || institution.CountryID == 0)
+                {
+                    return BadRequest("Required fields are missing: Name, Address, CountryID.");
+                }
+
+                var result = await _serviceInstitution.UpdateInstitutionAsync(
+                    id,
+                    institution.Name,
+                    institution.Address,
+                    institution.Description ?? string.Empty,
+                    institution.Website,
+                    institution.Email,
+                    institution.PhoneNumber,
+                    institution.EstablishedDate,
+                    institution.Type);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -99,64 +163,20 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion UpdateCountryNameById
+        #endregion UpdateInstitution
 
-        #region UpdateCountryIsoCodeById
-
-        [HttpPut("{id}/isocode")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateCountryIsoCodeAsync(int id, [FromBody] string newIsoCode)
-        {
-            try
-            {
-                return await _serviceCountry.UpdateCountryIsoCodeAsync(id, newIsoCode);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
-            }
-        }
-
-        #endregion UpdateCountryIsoCodeById
-
-        #region UpdateCountry
-
-        [HttpPut]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PutAsync(Country country)
-        {
-            try
-            {
-                return await _serviceCountry.UpdateCountryAsync(country);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
-            }
-        }
-
-        #endregion UpdateCountry
-
-        #region DeleteCountry
+        #region DeleteInstitution
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteCountryAsync(int id)
+        public async Task<IActionResult> DeleteInstitutionAsync(int id)
         {
             try
             {
-                return await _serviceCountry.DeleteCountryAsync(id);
+                return await _serviceInstitution.DeleteInstitutionAsync(id);
             }
             catch (Exception ex)
             {
@@ -165,6 +185,6 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        #endregion DeleteCountry
+        #endregion DeleteInstitution
     }
 }

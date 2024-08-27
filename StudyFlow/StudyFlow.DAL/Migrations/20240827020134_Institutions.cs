@@ -5,7 +5,7 @@
 namespace StudyFlow.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigrationWithRootModify : Migration
+    public partial class Institutions : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

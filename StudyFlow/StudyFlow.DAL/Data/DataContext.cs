@@ -1,25 +1,71 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Entities;
 
-namespace StudyFlow.DAL.Data;
-
-public class DataContext : DbContext
+namespace StudyFlow.DAL.Data
 {
-    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    public class DataContext : DbContext
     {
-    }
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        {
+        }
 
-    public DbSet<Country> Countries { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<Institution> Institutions { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Country>()
-            .HasIndex(x => x.Name)
-            .IsUnique();
-        modelBuilder.Entity<Country>()
-            .HasIndex(x => x.IsoCode)
-            .IsUnique();
+            #region Country
+
+            modelBuilder.Entity<Country>()
+                .Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            modelBuilder.Entity<Country>()
+                .Property(c => c.IsoCode)
+                .IsRequired()
+                .HasMaxLength(3);
+
+            #endregion Country
+
+            #region Institution
+
+            modelBuilder.Entity<Institution>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+            modelBuilder.Entity<Institution>()
+                .HasOne(i => i.Country)
+                .WithMany()
+                .HasForeignKey(i => i.CountryID);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.Name)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.Address)
+                .IsRequired()
+                .HasMaxLength(300);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.Description)
+                .HasMaxLength(1000);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.Website)
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.Email)
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Institution>()
+                .Property(i => i.PhoneNumber)
+                .HasMaxLength(20);
+
+            #endregion Institution
+        }
     }
 }

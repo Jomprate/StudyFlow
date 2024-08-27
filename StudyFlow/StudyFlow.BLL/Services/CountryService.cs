@@ -31,21 +31,24 @@ namespace StudyFlow.BLL.Services
                 return new BadRequestObjectResult(new { Error = "The ISO code cannot be empty or just whitespace." });
             }
 
-            if (country.IsoCode.Length != 2 && country.IsoCode.Length != 3)
+            // Asegurarse de que el ISO code sea de 3 caracteres y se guarde en mayúsculas
+            country.IsoCode = country.IsoCode.Trim().ToUpper();
+
+            if (country.IsoCode.Length != 3)
             {
-                return new BadRequestObjectResult(new { Error = "The ISO code must be exactly 2 or 3 characters long." });
+                return new BadRequestObjectResult(new { Error = "The ISO code must be exactly 3 characters long." });
             }
 
-            var existingCountry = _repository.GetAsync().Result.FirstOrDefault(c => c.Name.Equals(country.Name, StringComparison.CurrentCultureIgnoreCase));
+            var existingCountries = await _repository.GetAllAsync();
 
-            if (existingCountry != null)
+            if (existingCountries.Any(c => c.Name.Equals(country.Name, StringComparison.CurrentCultureIgnoreCase)))
             {
-                return new BadRequestObjectResult(new { Error = "Already exists a country with the same name." });
+                return new BadRequestObjectResult(new { Error = "A country with the same name already exists." });
             }
 
-            if (_repository.GetAsync().Result.Any(c => c.IsoCode.Equals(country.IsoCode, StringComparison.CurrentCultureIgnoreCase)))
+            if (existingCountries.Any(c => c.IsoCode.Equals(country.IsoCode, StringComparison.CurrentCultureIgnoreCase)))
             {
-                return new BadRequestObjectResult(new { Error = "Already exists a country with the same ISO code." });
+                return new BadRequestObjectResult(new { Error = "A country with the same ISO code already exists." });
             }
 
             int result = await _repository.CreateAsync(country);
@@ -88,7 +91,7 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetAsync()
         {
-            IEnumerable<Country> countries = await _repository.GetAsync();
+            IEnumerable<Country> countries = await _repository.GetAllAsync();
             return new OkObjectResult(countries);
         }
 
@@ -163,7 +166,7 @@ namespace StudyFlow.BLL.Services
                 return new NotFoundObjectResult(new { Error = $"Not found country with the Id {id}." });
             }
 
-            var existingCountry = _repository.GetAsync().Result.FirstOrDefault(c => c.IsoCode.Equals(newIsoCode, StringComparison.CurrentCultureIgnoreCase));
+            var existingCountry = _repository.GetAllAsync().Result.FirstOrDefault(c => c.IsoCode.Equals(newIsoCode, StringComparison.CurrentCultureIgnoreCase));
 
             if (existingCountry != null && existingCountry.Id != id)
             {

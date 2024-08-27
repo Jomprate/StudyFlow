@@ -14,6 +14,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name=LocalConnection"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IInstitutionService, InstitutionService>();
 builder.Services.AddCors();
 builder.Services.AddLocalization();
 
