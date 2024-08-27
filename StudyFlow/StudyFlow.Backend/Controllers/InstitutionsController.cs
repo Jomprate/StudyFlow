@@ -123,43 +123,21 @@ namespace StudyFlow.Backend.Controllers
 
         #region UpdateInstitution
 
-        [HttpPut("{id}")]
+        [HttpPut("/UpdateInstitution")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateInstitutionAsync(int id, [FromBody] Institution institution)
+        public async Task<IActionResult> UpdateInstitutionAsync([FromBody] Institution institution)
         {
             try
             {
-                if (institution == null)
-                {
-                    return BadRequest("Institution data is required.");
-                }
-
-                // Validar los datos requeridos
-                if (string.IsNullOrEmpty(institution.Name) || string.IsNullOrEmpty(institution.Address) || institution.CountryID == 0)
-                {
-                    return BadRequest("Required fields are missing: Name, Address, CountryID.");
-                }
-
-                var result = await _serviceInstitution.UpdateInstitutionAsync(
-                    id,
-                    institution.Name,
-                    institution.Address,
-                    institution.Description ?? string.Empty,
-                    institution.Website,
-                    institution.Email,
-                    institution.PhoneNumber,
-                    institution.EstablishedDate,
-                    institution.Type);
-
-                return Ok(result);
+                return await _serviceInstitution.UpdateInstitutionAsync(institution);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                    new { Error = "Ocurrió un error inesperado", Detalles = ex.Message });
             }
         }
 

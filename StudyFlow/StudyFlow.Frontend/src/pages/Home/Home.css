@@ -3,11 +3,21 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    height: 100%; /* Asegura que el body cubra toda la altura de la página */
 }
 
 .home-header {
-    padding: 2rem 0;
-    background-color: #007bff !important;
+    position: fixed; /* Fija el header en la parte superior */
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem; /* Espaciado interior del header */
+    margin: 0; /* Asegura que no haya márgenes adicionales */
+    background-color: #4800ff !important;
+    z-index: 1000; /* Asegura que el header esté por encima del resto del contenido */
+    display: flex; /* Asegura que el contenido esté alineado en fila */
+    align-items: center; /* Alinea el contenido verticalmente al centro del header */
+    box-sizing: border-box; /* Incluye el padding en el ancho total */
 }
 
     .home-header h1 {
@@ -17,7 +27,8 @@ body {
     }
 
 .home-main {
-    padding: 2rem 0;
+    padding-top: 6rem; /* Ajusta este valor según la altura del header */
+    padding: 2rem;
     background-color: #f4f4f4;
 }
 
