@@ -31,7 +31,6 @@ namespace StudyFlow.BLL.Services
                 return new BadRequestObjectResult(new { Error = "The ISO code cannot be empty or just whitespace." });
             }
 
-            // Asegurarse de que el ISO code sea de 3 caracteres y se guarde en mayúsculas
             country.IsoCode = country.IsoCode.Trim().ToUpper();
 
             if (country.IsoCode.Length != 3)

@@ -7,21 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Update="Resources\BackendLit.Designer.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-			<DependentUpon>BackendLit.resx</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="Resources\BackendLit.resx">
-			<Generator>ResXFileCodeGenerator</Generator>
-			<LastGenOutput>BackendLit.Designer.cs</LastGenOutput>
-		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Folder Include="Locales\" />
 	</ItemGroup>
 

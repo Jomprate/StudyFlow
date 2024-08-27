@@ -118,6 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppName" xml:space="preserve">
-    <value>StudyFlow</value>
+    <value>StudyFlow_</value>
+  </data>
+  <data name="welcome" xml:space="preserve">
+    <value>Bienvenido</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Esta es una increible aplicación ññ</value>
+  </data>
+  <data name="discover_more" xml:space="preserve">
+    <value>Descubre mas</value>
+  </data>
+  <data name="home_Footer" xml:space="preserve">
+    <value>2024 . Todos los derechos reservados.</value>
+  </data>
+  <data name="english" xml:space="preserve">
+    <value>Ingles</value>
+  </data>
+  <data name="spanish" xml:space="preserve">
+    <value>Español</value>
   </data>
 </root>
