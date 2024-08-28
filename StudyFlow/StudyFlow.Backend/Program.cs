@@ -18,6 +18,7 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IInstitutionService, InstitutionService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddCors();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); // Agrega la localización
 
