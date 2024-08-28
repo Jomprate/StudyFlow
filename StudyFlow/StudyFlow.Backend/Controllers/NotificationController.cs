@@ -30,7 +30,7 @@ public class NotificationController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                new { Error = "An unexpected error occurred.", Detalles = ex.Message });
         }
     }
 
@@ -52,7 +52,7 @@ public class NotificationController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                new { Error = "An unexpected error occurred.", Detalles = ex.Message });
         }
     }
 
@@ -73,7 +73,7 @@ public class NotificationController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                new { Error = "An unexpected error occurred.", Detalles = ex.Message });
         }
     }
 
@@ -95,7 +95,7 @@ public class NotificationController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                new { Error = "An unexpected error occurred.", Detalles = ex.Message });
         }
     }
 
@@ -117,7 +117,7 @@ public class NotificationController : ControllerBase
         catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                new { Error = "Ocurrió un error inesperado.", Detalles = ex.Message });
+                new { Error = "An unexpected error occurred.", Detalles = ex.Message });
         }
     }
 
