@@ -72,6 +72,8 @@ namespace StudyFlow.DAL.Entities
         [ForeignKey("CountryID")]
         public Country Country { get; set; } = null!;
 
+        public ICollection<User> users { get; set; } = new List<User>();
+
         // Collection of Courses offered by the Institution
         // public ICollection<Course> Courses { get; set; } = new List<Course>();
 

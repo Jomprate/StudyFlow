@@ -11,6 +11,8 @@ namespace StudyFlow.DAL.Data
 
         public DbSet<Country> Countries { get; set; }
         public DbSet<Institution> Institutions { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,6 +68,22 @@ namespace StudyFlow.DAL.Data
                 .HasMaxLength(20);
 
             #endregion Institution
+
+            #region Users
+
+            modelBuilder.Entity<User>()
+                .HasOne(x => x.Profile)
+                .WithOne(x => x.User)
+                .HasForeignKey<Profile>(x => x.UserId);
+            modelBuilder.Entity<User>()
+                .HasOne(i => i.Institution)
+                .WithMany(u => u.users)
+                .HasForeignKey(i => i.InstitutionID);
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            #endregion Users
         }
     }
 }
