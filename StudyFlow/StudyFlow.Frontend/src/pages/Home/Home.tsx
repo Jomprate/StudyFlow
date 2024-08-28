@@ -3,6 +3,7 @@ import './Home.css';
 import { useTranslation } from 'react-i18next';
 import { Segment, Container, Header, Button } from 'semantic-ui-react';
 import i18n from '../../i18n';
+import CustomHeader from '../../Components/CustomHeader';
 
 const Home: React.FC = () => {
     const { t } = useTranslation();
@@ -48,13 +49,7 @@ const Home: React.FC = () => {
 
     return (
         <div>
-            <Segment inverted textAlign="center" vertical className="home-header">
-                <Container>
-                    <Header as="h1" inverted>
-                        {t('welcome')}
-                    </Header>
-                </Container>
-            </Segment>
+            <CustomHeader />
 
             <Segment vertical className="home-main">
                 <Container text>
