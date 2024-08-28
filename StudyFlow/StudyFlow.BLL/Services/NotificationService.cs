@@ -23,9 +23,12 @@ namespace StudyFlow.BLL.Services
             }
 
             // Validar los datos requeridos
-            if (string.IsNullOrEmpty(notification.Message) || !DateTime.TryParse(notification.DateSent.ToString(), out _))
+            if (string.IsNullOrEmpty(notification.Message) 
+                || !DateTime.TryParse(notification.DateSent.ToString(), out _) 
+                || !DateTime.TryParse(notification.DateCreated.ToString(), out _) 
+                || !DateTime.TryParse(notification.DateUpdated.ToString(), out _))
             {
-                return new BadRequestObjectResult("Required fields are missing: Message, DateSent.");
+                return new BadRequestObjectResult("Required fields are missing: Message, DateCreated, DateUpdated, DateSent.");
             }
 
             var result = await _repository.CreateAsync(notification);
@@ -100,7 +103,8 @@ namespace StudyFlow.BLL.Services
             // Actualizar los datos de la institución
             currentNotification.Message = notification.Message;
             currentNotification.DateSent = notification.DateSent;
-            currentNotification.IsRead = notification.IsRead;
+            currentNotification.DateCreated = notification.DateCreated;
+            currentNotification.DateUpdated = notification.DateUpdated;
 
             var result = await _repository.UpdateAsync(currentNotification);
 

@@ -86,8 +86,14 @@ namespace StudyFlow.DAL.Data
                 .HasMaxLength(100);
 
             modelBuilder.Entity<Notification>()
-                .Property(i => i.IsRead)
-                .IsRequired();
+                .Property(i => i.DateCreated)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Notification>()
+                .Property(i => i.DateUpdated)
+                .IsRequired()
+                .HasMaxLength(100);
 
             #endregion Notification
         }
