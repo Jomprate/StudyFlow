@@ -21,7 +21,7 @@ public class Notification
     [Required]
     public string Message { get; set; } = null!;
 
-    [Required(ErrorMessage = "The date of shipment is important")]
+    [Required(ErrorMessage = "The date send is important")]
     public DateTime DateSent { get; set; }
 
     public bool IsRead { get; set; }
