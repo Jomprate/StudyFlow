@@ -1,56 +1,15 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import './Home.css';
 import { useTranslation } from 'react-i18next';
 import { Segment, Container, Header, Button } from 'semantic-ui-react';
-import i18n from '../../i18n';
-import CustomHeader from '../../Components/CustomHeader';
+import { Navbar } from '../../components';
 
 const Home: React.FC = () => {
     const { t } = useTranslation();
 
-    useEffect(() => {
-        const handleI18nInitialized = () => {
-            // eslint-disable-next-line no-console
-            console.log("Idioma actual:", i18n.language);
-        };
-
-        if (i18n.isInitialized) {
-            handleI18nInitialized();
-        } else {
-            i18n.on('initialized', handleI18nInitialized);
-        }
-
-        return () => {
-            i18n.off('initialized', handleI18nInitialized);
-        };
-    }, [t]);
-
-    const changeLanguageToEnglish = useCallback(() => {
-        i18n.changeLanguage('en')
-            .then(() => {
-                // eslint-disable-next-line no-console
-                console.log("Idioma cambiado a inglés:", i18n.language);
-            })
-            .catch(error => {
-                console.error("Error al cambiar el idioma a inglés:", error);
-            });
-    }, []);
-
-    const changeLanguageToSpanish = useCallback(() => {
-        i18n.changeLanguage('es')
-            .then(() => {
-                // eslint-disable-next-line no-console
-                console.log("Idioma cambiado a español:", i18n.language);
-            })
-            .catch(error => {
-                console.error("Error al cambiar el idioma a español:", error);
-            });
-    }, []);
-
     return (
-        <div>
-            <CustomHeader />
-
+        <div className="gradient__bg">
+            <Navbar />
             <Segment vertical className="home-main">
                 <Container text>
                     <Header as="h2">{t('description')}</Header>
@@ -58,13 +17,6 @@ const Home: React.FC = () => {
                     <Button primary size="large">
                         {t('discover_more')}
                     </Button>
-
-                    <div style={{ marginTop: '20px' }}>
-                        <Button onClick={changeLanguageToEnglish}>{t("english")}</Button>
-                        <Button onClick={changeLanguageToSpanish} style={{ marginLeft: '10px' }}>
-                            {t("spanish")}
-                        </Button>
-                    </div>
                 </Container>
             </Segment>
 
