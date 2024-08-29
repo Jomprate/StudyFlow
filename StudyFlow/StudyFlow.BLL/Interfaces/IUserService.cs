@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTO;
 using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.BLL.Interfaces
@@ -13,9 +14,9 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> GetUserByCourseAsync(int courseId);
 
-        Task<IActionResult> CreateUserAsync(User user);
+        Task<IActionResult> CreateUserAsync(UserDTO user);
 
-        Task<IActionResult> UpdateUserAsync(User user);
+        Task<IActionResult> UpdateUserAsync(UserDTO user);
 
         Task<IActionResult> DeleteUserAsync(Guid id);
     }

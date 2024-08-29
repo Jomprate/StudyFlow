@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTO;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities;
 
@@ -36,7 +37,7 @@ namespace StudyFlow.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserAsync(User user)
+        public async Task<IActionResult> CreateUserAsync(UserDTO user)
         {
             try
             {

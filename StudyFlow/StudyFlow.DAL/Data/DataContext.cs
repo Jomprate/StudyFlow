@@ -72,10 +72,6 @@ namespace StudyFlow.DAL.Data
             #region Users
 
             modelBuilder.Entity<User>()
-                .HasOne(x => x.Profile)
-                .WithOne(x => x.User)
-                .HasForeignKey<Profile>(x => x.UserId);
-            modelBuilder.Entity<User>()
                 .HasOne(i => i.Institution)
                 .WithMany(u => u.users)
                 .HasForeignKey(i => i.InstitutionID);
@@ -84,6 +80,22 @@ namespace StudyFlow.DAL.Data
                 .IsUnique();
 
             #endregion Users
+
+            #region Profile
+
+            modelBuilder.Entity<Profile>()
+                .HasData(
+                    new Profile { Id = 1, Name = "Admin", Description = "Administrador" },
+                    new Profile { Id = 2, Name = "Teacher", Description = "Profesor" },
+                    new Profile { Id = 3, Name = "Student", Description = "Estudiante" }
+                );
+
+            modelBuilder.Entity<Profile>()
+                .HasMany(p => p.Users)
+                .WithOne(u => u.Profile)
+                .HasForeignKey(p => p.ProfileId);
+
+            #endregion Profile
         }
     }
 }
