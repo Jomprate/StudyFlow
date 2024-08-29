@@ -71,7 +71,6 @@ namespace StudyFlow.DAL.Data
 
             #endregion Institution
 
-
             #region Notification
 
             //modelBuilder.Entity<Institution>()
@@ -104,7 +103,7 @@ namespace StudyFlow.DAL.Data
 
             modelBuilder.Entity<User>()
                 .HasOne(i => i.Institution)
-                .WithMany(u => u.users)
+                .WithMany(u => u.Users)
                 .HasForeignKey(i => i.InstitutionID);
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
@@ -127,7 +126,6 @@ namespace StudyFlow.DAL.Data
                 .HasForeignKey(p => p.ProfileId);
 
             #endregion Profile
-
         }
     }
 }
