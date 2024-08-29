@@ -17,18 +17,6 @@ namespace StudyFlow.DAL.Entities
         string? Description { get; }
 
         Country Country { get; }
-        // ICollection<Course> Courses { get; }
-        // ICollection<Admin> Admins { get; }
-
-        void AddCourse(/* Course course */);
-
-        void RemoveCourse(int courseID);
-
-        void AssignAdmin(/* Admin admin */);
-
-        void UpdateAdmin(/* Admin admin */);
-
-        void RemoveAdmin(int adminID);
     }
 
     public class Institution : IInstitution
@@ -72,69 +60,6 @@ namespace StudyFlow.DAL.Entities
         [ForeignKey("CountryID")]
         public Country Country { get; set; } = null!;
 
-        public ICollection<User> users { get; set; } = new List<User>();
-
-        // Collection of Courses offered by the Institution
-        // public ICollection<Course> Courses { get; set; } = new List<Course>();
-
-        // Collection of Admins associated with the Institution
-        // public ICollection<Admin> Admins { get; set; } = new List<Admin>();
-
-        // Method to add a course
-        public void AddCourse(/* Course course */)
-        {
-            // if (course == null)
-            //    throw new ArgumentNullException(nameof(course));
-
-            // if (!Courses.Contains(course))
-            // {
-            //     Courses.Add(course);
-            // }
-        }
-
-        // Method to remove a course by ID
-        public void RemoveCourse(int courseID)
-        {
-            // var course = Courses.FirstOrDefault(c => c.CourseID == courseID);
-            // if (course != null)
-            //    Courses.Remove(course);
-        }
-
-        // Method to assign an admin
-        public void AssignAdmin(/* Admin admin */)
-        {
-            // if (admin == null)
-            //    throw new ArgumentNullException(nameof(admin));
-
-            // if (!Admins.Contains(admin))
-            // {
-            //     Admins.Add(admin);
-            // }
-        }
-
-        // Method to update an admin's details
-        public void UpdateAdmin(/* Admin admin */)
-        {
-            // if (admin == null)
-            //    throw new ArgumentNullException(nameof(admin));
-
-            // var existingAdmin = Admins.FirstOrDefault(a => a.AdminID == admin.AdminID);
-            // if (existingAdmin != null)
-            // {
-            //     existingAdmin.Name = admin.Name;
-            //     existingAdmin.Email = admin.Email;
-            //     existingAdmin.PhoneNumber = admin.PhoneNumber;
-            //     // Actualizar cualquier otra propiedad relevante
-            // }
-        }
-
-        // Method to remove an admin by ID
-        public void RemoveAdmin(int adminID)
-        {
-            // var admin = Admins.FirstOrDefault(a => a.AdminID == adminID);
-            // if (admin != null)
-            //    Admins.Remove(admin);
-        }
     }
 
     public enum InstitutionType

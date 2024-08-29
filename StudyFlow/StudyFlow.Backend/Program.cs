@@ -13,7 +13,7 @@ using StudyFlow.DAL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuraci髇 de servicios
+// Configuraci贸n de servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,12 +23,14 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IInstitutionService, InstitutionService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+
 builder.Services.AddCors();
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); // Agrega la localizaci髇
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); // Agrega la localizaci贸n
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -45,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-// Configuraci髇 del middleware de localizaci髇
+// Configuraci贸n del middleware de localizaci贸n
 var app = builder.Build();
 
 // Configura las culturas soportadas
@@ -57,7 +59,7 @@ var localizationOptions = new RequestLocalizationOptions
     SupportedUICultures = supportedCultures.Select(c => new CultureInfo(c)).ToList(),
 };
 
-// Middleware para aplicar la localizaci髇
+// Middleware para aplicar la localizaci贸n
 app.UseRequestLocalization(localizationOptions);
 
 if (app.Environment.IsDevelopment())
@@ -72,7 +74,7 @@ app.UseAuthorization();
 // Mapeo de los controladores
 app.MapControllers();
 
-// Configuraci髇 de CORS
+// Configuraci贸n de CORS
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()

@@ -100,27 +100,39 @@ namespace StudyFlow.BLL.Services
             return new OkObjectResult(institutions);
         }
 
-        public async Task<IActionResult> UpdateInstitutionAsync(int id, string institutionName, string institutionAddress, string institutionDescription, string? website, string? email, string? phoneNumber, DateTime establishedDate, InstitutionType type)
+        public async Task<IActionResult> UpdateInstitutionAsync(Institution institution)
         {
-            var institution = await _repository.GetAsync(id);
-            if (institution == null)
+            if (institution == null || institution.InstitutionID <= 0)
             {
-                return new NotFoundObjectResult(new { Error = $"Not found institution with the Id {id}." });
+                return new BadRequestObjectResult(new { Error = "The Id cannot be 0 or null." });
             }
 
-            // Actualizar los datos de la institución
-            institution.Name = institutionName;
-            institution.Address = institutionAddress;
-            institution.Description = institutionDescription;
-            institution.Website = website;
-            institution.Email = email;
-            institution.PhoneNumber = phoneNumber;
-            institution.EstablishedDate = establishedDate;
-            institution.Type = type;
+            var currentInstitution = await _repository.GetAsync(institution.InstitutionID);
 
-            var result = await _repository.UpdateAsync(institution);
+            if (currentInstitution == null)
+            {
+                return new NotFoundObjectResult(new { Error = $"Not found institution with the Id {institution.InstitutionID}." });
+            }
 
-            return new OkObjectResult(result);
+            currentInstitution.Name = institution.Name;
+            currentInstitution.Address = institution.Address;
+            currentInstitution.Description = institution.Description;
+            currentInstitution.Website = institution.Website;
+            currentInstitution.Email = institution.Email;
+            currentInstitution.PhoneNumber = institution.PhoneNumber;
+            currentInstitution.EstablishedDate = institution.EstablishedDate;
+            currentInstitution.Type = institution.Type;
+
+            int result = await _repository.UpdateAsync(currentInstitution);
+
+            if (result > 0)
+            {
+                return new OkObjectResult(new { Message = "Institution updated successfully" });
+            }
+            else
+            {
+                return new BadRequestObjectResult(new { Message = "Failed to update institution" });
+            }
         }
     }
 }

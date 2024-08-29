@@ -14,6 +14,8 @@ namespace StudyFlow.DAL.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -69,6 +71,35 @@ namespace StudyFlow.DAL.Data
 
             #endregion Institution
 
+
+            #region Notification
+
+            //modelBuilder.Entity<Institution>()
+            //.HasOne(i => i.User)
+            //.WithMany()
+            //.HasForeignKey(i => i.UserID);
+
+            modelBuilder.Entity<Notification>()
+                .Property(x => x.Message)
+                .IsRequired()
+                .HasMaxLength(500);
+            modelBuilder.Entity<Notification>()
+                .Property(i => i.DateSent)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Notification>()
+                .Property(i => i.DateCreated)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Notification>()
+                .Property(i => i.DateUpdated)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            #endregion Notification
+
             #region Users
 
             modelBuilder.Entity<User>()
@@ -96,6 +127,7 @@ namespace StudyFlow.DAL.Data
                 .HasForeignKey(p => p.ProfileId);
 
             #endregion Profile
+
         }
     }
 }

@@ -16,7 +16,7 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> CreateInstitutionAsync(InstitutionDTO institution);
 
-        Task<IActionResult> UpdateInstitutionAsync(int id, string institutionName, string institutionAddress, string institutionDescription, string? website, string? email, string? phoneNumber, DateTime establishedDate, InstitutionType type);
+        Task<IActionResult> UpdateInstitutionAsync(Institution institution);
 
         Task<IActionResult> DeleteInstitutionAsync(int id);
     }
