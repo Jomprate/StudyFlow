@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyFlow.DAL.Data;
 
@@ -11,9 +12,11 @@ using StudyFlow.DAL.Data;
 namespace StudyFlow.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240829011725_ModifyEntityProfileAndSeedDataInitial")]
+    partial class ModifyEntityProfileAndSeedDataInitial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,39 +101,14 @@ namespace StudyFlow.DAL.Migrations
                     b.ToTable("Institutions");
                 });
 
-
-            modelBuilder.Entity("StudyFlow.DAL.Entities.Notification", b =>
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateSent")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-            
             modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
-
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

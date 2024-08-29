@@ -59,6 +59,7 @@ namespace StudyFlow.DAL.Entities
         // Navigation Property
         [ForeignKey("CountryID")]
         public Country Country { get; set; } = null!;
+
     }
 
     public enum InstitutionType

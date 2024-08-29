@@ -8,6 +8,8 @@ namespace StudyFlow.DAL.Interfaces
 
         Task<T> GetAsync(int id);
 
+        Task<T> GetAsync(Guid id);
+
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
         Task<int> CreateAsync(T entity);

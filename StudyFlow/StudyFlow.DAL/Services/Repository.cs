@@ -16,8 +16,22 @@ namespace StudyFlow.DAL.Services
 
         public async Task<int> CreateAsync(T entity)
         {
-            await _dataContext.Set<T>().AddAsync(entity);
-            return await _dataContext.SaveChangesAsync();
+            try
+            {
+                await _dataContext.Set<T>().AddAsync(entity);
+                return await _dataContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                {
+                    throw new ArgumentException($"A {nameof(T)} already exists in database.", ex);
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         public async Task<int> DeleteAsync(T entity)
@@ -37,6 +51,11 @@ namespace StudyFlow.DAL.Services
         }
 
         public async Task<T> GetAsync(int id)
+        {
+            return await _dataContext.Set<T>().FindAsync(id);
+        }
+
+        public async Task<T> GetAsync(Guid id)
         {
             return await _dataContext.Set<T>().FindAsync(id);
         }
