@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTO;
 using StudyFlow.BLL.Interfaces;
+using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
 
@@ -14,7 +16,7 @@ namespace StudyFlow.BLL.Services
             _repository = repository;
         }
 
-        public async Task<IActionResult> CreateInstitutionAsync(Institution institution)
+        public async Task<IActionResult> CreateInstitutionAsync(InstitutionDTO institution)
         {
             if (institution == null)
             {
@@ -22,12 +24,12 @@ namespace StudyFlow.BLL.Services
             }
 
             // Validar los datos requeridos
-            if (string.IsNullOrEmpty(institution.Name) || string.IsNullOrEmpty(institution.Address) || institution.CountryID == 0)
+            if (string.IsNullOrEmpty(institution.Name) || string.IsNullOrEmpty(institution.Address) || institution.CountryId == 0)
             {
                 return new BadRequestObjectResult("Required fields are missing: Name, Address, CountryID.");
             }
 
-            var result = await _repository.CreateAsync(institution);
+            var result = await _repository.CreateAsync(institution.ToEntity());
 
             return new CreatedResult("", result);
         }

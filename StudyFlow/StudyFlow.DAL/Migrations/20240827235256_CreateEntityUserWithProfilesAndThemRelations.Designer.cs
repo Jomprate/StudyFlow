@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyFlow.DAL.Data;
 
@@ -11,9 +12,11 @@ using StudyFlow.DAL.Data;
 namespace StudyFlow.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240827235256_CreateEntityUserWithProfilesAndThemRelations")]
+    partial class CreateEntityUserWithProfilesAndThemRelations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,36 +101,6 @@ namespace StudyFlow.DAL.Migrations
                     b.ToTable("Institutions");
                 });
 
-            modelBuilder.Entity("StudyFlow.DAL.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateSent")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateUpdated")
-                        .HasMaxLength(100)
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
                 {
                     b.Property<int>("Id")
@@ -136,7 +109,7 @@ namespace StudyFlow.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -144,29 +117,15 @@ namespace StudyFlow.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Profiles");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Administrador",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Profesor",
-                            Name = "Teacher"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Estudiante",
-                            Name = "Student"
-                        });
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
@@ -186,7 +145,8 @@ namespace StudyFlow.DAL.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("InstitutionID")
                         .HasColumnType("int");
@@ -202,9 +162,6 @@ namespace StudyFlow.DAL.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProfileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
@@ -217,8 +174,6 @@ namespace StudyFlow.DAL.Migrations
                         .IsUnique();
 
                     b.HasIndex("InstitutionID");
-
-                    b.HasIndex("ProfileId");
 
                     b.ToTable("Users");
                 });
@@ -234,33 +189,37 @@ namespace StudyFlow.DAL.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
+                {
+                    b.HasOne("StudyFlow.DAL.Entities.User", "User")
+                        .WithOne("Profile")
+                        .HasForeignKey("StudyFlow.DAL.Entities.Profile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
                 {
                     b.HasOne("StudyFlow.DAL.Entities.Institution", "Institution")
-                        .WithMany("Users")
+                        .WithMany("users")
                         .HasForeignKey("InstitutionID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StudyFlow.DAL.Entities.Profile", "Profile")
-                        .WithMany("Users")
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Institution");
-
-                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Institution", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("users");
                 });
 
-            modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
+            modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Profile")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTO;
 using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.BLL.Interfaces
@@ -13,7 +14,7 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> GetInstitutionsByCountryAndNameAsync(Country country, string institutionName);
 
-        Task<IActionResult> CreateInstitutionAsync(Institution institution);
+        Task<IActionResult> CreateInstitutionAsync(InstitutionDTO institution);
 
         Task<IActionResult> UpdateInstitutionAsync(Institution institution);
 
