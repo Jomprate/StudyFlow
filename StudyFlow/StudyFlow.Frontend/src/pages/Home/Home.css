@@ -4,6 +4,7 @@ body {
     padding: 0;
     box-sizing: border-box;
     height: 100%; /* Asegura que el body cubra toda la altura de la página */
+    background-color: #f4f4f4; /* Fondo claro para todo el body */
 }
 
 .home-header {
@@ -13,7 +14,7 @@ body {
     width: 100%;
     padding: 1rem; /* Espaciado interior del header */
     margin: 0; /* Asegura que no haya márgenes adicionales */
-    background-color: #4800ff !important;
+    background-color: transparent !important;
     z-index: 1000; /* Asegura que el header esté por encima del resto del contenido */
     display: flex; /* Asegura que el contenido esté alineado en fila */
     align-items: center; /* Alinea el contenido verticalmente al centro del header */
@@ -29,7 +30,7 @@ body {
 .home-main {
     padding-top: 6rem; /* Ajusta este valor según la altura del header */
     padding: 2rem;
-    background-color: #f4f4f4;
+    background-color: #f4f4f4; /* Fondo claro para la sección principal */
 }
 
     .home-main h2 {
@@ -49,8 +50,23 @@ body {
 
 .home-footer {
     padding: 1rem 0;
-    background-color: #333 !important;
+    background-color: #333 !important; /* Fondo oscuro para el footer */
     color: white;
     text-align: center;
     font-size: 0.875rem;
+}
+
+.gradient__bg {
+    /* global 94%+ browsers support */
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 100%);
+    /* ff 3.6+ */
+    /*background: -moz-radial-gradient(circle at 3% 25%, rgba(3, 53, 78, 1) 0%, rgb(128, 128, 128) 100%);*/
+    /* safari 5.1+,chrome 10+ */
+    /*background: -webkit-radial-gradient(circle at 3% 25%, rgba(3, 53, 78, 1) 0%, rgb(128, 128, 128) 100%);*/
+    /* opera 11.10+ */
+    /*background: -o-radial-gradient(circle at 3% 25%, rgba(3, 53, 78, 1) 0%, rgb(128, 128, 128) 100%);*/
+    /* ie 10+ */
+    /*background: -ms-radial-gradient(circle at 3% 25%, rgba(3, 53, 78, 1) 0%, rgb(128, 128, 128) 100%);*/
+    /* global 92%+ browsers support */
+    /*background: radial-gradient(circle at 3% 25%, rgba(3, 53, 78, 1) 0%, rgb(128, 128, 128) 100%);*/
 }

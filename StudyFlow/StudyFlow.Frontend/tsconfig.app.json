@@ -18,7 +18,13 @@
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true
+        "noFallthroughCasesInSwitch": true,
+
+        /* Rutas Absolutas */
+        "baseUrl": "./src", // Establece 'src' como la base desde la que se calcularán las rutas
+        "paths": {
+            "@components/*": [ "components/*" ] // Alias para la carpeta components
+        }
     },
     "include": [ "src" ]
 }
