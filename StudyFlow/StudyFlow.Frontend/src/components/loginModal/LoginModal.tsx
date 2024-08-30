@@ -1,28 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { Button, Modal, Form, Input } from 'semantic-ui-react';
-import './loginModal.css'; // Importa el archivo CSS
+import './loginModal.css';
 
 interface LoginModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
 }
 
-const loginSchema = yup.object().shape({
-    email: yup.string().email("Invalid email address").required("Email is required"),
-    password: yup.string().required("Password is required"),
-});
-
 const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const { control, handleSubmit, formState: { errors } } = useForm({
-        resolver: yupResolver(loginSchema)
+        mode: 'onSubmit',
+        defaultValues: {
+            email: '',
+            password: ''
+        }
     });
 
-    const onSubmit = (data: any) => {
-        console.log(data);
-        setOpen(false);
+    const onSubmit = async (data: any) => {
+        try {
+            console.log("Form Data:", data);
+            setOpen(false);
+        } catch (error) {
+            console.error("Validation Error:", error);
+        }
     };
 
     return (
@@ -41,6 +42,13 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                         <Controller
                             name="email"
                             control={control}
+                            rules={{
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: "Invalid email address"
+                                }
+                            }}
                             render={({ field }) => <Input type="email" {...field} placeholder="Email" className="login-modal-input" />}
                         />
                         {errors.email && <p className="login-modal-error">{errors.email.message}</p>}
@@ -51,6 +59,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                         <Controller
                             name="password"
                             control={control}
+                            rules={{ required: "Password is required" }}
                             render={({ field }) => <Input type="password" {...field} placeholder="Password" className="login-modal-input" />}
                         />
                         {errors.password && <p className="login-modal-error">{errors.password.message}</p>}
