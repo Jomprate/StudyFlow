@@ -6,6 +6,7 @@
     gap: 6px;
     height: 210px;
     max-width: 300px;
+    overflow: hidden;
     width: 300px;
 }
 
