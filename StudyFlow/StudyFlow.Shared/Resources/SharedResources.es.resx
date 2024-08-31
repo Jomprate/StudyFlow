@@ -153,4 +153,16 @@
   <data name="home_header_p_2" xml:space="preserve">
     <value>1200 Personas solicitaron acceso a una visita en las últimas 24 horas</value>
   </data>
+  <data name="home_page-description_1" xml:space="preserve">
+    <value>Programa tus clases, participa y conéctate con tus compañeros, todo en un solo lugar: StudyFlow.</value>
+  </data>
+  <data name="home_page-question_1" xml:space="preserve">
+    <value>¿Quiénes somos y qué ofrecemos?</value>
+  </data>
+  <data name="home_page-description_2" xml:space="preserve">
+    <value>En nuestra empresa, sabemos que la gestión eficaz del tiempo es fundamental para el éxito académico. Entendemos lo crucial que es encontrar un equilibrio entre tus estudios y tu vida personal. Por eso, hemos diseñado una plataforma que no solo te ayuda a organizar tus reuniones, tareas y exámenes, sino que también maximiza tu productividad y reduce el estrés. Con una planificación adecuada, podrás alcanzar tus metas educativas sin sacrificar tu bienestar. Simplifica tu vida académica y disfruta de una estructura que te permite enfocarte en lo que realmente importa.</value>
+  </data>
+  <data name="home_page-institutions-relay" xml:space="preserve">
+    <value>Algunas instituciones que confían en nosotros</value>
+  </data>
 </root>
