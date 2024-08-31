@@ -138,4 +138,19 @@
   <data name="spanish" xml:space="preserve">
     <value>Spanish</value>
   </data>
+  <data name="home_header_title_1" xml:space="preserve">
+    <value>The future of schedule management is here</value>
+  </data>
+  <data name="home_header_input_1" xml:space="preserve">
+    <value>Your Email Address</value>
+  </data>
+  <data name="home_header_button_1" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="home_header_p_1" xml:space="preserve">
+    <value>Time management is key to academic success. With proper planning, you can maximize your productivity, reduce stress and achieve your educational goals. Organizing your time well not only improves your performance, but also allows you to enjoy a balance between your studies and your personal life.</value>
+  </data>
+  <data name="home_header_p_2" xml:space="preserve">
+    <value>1200 People requested access a visit last 24 hours</value>
+  </data>
 </root>

@@ -17,7 +17,7 @@ a {
 
 .gradient__bg {
     /* global 94%+ browsers support */
-    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 100%);
+    background: linear-gradient(115deg, rgba(0, 28, 33, 1) 0%, rgba(0, 89, 105, 1) 49%, rgba(0, 117, 138, 1) 76%, rgba(0, 188, 212, 1) 100%);
 }
 
 .gradient__text {

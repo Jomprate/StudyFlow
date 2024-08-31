@@ -124,7 +124,7 @@
     <value>Bienvenido</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>Esta es una increible aplicación</value>
+    <value>Esta es una increible aplicación.</value>
   </data>
   <data name="discover_more" xml:space="preserve">
     <value>Descubre mas</value>
@@ -137,5 +137,20 @@
   </data>
   <data name="spanish" xml:space="preserve">
     <value>Español</value>
+  </data>
+  <data name="home_header_title_1" xml:space="preserve">
+    <value>El futuro de la gestión de horarios está aquí</value>
+  </data>
+  <data name="home_header_input_1" xml:space="preserve">
+    <value>Tu dirección de correo electrónico</value>
+  </data>
+  <data name="home_header_button_1" xml:space="preserve">
+    <value>Comenzar</value>
+  </data>
+  <data name="home_header_p_1" xml:space="preserve">
+    <value>La gestión del tiempo es clave para el éxito académico. Con una planificación adecuada, puedes maximizar tu productividad, reducir el estrés y alcanzar tus metas educativas. Organizar bien tu tiempo no solo mejora tu rendimiento, sino que también te permite disfrutar de un equilibrio entre tus estudios y tu vida personal.</value>
+  </data>
+  <data name="home_header_p_2" xml:space="preserve">
+    <value>1200 Personas solicitaron acceso a una visita en las últimas 24 horas</value>
   </data>
 </root>

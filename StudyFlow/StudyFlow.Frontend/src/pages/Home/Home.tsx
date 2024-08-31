@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
 import { useTranslation } from 'react-i18next';
+
 import { Segment, Container } from 'semantic-ui-react';
 import { Navbar } from '../../Components';
 import Peolpe from '../../assets/studyflow-people.png';
@@ -92,6 +93,7 @@ const Home: React.FC = () => {
           <div className="homepage-img-container">
             <img src={Peolpe} alt="homepage-img" />
           </div>
+
         </div>
       </div>
 
