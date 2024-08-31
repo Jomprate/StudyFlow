@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Router from './router';
 import './App.css';
 import { initializeI18next } from './i18n';
+import { Navbar } from './components';
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -28,7 +29,12 @@ function App() {
         return <div>Cargando...</div>;
     }
 
-    return <Router />;
+    return (
+        <>
+
+            <Router />
+        </>
+    );
 }
 
 export default App;

@@ -1,2 +1,2 @@
 export { default as Footer } from './footer/Footer';
-export { default as CustomHeader } from './header/CustomHeader';
+export { default as CHeader } from './cheader/CHeader';
