@@ -4,20 +4,21 @@ import { useTranslation } from 'react-i18next';
 import { Segment, Container } from 'semantic-ui-react';
 import { Navbar } from '../../Components';
 import Peolpe from '../../assets/studyflow-people.png';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { A11y, Autoplay, Navigation } from 'swiper/modules';
+import { SwiperSlide } from 'swiper/react';
 import itmImg from '../../assets/itm.png';
 import unalImg from '../../assets/unal.png';
 import pascualImg from '../../assets/pascual.png';
 import udemImg from '../../assets/udem.png';
 import udeaImg from '../../assets/udea.png';
 import Card from '../../Components/card/Card';
-import { SwiperOptions } from 'swiper/types';
 import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/autoplay';
 import 'swiper/css/bundle';
 import 'swiper/css/navigation';
+import Slider from '../../Components/slider/Slider';
+import { SwiperOptions } from 'swiper/types';
+import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
 const institutions = [
   {
@@ -85,7 +86,7 @@ const Home: React.FC = () => {
             )}
           </p>
           <h3 className="homepage-institutions">{t('Some institutions that rely on us')}</h3>
-          <Swiper {...swiperConfig}>{getInstitutions()}</Swiper>
+          <Slider swiperConfig={swiperConfig}>{getInstitutions()}</Slider>
         </div>
         <div className="homepage-img-ctn">
           <div className="homepage-img-container">
