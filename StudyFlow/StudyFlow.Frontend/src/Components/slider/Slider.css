@@ -1,0 +1,18 @@
+.slider.swiper {
+    margin: 0;
+    max-width: 610px;
+    width: 100%;
+}
+
+.slider .swiper-slide {
+    width: max-content;
+    height: 100%;
+}
+
+@media screen and (max-width: 992px) {
+    .homepage .slider.swiper {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+    }
+}
