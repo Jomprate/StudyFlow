@@ -153,4 +153,16 @@
   <data name="home_header_p_2" xml:space="preserve">
     <value>1200 People requested access a visit last 24 hours</value>
   </data>
+  <data name="home_page-description_1" xml:space="preserve">
+    <value>Schedule your classes, engage, and connect with your peers—all in one place: StudyFlow.</value>
+  </data>
+  <data name="home_page-question_1" xml:space="preserve">
+    <value>Who we are and what we offer ?</value>
+  </data>
+  <data name="home_page-description_2" xml:space="preserve">
+    <value>At our company, we know that effective time management is critical to academic success. We understand how crucial it is to find a balance between your studies and your personal life. That's why we've designed a platform that not only helps you organize your meetings, assignments and exams, but also maximizes your productivity and reduces stress. With proper planning, you can achieve your educational goals without sacrificing your well-being. Simplify your academic life and enjoy a structure that allows you to focus on what really matters.</value>
+  </data>
+  <data name="home_page-institutions-relay" xml:space="preserve">
+    <value>Some institutions that rely on us</value>
+  </data>
 </root>
