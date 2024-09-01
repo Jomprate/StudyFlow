@@ -83,10 +83,10 @@
         font-size: 18px;
         line-height: 25px;
         text-transform: capitalize;
-        margin: 0 1rem;
+        margin: 0 1rem; /* Restaurar margen horizontal */
+        padding: 5px 0;
         cursor: pointer;
         border-radius: 8px;
-        padding: 5px 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
@@ -149,12 +149,17 @@
 
 .sf__navbar-menu_container-group {
     background-color: rgba(255, 255, 255, 0.1);
-    padding: 3px;
+    padding: 10px;
     border-radius: 8px;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     width: 100%;
     box-sizing: border-box;
 }
+
+    .sf__navbar-menu_container-group p {
+        margin: 0;
+        padding: 5px 0;
+    }
 
     .sf__navbar-menu_container-group a,
     .sf__navbar-menu_container-group button {
@@ -199,12 +204,26 @@
     box-sizing: border-box;
 }
 
+.sf__navbar-menu_container-language,
+.sf__navbar-menu_container-theme {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ocultar selectores de idioma y tema en pantallas pequeñas */
 @media screen and (max-width: 1050px) {
-    .sf__navbar-links_container {
+    .sf__navbar-language,
+    .sf__navbar-language + div {
         display: none;
     }
 
-    .sf__navbar-language {
+    .sf__navbar-links_container {
         display: none;
     }
 
@@ -224,9 +243,9 @@
 
     .sf__navbar-menu_container-group {
         background-color: rgba(255, 255, 255, 0.1);
-        padding: 3px;
+        padding: 10px;
         border-radius: 8px;
-        margin-bottom: 3px;
+        margin-bottom: 5px;
         width: 100%;
         box-sizing: border-box;
     }
@@ -279,9 +298,44 @@
         margin-top: 4px;
         margin-bottom: 4px;
     }
+
+    .sf__navbar-sign-container {
+        display: none;
+    }
+
+    .sf__navbar-sign {
+        display: none;
+    }
+
+    .sf__navbar-language {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 550px) {
+    .sf__navbar {
+        padding: 0.3rem;
+    }
+
+    .sf__navbar-sign-container {
+        display: none;
+    }
+
+    .sf__navbar-sign {
+        display: none;
+    }
+
+    .sf__navbar-language {
+        display: none;
+    }
+
+    .sf__navbar-menu_container {
+        top: 20px;
+        z-index: 1000;
+    }
+}
+
+@media screen and (max-width: 350px) {
     .sf__navbar {
         padding: 0.3rem;
     }

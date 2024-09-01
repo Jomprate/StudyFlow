@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import Router from './router';
 import './App.css';
 import { initializeI18next } from './i18n';
-import { Navbar } from './components';
+import { ThemeProvider, useTheme } from './ThemeContext';
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const { theme } = useTheme();
 
     useEffect(() => {
         const initialize = async () => {
@@ -30,11 +31,16 @@ function App() {
     }
 
     return (
-        <>
-
+        <div className={`app ${theme}`}>
             <Router />
-        </>
+        </div>
     );
 }
 
-export default App;
+const WrappedApp: React.FC = () => (
+    <ThemeProvider>
+        <App />
+    </ThemeProvider>
+);
+
+export default WrappedApp;
