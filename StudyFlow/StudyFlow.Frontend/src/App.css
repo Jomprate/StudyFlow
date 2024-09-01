@@ -15,6 +15,22 @@ a {
     text-decoration: none;
 }
 
+.app.light {
+    background-color: white;
+    color: black;
+}
+
+.app.dark {
+    background-color: black;
+    color: white;
+}
+
+button {
+    padding: 10px;
+    margin: 20px;
+    cursor: pointer;
+}
+
 .gradient__bg {
     /* global 94%+ browsers support */
     background: linear-gradient(115deg, rgba(0, 28, 33, 1) 0%, rgba(0, 89, 105, 1) 49%, rgba(0, 117, 138, 1) 76%, rgba(0, 188, 212, 1) 100%);

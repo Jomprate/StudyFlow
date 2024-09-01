@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
+import { RiMenu3Line, RiCloseLine, RiSunLine, RiMoonLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './navbar.css';
 import logo from '../../assets/logo_t.svg';
 import { AuthModal, LoginModal } from '../../components';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
+import { useTheme } from '../../ThemeContext';
 
 const Menu: React.FC = () => (
     <>
@@ -22,6 +23,7 @@ const Navbar: React.FC = () => {
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [openAuthModal, setOpenAuthModal] = useState(false);
     const { i18n } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
 
     useEffect(() => {
         const savedLanguage = localStorage.getItem('language');
@@ -49,7 +51,7 @@ const Navbar: React.FC = () => {
     };
 
     return (
-        <div className="gradient__bg navbar">
+        <div className={`gradient__bg navbar ${theme}`}>
             <div className="sf__navbar">
                 <div className="sf__navbar-links">
                     <div className="sf__navbar-links_logo">
@@ -59,7 +61,7 @@ const Navbar: React.FC = () => {
                 <div className="sf__navbar-links_container">
                     <Menu />
                 </div>
-                <div className="sf__navbar-language" style={{ marginLeft: '20px' }}>
+                <div className="sf__navbar-language" style={{ marginLeft: '20px', display: 'flex', alignItems: 'center' }}>
                     <Dropdown
                         inline
                         options={[
@@ -69,6 +71,13 @@ const Navbar: React.FC = () => {
                         defaultValue={i18n.language}
                         onChange={handleLanguageChange}
                     />
+                    <div onClick={toggleTheme} style={{ cursor: 'pointer', marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+                        {theme === 'light' ? (
+                            <RiSunLine size={24} />
+                        ) : (
+                            <RiMoonLine size={24} />
+                        )}
+                    </div>
                 </div>
                 <div className="sf__navbar-sign-container">
                     <div className="sf__navbar-sign" style={{ marginLeft: '10px' }}>
@@ -85,7 +94,7 @@ const Navbar: React.FC = () => {
                             <div className="sf__navbar-menu_container-group">
                                 <Menu />
                             </div>
-                            <div className="sf__navbar-menu_container-group">
+                            <div className="sf__navbar-menu_container-language sf__navbar-menu_container-group">
                                 <Dropdown
                                     inline
                                     options={[
@@ -95,6 +104,15 @@ const Navbar: React.FC = () => {
                                     defaultValue={i18n.language}
                                     onChange={handleLanguageChange}
                                 />
+                            </div>
+                            <div className="sf__navbar-menu_container-theme sf__navbar-menu_container-group">
+                                <div onClick={toggleTheme} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                                    {theme === 'light' ? (
+                                        <RiSunLine size={24} />
+                                    ) : (
+                                        <RiMoonLine size={24} />
+                                    )}
+                                </div>
                             </div>
                             <div className="sf__navbar-menu_container-group">
                                 <p onClick={() => setOpenLoginModal(true)}>Sign in</p>
