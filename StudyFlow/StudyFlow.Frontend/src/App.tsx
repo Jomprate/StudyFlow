@@ -4,8 +4,7 @@ import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
-const AppContent: React.FC = () => {
-    const { theme } = useTheme();
+function App() {
     const [loading, setLoading] = useState(true);
     const { theme } = useTheme();
 
@@ -19,7 +18,7 @@ const AppContent: React.FC = () => {
                 console.log("i18n inicializado correctamente.");
                 setLoading(false);
             } catch (error) {
-                console.error("Error durante la inicialización de i18n:", error);
+                console.error("Error durante la inicializaci�n de i18n:", error);
                 setLoading(false);
             }
         };
@@ -36,13 +35,7 @@ const AppContent: React.FC = () => {
             <Router />
         </div>
     );
-};
-
-const App: React.FC = () => (
-    <ThemeProvider>
-        <AppContent />
-    </ThemeProvider>
-);
+}
 
 const WrappedApp: React.FC = () => (
     <ThemeProvider>
