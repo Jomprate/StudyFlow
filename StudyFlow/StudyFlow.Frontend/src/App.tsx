@@ -7,6 +7,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 const AppContent: React.FC = () => {
     const { theme } = useTheme();
     const [loading, setLoading] = useState(true);
+    const { theme } = useTheme();
 
     useEffect(() => {
         const initialize = async () => {
@@ -43,4 +44,10 @@ const App: React.FC = () => (
     </ThemeProvider>
 );
 
-export default App;
+const WrappedApp: React.FC = () => (
+    <ThemeProvider>
+        <App />
+    </ThemeProvider>
+);
+
+export default WrappedApp;

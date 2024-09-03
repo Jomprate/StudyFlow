@@ -25,7 +25,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
-        console.log('Tema cambiado a:', newTheme); // Depuración
+        console.log('Tema cambiado a:', newTheme); // DepuraciÃ³n
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
     };
