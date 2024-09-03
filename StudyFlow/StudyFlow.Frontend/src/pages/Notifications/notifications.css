@@ -1,0 +1,14 @@
+.notifications-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+    .notifications-container h1 {
+        color: #4169e1;
+        text-align: center;
+    }
+
+    .notifications-container p {
+        font-size: 1.1rem;
+        color: #333;
+    }

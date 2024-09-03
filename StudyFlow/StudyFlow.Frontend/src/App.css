@@ -5,9 +5,14 @@
     scroll-behavior: smooth;
 }
 
-body {
-    /*//background: var(--color-bg);*/
+body.light {
     background-color: #f4f4f4;
+    color: #000000;
+}
+
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
 }
 
 a {
@@ -15,32 +20,8 @@ a {
     text-decoration: none;
 }
 
-.app.light {
-    background-color: white;
-    color: black;
-}
-
-.app.dark {
-    background-color: black;
-    color: white;
-}
-
-button {
-    padding: 10px;
-    margin: 20px;
-    cursor: pointer;
-}
-
 .gradient__bg {
-    /* global 94%+ browsers support */
     background: linear-gradient(115deg, rgba(0, 28, 33, 1) 0%, rgba(0, 89, 105, 1) 49%, rgba(0, 117, 138, 1) 76%, rgba(0, 188, 212, 1) 100%);
-}
-
-.gradient__text {
-    background: var(--gradient-text);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent
 }
 
 .section__padding {
@@ -99,50 +80,3 @@ button {
         margin: 4rem 2rem;
     }
 }
-
-/*#root {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
-}
-
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-}
-
-    .logo:hover {
-        filter: drop-shadow(0 0 2em #646cffaa);
-    }
-
-    .logo.react:hover {
-        filter: drop-shadow(0 0 2em #61dafbaa);
-    }
-
-@keyframes logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
-    }
-}
-
-.card {
-    padding: 2em;
-}
-
-.read-the-docs {
-    color: #888;
-}
-*/

@@ -1,0 +1,14 @@
+.courses-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+    .courses-container h1 {
+        color: #4169e1;
+        text-align: center;
+    }
+
+    .courses-container p {
+        font-size: 1.1rem;
+        color: #333;
+    }

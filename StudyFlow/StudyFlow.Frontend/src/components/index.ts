@@ -7,4 +7,6 @@ export { default as AuthModal } from "./authModal/AuthModal";
 export { default as LoginModal } from "./loginModal/LoginModal";
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";
-export { default as CustomHeader } from "./CustomHeader";
+export { default as NavbarLoggedIn } from "./navBarLoggedIn/NavbarLoggedIn";
+export { default as SideBarMenu } from "./sideBarMenu/SideBarMenu";
+export { default as LoggedInMainLayout } from './layouts/loggedInMainLayout/LoggedInMainLayout';

@@ -165,4 +165,10 @@
   <data name="home_page-institutions-relay" xml:space="preserve">
     <value>Some institutions that rely on us</value>
   </data>
+  <data name="open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>
