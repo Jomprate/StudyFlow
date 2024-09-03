@@ -8,6 +8,10 @@
     overflow-x: hidden;
 }
 
+    body > *:first-child {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+
 .navbar {
     position: sticky;
     top: 0;
@@ -184,6 +188,10 @@
 }
 
 @media screen and (max-width: 1050px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
     .homeheader_page-content {
         flex-direction: column;
         align-items: center;
@@ -206,6 +214,10 @@
 }
 
 @media screen and (max-width: 650px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
     .homeheader_page-title {
         font-size: 48px;
         line-height: 60px;
@@ -238,6 +250,10 @@
 }
 
 @media screen and (max-width: 490px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
     .homeheader_page-title {
         font-size: 36px;
         line-height: 48px;

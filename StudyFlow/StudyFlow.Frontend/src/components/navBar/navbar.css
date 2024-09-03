@@ -1,8 +1,21 @@
-.sf__navbar {
+﻿.sf__navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 6rem;
+    padding: 0.5rem 2rem;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1000;
+    background: linear-gradient(127deg, rgba(75, 75, 75, 1) 0%, rgba(0, 116, 141, 1) 31%, rgba(0, 210, 255, 1) 100%);
+    box-sizing: border-box;
+}
+
+body > *:first-child {
+    padding-top: 80px; /* Ajusta este valor según la altura del navbar */
 }
 
 .sf__navbar-links {
@@ -17,6 +30,7 @@
 }
 
     .sf__navbar-links_logo img {
+        margin-top: 10px;
         width: 100px;
         height: 100px;
     }
@@ -24,6 +38,7 @@
 .sf__navbar-links_container {
     display: flex;
     flex-direction: row;
+    gap: 1rem; /* Espaciado entre los links */
 }
 
 .sf__navbar-sign-container {
@@ -83,10 +98,10 @@
         font-size: 18px;
         line-height: 25px;
         text-transform: capitalize;
-        margin: 0 1rem;
+        margin: 0 1rem; /* Restaurar margen horizontal */
+        padding: 5px 0;
         cursor: pointer;
         border-radius: 8px;
-        padding: 5px 10px;
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
@@ -149,12 +164,17 @@
 
 .sf__navbar-menu_container-group {
     background-color: rgba(255, 255, 255, 0.1);
-    padding: 3px;
+    padding: 10px;
     border-radius: 8px;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     width: 100%;
     box-sizing: border-box;
 }
+
+    .sf__navbar-menu_container-group p {
+        margin: 0;
+        padding: 5px 0;
+    }
 
     .sf__navbar-menu_container-group a,
     .sf__navbar-menu_container-group button {
@@ -183,7 +203,7 @@
     display: none;
 }
 
-.sf__navbar-language {
+.sf__navbar-language-theme {
     display: flex;
     align-items: center;
     color: white;
@@ -199,12 +219,30 @@
     box-sizing: border-box;
 }
 
+.sf__navbar-menu_container-language,
+.sf__navbar-menu_container-theme {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ocultar selectores de idioma y tema en pantallas pequeñas */
 @media screen and (max-width: 1050px) {
-    .sf__navbar-links_container {
-        display: none;
+    body > *:first-child {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
     }
 
-    .sf__navbar-language {
+    .sf__navbar-language-theme,
+    .sf__navbar-sign-container {
+        display: none; /* Ocultar elementos de idioma y tema */
+    }
+
+    .sf__navbar-links_container {
         display: none;
     }
 
@@ -224,9 +262,9 @@
 
     .sf__navbar-menu_container-group {
         background-color: rgba(255, 255, 255, 0.1);
-        padding: 3px;
+        padding: 10px;
         border-radius: 8px;
-        margin-bottom: 3px;
+        margin-bottom: 5px;
         width: 100%;
         box-sizing: border-box;
     }
@@ -264,7 +302,12 @@
         }
 }
 
+/* Para pantallas aún más pequeñas */
 @media screen and (max-width: 700px) {
+    body > *:first-child {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+
     .sf__navbar {
         padding: 0.5rem 4rem;
     }
@@ -279,9 +322,25 @@
         margin-top: 4px;
         margin-bottom: 4px;
     }
+
+    .sf__navbar-sign-container {
+        display: none;
+    }
+
+    .sf__navbar-sign {
+        display: none;
+    }
+
+    .sf__navbar-language-theme {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 550px) {
+    body > *:first-child {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+
     .sf__navbar {
         padding: 0.3rem;
     }
@@ -294,7 +353,34 @@
         display: none;
     }
 
-    .sf__navbar-language {
+    .sf__navbar-language-theme {
+        display: none;
+    }
+
+    .sf__navbar-menu_container {
+        top: 20px;
+        z-index: 1000;
+    }
+}
+
+@media screen and (max-width: 350px) {
+    body > *:first-child {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+
+    .sf__navbar {
+        padding: 0.3rem;
+    }
+
+    .sf__navbar-sign-container {
+        display: none;
+    }
+
+    .sf__navbar-sign {
+        display: none;
+    }
+
+    .sf__navbar-language-theme {
         display: none;
     }
 
