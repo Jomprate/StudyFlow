@@ -9,7 +9,7 @@
 }
 
     body > *:first-child {
-        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+        padding-top: 80px;
     }
 
 .navbar {

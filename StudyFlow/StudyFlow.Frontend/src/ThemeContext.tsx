@@ -20,7 +20,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }, []);
 
     useEffect(() => {
-        document.body.className = theme; // Aplica la clase de tema al body
+        document.body.className = theme;
     }, [theme]);
 
     const toggleTheme = () => {
