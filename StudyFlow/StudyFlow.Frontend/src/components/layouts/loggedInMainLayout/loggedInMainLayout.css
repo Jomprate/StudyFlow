@@ -30,6 +30,9 @@ body > *:first-child {
 
 .layout-container {
     margin-top: -20px;
+    margin-left: 0px;
+    margin-right: -20px;
+    margin-top: -20px;
     display: flex;
     flex-grow: 1;
     background-color: #f5f5f5;
@@ -49,7 +52,7 @@ body > *:first-child {
 
 .main-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 0px;
     margin-left: 250px;
     overflow-y: auto;
     background-color: #f5f5f5;
@@ -67,16 +70,38 @@ body > *:first-child {
     body > *:first-child {
         padding-top: 0px;
     }
+
+    layout-container {
+        margin-top: -20px;
+        display: flex;
+        flex-grow: 1;
+        background-color: #f5f5f5;
+    }
 }
 
 @media screen and (max-width: 650px) {
     body > *:first-child {
         padding-top: 0px;
     }
+
+    layout-container {
+        margin-top: -20px;
+        display: flex;
+        flex-grow: 1;
+        background-color: #f5f5f5;
+    }
 }
 
 @media screen and (max-width: 490px) {
     body > *:first-child {
         padding-top: 0px;
+    }
+
+    .layout-container {
+        margin-top: -20px;
+        margin-left: -10px;
+        display: flex;
+        flex-grow: 1;
+        background-color: #f5f5f5;
     }
 }
