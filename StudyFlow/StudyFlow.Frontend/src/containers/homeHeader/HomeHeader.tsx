@@ -17,6 +17,7 @@ import 'swiper/css/bundle';
 import 'swiper/css/navigation';
 import { SwiperOptions } from 'swiper/types';
 import { Autoplay, Navigation, A11y } from 'swiper/modules';
+import { useTheme } from '../../ThemeContext';
 
 const institutions = [
     {
@@ -43,6 +44,7 @@ const institutions = [
 
 const HomeHeader: React.FC = () => {
     const { t } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
 
     const getInstitutions = () => {
         if (institutions.length === 0) return null;
@@ -69,7 +71,7 @@ const HomeHeader: React.FC = () => {
     };
 
     return (
-        <div className="homeheader_page">
+        <div className={`homeheader_page ${theme}`}>
             <div className="homeheader_page-content">
                 <div className="homeheader_page-text-ctn">
                     <h3 className="homeheader_page-title">StudyFlow</h3>

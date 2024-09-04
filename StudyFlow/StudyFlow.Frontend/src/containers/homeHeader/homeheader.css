@@ -1,5 +1,5 @@
 ﻿body {
-    font-family: "Arial", sans-serif;
+    /*font-family: "Arial", sans-serif;*/
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -93,6 +93,7 @@
 
 .homeheader_page-title {
     font-size: 60px;
+    font-family: var(--font-family);
     margin: 0 0 16px;
     color: transparent;
     background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
@@ -106,6 +107,7 @@
 
 .homeheader_page-institutions {
     font-size: 40px;
+    font-family: var(--font-family);
     margin: 0 0 16px;
     color: transparent;
     background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
@@ -118,6 +120,7 @@
 
 .homeheader_page-description {
     font-size: 18px;
+    font-family: var(--font-family);
     margin: 0 0 16px;
     color: transparent;
     background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 90%);
@@ -221,10 +224,12 @@
     .homeheader_page-title {
         font-size: 48px;
         line-height: 60px;
+        font-family: var(--font-family);
     }
 
     .homeheader_page-institutions {
         font-size: 32px;
+        font-family: var(--font-family);
     }
 
     .homeheader_page-description {
@@ -257,6 +262,7 @@
     .homeheader_page-title {
         font-size: 36px;
         line-height: 48px;
+        font-family: var(--font-family);
     }
 
     .homeheader_page-institutions {
@@ -282,6 +288,7 @@
     .homeheader-main .ui.button {
         padding-left: 0.5rem;
         max-width: 100%;
+        font-family: var(--font-family);
     }
 }
 
