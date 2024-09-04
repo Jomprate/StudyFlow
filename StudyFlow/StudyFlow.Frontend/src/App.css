@@ -5,15 +5,24 @@
     scroll-behavior: smooth;
 }
 
-body.light {
-    background-color: #f4f4f4;
-    color: #000000;
+body {
+    margin: 0;
+    padding: 0;
 }
 
-body.dark {
-    background-color: #121212;
-    color: #ffffff;
-}
+    body.light {
+        /* Aquí puedes ajustar o eliminar el bloque blanco */
+        background-color: #ffffff; /* Cambia esto si el fondo blanco es indeseado */
+        margin-top: 0; /* Asegúrate de que no haya márgenes */
+        padding-top: 0; /* Asegúrate de que no haya rellenos */
+    }
+
+    body.dark {
+        /* Ajustes similares para el tema oscuro */
+        background-color: #1a1a1a; /* Ejemplo de fondo oscuro */
+        margin-top: 0;
+        padding-top: 0;
+    }
 
 a {
     color: unset;
