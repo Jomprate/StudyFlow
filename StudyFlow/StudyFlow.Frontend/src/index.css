@@ -1,3 +1,18 @@
+/* Reseteo de márgenes y padding para todos los elementos */
+body.light {
+    /* Aquí puedes ajustar o eliminar el bloque blanco */
+    background-color: #ffffff; /* Cambia esto si el fondo blanco es indeseado */
+    margin-top: 0; /* Asegúrate de que no haya márgenes */
+    padding-top: 0; /* Asegúrate de que no haya rellenos */
+}
+
+body.dark {
+    /* Ajustes similares para el tema oscuro */
+    background-color: #1a1a1a; /* Ejemplo de fondo oscuro */
+    margin-top: 0;
+    padding-top: 0;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
 
 :root {

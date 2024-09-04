@@ -10,3 +10,4 @@ export { default as Slider } from "./slider/Slider";
 export { default as NavbarLoggedIn } from "./navBarLoggedIn/NavbarLoggedIn";
 export { default as SideBarMenu } from "./sideBarMenu/SideBarMenu";
 export { default as LoggedInMainLayout } from './layouts/loggedInMainLayout/LoggedInMainLayout';
+export { default as LoadingScreen } from "./LoadingScreen/LoadingScreen";
