@@ -171,4 +171,46 @@
   <data name="close" xml:space="preserve">
     <value>Cerrar</value>
   </data>
+  <data name="login_forgotPassword" xml:space="preserve">
+    <value>¿Olvidó su contraseña?</value>
+  </data>
+  <data name="login_recoverPassword" xml:space="preserve">
+    <value>Recupérela aquí</value>
+  </data>
+  <data name="login_password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="login_error_passwordRequired" xml:space="preserve">
+    <value>Contraseña Requerida</value>
+  </data>
+  <data name="login_error_emailRequired" xml:space="preserve">
+    <value>Correo Requerido</value>
+  </data>
+  <data name="login_email" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="login_invalidEmail" xml:space="preserve">
+    <value>Correo no válido</value>
+  </data>
+  <data name="login" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="login_emailPlaceholder" xml:space="preserve">
+    <value>Ingresa tu correo</value>
+  </data>
+  <data name="login_error_atSymbolMissing" xml:space="preserve">
+    <value>Incluye un '@' en la dirección de correo electrónico.</value>
+  </data>
+  <data name="login_error_invalidDomain" xml:space="preserve">
+    <value>Introduce un dominio después del '@'. 'ejemplo'. Por ejemplo: 'ejemplo@dominio.com'.</value>
+  </data>
+  <data name="login_error_dotMissing" xml:space="preserve">
+    <value>Introduce una parte después de '.'.</value>
+  </data>
+  <data name="login_error_domainMissing" xml:space="preserve">
+    <value>Introduce un dominio después del '@'</value>
+  </data>
+  <data name="login_passwordPlaceholder" xml:space="preserve">
+    <value>Ingresa tu contraseña</value>
+  </data>
 </root>

@@ -38,8 +38,8 @@ html, body {
     }
 
 .courses_page.dark {
-    background-color: #0a3340;
-    color: #ffffff;
+    background-color: var(--color-background-dark);
+    color: var(--color_text-dark-1);
 }
 
     .courses_page.dark .courses-container h1 {
@@ -51,17 +51,17 @@ html, body {
     }
 
 .courses_page.light {
-    background-color: #fff;
-    color: #0a3340;
+    background-color: var(--color-background-light);
+    color: var(--color_text-light-1);
 }
 
-.courses_page.dark .courses-container h1 {
-    color: #80b3ff;
-}
+    .courses_page.light .courses-container h1 {
+        color: #80b3ff;
+    }
 
-.courses_page.dark .courses-container p {
-    color: #cccccc;
-}
+    .courses_page.light .courses-container p {
+        color: #cccccc;
+    }
 
 .courses_page {
     outline: 1px solid red;
