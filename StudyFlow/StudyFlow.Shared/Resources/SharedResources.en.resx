@@ -171,4 +171,46 @@
   <data name="close" xml:space="preserve">
     <value>Close</value>
   </data>
+  <data name="login_forgotPassword" xml:space="preserve">
+    <value>Forgot your password?</value>
+  </data>
+  <data name="login_recoverPassword" xml:space="preserve">
+    <value>Retrieve it here</value>
+  </data>
+  <data name="login_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="login_error_passwordRequired" xml:space="preserve">
+    <value>Password required</value>
+  </data>
+  <data name="login_error_emailRequired" xml:space="preserve">
+    <value>Email Required</value>
+  </data>
+  <data name="login_email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="login_invalidEmail" xml:space="preserve">
+    <value>Invalid Email</value>
+  </data>
+  <data name="login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="login_emailPlaceholder" xml:space="preserve">
+    <value>Place your email</value>
+  </data>
+  <data name="login_error_atSymbolMissing" xml:space="preserve">
+    <value>Please include an '@' in the email address.</value>
+  </data>
+  <data name="login_error_dotMissing" xml:space="preserve">
+    <value>Please enter a part following '.'.</value>
+  </data>
+  <data name="login_error_invalidDomain" xml:space="preserve">
+    <value>Please enter a part following '@'. 'example'. For example: 'example@domain.com'.</value>
+  </data>
+  <data name="login_error_domainMissing" xml:space="preserve">
+    <value>Please enter a domain after the '@'</value>
+  </data>
+  <data name="login_passwordPlaceholder" xml:space="preserve">
+    <value>Place your password</value>
+  </data>
 </root>
