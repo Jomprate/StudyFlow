@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './LoadingScreen.css';
+import './loadingScreen.css';
 import loadingSvg from '../../assets/logo_t.svg';
 
 const LoadingScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) => {
