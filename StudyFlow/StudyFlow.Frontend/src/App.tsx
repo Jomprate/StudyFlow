@@ -1,11 +1,13 @@
 ﻿import React, { useState, useEffect } from 'react';
-import Router from './router';
+import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
+import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
     const { theme } = useTheme();
 
     useEffect(() => {
@@ -26,8 +28,16 @@ function App() {
         initialize();
     }, []);
 
+    const handleFinishLoadingScreen = () => {
+        setShowLoadingScreen(false);
+    };
+
     if (loading) {
         return <div>Cargando...</div>;
+    }
+
+    if (showLoadingScreen) {
+        return <LoadingScreen onFinish={handleFinishLoadingScreen} />;
     }
 
     return (

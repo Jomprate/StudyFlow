@@ -5,15 +5,22 @@
     scroll-behavior: smooth;
 }
 
-body.light {
-    background-color: #f4f4f4;
-    color: #000000;
+body {
+    margin: 0;
+    padding: 0;
 }
 
-body.dark {
-    background-color: #121212;
-    color: #ffffff;
-}
+    body.light {
+        background-color: #ffffff;
+        margin-top: 0;
+        padding-top: 0;
+    }
+
+    body.dark {
+        background-color: #1a1a1a;
+        margin-top: 0;
+        padding-top: 0;
+    }
 
 a {
     color: unset;
