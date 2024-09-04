@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';

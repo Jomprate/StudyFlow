@@ -12,7 +12,7 @@
     background-size: 400% 100%;
     animation: gradient 10s linear infinite;
     z-index: 9999;
-    transition: opacity 2.5s ease; /* Extiende la duración de la opacidad para un desvanecimiento más suave */
+    transition: opacity 2.5s ease; /* Extiende la duraciÃ³n de la opacidad para un desvanecimiento mÃ¡s suave */
 }
 
     .loading-screen.fade-out {
