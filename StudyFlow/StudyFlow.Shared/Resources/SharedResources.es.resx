@@ -180,31 +180,31 @@
   <data name="global_password" xml:space="preserve">
     <value>Contraseña</value>
   </data>
-  <data name="login_error_passwordRequired" xml:space="preserve">
+  <data name="global_error_passwordRequired" xml:space="preserve">
     <value>Contraseña Requerida</value>
   </data>
-  <data name="login_error_emailRequired" xml:space="preserve">
+  <data name="global_error_emailRequired" xml:space="preserve">
     <value>Correo Requerido</value>
   </data>
-  <data name="login_invalidEmail" xml:space="preserve">
+  <data name="global_error_invalidEmail" xml:space="preserve">
     <value>Correo no válido</value>
   </data>
   <data name="global_login" xml:space="preserve">
     <value>Iniciar Sesión</value>
   </data>
-  <data name="login_emailPlaceholder" xml:space="preserve">
+  <data name="global_emailPlaceholder" xml:space="preserve">
     <value>Ingresa tu correo</value>
   </data>
-  <data name="login_error_atSymbolMissing" xml:space="preserve">
+  <data name="global_error_atSymbolMissing" xml:space="preserve">
     <value>Incluye un '@' en la dirección de correo electrónico.</value>
   </data>
-  <data name="login_error_invalidDomain" xml:space="preserve">
+  <data name="global_error_invalidDomain" xml:space="preserve">
     <value>Introduce un dominio después del '@'. 'ejemplo'. Por ejemplo: 'ejemplo@dominio.com'.</value>
   </data>
-  <data name="login_error_dotMissing" xml:space="preserve">
+  <data name="global_error_dotMissing" xml:space="preserve">
     <value>Introduce una parte después de '.'.</value>
   </data>
-  <data name="login_error_domainMissing" xml:space="preserve">
+  <data name="global_error_domainMissing" xml:space="preserve">
     <value>Introduce un dominio después del '@'</value>
   </data>
   <data name="login_passwordPlaceholder" xml:space="preserve">
@@ -219,7 +219,7 @@
   <data name="auth_createUser" xml:space="preserve">
     <value>Crear Usuario</value>
   </data>
-  <data name="auth_noFileSelected" xml:space="preserve">
+  <data name="global_noFileSelected" xml:space="preserve">
     <value>Archivo no seleccionado</value>
   </data>
   <data name="global_image" xml:space="preserve">
@@ -236,9 +236,6 @@
   </data>
   <data name="auth_phoneNumber" xml:space="preserve">
     <value>Teléfono de contacto</value>
-  </data>
-  <data name="auth_emailPlaceholder" xml:space="preserve">
-    <value>Ingresa tu correo</value>
   </data>
   <data name="global_Email" xml:space="preserve">
     <value>Correo</value>
@@ -260,5 +257,17 @@
   </data>
   <data name="auth_passwordRepeat" xml:space="preserve">
     <value>Repite tu contraseña</value>
+  </data>
+  <data name="global_error_nameIsRequired" xml:space="preserve">
+    <value>Nombre es requerido</value>
+  </data>
+  <data name="auth_error_repeatPasswordRequiered" xml:space="preserve">
+    <value>Repetir la contraseña es requerido</value>
+  </data>
+  <data name="gobal_error_passwordMismatch" xml:space="preserve">
+    <value>Contraseñas no coinciden</value>
+  </data>
+  <data name="auth_error_phoneNumberRequired" xml:space="preserve">
+    <value>Teléfono de contacto requerido</value>
   </data>
 </root>

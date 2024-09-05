@@ -9,13 +9,13 @@ export const handleEmailValidation = (
     const dotPosition = emailValue.lastIndexOf('.');
 
     if (atSymbolMissing) {
-        e.target.setCustomValidity(t('login_error_atSymbolMissing'));
+        e.target.setCustomValidity(t('global_error_atSymbolMissing'));
     } else if (atPosition === emailValue.length - 1 || emailValue[atPosition + 1] === '.') {
-        e.target.setCustomValidity(t('login_error_domainMissing'));
+        e.target.setCustomValidity(t('global_error_domainMissing'));
     } else if (dotMissing || dotPosition < atPosition + 2) {
-        e.target.setCustomValidity(t('login_error_dotMissing'));
+        e.target.setCustomValidity(t('global_error_dotMissing'));
     } else if (dotPosition === emailValue.length - 1 || emailValue[dotPosition + 1] === '') {
-        e.target.setCustomValidity(t('login_error_invalidDomain'));
+        e.target.setCustomValidity(t('global_error_invalidEmail'));
     } else {
         e.target.setCustomValidity('');
     }

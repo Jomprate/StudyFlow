@@ -1,0 +1,110 @@
+.course-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    margin: 20px;
+    width: 400px;
+    height: 150px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: inherit;
+}
+
+    .course-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+.course-image {
+    width: 130px;
+    height: 130px;
+    border-radius: 8px;
+    margin-right: 20px;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.3s ease;
+}
+
+.course-card:hover .course-image {
+    opacity: 0.9;
+}
+
+.course-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.course-title-container {
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: -2px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
+}
+
+.course-title {
+    font-size: 1.0rem;
+    margin: 0;
+    font-weight: 600;
+    color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
+}
+
+.course-professor {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
+}
+
+.course-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
+}
+
+/* Tema oscuro */
+.course-card.dark {
+    background-color: var(--color-card-background-dark);
+    color: #ffffff !important; /* Aseguramos que todo el texto sea blanco */
+    border: 1px solid #80b3ff; /* Borde azul claro en tema oscuro */
+}
+
+    .course-card.dark .course-title-container {
+        background-color: #555;
+        color: #ffffff !important; /* Aseguramos que el texto del título sea blanco */
+    }
+
+    .course-card.dark .course-professor,
+    .course-card.dark .course-description,
+    .course-card.dark .course-title {
+        color: #ffffff !important; /* Forzamos que todo el texto sea blanco */
+    }
+
+/* Tema claro */
+.course-card.light {
+    background-color: var(--color-card-background-light);
+    color: var(--color-text-dark-2); /* Aseguramos el color oscuro en modo claro */
+    border: 1px solid #4169e1; /* Borde azul fuerte en tema claro */
+}
+
+    .course-card.light .course-title-container {
+        background-color: #4169e1;
+        color: white;
+    }
+
+    .course-card.light .course-professor,
+    .course-card.light .course-description,
+    .course-card.light .course-title {
+        color: var(--color-text-dark-2); /* Aseguramos que el texto sea oscuro en modo claro */
+    }

@@ -11,3 +11,4 @@ export { default as NavbarLoggedIn } from "./navBarLoggedIn/NavbarLoggedIn";
 export { default as SideBarMenu } from "./sideBarMenu/SideBarMenu";
 export { default as LoggedInMainLayout } from './layouts/loggedInMainLayout/LoggedInMainLayout';
 export { default as LoadingScreen } from "./LoadingScreen/LoadingScreen";
+export { default as CourseCard } from "./courseCard/CourseCard"
