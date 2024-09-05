@@ -177,7 +177,7 @@
   <data name="login_recoverPassword" xml:space="preserve">
     <value>Recupérela aquí</value>
   </data>
-  <data name="login_password" xml:space="preserve">
+  <data name="global_password" xml:space="preserve">
     <value>Contraseña</value>
   </data>
   <data name="login_error_passwordRequired" xml:space="preserve">
@@ -186,13 +186,10 @@
   <data name="login_error_emailRequired" xml:space="preserve">
     <value>Correo Requerido</value>
   </data>
-  <data name="login_email" xml:space="preserve">
-    <value>Correo</value>
-  </data>
   <data name="login_invalidEmail" xml:space="preserve">
     <value>Correo no válido</value>
   </data>
-  <data name="login" xml:space="preserve">
+  <data name="global_login" xml:space="preserve">
     <value>Iniciar Sesión</value>
   </data>
   <data name="login_emailPlaceholder" xml:space="preserve">
@@ -212,5 +209,56 @@
   </data>
   <data name="login_passwordPlaceholder" xml:space="preserve">
     <value>Ingresa tu contraseña</value>
+  </data>
+  <data name="auth_userType" xml:space="preserve">
+    <value>Tipo de usuario</value>
+  </data>
+  <data name="auth_generalProblems" xml:space="preserve">
+    <value>Problemas Generales</value>
+  </data>
+  <data name="auth_createUser" xml:space="preserve">
+    <value>Crear Usuario</value>
+  </data>
+  <data name="auth_noFileSelected" xml:space="preserve">
+    <value>Archivo no seleccionado</value>
+  </data>
+  <data name="global_image" xml:space="preserve">
+    <value>Imagen</value>
+  </data>
+  <data name="global_country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="auth_passwordPlaceholder" xml:space="preserve">
+    <value>Ingresa una contraseña</value>
+  </data>
+  <data name="auth_phonePlaceholder" xml:space="preserve">
+    <value>Ingresa un numero de contacto</value>
+  </data>
+  <data name="auth_phoneNumber" xml:space="preserve">
+    <value>Teléfono de contacto</value>
+  </data>
+  <data name="auth_emailPlaceholder" xml:space="preserve">
+    <value>Ingresa tu correo</value>
+  </data>
+  <data name="global_Email" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="auth_emailRequired" xml:space="preserve">
+    <value>Correo Requerido</value>
+  </data>
+  <data name="auth_userCreation" xml:space="preserve">
+    <value>Creación de Usuario</value>
+  </data>
+  <data name="auth_namePlaceholder" xml:space="preserve">
+    <value>Ingresa tu nombre</value>
+  </data>
+  <data name="global_name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="auth_passwordRepeatPlaceholder" xml:space="preserve">
+    <value>Coloca de nuevo tu contraseña</value>
+  </data>
+  <data name="auth_passwordRepeat" xml:space="preserve">
+    <value>Repite tu contraseña</value>
   </data>
 </root>

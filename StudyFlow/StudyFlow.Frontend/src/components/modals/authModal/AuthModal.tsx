@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Button, Modal, Form, Input } from 'semantic-ui-react';
 import './authModal.css';
+import { useTranslation } from 'react-i18next';
+import { useTheme } from '../../../ThemeContext';
+import { handleEmailValidation } from '../../../helpers/validationHelpers';
+import { FaLock, FaLockOpen } from 'react-icons/fa';
+import userPlaceholder from '../../../assets/user_p.svg';
 
 interface AuthModalProps {
     open: boolean;
@@ -9,178 +13,290 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { t } = useTranslation();
+    const { theme } = useTheme();
+
+    const { control, handleSubmit, watch, formState: { errors } } = useForm({
         mode: 'onSubmit',
         defaultValues: {
             name: '',
             email: '',
-            password: '',
             phoneNumber: '',
-            birthDate: '',
-            address: '',
-            profilePicture: '',
-            institutionID: '',
-            profileId: '',
+            password: '',
+            repeatPassword: '',
+            country: '',
+            userType: '',
+            image: ''
         }
     });
 
-    const onSubmit = async (data: any) => {
-        try {
-            console.log("Form Data:", data);
+    const [formData, setFormData] = useState<any>(null);
+    const [problemMessage, setProblemMessage] = useState('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [fileName, setFileName] = useState<string>('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showRepeatPassword, setShowRepeatPassword] = useState(false);
+
+    const password = watch('password');
+
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+
+    const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const filteredValue = value.replace(/[^0-9+]/g, '').slice(0, 16);
+        e.target.value = filteredValue;
+    };
+
+    const onSubmit = (data: any) => {
+        if (data.password !== data.repeatPassword) {
+            setProblemMessage(t('auth_passwordMismatch'));
+        } else {
+            setFormData(data);
+            setProblemMessage('');
+            console.log('Form Data:', data);
+        }
+    };
+
+    const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setFileName(file.name);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSelectClick = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const toggleRepeatPasswordVisibility = () => {
+        setShowRepeatPassword(!showRepeatPassword);
+    };
+
+    const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (e.target === e.currentTarget) {
             setOpen(false);
-        } catch (error) {
-            console.error("Validation Error:", error);
         }
     };
 
     return (
-        <Modal
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            open={open}
-            size='small'
-            className="auth-modal"
-        >
-            <Modal.Header className="auth-modal-header">Create Account</Modal.Header>
-            <Modal.Content>
-                <Form onSubmit={handleSubmit(onSubmit)} className="auth-modal-form">
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Name</label>
-                        <Controller
-                            name="name"
-                            control={control}
-                            rules={{ required: "Name is required" }}
-                            render={({ field }) => <Input {...field} placeholder="Name" className="auth-modal-input" />}
-                        />
-                        {errors.name && <p className="auth-modal-error">{errors.name.message}</p>}
-                    </Form.Field>
+        <div className={`modal-overlay ${open ? 'show' : ''}`} onClick={handleOverlayClick}>
+            <div className={`auth-modal ${theme}`}>
+                <h2 className="auth-modal-header">{t('auth_userCreation')}</h2>
+                <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+                    <div className="form-columns">
+                        <div className="left-column">
+                            <div className="form-group">
+                                <label>{t('global_name')}</label>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    rules={{ required: t('Name is required') }}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            placeholder={t('auth_namePlaceholder')}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                                {errors.name && <p className="auth-modal-error">{errors.name.message}</p>}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Email</label>
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                    message: "Invalid email address"
-                                },
-                                maxLength: {
-                                    value: 100,
-                                    message: "Email cannot exceed 100 characters"
-                                }
-                            }}
-                            render={({ field }) => <Input type="email" {...field} placeholder="Email" className="auth-modal-input" />}
-                        />
-                        {errors.email && <p className="auth-modal-error">{errors.email.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('global_Email')}</label>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    rules={{
+                                        required: t('login_error_emailRequired'),
+                                        pattern: {
+                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                            message: t('login_invalidEmail')
+                                        }
+                                    }}
+                                    render={({ field }) => (
+                                        <input
+                                            type="email"
+                                            {...field}
+                                            placeholder={t('auth_emailPlaceholder')}
+                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailValidation(e, t)}
+                                        />
+                                    )}
+                                />
+                                {errors.email && <p className="auth-modal-error">{errors.email.message}</p>}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Password</label>
-                        <Controller
-                            name="password"
-                            control={control}
-                            rules={{
-                                required: "Password is required",
-                                pattern: {
-                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,16}$/,
-                                    message: "The password must be 8 to 16 characters long and contain at least one uppercase letter, one lowercase letter, and one number. Special characters are not allowed."
-                                }
-                            }}
-                            render={({ field }) => <Input type="password" {...field} placeholder="Password" className="auth-modal-input" />}
-                        />
-                        {errors.password && <p className="auth-modal-error">{errors.password.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('auth_phoneNumber')}</label>
+                                <Controller
+                                    name="phoneNumber"
+                                    control={control}
+                                    rules={{
+                                        required: t('Phone number is required'),
+                                        pattern: {
+                                            value: phoneRegex,
+                                            message: t('auth_invalidPhoneNumber')
+                                        }
+                                    }}
+                                    render={({ field }) => (
+                                        <input
+                                            type="tel"
+                                            placeholder={t('auth_phonePlaceholder')}
+                                            {...field}
+                                            onInput={handlePhoneInput}
+                                        />
+                                    )}
+                                />
+                                {errors.phoneNumber && <p className="auth-modal-error">{errors.phoneNumber.message}</p>}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Phone Number</label>
-                        <Controller
-                            name="phoneNumber"
-                            control={control}
-                            rules={{
-                                pattern: {
-                                    value: /^\d{7}(\d{3})?$/,
-                                    message: "The PhoneNumber must be 7 or 10 digits."
-                                }
-                            }}
-                            render={({ field }) => <Input {...field} placeholder="Phone Number" className="auth-modal-input" />}
-                        />
-                        {errors.phoneNumber && <p className="auth-modal-error">{errors.phoneNumber.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('global_password')}</label>
+                                <div className="password-container">
+                                    <Controller
+                                        name="password"
+                                        control={control}
+                                        rules={{ required: t('Password is required') }}
+                                        render={({ field }) => (
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder={t('auth_passwordPlaceholder')}
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                    <span className="toggle-password" onClick={togglePasswordVisibility}>
+                                        {showPassword ? <FaLockOpen /> : <FaLock />}
+                                    </span>
+                                </div>
+                                {errors.password && <p className="auth-modal-error">{errors.password.message}</p>}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Birth Date</label>
-                        <Controller
-                            name="birthDate"
-                            control={control}
-                            rules={{ required: "BirthDate is required" }}
-                            render={({ field }) => <Input type="date" {...field} className="auth-modal-input" />}
-                        />
-                        {errors.birthDate && <p className="auth-modal-error">{errors.birthDate.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('auth_passwordRepeat')}</label>
+                                <div className="password-container">
+                                    <Controller
+                                        name="repeatPassword"
+                                        control={control}
+                                        rules={{
+                                            required: t('Repeat password is required'),
+                                            validate: value => value === password || t('auth_passwordMismatch')
+                                        }}
+                                        render={({ field }) => (
+                                            <input
+                                                type={showRepeatPassword ? "text" : "password"}
+                                                placeholder={t('auth_passwordRepeatPlaceholder')}
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                    <span className="toggle-password" onClick={toggleRepeatPasswordVisibility}>
+                                        {showRepeatPassword ? <FaLockOpen /> : <FaLock />}
+                                    </span>
+                                </div>
+                                {errors.repeatPassword && <p className="auth-modal-error">{errors.repeatPassword.message}</p>}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Address</label>
-                        <Controller
-                            name="address"
-                            control={control}
-                            rules={{ required: "Address is required" }}
-                            render={({ field }) => <Input {...field} placeholder="Address" className="auth-modal-input" />}
-                        />
-                        {errors.address && <p className="auth-modal-error">{errors.address.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('global_country')}</label>
+                                <Controller
+                                    name="country"
+                                    control={control}
+                                    rules={{ required: t('Country is required') }}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            placeholder={t('Enter country')}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                                {errors.country && <p className="auth-modal-error">{errors.country.message}</p>}
+                            </div>
+                        </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Profile Picture (URL)</label>
-                        <Controller
-                            name="profilePicture"
-                            control={control}
-                            rules={{
-                                pattern: {
-                                    value: /^(https?:\/\/.*\.(?:png|jpg))$/,
-                                    message: "Invalid URL for Profile Picture"
-                                }
-                            }}
-                            render={({ field }) => <Input {...field} placeholder="Profile Picture URL" className="auth-modal-input" />}
-                        />
-                        {errors.profilePicture && <p className="auth-modal-error">{errors.profilePicture.message}</p>}
-                    </Form.Field>
+                        <div className="right-column">
+                            <div className="form-group user-image">
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="User" className="user-placeholder uploaded-image" />
+                                ) : (
+                                    <img src={userPlaceholder} alt="User Placeholder" className="user-placeholder" />
+                                )}
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Institution ID</label>
-                        <Controller
-                            name="institutionID"
-                            control={control}
-                            rules={{
-                                required: "InstitutionID is required",
-                                setValueAs: (v) => v === '' ? undefined : parseInt(v, 10) // Convierte el valor a número
-                            }}
-                            render={({ field }) => <Input type="number" {...field} placeholder="Institution ID" className="auth-modal-input" />}
-                        />
-                        {errors.institutionID && <p className="auth-modal-error">{errors.institutionID.message}</p>}
-                    </Form.Field>
+                            <div className="form-group">
+                                <label>{t('global_image')}</label>
+                                <div className="image-field">
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <input
+                                        type="text"
+                                        value={fileName}
+                                        readOnly
+                                        className="file-name-input"
+                                        placeholder={t('auth_noFileSelected')}
+                                    />
+                                    <button type="button" className="select-button" onClick={handleSelectClick}>
+                                        {t('Seleccionar')}
+                                    </button>
+                                </div>
+                            </div>
 
-                    <Form.Field className="auth-modal-field">
-                        <label className="auth-modal-label">Profile ID</label>
-                        <Controller
-                            name="profileId"
-                            control={control}
-                            rules={{
-                                required: "ProfileId is required",
-                                setValueAs: (v) => v === '' ? undefined : parseInt(v, 10) // Convierte el valor a número
-                            }}
-                            render={({ field }) => <Input type="number" {...field} placeholder="Profile ID" className="auth-modal-input" />}
-                        />
-                        {errors.profileId && <p className="auth-modal-error">{errors.profileId.message}</p>}
-                    </Form.Field>
+                            <div className="form-group user-type">
+                                <label>{t('auth_userType')}</label>
+                                <Controller
+                                    name="userType"
+                                    control={control}
+                                    rules={{ required: t('User type is required') }}
+                                    render={({ field }) => (
+                                        <input
+                                            type="text"
+                                            placeholder={t('Enter user type')}
+                                            {...field}
+                                        />
+                                    )}
+                                />
+                                {errors.userType && <p className="auth-modal-error">{errors.userType.message}</p>}
+                            </div>
 
-                    <Button type="submit" positive className="auth-modal-submit">
-                        Create Account
-                    </Button>
-                </Form>
-            </Modal.Content>
-        </Modal>
+                            {problemMessage && (
+                                <div className="form-group">
+                                    <label>{t('auth_generalProblems')}</label>
+                                    <textarea
+                                        value={problemMessage}
+                                        readOnly
+                                        className="problem-message-textarea"
+                                        placeholder={t('No hay problemas.')}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="button-container">
+                        <button type="submit" className="submit-button">{t('auth_createUser')}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     );
 };
 
