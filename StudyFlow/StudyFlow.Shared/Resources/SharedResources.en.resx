@@ -180,31 +180,31 @@
   <data name="global_password" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="login_error_passwordRequired" xml:space="preserve">
+  <data name="global_error_passwordRequired" xml:space="preserve">
     <value>Password required</value>
   </data>
-  <data name="login_error_emailRequired" xml:space="preserve">
+  <data name="global_error_emailRequired" xml:space="preserve">
     <value>Email Required</value>
   </data>
-  <data name="login_invalidEmail" xml:space="preserve">
+  <data name="global_error_invalidEmail" xml:space="preserve">
     <value>Invalid Email</value>
   </data>
   <data name="global_login" xml:space="preserve">
     <value>Login</value>
   </data>
-  <data name="login_emailPlaceholder" xml:space="preserve">
+  <data name="global_emailPlaceholder" xml:space="preserve">
     <value>Place your email</value>
   </data>
-  <data name="login_error_atSymbolMissing" xml:space="preserve">
+  <data name="global_error_atSymbolMissing" xml:space="preserve">
     <value>Please include an '@' in the email address.</value>
   </data>
-  <data name="login_error_dotMissing" xml:space="preserve">
+  <data name="global_error_dotMissing" xml:space="preserve">
     <value>Please enter a part following '.'.</value>
   </data>
-  <data name="login_error_invalidDomain" xml:space="preserve">
+  <data name="global_error_invalidDomain" xml:space="preserve">
     <value>Please enter a part following '@'. 'example'. For example: 'example@domain.com'.</value>
   </data>
-  <data name="login_error_domainMissing" xml:space="preserve">
+  <data name="global_error_domainMissing" xml:space="preserve">
     <value>Please enter a domain after the '@'</value>
   </data>
   <data name="login_passwordPlaceholder" xml:space="preserve">
@@ -219,7 +219,7 @@
   <data name="auth_createUser" xml:space="preserve">
     <value>Create User</value>
   </data>
-  <data name="auth_noFileSelected" xml:space="preserve">
+  <data name="global_noFileSelected" xml:space="preserve">
     <value>No file selected</value>
   </data>
   <data name="global_image" xml:space="preserve">
@@ -236,9 +236,6 @@
   </data>
   <data name="auth_phoneNumber" xml:space="preserve">
     <value>Contact phone number</value>
-  </data>
-  <data name="auth_emailPlaceholder" xml:space="preserve">
-    <value>Place your email</value>
   </data>
   <data name="global_Email" xml:space="preserve">
     <value>Email</value>
@@ -260,5 +257,17 @@
   </data>
   <data name="auth_passwordRepeat" xml:space="preserve">
     <value>Repeat your password</value>
+  </data>
+  <data name="global_error_nameIsRequired" xml:space="preserve">
+    <value>Name is required</value>
+  </data>
+  <data name="auth_error_repeatPasswordRequiered" xml:space="preserve">
+    <value>Repeat password is required'</value>
+  </data>
+  <data name="gobal_error_passwordMismatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+  <data name="auth_error_phoneNumberRequired" xml:space="preserve">
+    <value>Phone number is required</value>
   </data>
 </root>

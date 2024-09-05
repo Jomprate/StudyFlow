@@ -16,7 +16,7 @@ html, body {
     align-items: stretch;
     min-height: 100vh;
     width: 100%;
-    padding: -10px;
+    padding: 20px;
     margin: 0;
     background-color: #f4f4f4;
     color: #333;
@@ -37,9 +37,33 @@ html, body {
         color: #333;
     }
 
+.course-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.become-instructor-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4169e1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .become-instructor-btn:hover {
+        background-color: #3151b7;
+    }
+
 .courses_page.dark {
     background-color: var(--color-background-dark);
-    color: var(--color_text-dark-1);
+    color: var(--color_text-light-1);
 }
 
     .courses_page.dark .courses-container h1 {
@@ -47,22 +71,18 @@ html, body {
     }
 
     .courses_page.dark .courses-container p {
-        color: #cccccc;
+        color: #bdc3c7;
     }
 
 .courses_page.light {
     background-color: var(--color-background-light);
-    color: var(--color_text-light-1);
+    color: var(--color_text-dark-1);
 }
 
     .courses_page.light .courses-container h1 {
-        color: #80b3ff;
+        color: #4169e1;
     }
 
     .courses_page.light .courses-container p {
-        color: #cccccc;
+        color: #666;
     }
-
-.courses_page {
-    outline: 1px solid red;
-}

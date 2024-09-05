@@ -56,17 +56,17 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                 name="email"
                                 control={control}
                                 rules={{
-                                    required: t('login_error_emailRequired'),
+                                    required: t('global_error_emailRequired'),
                                     pattern: {
                                         value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                        message: t('login_invalidEmail')
+                                        message: t('global_error_invalidEmail')
                                     }
                                 }}
                                 render={({ field }) => (
                                     <input
                                         type="email"
                                         {...field}
-                                        placeholder={t('login_emailPlaceholder')}
+                                        placeholder={t('global_emailPlaceholder')}
                                         className="login-modal-input"
                                         onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailValidation(e, t)}
                                     />
@@ -81,7 +81,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                 <Controller
                                     name="password"
                                     control={control}
-                                    rules={{ required: t('login_error_passwordRequired') }}
+                                    rules={{ required: t('global_error_passwordRequired') }}
                                     render={({ field }) => (
                                         <input
                                             type={showPassword ? "text" : "password"}

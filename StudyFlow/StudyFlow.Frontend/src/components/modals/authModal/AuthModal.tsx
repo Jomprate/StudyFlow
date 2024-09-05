@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
+import axios from "axios";
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import { handleEmailValidation } from '../../../helpers/validationHelpers';
@@ -16,7 +17,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
 
-    const { control, handleSubmit, watch, formState: { errors } } = useForm({
+    // Configuración del formulario con react-hook-form
+    const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
             name: '',
@@ -38,7 +40,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
     const password = watch('password');
-
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,13 +48,37 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         e.target.value = filteredValue;
     };
 
-    const onSubmit = (data: any) => {
+    const onSubmit = async (data: any) => {
+        // Verifica si las contraseñas coinciden
         if (data.password !== data.repeatPassword) {
-            setProblemMessage(t('auth_passwordMismatch'));
-        } else {
-            setFormData(data);
-            setProblemMessage('');
-            console.log('Form Data:', data);
+            setProblemMessage('Passwords do not match');
+            return;
+        }
+
+        // Elimina el campo repeatPassword antes de guardar los datos
+        const { repeatPassword, ...finalData } = data;
+
+        // Actualiza el estado con los datos del formulario sin repeatPassword
+        setFormData(finalData);
+
+        try {
+            // Imprime los datos sin repeatPassword en la consola
+            console.log("Form Data Submitted:", finalData);
+
+            // Muestra un mensaje de éxito
+            setProblemMessage('User created successfully');
+
+            // Limpia el formulario si se ha enviado con éxito
+            reset();
+            setImagePreview(null);
+            setFileName('');
+
+            // Cierra el modal
+            setOpen(false);
+        } catch (error: any) {
+            // Manejo de errores simulados
+            setProblemMessage('An unexpected error occurred.');
+            console.error("Error during user creation:", error);
         }
     };
 
@@ -103,7 +128,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 <Controller
                                     name="name"
                                     control={control}
-                                    rules={{ required: t('Name is required') }}
+                                    rules={{ required: t('global_error_nameIsRequired') }}
                                     render={({ field }) => (
                                         <input
                                             type="text"
@@ -121,17 +146,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     name="email"
                                     control={control}
                                     rules={{
-                                        required: t('login_error_emailRequired'),
+                                        required: t('global_error_emailRequired'),
                                         pattern: {
                                             value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                            message: t('login_invalidEmail')
+                                            message: t('global_error_invalidEmail')
                                         }
                                     }}
                                     render={({ field }) => (
                                         <input
                                             type="email"
                                             {...field}
-                                            placeholder={t('auth_emailPlaceholder')}
+                                            placeholder={t('global_emailPlaceholder')}
                                             onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailValidation(e, t)}
                                         />
                                     )}
@@ -145,7 +170,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     name="phoneNumber"
                                     control={control}
                                     rules={{
-                                        required: t('Phone number is required'),
+                                        required: t('auth_error_phoneNumberRequired'),
                                         pattern: {
                                             value: phoneRegex,
                                             message: t('auth_invalidPhoneNumber')
@@ -169,7 +194,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     <Controller
                                         name="password"
                                         control={control}
-                                        rules={{ required: t('Password is required') }}
+                                        rules={{ required: t('global_error_passwordRequired') }}
                                         render={({ field }) => (
                                             <input
                                                 type={showPassword ? "text" : "password"}
@@ -192,8 +217,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         name="repeatPassword"
                                         control={control}
                                         rules={{
-                                            required: t('Repeat password is required'),
-                                            validate: value => value === password || t('auth_passwordMismatch')
+                                            required: t('auth_error_repeatPasswordRequiered'),
+                                            validate: value => value === password || t('gobal_error_passwordMismatch')
                                         }}
                                         render={({ field }) => (
                                             <input
@@ -252,7 +277,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         value={fileName}
                                         readOnly
                                         className="file-name-input"
-                                        placeholder={t('auth_noFileSelected')}
+                                        placeholder={t('global_noFileSelected')}
                                     />
                                     <button type="button" className="select-button" onClick={handleSelectClick}>
                                         {t('Seleccionar')}

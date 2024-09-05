@@ -25,6 +25,7 @@ body.dark {
     --color_text-dark-1: #fff;
     --color-background-light: #f5f5f5;
     --color_text-light-1: #333333;
+    --color_text-light-2: #ffffff;
     --input-background-dark: #1c1c1c;
     --input-background-light: #ffffff;
     --input-color-dark: #ffffff;
@@ -33,4 +34,6 @@ body.dark {
     --color-hover: #2e85a1;
     --color-submits_1: #226fc2;
     --color-links: #37bff1;
+    --color-card-background-dark: #135f78;
+    --color-card-background-light: #0a3340;
 }
