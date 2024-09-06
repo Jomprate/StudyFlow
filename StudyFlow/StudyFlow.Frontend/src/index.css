@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
+body.light {
+    background-color: #ffffff;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+body.dark {
+    background-color: #1a1a1a;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+:root {
+    --font-family: 'Manrope', sans-serif;
+    --gradient-text: linear-gradient(89.97deg, #AE67FA 1.84%, #F49867 102.67%);
+    --gradient-bar: linear-gradient(103.22deg, #AE67FA -13.86%, #F49867 99.55%);
+    --color-bg: #040C18;
+    --color-footer: #031B34;
+    --color-blog: #042c54;
+    --color-text: #81AFDD;
+    --color-subtext: #FF8A71;
+    --color-background-dark: #0a3340;
+    --color_text-dark-1: #fff;
+    --color-background-light: #f5f5f5;
+    --color_text-light-1: #333333;
+    --color_text-light-2: #ffffff;
+    --input-background-dark: #1c1c1c;
+    --input-background-light: #ffffff;
+    --input-color-dark: #ffffff;
+    --input-color-light: #333333;
+    --color-close-button: #333;
+    --color-hover: #2e85a1;
+    --color-submits_1: #226fc2;
+    --color-links: #37bff1;
+    --color-card-background-dark: #135f78;
+    --color-card-background-light: #0a3340;
+}

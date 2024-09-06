@@ -1,0 +1,88 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+.courses_page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.courses-container {
+    padding: 20px;
+    font-family: var(--font-family);
+}
+
+    .courses-container h1 {
+        color: #4169e1;
+        text-align: center;
+    }
+
+    .courses-container p {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+.course-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.become-instructor-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #4169e1;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .become-instructor-btn:hover {
+        background-color: #3151b7;
+    }
+
+.courses_page.dark {
+    background-color: var(--color-background-dark);
+    color: var(--color_text-light-1);
+}
+
+    .courses_page.dark .courses-container h1 {
+        color: #80b3ff;
+    }
+
+    .courses_page.dark .courses-container p {
+        color: #bdc3c7;
+    }
+
+.courses_page.light {
+    background-color: var(--color-background-light);
+    color: var(--color_text-dark-1);
+}
+
+    .courses_page.light .courses-container h1 {
+        color: #4169e1;
+    }
+
+    .courses_page.light .courses-container p {
+        color: #666;
+    }

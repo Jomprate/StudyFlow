@@ -124,7 +124,7 @@
     <value>Welcome to my page</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>This is the home of my amazing application.</value>
+    <value>It is an incredible application.</value>
   </data>
   <data name="discover_more" xml:space="preserve">
     <value>Discover more</value>
@@ -137,5 +137,137 @@
   </data>
   <data name="spanish" xml:space="preserve">
     <value>Spanish</value>
+  </data>
+  <data name="home_header_title_1" xml:space="preserve">
+    <value>The future of schedule management is here</value>
+  </data>
+  <data name="home_header_input_1" xml:space="preserve">
+    <value>Your Email Address</value>
+  </data>
+  <data name="home_header_button_1" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="home_header_p_1" xml:space="preserve">
+    <value>Time management is key to academic success. With proper planning, you can maximize your productivity, reduce stress and achieve your educational goals. Organizing your time well not only improves your performance, but also allows you to enjoy a balance between your studies and your personal life.</value>
+  </data>
+  <data name="home_header_p_2" xml:space="preserve">
+    <value>1200 People requested access a visit last 24 hours</value>
+  </data>
+  <data name="home_page-description_1" xml:space="preserve">
+    <value>Schedule your classes, engage, and connect with your peers—all in one place: StudyFlow.</value>
+  </data>
+  <data name="home_page-question_1" xml:space="preserve">
+    <value>Who we are and what we offer ?</value>
+  </data>
+  <data name="home_page-description_2" xml:space="preserve">
+    <value>At our company, we know that effective time management is critical to academic success. We understand how crucial it is to find a balance between your studies and your personal life. That's why we've designed a platform that not only helps you organize your meetings, assignments and exams, but also maximizes your productivity and reduces stress. With proper planning, you can achieve your educational goals without sacrificing your well-being. Simplify your academic life and enjoy a structure that allows you to focus on what really matters.</value>
+  </data>
+  <data name="home_page-institutions-relay" xml:space="preserve">
+    <value>Some institutions that rely on us</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="login_forgotPassword" xml:space="preserve">
+    <value>Forgot your password?</value>
+  </data>
+  <data name="login_recoverPassword" xml:space="preserve">
+    <value>Retrieve it here</value>
+  </data>
+  <data name="global_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="global_error_passwordRequired" xml:space="preserve">
+    <value>Password required</value>
+  </data>
+  <data name="global_error_emailRequired" xml:space="preserve">
+    <value>Email Required</value>
+  </data>
+  <data name="global_error_invalidEmail" xml:space="preserve">
+    <value>Invalid Email</value>
+  </data>
+  <data name="global_login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="global_emailPlaceholder" xml:space="preserve">
+    <value>Place your email</value>
+  </data>
+  <data name="global_error_atSymbolMissing" xml:space="preserve">
+    <value>Please include an '@' in the email address.</value>
+  </data>
+  <data name="global_error_dotMissing" xml:space="preserve">
+    <value>Please enter a part following '.'.</value>
+  </data>
+  <data name="global_error_invalidDomain" xml:space="preserve">
+    <value>Please enter a part following '@'. 'example'. For example: 'example@domain.com'.</value>
+  </data>
+  <data name="global_error_domainMissing" xml:space="preserve">
+    <value>Please enter a domain after the '@'</value>
+  </data>
+  <data name="login_passwordPlaceholder" xml:space="preserve">
+    <value>Place your password</value>
+  </data>
+  <data name="auth_userType" xml:space="preserve">
+    <value>User Type</value>
+  </data>
+  <data name="auth_generalProblems" xml:space="preserve">
+    <value>General problems</value>
+  </data>
+  <data name="auth_createUser" xml:space="preserve">
+    <value>Create User</value>
+  </data>
+  <data name="global_noFileSelected" xml:space="preserve">
+    <value>No file selected</value>
+  </data>
+  <data name="global_image" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="global_country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="auth_passwordPlaceholder" xml:space="preserve">
+    <value>Place a password</value>
+  </data>
+  <data name="auth_phonePlaceholder" xml:space="preserve">
+    <value>Place a contact number</value>
+  </data>
+  <data name="auth_phoneNumber" xml:space="preserve">
+    <value>Contact phone number</value>
+  </data>
+  <data name="global_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="auth_emailRequired" xml:space="preserve">
+    <value>Email is required</value>
+  </data>
+  <data name="auth_userCreation" xml:space="preserve">
+    <value>User Creation</value>
+  </data>
+  <data name="auth_namePlaceholder" xml:space="preserve">
+    <value>Place your name</value>
+  </data>
+  <data name="global_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="auth_passwordRepeatPlaceholder" xml:space="preserve">
+    <value>Place again your password</value>
+  </data>
+  <data name="auth_passwordRepeat" xml:space="preserve">
+    <value>Repeat your password</value>
+  </data>
+  <data name="global_error_nameIsRequired" xml:space="preserve">
+    <value>Name is required</value>
+  </data>
+  <data name="auth_error_repeatPasswordRequiered" xml:space="preserve">
+    <value>Repeat password is required'</value>
+  </data>
+  <data name="gobal_error_passwordMismatch" xml:space="preserve">
+    <value>Passwords do not match</value>
+  </data>
+  <data name="auth_error_phoneNumberRequired" xml:space="preserve">
+    <value>Phone number is required</value>
   </data>
 </root>

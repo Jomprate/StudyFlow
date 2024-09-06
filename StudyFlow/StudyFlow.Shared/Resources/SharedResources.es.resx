@@ -124,7 +124,7 @@
     <value>Bienvenido</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>Esta es una increible aplicación ññ</value>
+    <value>Esta es una increible aplicación.</value>
   </data>
   <data name="discover_more" xml:space="preserve">
     <value>Descubre mas</value>
@@ -137,5 +137,137 @@
   </data>
   <data name="spanish" xml:space="preserve">
     <value>Español</value>
+  </data>
+  <data name="home_header_title_1" xml:space="preserve">
+    <value>El futuro de la gestión de horarios está aquí</value>
+  </data>
+  <data name="home_header_input_1" xml:space="preserve">
+    <value>Tu dirección de correo electrónico</value>
+  </data>
+  <data name="home_header_button_1" xml:space="preserve">
+    <value>Comenzar</value>
+  </data>
+  <data name="home_header_p_1" xml:space="preserve">
+    <value>La gestión del tiempo es clave para el éxito académico. Con una planificación adecuada, puedes maximizar tu productividad, reducir el estrés y alcanzar tus metas educativas. Organizar bien tu tiempo no solo mejora tu rendimiento, sino que también te permite disfrutar de un equilibrio entre tus estudios y tu vida personal.</value>
+  </data>
+  <data name="home_header_p_2" xml:space="preserve">
+    <value>1200 Personas solicitaron acceso a una visita en las últimas 24 horas</value>
+  </data>
+  <data name="home_page-description_1" xml:space="preserve">
+    <value>Programa tus clases, participa y conéctate con tus compañeros, todo en un solo lugar: StudyFlow.</value>
+  </data>
+  <data name="home_page-question_1" xml:space="preserve">
+    <value>¿Quiénes somos y qué ofrecemos?</value>
+  </data>
+  <data name="home_page-description_2" xml:space="preserve">
+    <value>En nuestra empresa, sabemos que la gestión eficaz del tiempo es fundamental para el éxito académico. Entendemos lo crucial que es encontrar un equilibrio entre tus estudios y tu vida personal. Por eso, hemos diseñado una plataforma que no solo te ayuda a organizar tus reuniones, tareas y exámenes, sino que también maximiza tu productividad y reduce el estrés. Con una planificación adecuada, podrás alcanzar tus metas educativas sin sacrificar tu bienestar. Simplifica tu vida académica y disfruta de una estructura que te permite enfocarte en lo que realmente importa.</value>
+  </data>
+  <data name="home_page-institutions-relay" xml:space="preserve">
+    <value>Algunas instituciones que confían en nosotros</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="login_forgotPassword" xml:space="preserve">
+    <value>¿Olvidó su contraseña?</value>
+  </data>
+  <data name="login_recoverPassword" xml:space="preserve">
+    <value>Recupérela aquí</value>
+  </data>
+  <data name="global_password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="global_error_passwordRequired" xml:space="preserve">
+    <value>Contraseña Requerida</value>
+  </data>
+  <data name="global_error_emailRequired" xml:space="preserve">
+    <value>Correo Requerido</value>
+  </data>
+  <data name="global_error_invalidEmail" xml:space="preserve">
+    <value>Correo no válido</value>
+  </data>
+  <data name="global_login" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="global_emailPlaceholder" xml:space="preserve">
+    <value>Ingresa tu correo</value>
+  </data>
+  <data name="global_error_atSymbolMissing" xml:space="preserve">
+    <value>Incluye un '@' en la dirección de correo electrónico.</value>
+  </data>
+  <data name="global_error_invalidDomain" xml:space="preserve">
+    <value>Introduce un dominio después del '@'. 'ejemplo'. Por ejemplo: 'ejemplo@dominio.com'.</value>
+  </data>
+  <data name="global_error_dotMissing" xml:space="preserve">
+    <value>Introduce una parte después de '.'.</value>
+  </data>
+  <data name="global_error_domainMissing" xml:space="preserve">
+    <value>Introduce un dominio después del '@'</value>
+  </data>
+  <data name="login_passwordPlaceholder" xml:space="preserve">
+    <value>Ingresa tu contraseña</value>
+  </data>
+  <data name="auth_userType" xml:space="preserve">
+    <value>Tipo de usuario</value>
+  </data>
+  <data name="auth_generalProblems" xml:space="preserve">
+    <value>Problemas Generales</value>
+  </data>
+  <data name="auth_createUser" xml:space="preserve">
+    <value>Crear Usuario</value>
+  </data>
+  <data name="global_noFileSelected" xml:space="preserve">
+    <value>Archivo no seleccionado</value>
+  </data>
+  <data name="global_image" xml:space="preserve">
+    <value>Imagen</value>
+  </data>
+  <data name="global_country" xml:space="preserve">
+    <value>País</value>
+  </data>
+  <data name="auth_passwordPlaceholder" xml:space="preserve">
+    <value>Ingresa una contraseña</value>
+  </data>
+  <data name="auth_phonePlaceholder" xml:space="preserve">
+    <value>Ingresa un numero de contacto</value>
+  </data>
+  <data name="auth_phoneNumber" xml:space="preserve">
+    <value>Teléfono de contacto</value>
+  </data>
+  <data name="global_Email" xml:space="preserve">
+    <value>Correo</value>
+  </data>
+  <data name="auth_emailRequired" xml:space="preserve">
+    <value>Correo Requerido</value>
+  </data>
+  <data name="auth_userCreation" xml:space="preserve">
+    <value>Creación de Usuario</value>
+  </data>
+  <data name="auth_namePlaceholder" xml:space="preserve">
+    <value>Ingresa tu nombre</value>
+  </data>
+  <data name="global_name" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="auth_passwordRepeatPlaceholder" xml:space="preserve">
+    <value>Coloca de nuevo tu contraseña</value>
+  </data>
+  <data name="auth_passwordRepeat" xml:space="preserve">
+    <value>Repite tu contraseña</value>
+  </data>
+  <data name="global_error_nameIsRequired" xml:space="preserve">
+    <value>Nombre es requerido</value>
+  </data>
+  <data name="auth_error_repeatPasswordRequiered" xml:space="preserve">
+    <value>Repetir la contraseña es requerido</value>
+  </data>
+  <data name="gobal_error_passwordMismatch" xml:space="preserve">
+    <value>Contraseñas no coinciden</value>
+  </data>
+  <data name="auth_error_phoneNumberRequired" xml:space="preserve">
+    <value>Teléfono de contacto requerido</value>
   </data>
 </root>

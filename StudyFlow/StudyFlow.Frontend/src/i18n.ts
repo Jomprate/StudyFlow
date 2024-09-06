@@ -26,20 +26,19 @@ const loadTranslations = async (lng: string): Promise<Record<string, string>> =>
 
 const initializeI18next = async (): Promise<void> => {
     try {
-        // eslint-disable-next-line no-console
         console.log("Inicializando traducciones...");
 
+        const savedLanguage = localStorage.getItem('language') || 'en'; // Usa el idioma guardado o 'en' por defecto
         const enTranslations = await loadTranslations('en');
         const esTranslations = await loadTranslations('es');
 
-        // eslint-disable-next-line no-console
         console.log("Traducciones cargadas:", {
             en: enTranslations,
             es: esTranslations,
         });
 
         await i18n.use(initReactI18next).init({
-            lng: 'en',
+            lng: savedLanguage, // Aplica el idioma guardado
             fallbackLng: 'en',
             interpolation: {
                 escapeValue: false,
@@ -54,7 +53,6 @@ const initializeI18next = async (): Promise<void> => {
             },
         });
 
-        // eslint-disable-next-line no-console
         console.log("i18n ha sido inicializado con los recursos:", i18n.options.resources);
     } catch (error) {
         if (error instanceof Error) {

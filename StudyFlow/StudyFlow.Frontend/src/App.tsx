@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Router from './router';
+import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';
+import { ThemeProvider, useTheme } from './ThemeContext';
+import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+    const { theme } = useTheme();
 
     useEffect(() => {
         const initialize = async () => {
@@ -16,7 +20,7 @@ function App() {
                 console.log("i18n inicializado correctamente.");
                 setLoading(false);
             } catch (error) {
-                console.error("Error durante la inicialización de i18n:", error);
+                console.error("Error durante la inicializaciï¿½n de i18n:", error);
                 setLoading(false);
             }
         };
@@ -24,11 +28,29 @@ function App() {
         initialize();
     }, []);
 
+    const handleFinishLoadingScreen = () => {
+        setShowLoadingScreen(false);
+    };
+
     if (loading) {
         return <div>Cargando...</div>;
     }
 
-    return <Router />;
+    if (showLoadingScreen) {
+        return <LoadingScreen onFinish={handleFinishLoadingScreen} />;
+    }
+
+    return (
+        <div className={`app ${theme}`}>
+            <Router />
+        </div>
+    );
 }
 
-export default App;
+const WrappedApp: React.FC = () => (
+    <ThemeProvider>
+        <App />
+    </ThemeProvider>
+);
+
+export default WrappedApp;

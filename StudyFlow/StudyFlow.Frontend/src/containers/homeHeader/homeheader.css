@@ -1,0 +1,299 @@
+﻿body {
+    /*font-family: "Arial", sans-serif;*/
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    height: 100%;
+    background-color: #f4f4f4;
+    overflow-x: hidden;
+}
+
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.homeheader_page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 2rem;
+    box-sizing: border-box;
+    margin-top: 3rem;
+}
+
+.homeheader_page-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.homeheader_page-text-ctn {
+    font-family: var(--font-family);
+    flex: 1;
+    max-width: 55%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    padding-left: 6rem;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+}
+
+.homeheader_page-img-ctn {
+    flex: 0 0 45%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.homeheader_page-img-container {
+    width: 100%;
+    max-width: 450px;
+    aspect-ratio: 1/1;
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+    .homeheader_page-img-container img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+.homeheader_page-slider {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.homeheader_page-title {
+    font-size: 60px;
+    font-family: var(--font-family);
+    margin: 0 0 16px;
+    color: transparent;
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200%;
+    animation: shine 5s linear infinite;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.homeheader_page-institutions {
+    font-size: 40px;
+    font-family: var(--font-family);
+    margin: 0 0 16px;
+    color: transparent;
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200%;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.homeheader_page-description {
+    font-size: 18px;
+    font-family: var(--font-family);
+    margin: 0 0 16px;
+    color: transparent;
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200%;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    text-align: justify;
+}
+
+.homeheader_page .swiper {
+    margin: 0 auto;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.homeheader_page .swiper-slide {
+    width: auto;
+    height: auto;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.homeheader-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem;
+    gap: 24px;
+    background-color: #f4f4f4;
+    padding-top: 6rem;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+    .homeheader-main h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: #333;
+        max-width: 100%;
+        overflow-wrap: break-word;
+        text-align: justify;
+    }
+
+    .homeheader-main .ui.button {
+        margin-top: 1rem;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+.home-footer {
+    padding: 1rem 0;
+    background-color: #333 !important;
+    color: white;
+    text-align: center;
+    font-size: 0.875rem;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.gradient__bg {
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 100%);
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 1050px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
+    .homeheader_page-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .homeheader_page-img-container {
+        max-width: 350px;
+        margin-left: 0;
+        margin-bottom: 2rem;
+        justify-content: center;
+    }
+
+    .homeheader_page-text-ctn,
+    .homeheader-main,
+    .homeheader-main h2,
+    .homeheader-main .ui.button {
+        padding-left: 0;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
+    .homeheader_page-title {
+        font-size: 48px;
+        line-height: 60px;
+        font-family: var(--font-family);
+    }
+
+    .homeheader_page-institutions {
+        font-size: 32px;
+        font-family: var(--font-family);
+    }
+
+    .homeheader_page-description {
+        font-size: 16px;
+    }
+
+    .homeheader_page-img-container {
+        max-width: 300px;
+        margin-left: 0;
+        margin-bottom: 2rem;
+        justify-content: center;
+    }
+
+    .homeheader_page,
+    .homeheader_page-content,
+    .homeheader_page-text-ctn,
+    .homeheader-main,
+    .homeheader-main h2,
+    .homeheader-main .ui.button {
+        padding-left: 1rem;
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    body > *:first-child {
+        padding-top: 80px;
+    }
+
+    .homeheader_page-title {
+        font-size: 36px;
+        line-height: 48px;
+        font-family: var(--font-family);
+    }
+
+    .homeheader_page-institutions {
+        font-size: 28px;
+    }
+
+    .homeheader_page-description {
+        font-size: 14px;
+    }
+
+    .homeheader_page-img-container {
+        max-width: 250px;
+        margin-left: 0;
+        margin-bottom: 2rem;
+        justify-content: center;
+    }
+
+    .homeheader_page,
+    .homeheader_page-content,
+    .homeheader_page-text-ctn,
+    .homeheader-main,
+    .homeheader-main h2,
+    .homeheader-main .ui.button {
+        padding-left: 0.5rem;
+        max-width: 100%;
+        font-family: var(--font-family);
+    }
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
