@@ -270,4 +270,13 @@
   <data name="auth_error_phoneNumberRequired" xml:space="preserve">
     <value>Teléfono de contacto requerido</value>
   </data>
+  <data name="global_recoPass" xml:space="preserve">
+    <value>Recuperar contraseña</value>
+  </data>
+  <data name="recoPass_instructions" xml:space="preserve">
+    <value>Si tu correo electrónico se encuentra registrado en nuestro sistema, recibirás un mensaje con las instrucciones para restablecer tu contraseña.</value>
+  </data>
+  <data name="recoPass_backToLogin" xml:space="preserve">
+    <value>Regresar a Iniciar Sesión</value>
+  </data>
 </root>
