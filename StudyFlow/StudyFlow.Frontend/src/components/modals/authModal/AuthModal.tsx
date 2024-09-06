@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
-import axios from "axios";
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import { handleEmailValidation } from '../../../helpers/validationHelpers';
@@ -17,7 +16,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
 
-    // Configuración del formulario con react-hook-form
     const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
@@ -49,34 +47,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     };
 
     const onSubmit = async (data: any) => {
-        // Verifica si las contraseñas coinciden
         if (data.password !== data.repeatPassword) {
             setProblemMessage('Passwords do not match');
             return;
         }
 
-        // Elimina el campo repeatPassword antes de guardar los datos
         const { repeatPassword, ...finalData } = data;
-
-        // Actualiza el estado con los datos del formulario sin repeatPassword
         setFormData(finalData);
 
         try {
-            // Imprime los datos sin repeatPassword en la consola
             console.log("Form Data Submitted:", finalData);
-
-            // Muestra un mensaje de éxito
             setProblemMessage('User created successfully');
-
-            // Limpia el formulario si se ha enviado con éxito
             reset();
             setImagePreview(null);
             setFileName('');
-
-            // Cierra el modal
             setOpen(false);
         } catch (error: any) {
-            // Manejo de errores simulados
             setProblemMessage('An unexpected error occurred.');
             console.error("Error during user creation:", error);
         }
@@ -119,6 +105,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     return (
         <div className={`modal-overlay ${open ? 'show' : ''}`} onClick={handleOverlayClick}>
             <div className={`auth-modal ${theme}`}>
+                {/* Botón de cerrar agregado */}
+                <button className="close-button" onClick={() => setOpen(false)}>
+                    &times;
+                </button>
+
                 <h2 className="auth-modal-header">{t('auth_userCreation')}</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container">
                     <div className="form-columns">

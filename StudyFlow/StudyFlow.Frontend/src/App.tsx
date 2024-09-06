@@ -13,14 +13,12 @@ function App() {
     useEffect(() => {
         const initialize = async () => {
             try {
-                // eslint-disable-next-line no-console
                 console.log("Iniciando i18n...");
                 await initializeI18next();
-                // eslint-disable-next-line no-console
                 console.log("i18n inicializado correctamente.");
                 setLoading(false);
             } catch (error) {
-                console.error("Error durante la inicializaci�n de i18n:", error);
+                console.error("Error durante la inicialización de i18n:", error);
                 setLoading(false);
             }
         };
