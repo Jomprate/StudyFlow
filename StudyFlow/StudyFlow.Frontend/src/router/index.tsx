@@ -1,7 +1,6 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 import Countries from '../pages/Countries';
-import HomeLoggedIn from '../pages/HomeLoggedIn/HomeLoggedIn';
 import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout.tsx';
 import Courses from '../pages/courses/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
