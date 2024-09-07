@@ -6,7 +6,8 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
-    const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+    const [loading, setLoading] = useState(true); // Controla la inicialización de la aplicación
+    const [showLoadingScreen, setShowLoadingScreen] = useState(true); // Pantalla de carga desactivada por defecto
     const { theme } = useTheme();
 
     useEffect(() => {
@@ -16,6 +17,8 @@ function App() {
                 await initializeI18next();
             } catch (error) {
                 console.error("Error durante la inicialización de i18n:", error);
+            } finally {
+                setLoading(false); // Marca la aplicación como inicializada
             }
         };
 
@@ -23,13 +26,17 @@ function App() {
     }, []);
 
     const handleFinishLoadingScreen = () => {
-        setShowLoadingScreen(false);
+        setShowLoadingScreen(false); // Cierra la pantalla de carga tras presionar el botón
     };
 
-    if (showLoadingScreen) {
-        return <LoadingScreen onFinish={handleFinishLoadingScreen} />;
+    // Solo muestra la pantalla de carga si showLoadingScreen es true
+    if (loading || showLoadingScreen) {
+        return showLoadingScreen ? (
+            <LoadingScreen onFinish={handleFinishLoadingScreen} />
+        ) : null;
     }
 
+    // Renderiza la aplicación principal cuando loading y showLoadingScreen son false
     return (
         <div className={`app ${theme}`}>
             <Router />
