@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 import Countries from '../pages/Countries';
-import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout.tsx';
+import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout';
 import Courses from '../pages/courses/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';

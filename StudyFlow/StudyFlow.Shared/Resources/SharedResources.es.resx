@@ -279,4 +279,16 @@
   <data name="recoPass_backToLogin" xml:space="preserve">
     <value>Regresar a Iniciar Sesión</value>
   </data>
+  <data name="global_firstName" xml:space="preserve">
+    <value>Nombre(s)</value>
+  </data>
+  <data name="auth_firstNamePlaceholder" xml:space="preserve">
+    <value>Ingresa tu nombre</value>
+  </data>
+  <data name="global_lastName" xml:space="preserve">
+    <value>Apellido(s)</value>
+  </data>
+  <data name="auth_lastNamePlaceholder" xml:space="preserve">
+    <value>Tus apellidos</value>
+  </data>
 </root>
