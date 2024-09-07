@@ -2,27 +2,28 @@ import React from 'react';
 import './courses.css';
 import { useTheme } from '../../ThemeContext'; // Mantener el tema
 import { coursesData } from './coursesData';
-import { CourseCard } from '../../Components'; // Importamos el componente CourseCard
+import { CourseCard } from '../../components'; // Importamos el componente CourseCard
 
 const Courses: React.FC = () => {
-    const { theme } = useTheme(); // Usamos el tema de la aplicaciï¿½n
+    const { theme } = useTheme(); // Usamos el tema de la aplicación
 
     const handleBecomeInstructor = () => {
-        alert("Formulario para convertirse en profesor pronto estarï¿½ disponible.");
+        alert("Formulario para convertirse en profesor pronto estará disponible.");
     };
 
     return (
         <div className={`courses_page ${theme}`}>
             <div className="courses-container">
                 <h1>Tus Cursos</h1>
-                <p>A continuaciï¿½n se muestran los cursos en los que estï¿½s inscrito:</p>
+                <p>A continuación se muestran los cursos en los que estás inscrito:</p>
                 <div className="course-list">
-                    {coursesData?.map((course) => (
+                    {coursesData.map((course) => (
                         <CourseCard
                             key={course.id}
                             name={course.name}
                             description={course.description}
                             professor={course.professor}
+                            image={course.image}
                         />
                     ))}
                 </div>
