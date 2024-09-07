@@ -22,7 +22,6 @@ builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICountryService, CountryService>();
-builder.Services.AddScoped<IInstitutionService, InstitutionService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();

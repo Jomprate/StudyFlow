@@ -4,6 +4,10 @@ namespace StudyFlow.DAL.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> GetUserWithProfileAsync(string email);
+        Task<User> GetUserByIdWithProfileAsync(Guid id);
+
+        Task<User> GetUserByEmailWithProfileAsync(string email);
+
+        Task<IEnumerable<User>> GetUsersWithProfileAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Data;
+using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
 
 namespace StudyFlow.DAL.Services
@@ -47,21 +48,30 @@ namespace StudyFlow.DAL.Services
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dataContext.Set<T>().ToListAsync();
+            return await _dataContext.Set<T>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<T> GetAsync(int id)
+        public async Task<T> GetByIdAsync(int id)
         {
             return await _dataContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<T> GetAsync(Guid id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
             return await _dataContext.Set<T>().FindAsync(id);
         }
 
         public async Task<int> UpdateAsync(T entity)
         {
+            if (entity.GetType().IsSubclassOf(typeof(EntityAuditBase)))
+            {
+                var method = typeof(EntityAuditBase).GetMethod("OnAuditEntity");
+
+                if (method != null)
+                {
+                    method.Invoke(entity, new object[] { });
+                }
+            }
             _dataContext.Set<T>().Update(entity);
             return await _dataContext.SaveChangesAsync();
         }

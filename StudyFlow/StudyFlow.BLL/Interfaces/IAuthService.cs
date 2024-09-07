@@ -1,4 +1,4 @@
-﻿using StudyFlow.BLL.DTO;
+﻿using StudyFlow.BLL.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace StudyFlow.BLL.Interfaces
     {
         Task<string> LoginAsync(LoginDTO loginDTO);
 
-        Task<bool> LogoutAsync();
+        Task<bool> LogoutAsync(string token);
 
         Task<bool> RecoverPasswordByEmailAsync(string email);
 

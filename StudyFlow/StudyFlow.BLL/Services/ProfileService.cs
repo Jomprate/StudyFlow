@@ -18,9 +18,9 @@ namespace StudyFlow.BLL.Services
             return _repository.GetAllAsync();
         }
 
-        public Task<Profile> GetProfileByIdAsync(int id)
+        public async Task<Profile> GetProfileByIdAsync(int id)
         {
-            return _repository.GetAsync(id);
+            return await _repository.GetByIdAsync(id);
         }
     }
 }
