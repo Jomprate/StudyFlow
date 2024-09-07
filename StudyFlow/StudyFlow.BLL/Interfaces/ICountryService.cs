@@ -5,8 +5,18 @@ namespace StudyFlow.BLL.Interfaces
 {
     public interface ICountryService
     {
-        Task<IEnumerable<Country>> GetAllAsync();
+        Task<IActionResult> GetAsync();
 
-        Task<Country> GetByIdAsync(int id);
+        Task<IActionResult> GetCountryAsync(int id);
+
+        Task<IActionResult> CreateCountryAsync(Country country);
+
+        Task<IActionResult> UpdateCountryAsync(Country country);
+
+        Task<IActionResult> DeleteCountryAsync(int id);
+
+        Task<IActionResult> UpdateCountryIsoCodeAsync(int id, string newIsoCode);
+
+        Task<IActionResult> UpdateCountryNameAsync(int id, string newName);
     }
 }

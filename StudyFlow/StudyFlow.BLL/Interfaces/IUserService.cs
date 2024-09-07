@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudyFlow.BLL.DTOS;
+using StudyFlow.BLL.DTO;
+using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.BLL.Interfaces
 {
@@ -9,11 +10,13 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> GetUserByIdAsync(Guid id);
 
-        Task<IActionResult> GetUserByCourseAsync(Guid courseId);
+        Task<IActionResult> GetUserByInstitutionAsync(int institutionId);
 
-        Task<IActionResult> CreateUserAsync(AddUserDTO user);
+        Task<IActionResult> GetUserByCourseAsync(int courseId);
 
-        Task<IActionResult> UpdateUserAsync(UpdateUserDTO user);
+        Task<IActionResult> CreateUserAsync(UserDTO user);
+
+        Task<IActionResult> UpdateUserAsync(UserDTO user);
 
         Task<IActionResult> DeleteUserAsync(Guid id);
     }

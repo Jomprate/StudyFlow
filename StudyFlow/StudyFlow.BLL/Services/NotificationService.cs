@@ -22,6 +22,15 @@ namespace StudyFlow.BLL.Services
                 return new BadRequestObjectResult("Notification data is required.");
             }
 
+            // Validar los datos requeridos
+            if (string.IsNullOrEmpty(notification.Message) 
+                || !DateTime.TryParse(notification.DateSent.ToString(), out _) 
+                || !DateTime.TryParse(notification.DateCreated.ToString(), out _) 
+                || !DateTime.TryParse(notification.DateUpdated.ToString(), out _))
+            {
+                return new BadRequestObjectResult("Required fields are missing: Message, DateCreated, DateUpdated, DateSent.");
+            }
+
             var result = await _repository.CreateAsync(notification);
 
             return new CreatedResult("", result);
@@ -34,7 +43,7 @@ namespace StudyFlow.BLL.Services
                 return new BadRequestObjectResult(new { Error = "The Id cannot be 0 or null." });
             }
 
-            var notification = await _repository.GetByIdAsync(id);
+            var notification = await _repository.GetAsync(id);
 
             if (notification == null)
             {
@@ -65,7 +74,7 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetNotificationByIdAsync(int id)
         {
-            var notification = await _repository.GetByIdAsync(id);
+            var notification = await _repository.GetAsync(id);
             if (notification == null)
             {
                 return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {id}." });
@@ -85,7 +94,7 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> UpdateNotificationAsync(Notification notification)
         {
-            var currentNotification = await _repository.GetByIdAsync(notification.Id);
+            var currentNotification = await _repository.GetAsync(notification.Id);
             if (currentNotification == null)
             {
                 return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {notification.Id}." });
@@ -93,6 +102,10 @@ namespace StudyFlow.BLL.Services
 
             // Actualizar los datos de la institución
             currentNotification.Message = notification.Message;
+            currentNotification.DateSent = notification.DateSent;
+            currentNotification.DateCreated = notification.DateCreated;
+            currentNotification.DateUpdated = notification.DateUpdated;
+
             var result = await _repository.UpdateAsync(currentNotification);
 
             return new OkObjectResult(result);

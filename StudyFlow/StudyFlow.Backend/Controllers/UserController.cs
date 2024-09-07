@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using StudyFlow.Backend.Authorize;
-using StudyFlow.BLL.DTOS;
+﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTO;
 using StudyFlow.BLL.Interfaces;
+using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.Backend.Controllers
 {
@@ -17,7 +16,7 @@ namespace StudyFlow.Backend.Controllers
             _userService = userService;
         }
 
-        [HttpGet("GetAllUsers")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -34,11 +33,11 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [HttpPost("CreateUser")]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateUserAsync([FromBody] AddUserDTO user)
+        public async Task<IActionResult> CreateUserAsync(UserDTO user)
         {
             try
             {
@@ -51,12 +50,11 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("DeleteUser")]
+        [HttpPost("/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteUserAsync([FromBody] Guid id)
+        public async Task<IActionResult> DeleteUserAsync(Guid id)
         {
             try
             {
@@ -69,8 +67,7 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [AuthorizeHeader]
-        [HttpGet("GetUserById")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -80,24 +77,6 @@ namespace StudyFlow.Backend.Controllers
             try
             {
                 return await _userService.GetUserByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "An unexpected error occurred.", Details = ex.Message });
-            }
-        }
-
-        [AuthorizeHeader]
-        [HttpPut("UpdateUser")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDTO user)
-        {
-            try
-            {
-                return await _userService.UpdateUserAsync(user);
             }
             catch (Exception ex)
             {

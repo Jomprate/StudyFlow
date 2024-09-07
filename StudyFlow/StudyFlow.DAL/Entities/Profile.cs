@@ -12,6 +12,6 @@ namespace StudyFlow.DAL.Entities
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public ICollection<User> ListUser { get; set; } = new List<User>();
+        public ICollection<User> Users { get; set; }
     }
 }
