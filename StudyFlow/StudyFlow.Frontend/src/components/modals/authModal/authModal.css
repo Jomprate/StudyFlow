@@ -21,8 +21,8 @@
     border-radius: 12px;
     max-width: 700px;
     width: 100%;
-    max-height: 90vh; /* El modal no ocupará más del 90% del alto de la pantalla */
-    overflow-y: auto; /* Habilita el scroll si es necesario */
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
     position: relative;
     animation: fadeIn 0.4s ease-out;
@@ -32,14 +32,13 @@
     align-items: center;
 }
 
-    /* Ocultar la barra de desplazamiento si no es necesaria */
     .auth-modal::-webkit-scrollbar {
-        width: 0px; /* Oculta la barra de scroll en navegadores basados en WebKit */
+        width: 0px;
     }
 
 .auth-modal {
-    -ms-overflow-style: none; /* Oculta la barra de scroll en Internet Explorer y Edge */
-    scrollbar-width: none; /* Oculta la barra de scroll en Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
     .auth-modal.dark {
@@ -102,7 +101,8 @@
         color: inherit;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
         padding: 10px;
         border-radius: 8px;
         border: 1px solid #ccc;
@@ -114,7 +114,24 @@
         color: var(--input-color-light);
     }
 
-.auth-modal.dark .form-group input {
+    /* Estilos adicionales para el select (dropdown de países) */
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23000000" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') no-repeat right 10px center;
+        background-size: 12px;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+
+        .form-group select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+.auth-modal.dark .form-group input,
+.auth-modal.dark .form-group select {
     background-color: var(--input-background-dark);
     color: var(--input-color-dark);
 }
@@ -179,7 +196,7 @@
 
 .auth-modal.dark .file-name-input {
     background-color: var(--input-background-dark);
-    color: var (--input-color-dark);
+    color: var(--input-color-dark);
 }
 
 .user-placeholder {
@@ -243,6 +260,15 @@
     color: var(--input-color-dark);
 }
 
+.first-last-name-group {
+    display: flex;
+    gap: 10px;
+}
+
+    .first-last-name-group .form-group {
+        flex: 1;
+    }
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -255,6 +281,7 @@
     }
 }
 
+/* Media Queries */
 @media screen and (max-width: 650px) {
     .auth-modal {
         max-width: 90%;

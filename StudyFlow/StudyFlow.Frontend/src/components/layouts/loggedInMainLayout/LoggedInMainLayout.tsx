@@ -6,26 +6,26 @@ import './loggedInMainLayout.css';
 import Footer from '../../../containers/footer/Footer';
 
 const LoggedInMainLayout: React.FC = () => {
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+    const [sidebarVisible, setSidebarVisible] = useState(true);
 
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
-  };
+    const toggleSidebar = () => {
+        setSidebarVisible(!sidebarVisible);
+    };
 
-  return (
-    <div className="main-layout">
-      {/* Navbar fijo en la parte superior */}
-      <NavbarLoggedIn />
-      <div className="layout-container">
-        <SidebarMenu visible={sidebarVisible} toggleSidebar={toggleSidebar} />
+    return (
+        <div className="main-layout">
+            {/* Navbar fijo en la parte superior */}
+            <NavbarLoggedIn />
+            <div className="layout-container">
+                <SidebarMenu visible={sidebarVisible} toggleSidebar={toggleSidebar} />
 
-        <div className={`main-content ${sidebarVisible ? '' : 'collapsed'}`}>
-          <Outlet />
+                <div className={`main-content ${sidebarVisible ? '' : 'collapsed'}`}>
+                    <Outlet />
+                </div>
+            </div>
+            <Footer />
         </div>
-      </div>
-      <Footer />
-    </div>
-  );
+    );
 };
 
 export default LoggedInMainLayout;

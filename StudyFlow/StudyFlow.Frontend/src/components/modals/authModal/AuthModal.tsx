@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { handleEmailValidation } from '../../../helpers/validationHelpers';
+import { createUser } from '../../../services/api'; // Importa la función de creación de usuario
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 
@@ -15,22 +15,21 @@ interface AuthModalProps {
 const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-
     const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
-            name: '',
+            firstName: '',
+            lastName: '',
             email: '',
             phoneNumber: '',
             password: '',
             repeatPassword: '',
-            country: '',
+            countryId: '', // Cambiado a countryId para alinearlo con el DTO
             userType: '',
             image: ''
         }
     });
 
-    const [formData, setFormData] = useState<any>(null);
     const [problemMessage, setProblemMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
@@ -53,18 +52,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         }
 
         const { repeatPassword, ...finalData } = data;
-        setFormData(finalData);
+        finalData.profilePicture = imagePreview; // Añadir la imagen, si existe
 
         try {
-            console.log("Form Data Submitted:", finalData);
+            await createUser(finalData); // Llamada a la API
             setProblemMessage('User created successfully');
             reset();
             setImagePreview(null);
             setFileName('');
             setOpen(false);
         } catch (error: any) {
-            setProblemMessage('An unexpected error occurred.');
-            console.error("Error during user creation:", error);
+            setProblemMessage(error.message || 'An unexpected error occurred');
         }
     };
 
@@ -105,7 +103,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     return (
         <div className={`modal-overlay ${open ? 'show' : ''}`} onClick={handleOverlayClick}>
             <div className={`auth-modal ${theme}`}>
-                {/* Botón de cerrar agregado */}
                 <button className="close-button" onClick={() => setOpen(false)}>
                     &times;
                 </button>
@@ -114,21 +111,40 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container">
                     <div className="form-columns">
                         <div className="left-column">
-                            <div className="form-group">
-                                <label>{t('global_name')}</label>
-                                <Controller
-                                    name="name"
-                                    control={control}
-                                    rules={{ required: t('global_error_nameIsRequired') }}
-                                    render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            placeholder={t('auth_namePlaceholder')}
-                                            {...field}
-                                        />
-                                    )}
-                                />
-                                {errors.name && <p className="auth-modal-error">{errors.name.message}</p>}
+                            <div className="first-last-name-group">
+                                <div className="form-group">
+                                    <label>{t('global_firstName')}</label>
+                                    <Controller
+                                        name="firstName"
+                                        control={control}
+                                        rules={{ required: t('global_error_firstNameIsRequired') }}
+                                        render={({ field }) => (
+                                            <input
+                                                type="text"
+                                                placeholder={t('auth_firstNamePlaceholder')}
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                    {errors.firstName && <p className="auth-modal-error">{errors.firstName.message}</p>}
+                                </div>
+
+                                <div className="form-group">
+                                    <label>{t('global_lastName')}</label>
+                                    <Controller
+                                        name="lastName"
+                                        control={control}
+                                        rules={{ required: t('global_error_lastNameIsRequired') }}
+                                        render={({ field }) => (
+                                            <input
+                                                type="text"
+                                                placeholder={t('auth_lastNamePlaceholder')}
+                                                {...field}
+                                            />
+                                        )}
+                                    />
+                                    {errors.lastName && <p className="auth-modal-error">{errors.lastName.message}</p>}
+                                </div>
                             </div>
 
                             <div className="form-group">
@@ -148,7 +164,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                             type="email"
                                             {...field}
                                             placeholder={t('global_emailPlaceholder')}
-                                            onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailValidation(e, t)}
                                         />
                                     )}
                                 />
@@ -161,7 +176,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     name="phoneNumber"
                                     control={control}
                                     rules={{
-                                        required: t('auth_error_phoneNumberRequired'),
                                         pattern: {
                                             value: phoneRegex,
                                             message: t('auth_invalidPhoneNumber')
@@ -209,7 +223,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         control={control}
                                         rules={{
                                             required: t('auth_error_repeatPasswordRequiered'),
-                                            validate: value => value === password || t('gobal_error_passwordMismatch')
+                                            validate: value => value === password || t('global_error_passwordMismatch')
                                         }}
                                         render={({ field }) => (
                                             <input
@@ -229,18 +243,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                             <div className="form-group">
                                 <label>{t('global_country')}</label>
                                 <Controller
-                                    name="country"
+                                    name="countryId"
                                     control={control}
                                     rules={{ required: t('Country is required') }}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            placeholder={t('Enter country')}
-                                            {...field}
-                                        />
+                                        <select {...field}>
+                                            <option value="">--Select Country--</option>
+                                            <option value={1}>United States</option>
+                                            <option value={2}>Canada</option>
+                                        </select>
                                     )}
                                 />
-                                {errors.country && <p className="auth-modal-error">{errors.country.message}</p>}
+                                {errors.countryId && <p className="auth-modal-error">{errors.countryId.message}</p>}
                             </div>
                         </div>
 

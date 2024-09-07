@@ -7,7 +7,6 @@ export { default as Navbar } from "./navBar/Navbar";
 export { default as AuthModal } from "./modals/authModal/AuthModal";
 export { default as LoginModal } from "./modals/loginModal/LoginModal";
 export { default as RecoverPasswordModal } from "./modals/recoverPasswordModal/RecoverPasswordModal"
-/*export { default as AuthModalManager } from "./modals/authModalManager/AuthModalManager";*/
 
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";
