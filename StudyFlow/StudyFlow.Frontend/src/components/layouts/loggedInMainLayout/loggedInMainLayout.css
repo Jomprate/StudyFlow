@@ -4,10 +4,6 @@
     padding: 0;
 }
 
-body > *:first-child {
-    padding-top: 0px;
-}
-
 .main-layout {
     display: flex;
     flex-direction: column;
@@ -67,9 +63,6 @@ body > *:first-child {
 /* Media Queries */
 
 @media screen and (max-width: 1050px) {
-    body > *:first-child {
-        padding-top: 0px;
-    }
 
     layout-container {
         margin-top: -20px;
@@ -80,10 +73,6 @@ body > *:first-child {
 }
 
 @media screen and (max-width: 650px) {
-    body > *:first-child {
-        padding-top: 0px;
-    }
-
     layout-container {
         margin-top: -20px;
         display: flex;
@@ -93,9 +82,6 @@ body > *:first-child {
 }
 
 @media screen and (max-width: 490px) {
-    body > *:first-child {
-        padding-top: 0px;
-    }
 
     .layout-container {
         margin-top: -20px;
