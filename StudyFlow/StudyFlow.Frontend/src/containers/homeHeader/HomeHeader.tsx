@@ -1,8 +1,7 @@
 import React from 'react';
 import './homeheader.css';
 import { useTranslation } from 'react-i18next';
-import { Segment, Container } from 'semantic-ui-react';
-import { Navbar, Card, Slider } from '../../components';
+import { Card, Slider } from '../../Components';
 import People from '../../assets/studyflow-people.png';
 import { SwiperSlide } from 'swiper/react';
 import itmImg from '../../assets/itm.png';
@@ -22,7 +21,7 @@ import { useTheme } from '../../ThemeContext';
 const institutions = [
     {
         img: itmImg,
-        title: 'Instituto Tecnológico Metropolitano',
+        title: 'Instituto Tecnolï¿½gico Metropolitano',
     },
     {
         img: unalImg,
@@ -38,13 +37,13 @@ const institutions = [
     },
     {
         img: udemImg,
-        title: 'Universidad de Medellín',
+        title: 'Universidad de Medellï¿½n',
     },
 ];
 
 const HomeHeader: React.FC = () => {
     const { t } = useTranslation();
-    const { theme, toggleTheme } = useTheme();
+    const { theme } = useTheme();
 
     const getInstitutions = () => {
         if (institutions.length === 0) return null;
@@ -89,12 +88,6 @@ const HomeHeader: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            <Segment inverted vertical className="home-footer">
-                <Container textAlign="center">
-                    <p>&copy; {t('home_footer')}</p>
-                </Container>
-            </Segment>
         </div>
     );
 };

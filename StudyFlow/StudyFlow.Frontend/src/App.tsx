@@ -6,8 +6,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
-    const [loading, setLoading] = useState(true);
-    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(true);
     const { theme } = useTheme();
 
     useEffect(() => {
@@ -15,11 +14,8 @@ function App() {
             try {
                 console.log("Iniciando i18n...");
                 await initializeI18next();
-                console.log("i18n inicializado correctamente.");
-                setLoading(false);
             } catch (error) {
                 console.error("Error durante la inicialización de i18n:", error);
-                setLoading(false);
             }
         };
 
@@ -29,10 +25,6 @@ function App() {
     const handleFinishLoadingScreen = () => {
         setShowLoadingScreen(false);
     };
-
-    if (loading) {
-        return <div>Cargando...</div>;
-    }
 
     if (showLoadingScreen) {
         return <LoadingScreen onFinish={handleFinishLoadingScreen} />;
