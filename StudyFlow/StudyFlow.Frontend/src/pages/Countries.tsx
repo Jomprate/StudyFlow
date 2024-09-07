@@ -14,7 +14,7 @@ const Countries = () => {
 
     useEffect(() => {
         axios
-            .get("https://localhost:7033/api/countries")
+            .get("https://localhost:7033/api/Country/GetAllCountries/")
             .then((res) => {
                 if (Array.isArray(res.data)) {
                     setCountries(res.data);
@@ -23,7 +23,13 @@ const Countries = () => {
                 }
             })
             .catch((error) => {
-                console.error("There was an error fetching the countries!", error);
+                if (error.response) {
+                    console.error("Error en la respuesta:", error.response.data);
+                } else if (error.request) {
+                    console.error("No hubo respuesta del servidor:", error.request);
+                } else {
+                    console.error("Error en la configuración de la solicitud:", error.message);
+                }
             })
             .finally(() => {
                 setLoading(false); // Establece loading a false cuando la solicitud se completa

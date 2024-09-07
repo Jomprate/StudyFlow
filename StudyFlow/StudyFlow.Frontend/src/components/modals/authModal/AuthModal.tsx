@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { createUser } from '../../../services/api'; // Importa la función de creación de usuario
+import { createUser, getCountries } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
+
+interface Country {
+    id: number;
+    name: string;
+    isoCode: string;
+}
 
 interface AuthModalProps {
     open: boolean;
@@ -24,7 +30,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             phoneNumber: '',
             password: '',
             repeatPassword: '',
-            countryId: '', // Cambiado a countryId para alinearlo con el DTO
+            countryId: '',
             userType: '',
             image: ''
         }
@@ -35,9 +41,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const [fileName, setFileName] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-
+    const [countries, setCountries] = useState<Country[]>([]);
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const countriesList = await getCountries();
+                setCountries(countriesList);
+            } catch (error) {
+                setProblemMessage('Error al obtener los países');
+            }
+        };
+
+        fetchCountries();
+    }, []);
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -47,22 +66,22 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
     const onSubmit = async (data: any) => {
         if (data.password !== data.repeatPassword) {
-            setProblemMessage('Passwords do not match');
+            setProblemMessage('Las contraseñas no coinciden');
             return;
         }
 
         const { repeatPassword, ...finalData } = data;
-        finalData.profilePicture = imagePreview; // Añadir la imagen, si existe
+        finalData.profilePicture = imagePreview;
 
         try {
-            await createUser(finalData); // Llamada a la API
-            setProblemMessage('User created successfully');
+            await createUser(finalData);
+            setProblemMessage('Usuario creado con éxito');
             reset();
             setImagePreview(null);
             setFileName('');
             setOpen(false);
         } catch (error: any) {
-            setProblemMessage(error.message || 'An unexpected error occurred');
+            setProblemMessage(error.message || 'Ocurrió un error inesperado');
         }
     };
 
@@ -107,12 +126,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                     &times;
                 </button>
 
-                <h2 className="auth-modal-header">{t('auth_userCreation')}</h2>
+                <h2 className={`auth-modal-header ${theme}-text`}>{t('auth_userCreation')}</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container">
                     <div className="form-columns">
                         <div className="left-column">
                             <div className="first-last-name-group">
-                                <div className="form-group">
+                                <div className={`form-group ${theme}-text`}>
                                     <label>{t('global_firstName')}</label>
                                     <Controller
                                         name="firstName"
@@ -121,6 +140,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         render={({ field }) => (
                                             <input
                                                 type="text"
+                                                className={`${theme}-input`}
                                                 placeholder={t('auth_firstNamePlaceholder')}
                                                 {...field}
                                             />
@@ -129,7 +149,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     {errors.firstName && <p className="auth-modal-error">{errors.firstName.message}</p>}
                                 </div>
 
-                                <div className="form-group">
+                                <div className={`form-group ${theme}-text`}>
                                     <label>{t('global_lastName')}</label>
                                     <Controller
                                         name="lastName"
@@ -138,6 +158,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         render={({ field }) => (
                                             <input
                                                 type="text"
+                                                className={`${theme}-input`}
                                                 placeholder={t('auth_lastNamePlaceholder')}
                                                 {...field}
                                             />
@@ -147,7 +168,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 </div>
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_Email')}</label>
                                 <Controller
                                     name="email"
@@ -162,6 +183,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     render={({ field }) => (
                                         <input
                                             type="email"
+                                            className={`${theme}-input`}
                                             {...field}
                                             placeholder={t('global_emailPlaceholder')}
                                         />
@@ -170,7 +192,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 {errors.email && <p className="auth-modal-error">{errors.email.message}</p>}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_phoneNumber')}</label>
                                 <Controller
                                     name="phoneNumber"
@@ -184,6 +206,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     render={({ field }) => (
                                         <input
                                             type="tel"
+                                            className={`${theme}-input`}
                                             placeholder={t('auth_phonePlaceholder')}
                                             {...field}
                                             onInput={handlePhoneInput}
@@ -193,7 +216,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 {errors.phoneNumber && <p className="auth-modal-error">{errors.phoneNumber.message}</p>}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_password')}</label>
                                 <div className="password-container">
                                     <Controller
@@ -203,6 +226,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         render={({ field }) => (
                                             <input
                                                 type={showPassword ? "text" : "password"}
+                                                className={`${theme}-input`}
                                                 placeholder={t('auth_passwordPlaceholder')}
                                                 {...field}
                                             />
@@ -215,7 +239,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 {errors.password && <p className="auth-modal-error">{errors.password.message}</p>}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_passwordRepeat')}</label>
                                 <div className="password-container">
                                     <Controller
@@ -228,6 +252,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         render={({ field }) => (
                                             <input
                                                 type={showRepeatPassword ? "text" : "password"}
+                                                className={`${theme}-input`}
                                                 placeholder={t('auth_passwordRepeatPlaceholder')}
                                                 {...field}
                                             />
@@ -240,17 +265,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 {errors.repeatPassword && <p className="auth-modal-error">{errors.repeatPassword.message}</p>}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_country')}</label>
                                 <Controller
                                     name="countryId"
                                     control={control}
                                     rules={{ required: t('Country is required') }}
                                     render={({ field }) => (
-                                        <select {...field}>
-                                            <option value="">--Select Country--</option>
-                                            <option value={1}>United States</option>
-                                            <option value={2}>Canada</option>
+                                        <select className={`${theme}-input`} {...field}>
+                                            <option value="">{t('auth_selectCountry')}</option>
+                                            {countries.length > 0 ? (
+                                                countries.map((country) => (
+                                                    <option key={country.id} value={country.id}>
+                                                        {country.name}
+                                                    </option>
+                                                ))
+                                            ) : (
+                                                <option value="" disabled>{t('auth_loadingCountries')}</option>
+                                            )}
                                         </select>
                                     )}
                                 />
@@ -267,7 +299,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 )}
                             </div>
 
-                            <div className="form-group">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_image')}</label>
                                 <div className="image-field">
                                     <input
@@ -290,7 +322,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 </div>
                             </div>
 
-                            <div className="form-group user-type">
+                            <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>
                                 <Controller
                                     name="userType"
@@ -299,6 +331,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     render={({ field }) => (
                                         <input
                                             type="text"
+                                            className={`${theme}-input`}
                                             placeholder={t('Enter user type')}
                                             {...field}
                                         />
@@ -322,7 +355,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                     </div>
 
                     <div className="button-container">
-                        <button type="submit" className="submit-button">{t('auth_createUser')}</button>
+                        <button type="submit" className={`submit-button ${theme}-button`}>
+                            {t('auth_createUser')}
+                        </button>
                     </div>
                 </form>
             </div>
