@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using StudyFlow.BLL.DTOS;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities;
 using System;
@@ -14,7 +15,7 @@ namespace StudyFlow.BLL.Services
 {
     public class JwtService : IJwtService
     {
-        private readonly string _secretKey;
+        private readonly string? _secretKey;
         private readonly int _expiryDuration;
         private string? _issuerConfiguration;
         private readonly string? _audienceConfiguration;
@@ -27,19 +28,28 @@ namespace StudyFlow.BLL.Services
             _audienceConfiguration = config.GetValue<string>("JwtConfig:Audience");
         }
 
-        public string GenerateToken(User user, Profile profile)
+        public string GenerateToken(User user, IEnumerable<ProfileDTO> profiles)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            if (_secretKey == null)
+            {
+                throw new ArgumentNullException("Secret key is null");
+            }
+
             var key = Encoding.ASCII.GetBytes(_secretKey);
+
+            var claims = new List<Claim>();
+            foreach (var profile in profiles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, profile.Name));
+            }
+            claims.Add(new Claim(ClaimTypes.Name, user.FirstName + ' ' + user.LastName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, profile.Name),
-            }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddMinutes(_expiryDuration),
                 Issuer = _issuerConfiguration,
                 Audience = _audienceConfiguration,

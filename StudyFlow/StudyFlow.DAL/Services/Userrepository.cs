@@ -19,9 +19,19 @@ namespace StudyFlow.DAL.Services
             _context = context;
         }
 
-        public async Task<User> GetUserWithProfileAsync(string email)
+        public async Task<User> GetUserByEmailWithProfileAsync(string email)
         {
-            return await _context.Users.Include(u => u.Profile).FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.Include(u => u.ListProfile).Include(c => c.Country).FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<IEnumerable<User>> GetUsersWithProfileAsync()
+        {
+            return await _context.Users.Include(u => u.ListProfile).Include(c => c.Country).ToArrayAsync();
+        }
+
+        public async Task<User> GetUserByIdWithProfileAsync(Guid id)
+        {
+            return await _context.Users.Include(u => u.ListProfile).Include(c => c.Country).FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

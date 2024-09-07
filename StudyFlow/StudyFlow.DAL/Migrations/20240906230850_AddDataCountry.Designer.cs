@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyFlow.DAL.Data;
 
@@ -11,9 +12,11 @@ using StudyFlow.DAL.Data;
 namespace StudyFlow.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240906230850_AddDataCountry")]
+    partial class AddDataCountry
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("ListUserId");
 
-                    b.ToTable("ProfileUser", (string)null);
+                    b.ToTable("ProfileUser");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Country", b =>
@@ -55,7 +58,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
 
                     b.HasData(
                         new
@@ -1252,7 +1255,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Course", (string)null);
+                    b.ToTable("Course");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Enrollment", b =>
@@ -1273,7 +1276,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollment", (string)null);
+                    b.ToTable("Enrollment");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Notification", b =>
@@ -1307,7 +1310,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
@@ -1328,7 +1331,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Profiles", (string)null);
+                    b.ToTable("Profiles");
 
                     b.HasData(
                         new
@@ -1381,7 +1384,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("SubjectId");
 
-                    b.ToTable("Scheduled", (string)null);
+                    b.ToTable("Scheduled");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Subject", b =>
@@ -1413,7 +1416,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Subject", (string)null);
+                    b.ToTable("Subject");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
@@ -1466,7 +1469,7 @@ namespace StudyFlow.DAL.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ProfileUser", b =>

@@ -1,48 +1,50 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudyFlow.BLL.DTO;
+using Microsoft.IdentityModel.Tokens;
+using StudyFlow.BLL.DTOS;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
+using System.Linq;
 
 namespace StudyFlow.BLL.Services
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<User> _repository;
-        private readonly IRepository<Institution> _repositoryInstitution;
+        private readonly IUserRepository _repository;
         private readonly IRepository<Profile> _repositoryProfile;
+        private readonly IRepository<Country> _repositoryCountry;
 
-        public UserService(IRepository<User> repository, IRepository<Institution> repositoryInstitution, IRepository<Profile> repositoryProfile)
+        public UserService(IUserRepository repository, IRepository<Profile> repositoryProfile, IRepository<Country> repositoryCountry)
         {
             _repository = repository;
-            _repositoryInstitution = repositoryInstitution;
             _repositoryProfile = repositoryProfile;
+            _repositoryCountry = repositoryCountry;
         }
 
-        public async Task<IActionResult> CreateUserAsync(UserDTO user)
+        public async Task<IActionResult> CreateUserAsync(AddUserDTO user)
         {
-            var institution = await _repositoryInstitution.GetAsync(user.InstitutionID);
-
-            if (institution == null)
-            {
-                return new NotFoundObjectResult(new { Error = $"Not found institution with the Id {user.InstitutionID}." });
-            }
-
-            var profile = await _repositoryProfile.GetAsync(user.ProfileId);
+            List<Profile> listProfile = new List<Profile>();
+            Profile profile = await _repositoryProfile.GetByIdAsync(user.listProfileId.FirstOrDefault());
 
             if (profile == null)
             {
-                return new NotFoundObjectResult(new { Error = $"Not found profile with the Id {user.ProfileId}." });
+                return new NotFoundObjectResult(new { Error = $"Not found profile with the Id {user.listProfileId.FirstOrDefault()}." });
+            }
+
+            var listCountry = await _repositoryCountry.GetAllAsync();
+            Country country = listCountry.FirstOrDefault(c => c.Id == user.CountryId);
+
+            if (country == null)
+            {
+                return new NotFoundObjectResult(new { Error = $"Not found country with the Id {user.CountryId}." });
             }
 
             User userToCreate = user.ToEntity();
+            listProfile.Add(profile);
             userToCreate.Password = PasswordService.HashPassword(user.Password);
-            userToCreate.Institution = institution;
-            userToCreate.Profile = profile;
+            userToCreate.ListProfile = listProfile;
             userToCreate.Id = Guid.NewGuid();
-            userToCreate.CreatedAt = DateTime.Now;
-            userToCreate.UpdatedAt = DateTime.Now;
             var result = await _repository.CreateAsync(userToCreate);
 
             if (result != null)
@@ -57,7 +59,7 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> DeleteUserAsync(Guid id)
         {
-            var user = await _repository.GetAsync(id);
+            var user = await _repository.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -78,57 +80,99 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetAllUsersAsync()
         {
-            return new OkObjectResult(await _repository.GetAllAsync());
+            var users = await _repository.GetUsersWithProfileAsync();
+
+            return new OkObjectResult(users.ToGetDTO());
         }
 
-        public Task<IActionResult> GetUserByCourseAsync(int courseId)
+        public async Task<IActionResult> GetUserByCourseAsync(Guid courseId)
         {
             throw new NotImplementedException();
         }
 
         public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
-            var user = await _repository.GetAsync(id);
+            var user = await _repository.GetUserByIdWithProfileAsync(id);
 
             if (user == null)
             {
                 return new NotFoundObjectResult(new { Error = $"Not found user with the Id {id}." });
             }
 
-            return new OkObjectResult(user);
+            return new OkObjectResult(user.ToGetDTO());
         }
 
-        public async Task<IActionResult> GetUserByInstitutionAsync(int institutionId)
+        public async Task<IActionResult> UpdateUserAsync(UpdateUserDTO user)
         {
-            var users = await _repository.FindAsync(u => u.InstitutionID == institutionId);
-
-            if (users == null)
-            {
-                return new NotFoundObjectResult(new { Error = $"Not found users with the Institution Id {institutionId}." });
-            }
-
-            return new OkObjectResult(users);
-        }
-
-        public async Task<IActionResult> UpdateUserAsync(UserDTO user)
-        {
-            var userToUpdate = await _repository.GetAsync(user.Id);
+            var userToUpdate = await _repository.GetUserByIdWithProfileAsync(user.Id);
 
             if (userToUpdate == null)
             {
                 return new NotFoundObjectResult(new { Error = $"Not found user with the Id {user.Id}." });
             }
 
-            User userToModify = user.ToEntity();
-            userToModify.UpdatedAt = DateTime.Now;
-            var result = await _repository.UpdateAsync(userToModify);
+            Profile profile = await _repositoryProfile.GetByIdAsync(user.listProfileId.FirstOrDefault());
 
-            if (result == 0)
+            if (profile == null)
+            {
+                return new NotFoundObjectResult(new { Error = $"Not found profile with the Id {user.listProfileId.FirstOrDefault()}." });
+            }
+
+            var listCountry = await _repositoryCountry.GetAllAsync();
+            Country country = listCountry.FirstOrDefault(c => c.Id == user.CountryId);
+
+            if (country == null)
+            {
+                return new NotFoundObjectResult(new { Error = $"Not found country with the Id {user.CountryId}." });
+            }
+
+            userToUpdate.FirstName = userToUpdate.FirstName.IsNullOrEmpty() ? userToUpdate.FirstName : user.FirstName;
+            userToUpdate.LastName = userToUpdate.LastName.IsNullOrEmpty() ? userToUpdate.LastName : user.LastName;
+            userToUpdate.PhoneNumber = userToUpdate.PhoneNumber.IsNullOrEmpty() ? userToUpdate.PhoneNumber : user.PhoneNumber;
+            userToUpdate.ProfilePicture = userToUpdate.ProfilePicture.IsNullOrEmpty() ? userToUpdate.ProfilePicture : user.ProfilePicture;
+            userToUpdate.IsEnabled = user.IsEnabled;
+            userToUpdate.Password = userToUpdate.Password.IsNullOrEmpty() ? userToUpdate.Password : PasswordService.HashPassword(user.Password);
+            AssignProfile(ref userToUpdate, profile);
+            var result = await _repository.UpdateAsync(userToUpdate);
+
+            if (result != null)
+            {
+                return new CreatedResult("", "User updated");
+            }
+            else
             {
                 return new BadRequestObjectResult(new { Error = "Failed to update user." });
             }
+        }
 
-            return new OkObjectResult(user);
+        private void AssignProfile(ref User userToUpdate, Profile profile)
+        {
+            // Find and remove any existing profiles that are not in the updated list
+            foreach (var existingProfile in userToUpdate.ListProfile.ToList())
+            {
+                if (!existingProfile.Id.Equals(profile.Id))
+                {
+                    userToUpdate.ListProfile.Remove(existingProfile);
+                }
+            }
+
+            // Add new profiles to the user
+            foreach (var profileId in userToUpdate.ListProfile.Select(s => s.Id))
+            {
+                if (!userToUpdate.ListProfile.Any(p => p.Id == profileId))
+                {
+                    if (profile != null)
+                    {
+                        userToUpdate.ListProfile.Add(profile);
+                    }
+                }
+            }
+
+            // Add the new profile to the user if it doesn't already exist
+            if (!userToUpdate.ListProfile.Any())
+            {
+                userToUpdate.ListProfile.Add(profile);
+            }
         }
     }
 }

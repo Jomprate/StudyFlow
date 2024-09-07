@@ -1,39 +1,60 @@
-﻿namespace StudyFlow.BLL.Mapping
+﻿using StudyFlow.BLL.DTOS;
+
+namespace StudyFlow.BLL.Mapping
 {
     internal static class UsuarioMappingExtensions
     {
-        public static DAL.Entities.User ToEntity(this DTO.UserDTO dto)
+        public static DAL.Entities.User ToEntity(this DTOS.AddUserDTO dto)
         {
             return new DAL.Entities.User
             {
                 Id = dto.Id,
-                Name = dto.Name,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
                 Email = dto.Email,
                 Password = dto.Password,
                 PhoneNumber = dto.PhoneNumber,
-                BirthDate = dto.BirthDate,
-                Address = dto.Address,
                 ProfilePicture = dto.ProfilePicture,
-                InstitutionID = dto.InstitutionID,
-                ProfileId = dto.ProfileId
+                CountryId = dto.CountryId,
+                IsEnabled = dto.IsEnabled,
             };
         }
 
-        public static DTO.UserDTO ToDTO(this DAL.Entities.User entity)
+        public static DTOS.AddUserDTO ToAddDTO(this DAL.Entities.User entity)
         {
-            return new DTO.UserDTO
+            return new DTOS.AddUserDTO
             {
                 Id = entity.Id,
-                Name = entity.Name,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
                 Email = entity.Email,
                 Password = entity.Password,
                 PhoneNumber = entity.PhoneNumber,
-                BirthDate = entity.BirthDate,
-                Address = entity.Address,
                 ProfilePicture = entity.ProfilePicture,
-                InstitutionID = entity.InstitutionID,
-                ProfileId = entity.ProfileId
+                listProfileId = entity.ListProfile.Select(p => p.Id).ToList()
             };
+        }
+
+        public static DTOS.GetUserDTO ToGetDTO(this DAL.Entities.User entity)
+        {
+            return new DTOS.GetUserDTO
+            {
+                Id = entity.Id,
+                FirstName = entity.FirstName,
+                LastName = entity.LastName,
+                Email = entity.Email,
+                PhoneNumber = entity.PhoneNumber,
+                Country = entity.Country,
+                ProfilePicture = entity.ProfilePicture,
+                IsEnabled = entity.IsEnabled,
+                IsOnline = entity.IsOnline,
+                listProfile = entity.ListProfile.Select(p => new ProfileDTO() { Id = p.Id, Name = p.Name, Description = p.Description, }).ToList()
+            };
+        }
+
+        public static IEnumerable<DTOS.GetUserDTO> ToGetDTO(this IEnumerable<DAL.Entities.User> entities)
+        {
+            return entities.Select(e => e.ToGetDTO());
         }
     }
 }

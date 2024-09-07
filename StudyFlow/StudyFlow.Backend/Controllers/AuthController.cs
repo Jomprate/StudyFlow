@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using StudyFlow.BLL.DTO;
+using StudyFlow.Backend.Authorize;
+using StudyFlow.BLL.DTOS;
 using StudyFlow.BLL.Interfaces;
 
 namespace StudyFlow.Backend.Controllers
@@ -16,7 +17,7 @@ namespace StudyFlow.Backend.Controllers
             _authService = authService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -31,6 +32,36 @@ namespace StudyFlow.Backend.Controllers
                     return Ok(token);
                 }
                 return BadRequest("The email or the password is invalid. Try again.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpPost("LogOut")]
+        [AuthorizeHeader]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> LogoutAsync([FromHeader(Name = "Authorization")] string token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer "))
+                {
+                    return BadRequest("Token is required.");
+                }
+
+                var jwtToken = token.Substring("Bearer ".Length).Trim();
+                var result = await _authService.LogoutAsync(jwtToken);
+
+                if (result)
+                {
+                    return Ok("Logout successfully.");
+                }
+                return BadRequest("An unexpected error occurred.");
             }
             catch (Exception ex)
             {

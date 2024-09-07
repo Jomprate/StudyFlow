@@ -6,9 +6,9 @@ namespace StudyFlow.DAL.Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
 
-        Task<T> GetAsync(int id);
+        Task<T> GetByIdAsync(int id);
 
-        Task<T> GetAsync(Guid id);
+        Task<T> GetByIdAsync(Guid id);
 
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
