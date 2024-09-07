@@ -1,6 +1,8 @@
 import React from 'react';
 import './homeHeaderLoggedIn.css';
 import { useTranslation } from 'react-i18next';
+import { Segment, Container } from 'semantic-ui-react';
+import { Navbar, Card, Slider } from '../../components';
 import People from '../../assets/studyflow-people.png';
 import 'swiper/css';
 import 'swiper/css/a11y';
@@ -28,6 +30,12 @@ const HomeHeaderLoggedIn: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <Segment inverted vertical className="home-footer">
+                <Container textAlign="center">
+                    <p>&copy; {t('home_footer')}</p>
+                </Container>
+            </Segment>
         </div>
     );
 };

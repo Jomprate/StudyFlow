@@ -6,7 +6,7 @@
     left: 0;
     height: calc(100vh - 60px);
     width: 250px;
-    z-index: 3;
+    z-index: 999;
     overflow-y: auto;
     transition: width 0.3s ease;
 }

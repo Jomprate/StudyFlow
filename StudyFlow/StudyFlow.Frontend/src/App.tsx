@@ -12,6 +12,7 @@ function App() {
     useEffect(() => {
         const initialize = async () => {
             try {
+                console.log("Iniciando i18n...");
                 await initializeI18next();
             } catch (error) {
                 console.error("Error durante la inicialización de i18n:", error);
