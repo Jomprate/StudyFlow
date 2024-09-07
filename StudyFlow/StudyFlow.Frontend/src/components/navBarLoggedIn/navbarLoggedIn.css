@@ -14,10 +14,6 @@
     box-sizing: border-box;
 }
 
-.body > *:first-child {
-    padding-top: 0px;
-}
-
 .sf__navbar_logged_in-links {
     flex: 1;
     display: flex;
@@ -58,8 +54,8 @@
         margin: 0;
         color: #fff;
         display: block;
-        width: 100%; /* Ajuste para hacer el botón más ancho */
-        padding: 8px 20px; /* Incremento del padding para hacer el botón más grande */
+        width: 100%; /* Ajuste para hacer el botï¿½n mï¿½s ancho */
+        padding: 8px 20px; /* Incremento del padding para hacer el botï¿½n mï¿½s grande */
         text-align: center;
         text-decoration: none;
         border-radius: 6px;
@@ -72,7 +68,7 @@
         border: none;
         text-transform: uppercase;
         font-weight: bold;
-        transform: scale(1.1); /* Escala el botón ligeramente para hacerlo más grande */
+        transform: scale(1.1); /* Escala el botï¿½n ligeramente para hacerlo mï¿½s grande */
     }
 
         .sf__navbar_logged_in-logout-container button:hover {
@@ -249,7 +245,7 @@
         }
 }
 
-/* Para pantallas aún más pequeñas */
+/* Para pantallas aï¿½n mï¿½s pequeï¿½as */
 @media screen and (max-width: 700px) {
     .sf__navbar_logged_in {
         padding: 0.5rem 4rem;

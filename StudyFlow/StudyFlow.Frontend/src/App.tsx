@@ -4,6 +4,7 @@ import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
+import LandingPage from './pages/LandingPage/LandingPage';
 
 function App() {
     const [loading, setLoading] = useState(true);
@@ -13,9 +14,7 @@ function App() {
     useEffect(() => {
         const initialize = async () => {
             try {
-                console.log("Iniciando i18n...");
                 await initializeI18next();
-                console.log("i18n inicializado correctamente.");
                 setLoading(false);
             } catch (error) {
                 console.error("Error durante la inicialización de i18n:", error);
@@ -31,7 +30,7 @@ function App() {
     };
 
     if (loading) {
-        return <div>Cargando...</div>;
+        return <LandingPage />;
     }
 
     if (showLoadingScreen) {
