@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { createUser, getCountries } from '../../../services/api';
+import { createUser, getCountriesWithLanguage } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 
@@ -19,9 +19,9 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { theme } = useTheme();
-    const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
+    const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
             firstName: '',
@@ -40,23 +40,44 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
+    const [selectedCountryIso, setSelectedCountryIso] = useState<string>('');
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [countries, setCountries] = useState<Country[]>([]);
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
 
-    useEffect(() => {
-        const fetchCountries = async () => {
-            try {
-                const countriesList = await getCountries();
-                setCountries(countriesList);
-            } catch (error) {
-                setProblemMessage('Error al obtener los países');
-            }
-        };
+    const fetchCountries = async () => {
+        try {
+            const countriesList = await getCountriesWithLanguage();
+            const sortedCountries = countriesList.sort((a, b) => a.name.localeCompare(b.name));
+            setCountries(sortedCountries);
 
+            if (selectedCountryIso) {
+                setValue('countryId', selectedCountryIso);
+            }
+        } catch (error) {
+            setProblemMessage('Error al obtener los países');
+        }
+    };
+
+    useEffect(() => {
         fetchCountries();
-    }, []);
+
+        i18n.on('languageChanged', fetchCountries);
+
+        return () => {
+            i18n.off('languageChanged', fetchCountries);
+        };
+    }, [i18n, selectedCountryIso, setValue]);
+
+    useEffect(() => {
+        if (open) {
+            fetchCountries();
+            if (selectedCountryIso) {
+                setValue('countryId', selectedCountryIso);
+            }
+        }
+    }, [open, selectedCountryIso, setValue]);
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -272,11 +293,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     control={control}
                                     rules={{ required: t('Country is required') }}
                                     render={({ field }) => (
-                                        <select className={`${theme}-input`} {...field}>
+                                        <select
+                                            className={`${theme}-input`}
+                                            {...field}
+                                            value={selectedCountryIso}
+                                            onChange={(e) => {
+                                                const selectedIso = e.target.value;
+                                                setSelectedCountryIso(selectedIso);
+                                                setValue('countryId', selectedIso);
+                                            }}
+                                        >
                                             <option value="">{t('auth_selectCountry')}</option>
                                             {countries.length > 0 ? (
                                                 countries.map((country) => (
-                                                    <option key={country.id} value={country.id}>
+                                                    <option key={country.isoCode} value={country.isoCode}>
                                                         {country.name}
                                                     </option>
                                                 ))

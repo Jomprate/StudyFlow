@@ -291,4 +291,7 @@
   <data name="auth_lastNamePlaceholder" xml:space="preserve">
     <value>Tus apellidos</value>
   </data>
+  <data name="auth_selectCountry" xml:space="preserve">
+    <value>---Selecciona País---</value>
+  </data>
 </root>
