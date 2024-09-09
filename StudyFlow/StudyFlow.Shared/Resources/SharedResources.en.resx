@@ -293,5 +293,13 @@
   </data>
   <data name="auth_selectCountry" xml:space="preserve">
     <value>---Select Country---</value>
+  <data name="global_error_lastNameIsRequired" xml:space="preserve">
+    <value>Your surname(s) are required</value>
+  </data>
+  <data name="global_error_firstNameIsRequired" xml:space="preserve">
+    <value>Your First Name(s) is/are required</value>
+  </data>
+  <data name="auth_selectCountry" xml:space="preserve">
+    <value>...Select Country...</value>
   </data>
 </root>
