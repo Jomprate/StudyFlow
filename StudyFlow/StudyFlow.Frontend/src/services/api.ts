@@ -1,32 +1,23 @@
 import axios from 'axios';
 
-// configuración de la url base para las solicitudes axios
 const api = axios.create({
-    baseURL: 'https://localhost:7033/api', // Asegúrate de que sea 'baseURL' con mayúsculas
+    baseURL: 'https://localhost:7033/api',
     headers: {
         'content-type': 'application/json',
     },
 });
 
-// definición del tipo para los datos del usuario
 interface userdata {
     firstname: string;
     lastname: string;
     email: string;
     phonenumber: string;
     password: string;
-    countryid: string; // usamos el id del país
+    countryid: string;
     usertype: string;
-    image?: string; // el campo image es opcional
+    image?: string;
 }
 
-// definición del tipo para los datos del país
-interface country {
-    id: number;
-    name: string;
-}
-
-// función para establecer el token de autenticación
 export const setauthtoken = (token: string | null) => {
     if (token) {
         api.defaults.headers.common['authorization'] = `bearer ${token}`;
@@ -35,7 +26,6 @@ export const setauthtoken = (token: string | null) => {
     }
 };
 
-// función para crear un usuario
 export const createUser = async (userdata: userdata): Promise<void> => {
     try {
         const response = await api.post('/user/createuser', userdata);
@@ -55,7 +45,6 @@ export const createUser = async (userdata: userdata): Promise<void> => {
     }
 };
 
-// función para obtener todos los usuarios
 export const getallusers = async (): Promise<userdata[]> => {
     try {
         const response = await api.get('/user/getallusers');
@@ -74,7 +63,6 @@ export const getallusers = async (): Promise<userdata[]> => {
     }
 };
 
-// función para eliminar un usuario
 export const deleteuser = async (userid: string): Promise<void> => {
     try {
         const response = await api.delete(`/user/deleteuser/${userid}`);
@@ -93,7 +81,6 @@ export const deleteuser = async (userid: string): Promise<void> => {
     }
 };
 
-// función para obtener un usuario por id
 export const getuserbyid = async (userid: string): Promise<userdata> => {
     try {
         const response = await api.get(`/user/getuserbyid/${userid}`);
@@ -114,9 +101,8 @@ export const getuserbyid = async (userid: string): Promise<userdata> => {
 
 export const getCountries = async (): Promise<{ id: number; name: string; isoCode: string }[]> => {
     try {
-        const response = await api.get('/Country/GetAllCountries/'); // Usar la ruta relativa
+        const response = await api.get('/Country/GetAllCountries/');
 
-        // Verifica si response.data es un array
         if (Array.isArray(response.data)) {
             return response.data;
         } else {
