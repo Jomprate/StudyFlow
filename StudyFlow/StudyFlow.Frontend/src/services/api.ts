@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from '../i18n';
 
 const api = axios.create({
     baseURL: 'https://localhost:7033/api',
@@ -108,6 +109,24 @@ export const getCountries = async (): Promise<{ id: number; name: string; isoCod
         } else {
             throw new Error('El formato de los datos recibidos no es un array.');
         }
+    } catch (error) {
+        console.error('Error al obtener los países:', error);
+        throw error;
+    }
+};
+
+export const getCountriesWithLanguage = async (): Promise<{ isoCode: string; name: string }[]> => {
+    try {
+        const currentLanguage = i18n.language || 'en';
+
+        const response = await api.get(`/Country/GetAllCountriesWithLanguage/${currentLanguage}/`);
+
+        const countriesArray = Object.keys(response.data).map(isoCode => ({
+            isoCode,
+            name: response.data[isoCode],
+        }));
+
+        return countriesArray;
     } catch (error) {
         console.error('Error al obtener los países:', error);
         throw error;

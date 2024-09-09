@@ -10,15 +10,15 @@ const loadTranslations = async (lng: string): Promise<Record<string, string>> =>
         if (contentType?.includes('application/json')) {
             return response.data;
         } else {
-            throw new Error(`La respuesta no es un objeto JSON, es de tipo: ${contentType}`);
+            throw new Error(`The response is not a JSON object, it is of type: ${contentType}`);
         }
     } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-            console.error('Error cargando las traducciones:', error.response.data);
+            console.error('Error loading translations:', error.response.data);
         } else if (error instanceof Error) {
-            console.error('Error cargando las traducciones:', error.message);
+            console.error('Error loading translations:', error.message);
         } else {
-            console.error('Error desconocido al cargar las traducciones.');
+            console.error('Unknown error occurred while loading translations.');
         }
         return {};
     }
@@ -26,19 +26,19 @@ const loadTranslations = async (lng: string): Promise<Record<string, string>> =>
 
 const initializeI18next = async (): Promise<void> => {
     try {
-        console.log("Inicializando traducciones...");
+        console.log("Initializing translations...");
 
-        const savedLanguage = localStorage.getItem('language') || 'en'; // Usa el idioma guardado o 'en' por defecto
+        const savedLanguage = localStorage.getItem('language') || 'en';
         const enTranslations = await loadTranslations('en');
         const esTranslations = await loadTranslations('es');
 
-        console.log("Traducciones cargadas:", {
+        console.log("Translations loaded:", {
             en: enTranslations,
             es: esTranslations,
         });
 
         await i18n.use(initReactI18next).init({
-            lng: savedLanguage, // Aplica el idioma guardado
+            lng: savedLanguage,
             fallbackLng: 'en',
             interpolation: {
                 escapeValue: false,
@@ -53,12 +53,12 @@ const initializeI18next = async (): Promise<void> => {
             },
         });
 
-        console.log("i18n ha sido inicializado con los recursos:", i18n.options.resources);
+        console.log("i18n has been initialized with resources:", i18n.options.resources);
     } catch (error) {
         if (error instanceof Error) {
-            console.error("Error durante la inicialización de i18n:", error.message);
+            console.error("Error during i18n initialization:", error.message);
         } else {
-            console.error("Error desconocido durante la inicialización de i18n.");
+            console.error("Unknown error occurred during i18n initialization.");
         }
         throw error;
     }
