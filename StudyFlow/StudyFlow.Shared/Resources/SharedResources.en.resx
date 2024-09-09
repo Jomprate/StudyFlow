@@ -293,6 +293,7 @@
   </data>
   <data name="auth_selectCountry" xml:space="preserve">
     <value>---Select Country---</value>
+  </data>
   <data name="global_error_lastNameIsRequired" xml:space="preserve">
     <value>Your surname(s) are required</value>
   </data>
