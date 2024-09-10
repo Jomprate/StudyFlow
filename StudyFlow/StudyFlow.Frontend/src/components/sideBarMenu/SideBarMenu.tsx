@@ -25,6 +25,12 @@ const SidebarMenu: React.FC<{ visible: boolean; toggleSidebar: () => void }> = (
                             {visible && <span>Courses</span>}
                         </Link>
                     </li>
+                    <li className={`item ${location.pathname === '/course' ? 'active' : ''}`}>
+                        <Link to="course">
+                            <AiOutlineHome className="icon" />
+                            {visible && <span>Courses</span>}
+                        </Link>
+                    </li>
                     <li className={`item ${location.pathname === '/notifications' ? 'active' : ''}`}>
                         <Link to="notifications">
                             <AiOutlineBell className="icon" />

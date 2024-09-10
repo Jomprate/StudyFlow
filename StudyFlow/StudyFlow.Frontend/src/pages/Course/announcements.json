@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "title": "Nuevo anuncio 1",
+    "description": "Descripción del primer anuncio",
+    "date": "2024-09-15"
+  },
+  {
+    "id": 2,
+    "title": "Nuevo anuncio 2",
+    "description": "Descripción del segundo anuncio",
+    "date": "2024-09-16"
+  },
+  {
+    "id": 3,
+    "title": "Nuevo anuncio 3",
+    "description": "Descripción del tercer anuncio",
+    "date": "2024-09-17"
+  },
+  {
+    "id": 4,
+    "title": "Nuevo anuncio 4",
+    "description": "Descripción del cuarto anuncio",
+    "date": "2024-09-17"
+  },
+  {
+    "id": 5,
+    "title": "Nuevo anuncio 5",
+    "description": "Descripción del quinto anuncio",
+    "date": "2024-09-17"
+  },
+  {
+    "id": 6,
+    "title": "Nuevo anuncio 6",
+    "description": "Descripción del sexto anuncio",
+    "date": "2024-09-17"
+  },
+  {
+    "id": 7,
+    "title": "Nuevo anuncio 7",
+    "description": "Descripción del septimo anuncio",
+    "date": "2024-09-17"
+  }
+]

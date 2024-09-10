@@ -6,6 +6,7 @@ import Courses from '../pages/courses/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';
 import Settings from '../pages/Settings/Settings.tsx';
+import Course from '../pages/Course/course.tsx';
 
 const Router = () => {
     return (
@@ -15,6 +16,7 @@ const Router = () => {
                 <Route path="/countries" element={<Countries />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
                     <Route path="courses" element={<Courses />} />
+                    <Route path="course" element={<Course />} />
                     <Route path="notifications" element={<Notifications />} />
                     <Route path="requests" element={<Requests />} />
                     <Route path="settings" element={<Settings />} />

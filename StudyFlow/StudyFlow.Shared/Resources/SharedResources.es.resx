@@ -300,7 +300,13 @@
   <data name="global_error_firstNameIsRequired" xml:space="preserve">
     <value>Su(s) nombre(s) es(son) obligatorio(s)</value>
   </data>
-  <data name="auth_selectCountry" xml:space="preserve">
-    <value>...Selecciona un  País...</value>
+  <data name="announce_thereIsNotAnnounces" xml:space="preserve">
+    <value>No hay anuncios disponibles</value>
+  </data>
+  <data name="announce_announceSomething" xml:space="preserve">
+    <value>Anuncia algo a la clase</value>
+  </data>
+  <data name="announce_Announces" xml:space="preserve">
+    <value>Anuncios</value>
   </data>
 </root>

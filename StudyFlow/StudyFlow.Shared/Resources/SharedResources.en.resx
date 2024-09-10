@@ -300,7 +300,13 @@
   <data name="global_error_firstNameIsRequired" xml:space="preserve">
     <value>Your First Name(s) is/are required</value>
   </data>
-  <data name="auth_selectCountry" xml:space="preserve">
-    <value>...Select Country...</value>
+  <data name="announce_thereIsNotAnnounces" xml:space="preserve">
+    <value>No advertisements available</value>
+  </data>
+  <data name="announce_announceSomething" xml:space="preserve">
+    <value>Announce something to the class</value>
+  </data>
+  <data name="announce_Announces" xml:space="preserve">
+    <value>Announces</value>
   </data>
 </root>

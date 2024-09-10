@@ -36,4 +36,16 @@ body.dark {
     --color-links: #37bff1;
     --color-card-background-dark: #135f78;
     --color-card-background-light: #0a3340;
+    --color-course-background-light: #0a3340;
+    --color-course-background-light: #135f78;
+    /*Dark Colors*/
+    --color-dark-text-1: #ffffff;
+    --color-dark-text-2: #b7f4ff;
+    --color-dark-container-1: #006374;
+    --color-dark-container-2: #007387;
+    /*Light Colors*/
+    --color-light-text-1: #000000;
+    --color-light-text-2: #b7f4ff;
+    --color-light-container-1: #008da586;
+    --color-light-container-2: #006374;
 }
