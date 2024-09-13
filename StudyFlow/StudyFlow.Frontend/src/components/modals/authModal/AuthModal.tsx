@@ -40,7 +40,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
-    const [selectedCountryIso, setSelectedCountryIso] = useState<string>('');
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const [countries, setCountries] = useState<Country[]>([]);
     const password = watch('password');
@@ -49,12 +48,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const fetchCountries = async () => {
         try {
             const countriesList = await getCountriesWithLanguage();
-            const sortedCountries = countriesList.sort((a, b) => a.name.localeCompare(b.name));
-            setCountries(sortedCountries);
+            const sortedCountries = countriesList.map((country, index) => ({
+                id: index + 1,  // Temp Id for TS
+                name: country.name,
+                isoCode: country.isoCode
+            })).sort((a, b) => a.name.localeCompare(b.name));
 
-            if (selectedCountryIso) {
-                setValue('countryId', selectedCountryIso);
-            }
+            setCountries(sortedCountries);
         } catch (error) {
             setProblemMessage('Error al obtener los países');
         }
@@ -68,16 +68,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         return () => {
             i18n.off('languageChanged', fetchCountries);
         };
-    }, [i18n, selectedCountryIso, setValue]);
+    }, [i18n, setValue]);
 
     useEffect(() => {
         if (open) {
             fetchCountries();
-            if (selectedCountryIso) {
-                setValue('countryId', selectedCountryIso);
-            }
         }
-    }, [open, selectedCountryIso, setValue]);
+    }, [open, setValue]);
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -295,12 +292,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     render={({ field }) => (
                                         <select
                                             className={`${theme}-input`}
-                                            {...field}
-                                            value={selectedCountryIso}
+                                            value={field.value ? countries.find(country => country.id === Number(field.value))?.isoCode : ''}
                                             onChange={(e) => {
                                                 const selectedIso = e.target.value;
-                                                setSelectedCountryIso(selectedIso);
-                                                setValue('countryId', selectedIso);
+
+                                                const selectedCountry = countries.find(country => country.isoCode === selectedIso);
+
+                                                if (selectedCountry) {
+                                                    setValue('countryId', String(selectedCountry.id));
+                                                    console.log("País seleccionado:", selectedCountry);
+                                                    console.log("ID del país seleccionado:", selectedCountry.id);
+                                                }
                                             }}
                                         >
                                             <option value="">{t('auth_selectCountry')}</option>
