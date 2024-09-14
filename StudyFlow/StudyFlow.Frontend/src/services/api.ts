@@ -32,17 +32,14 @@ export const createUser = async (userdata: userdata): Promise<void> => {
         const response = await api.post('/user/createuser', userdata);
         return response.data;
     } catch (error: any) {
-        // mejor manejo de errores
-        if (error.response) {
-            console.error('error en la respuesta de la api:', error.response.data);
-            throw error.response.data;
-        } else if (error.request) {
-            console.error('no se recibió respuesta del servidor:', error.request);
-            throw new error('no se recibió respuesta del servidor');
-        } else {
-            console.error('error al configurar la solicitud:', error.message);
-            throw new error('error al configurar la solicitud');
-        }
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
 
@@ -51,16 +48,14 @@ export const getallusers = async (): Promise<userdata[]> => {
         const response = await api.get('/user/getallusers');
         return response.data;
     } catch (error: any) {
-        if (error.response) {
-            console.error('error en la respuesta de la api:', error.response.data);
-            throw error.response.data;
-        } else if (error.request) {
-            console.error('no se recibió respuesta del servidor:', error.request);
-            throw new error('no se recibió respuesta del servidor');
-        } else {
-            console.error('error al configurar la solicitud:', error.message);
-            throw new error('error al configurar la solicitud');
-        }
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
 
@@ -69,16 +64,14 @@ export const deleteuser = async (userid: string): Promise<void> => {
         const response = await api.delete(`/user/deleteuser/${userid}`);
         return response.data;
     } catch (error: any) {
-        if (error.response) {
-            console.error('error en la respuesta de la api:', error.response.data);
-            throw error.response.data;
-        } else if (error.request) {
-            console.error('no se recibió respuesta del servidor:', error.request);
-            throw new error('no se recibió respuesta del servidor');
-        } else {
-            console.error('error al configurar la solicitud:', error.message);
-            throw new error('error al configurar la solicitud');
-        }
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
 
@@ -87,16 +80,14 @@ export const getuserbyid = async (userid: string): Promise<userdata> => {
         const response = await api.get(`/user/getuserbyid/${userid}`);
         return response.data;
     } catch (error: any) {
-        if (error.response) {
-            console.error('error en la respuesta de la api:', error.response.data);
-            throw error.response.data;
-        } else if (error.request) {
-            console.error('no se recibió respuesta del servidor:', error.request);
-            throw new error('no se recibió respuesta del servidor');
-        } else {
-            console.error('error al configurar la solicitud:', error.message);
-            throw new error('error al configurar la solicitud');
-        }
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
 
@@ -107,11 +98,17 @@ export const getCountries = async (): Promise<{ id: number; name: string; isoCod
         if (Array.isArray(response.data)) {
             return response.data;
         } else {
-            throw new Error('El formato de los datos recibidos no es un array.');
+            throw new Error(i18n.t('error.invalidDataFormat'));
         }
-    } catch (error) {
-        console.error('Error al obtener los países:', error);
-        throw error;
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
 
@@ -127,8 +124,14 @@ export const getCountriesWithLanguage = async (): Promise<{ isoCode: string; nam
         }));
 
         return countriesArray;
-    } catch (error) {
-        console.error('Error al obtener los países:', error);
-        throw error;
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
     }
 };
