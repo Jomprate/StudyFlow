@@ -309,4 +309,16 @@
   <data name="announce_Announces" xml:space="preserve">
     <value>Announces</value>
   </data>
+  <data name="global_error_apiResponse" xml:space="preserve">
+    <value>Error in the API response: {{message}}</value>
+  </data>
+  <data name="global_error_noResponse" xml:space="preserve">
+    <value>No response was received from the server.</value>
+  </data>
+  <data name="global_error_invalidDataFormat" xml:space="preserve">
+    <value>The format of the received data is incorrect.</value>
+  </data>
+  <data name="global_error_requestSetup" xml:space="preserve">
+    <value>Error setting up the request: {{message}}</value>
+  </data>
 </root>

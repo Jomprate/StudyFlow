@@ -309,4 +309,16 @@
   <data name="announce_Announces" xml:space="preserve">
     <value>Anuncios</value>
   </data>
+  <data name="global_error_apiResponse" xml:space="preserve">
+    <value>Error en la respuesta de la API: {{message}}</value>
+  </data>
+  <data name="global_error_noResponse" xml:space="preserve">
+    <value>No se recibió respuesta del servidor.</value>
+  </data>
+  <data name="global_error_invalidDataFormat" xml:space="preserve">
+    <value>El formato de los datos recibidos no es correcto.</value>
+  </data>
+  <data name="global_error_requestSetup" xml:space="preserve">
+    <value>Error al configurar la solicitud: {{message}}</value>
+  </data>
 </root>

@@ -7,7 +7,7 @@ import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
     const [loading, setLoading] = useState(true);
-    const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
     const { theme } = useTheme();
 
     useEffect(() => {
