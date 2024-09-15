@@ -13,6 +13,7 @@ namespace StudyFlow.DAL.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Course> Courses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -269,6 +270,23 @@ namespace StudyFlow.DAL.Data
                 .HasKey(e => new { e.StudentId, e.CourseId });
 
             #endregion Enrollment
+
+            #region Courses
+
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Teacher)
+                .WithMany(u => u.ListCourse)
+                .HasForeignKey(c => c.TeacherId);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.ListSubject)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.ListEnrollment)
+                .WithOne(e => e.Course)
+                .HasForeignKey(e => e.CourseId);
+
+            #endregion Courses
         }
     }
 }

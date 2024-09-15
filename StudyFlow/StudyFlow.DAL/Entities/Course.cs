@@ -7,9 +7,8 @@
         public string? Name { get; set; }
         public string? Logo { get; set; }
         public bool IsEnabled { get; set; }
-        public User Teacher { get; set; }
-        public ICollection<Enrollment> ListEnrollment { get; set; }
-        public ICollection<Subject> ListSubject { get; set; }
-        public ICollection<Scheduled> ListScheduled { get; set; }
+        public User Teacher { get; set; } = null!;
+        public ICollection<Enrollment> ListEnrollment { get; set; } = new List<Enrollment>();
+        public ICollection<Subject> ListSubject { get; set; } = new List<Subject>();
     }
 }
