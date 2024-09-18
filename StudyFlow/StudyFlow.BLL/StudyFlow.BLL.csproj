@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.7.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
-    <ProjectReference Include="..\StudyFlow.Insfractructure\StudyFlow.Insfractructure.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
+		<ProjectReference Include="..\StudyFlow.Infrastructure\StudyFlow.Infrastructure.csproj" />
+	</ItemGroup>
 
 </Project>

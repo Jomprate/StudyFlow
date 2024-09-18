@@ -1,8 +1,8 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using StudyFlow.Insfractructure.Interfaces;
+using StudyFlow.Infrastructure.Interfaces;
 
-namespace StudyFlow.Insfractructure.Services
+namespace StudyFlow.Infrastructure.Services
 {
     public class KeyVaultService : IKeyVaultService
     {

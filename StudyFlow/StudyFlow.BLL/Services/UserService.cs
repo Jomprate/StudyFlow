@@ -5,7 +5,7 @@ using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
-using StudyFlow.Insfractructure.Interfaces;
+using StudyFlow.Infrastructure.Interfaces;
 
 namespace StudyFlow.BLL.Services
 {

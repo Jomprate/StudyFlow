@@ -1,4 +1,4 @@
-﻿using StudyFlow.Insfractructure.Interfaces;
+﻿using StudyFlow.Infrastructure.Interfaces;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using System;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.ConstrainedExecution;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace StudyFlow.Insfractructure.Services
+namespace StudyFlow.Infrastructure.Services
 {
     public class BlobStorage : IBlobStorage
     {

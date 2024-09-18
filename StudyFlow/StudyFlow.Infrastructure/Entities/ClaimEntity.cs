@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudyFlow.Insfractructure.Entities
+namespace StudyFlow.Infrastructure.Entities
 {
     public class ClaimEntity
     {

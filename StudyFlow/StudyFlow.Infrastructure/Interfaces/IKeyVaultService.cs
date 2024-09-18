@@ -1,4 +1,4 @@
-﻿namespace StudyFlow.Insfractructure.Interfaces
+﻿namespace StudyFlow.Infrastructure.Interfaces
 {
     public interface IKeyVaultService
     {
