@@ -1233,13 +1233,17 @@ namespace StudyFlow.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HaveLogo")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Logo")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("TeacherId")
@@ -1252,7 +1256,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Enrollment", b =>
@@ -1266,6 +1270,12 @@ namespace StudyFlow.DAL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1273,7 +1283,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollment");
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Notification", b =>
@@ -1374,9 +1384,9 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SubjectId");
+                    b.HasAlternateKey("SubjectId", "ScheduledDate");
 
-                    b.ToTable("Scheduled");
+                    b.ToTable("Scheduleds");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Subject", b =>
@@ -1408,7 +1418,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Subject");
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
@@ -1431,6 +1441,9 @@ namespace StudyFlow.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HaveProfilePicture")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("bit");
 
@@ -1446,9 +1459,6 @@ namespace StudyFlow.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")

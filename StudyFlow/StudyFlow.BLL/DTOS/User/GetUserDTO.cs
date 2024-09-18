@@ -1,12 +1,8 @@
-﻿using StudyFlow.DAL.Entities;
-using System;
-using System.Collections.Generic;
+﻿using StudyFlow.BLL.DTOS.Entities;
+using StudyFlow.DAL.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StudyFlow.BLL.DTOS
+namespace StudyFlow.BLL.DTOS.User
 {
     public class GetUserDTO
     {

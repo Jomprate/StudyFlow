@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StudyFlow.DAL.Services
 {
@@ -17,6 +11,10 @@ namespace StudyFlow.DAL.Services
         private readonly DataContext _context;
         private IDbContextTransaction _transaction;
         private UserRepository _userRepository;
+        private CourseRepository _courseRepository;
+        private CountryRepository _countryRepository;
+        private ProfileRepository _profileRepository;
+        private EnrollmentRepository _enrollmentRepository;
 
         #endregion Private Fields
 
@@ -31,11 +29,43 @@ namespace StudyFlow.DAL.Services
 
         #region Public Properties
 
+        public CountryRepository CountryRepository
+        {
+            get
+            {
+                return _countryRepository ??= new CountryRepository(_context);
+            }
+        }
+
         public UserRepository UserRepository
         {
             get
             {
                 return _userRepository ??= new UserRepository(_context);
+            }
+        }
+
+        public ProfileRepository ProfileRepository
+        {
+            get
+            {
+                return _profileRepository ??= new ProfileRepository(_context);
+            }
+        }
+
+        public CourseRepository CourseRepository
+        {
+            get
+            {
+                return _courseRepository ??= new CourseRepository(_context);
+            }
+        }
+
+        public EnrollmentRepository EnrollmentRepository
+        {
+            get
+            {
+                return _enrollmentRepository ??= new EnrollmentRepository(_context);
             }
         }
 

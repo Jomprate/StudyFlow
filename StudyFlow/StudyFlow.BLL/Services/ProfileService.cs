@@ -6,21 +6,21 @@ namespace StudyFlow.BLL.Services
 {
     public class ProfileService : IProfileService
     {
-        private readonly IRepository<Profile> _repository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProfileService(IRepository<Profile> repository)
+        public ProfileService(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         public Task<IEnumerable<Profile>> GetAllProfilesAsync()
         {
-            return _repository.GetAllAsync();
+            return _unitOfWork.ProfileRepository.GetAllAsync();
         }
 
         public async Task<Profile> GetProfileByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            return await _unitOfWork.ProfileRepository.GetByIdAsync(id);
         }
     }
 }

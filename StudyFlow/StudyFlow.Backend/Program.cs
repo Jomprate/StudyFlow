@@ -10,9 +10,13 @@ using StudyFlow.BLL.Services;
 using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Interfaces;
 using StudyFlow.DAL.Services;
+using Azure.Identity;
+using StudyFlow.Insfractructure.Interfaces;
+using StudyFlow.Insfractructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];
+var imageContainer = builder.Configuration["AzureContainerName:ImageContainer"];
 // Configuración de servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -26,25 +30,15 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-
+builder.Services.AddScoped<IOnboardingStudentService, OnboardingStudentService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton<IJwtService>(new JwtService(builder.Configuration));
+builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(keyVaultUri));
+builder.Services.AddSingleton<IBlobStorage>(new BlobStorage(imageContainer));
 builder.Services.AddCors();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); // Agrega la localización
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
-            ValidAudience = builder.Configuration["JwtConfig:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:SecretKey"]))
-        };
-    });
-
+var jwtService = new JwtService(builder.Configuration);
+jwtService.ConfigureJwtAuthentication(builder.Services);
 builder.Services.AddAuthorization();
 // Configuración del middleware de localización
 var app = builder.Build();
@@ -60,6 +54,8 @@ var localizationOptions = new RequestLocalizationOptions
 
 // Middleware para aplicar la localización
 app.UseRequestLocalization(localizationOptions);
+var blobStorageService = app.Services.GetRequiredService<IBlobStorage>();
+blobStorageService.ConfigureBlobStorage(builder.Services);
 
 if (app.Environment.IsDevelopment())
 {

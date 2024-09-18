@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StudyFlow.BLL.DTOS;
+using StudyFlow.BLL.DTOS.User;
 
 namespace StudyFlow.BLL.Interfaces
 {

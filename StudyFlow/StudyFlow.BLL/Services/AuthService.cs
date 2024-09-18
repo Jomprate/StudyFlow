@@ -1,33 +1,26 @@
-﻿using Newtonsoft.Json.Linq;
-using StudyFlow.BLL.DTOS;
+﻿using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
-using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
+using StudyFlow.Insfractructure.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StudyFlow.BLL.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _repositoryUser;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtService _jwtService;
 
-        public AuthService(IUserRepository repositoryUser, IJwtService jwtService)
+        public AuthService(IUnitOfWork unitOfWork, IJwtService jwtService)
         {
-            _repositoryUser = repositoryUser;
+            _unitOfWork = unitOfWork;
             _jwtService = jwtService;
         }
 
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
-            var user = await _repositoryUser.GetUserByEmailWithProfileAsync(loginDTO.Email);
+            var user = await _unitOfWork.UserRepository.GetUserByEmailWithProfileAsync(loginDTO.Email);
 
             if (user == null)
             {
@@ -39,16 +32,17 @@ namespace StudyFlow.BLL.Services
             if (isvalid)
             {
                 user.IsOnline = true;
-                var result = await _repositoryUser.UpdateAsync(user);
+                var result = await _unitOfWork.UserRepository.UpdateAsync(user);
 
-                if (result == null)
+                if (!result)
                 {
                     return string.Empty;
                 }
 
                 var userDto = user.ToGetDTO();
-                return _jwtService.GenerateToken(user, userDto.listProfile);
+                return _jwtService.GenerateToken(new Insfractructure.Entities.ClaimEntity() { Id = user.Id, Roles = user.ListProfile.Select(s => s.Name), ExpirationDuration = "ExpiryDurationLogin" });
             }
+
             return string.Empty;
         }
 
@@ -60,16 +54,17 @@ namespace StudyFlow.BLL.Services
 
             if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
             {
-                var user = await _repositoryUser.GetByIdAsync(userId);
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+
                 if (user == null)
                 {
                     return false;
                 }
 
                 user.IsOnline = false;
-                var Result = await _repositoryUser.UpdateAsync(user);
+                var result = await _unitOfWork.UserRepository.UpdateAsync(user);
 
-                if (Result != null)
+                if (!result)
                 {
                     return true;
                 }
@@ -78,14 +73,16 @@ namespace StudyFlow.BLL.Services
             return false;
         }
 
-        public Task<bool> RecoverPasswordByEmailAsync(string email)
+        public string RecoverPasswordByEmailAsync(Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ResetPasswordAsync(Guid idUser, string newPassword)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                return _jwtService.GenerateToken(new Insfractructure.Entities.ClaimEntity() { Id = id, ExpirationDuration = "ExpiryDurationRecovery" });
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }

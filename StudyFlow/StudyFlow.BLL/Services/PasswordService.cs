@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using StudyFlow.BLL.Interfaces;
+﻿using System.Security.Cryptography;
 
 namespace StudyFlow.BLL.Services
 {
@@ -16,19 +10,16 @@ namespace StudyFlow.BLL.Services
 
         public static string HashPassword(string password)
         {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                byte[] salt = new byte[SaltSize];
-                rng.GetBytes(salt);
+            byte[] salt = new byte[SaltSize];
+            RandomNumberGenerator.Fill(salt);
 
-                var key = new Rfc2898DeriveBytes(password, salt, Iterations).GetBytes(KeySize);
+            var key = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
 
-                var hash = new byte[SaltSize + KeySize];
-                Array.Copy(salt, 0, hash, 0, SaltSize);
-                Array.Copy(key, 0, hash, SaltSize, KeySize);
+            var hash = new byte[SaltSize + KeySize];
+            Array.Copy(salt, 0, hash, 0, SaltSize);
+            Array.Copy(key, 0, hash, SaltSize, KeySize);
 
-                return Convert.ToBase64String(hash);
-            }
+            return Convert.ToBase64String(hash);
         }
 
         public static bool VerifyPassword(string hashedPassword, string password)
@@ -38,7 +29,7 @@ namespace StudyFlow.BLL.Services
             var salt = new byte[SaltSize];
             Array.Copy(hashBytes, 0, salt, 0, SaltSize);
 
-            var key = new Rfc2898DeriveBytes(password, salt, Iterations).GetBytes(KeySize);
+            var key = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
 
             for (int i = 0; i < KeySize; i++)
             {

@@ -14,6 +14,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.8" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.2" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
@@ -22,6 +23,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\StudyFlow.BLL\StudyFlow.BLL.csproj" />
 		<ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
+		<ProjectReference Include="..\StudyFlow.Insfractructure\StudyFlow.Insfractructure.csproj" />
 		<ProjectReference Include="..\StudyFlow.Shared\StudyFlow.Shared.csproj" />
 	</ItemGroup>
 

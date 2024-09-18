@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-
-namespace StudyFlow.DAL.Entities
+﻿namespace StudyFlow.DAL.Entities
 {
     public class User : EntityAuditBase
     {
@@ -14,7 +10,7 @@ namespace StudyFlow.DAL.Entities
         public int CountryId { get; set; }
         public Country Country { get; set; } = null!;
         public string? PhoneNumber { get; set; }
-        public string? ProfilePicture { get; set; }
+        public bool HaveProfilePicture { get; set; }
         public bool IsOnline { get; set; }
         public bool IsEnabled { get; set; }
         public ICollection<Profile> ListProfile { get; set; } = new List<Profile>();

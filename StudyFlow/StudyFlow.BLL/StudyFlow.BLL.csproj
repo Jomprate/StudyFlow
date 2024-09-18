@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
+    <ProjectReference Include="..\StudyFlow.Insfractructure\StudyFlow.Insfractructure.csproj" />
   </ItemGroup>
 
 </Project>
