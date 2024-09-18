@@ -9,8 +9,6 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> GetNotificationByIdAsync(int id);
 
-        //Task<IActionResult> GetNotificationByUserAsync(User user);
-
         Task<IActionResult> CreateNotificationAsync(Notification notification);
 
         Task<IActionResult> UpdateNotificationAsync(Notification notification);

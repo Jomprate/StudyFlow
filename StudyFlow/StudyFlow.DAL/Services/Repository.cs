@@ -15,30 +15,30 @@ namespace StudyFlow.DAL.Services
             _dataContext = dataContext;
         }
 
-        public async Task<int> CreateAsync(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
             try
             {
-                await _dataContext.Set<T>().AddAsync(entity);
-                return await _dataContext.SaveChangesAsync();
+                var entry = await _dataContext.Set<T>().AddAsync(entity);
+                return entry.Entity;
             }
-            catch (DbUpdateException ex)
+            catch
             {
-                if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
-                {
-                    throw new ArgumentException($"A {nameof(T)} already exists in database.", ex);
-                }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
         }
 
-        public async Task<int> DeleteAsync(T entity)
+        public async Task<bool> DeleteAsync(T entity)
         {
-            _dataContext.Set<T>().Remove(entity);
-            return await _dataContext.SaveChangesAsync();
+            try
+            {
+                _dataContext.Set<T>().Remove(entity);
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
@@ -61,19 +61,27 @@ namespace StudyFlow.DAL.Services
             return await _dataContext.Set<T>().FindAsync(id);
         }
 
-        public async Task<int> UpdateAsync(T entity)
+        public async Task<bool> UpdateAsync(T entity)
         {
-            if (entity.GetType().IsSubclassOf(typeof(EntityAuditBase)))
+            try
             {
-                var method = typeof(EntityAuditBase).GetMethod("OnAuditEntity");
-
-                if (method != null)
+                if (entity.GetType().IsSubclassOf(typeof(EntityAuditBase)))
                 {
-                    method.Invoke(entity, new object[] { });
+                    var method = typeof(EntityAuditBase).GetMethod("OnAuditEntity");
+
+                    if (method != null)
+                    {
+                        method.Invoke(entity, new object[] { });
+                    }
                 }
+
+                _dataContext.Set<T>().Update(entity);
+                return true;
             }
-            _dataContext.Set<T>().Update(entity);
-            return await _dataContext.SaveChangesAsync();
+            catch
+            {
+                throw;
+            }
         }
     }
 }

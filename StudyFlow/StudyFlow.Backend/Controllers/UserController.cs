@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
-using StudyFlow.BLL.DTOS;
+using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
 
 namespace StudyFlow.Backend.Controllers

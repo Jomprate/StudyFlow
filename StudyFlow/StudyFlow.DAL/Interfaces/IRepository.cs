@@ -12,10 +12,10 @@ namespace StudyFlow.DAL.Interfaces
 
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
-        Task<int> CreateAsync(T entity);
+        Task<T> CreateAsync(T entity);
 
-        Task<int> UpdateAsync(T entity);
+        Task<bool> UpdateAsync(T entity);
 
-        Task<int> DeleteAsync(T entity);
+        Task<bool> DeleteAsync(T entity);
     }
 }

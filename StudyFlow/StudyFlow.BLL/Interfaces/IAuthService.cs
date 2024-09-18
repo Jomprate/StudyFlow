@@ -1,9 +1,4 @@
-﻿using StudyFlow.BLL.DTOS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StudyFlow.BLL.DTOS.Entities;
 
 namespace StudyFlow.BLL.Interfaces
 {
@@ -13,8 +8,6 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<bool> LogoutAsync(string token);
 
-        Task<bool> RecoverPasswordByEmailAsync(string email);
-
-        Task<bool> ResetPasswordAsync(Guid idUser, string newPassword);
+        string RecoverPasswordByEmailAsync(Guid id);
     }
 }

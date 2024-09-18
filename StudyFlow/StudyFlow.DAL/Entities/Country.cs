@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace StudyFlow.DAL.Entities;
+﻿namespace StudyFlow.DAL.Entities;
 
 public class Country
 {

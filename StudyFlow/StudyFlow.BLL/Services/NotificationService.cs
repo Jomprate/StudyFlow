@@ -41,9 +41,9 @@ namespace StudyFlow.BLL.Services
                 return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {id}." });
             }
 
-            int result = await _repository.DeleteAsync(notification);
+            var result = await _repository.DeleteAsync(notification);
 
-            if (result > 0)
+            if (result)
             {
                 return new OkObjectResult(new { Message = "Notification deleted successfully" });
             }

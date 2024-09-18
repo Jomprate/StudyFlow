@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using StudyFlow.Backend.Authorize;
-using StudyFlow.BLL.DTOS;
+using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
 
 namespace StudyFlow.Backend.Controllers
@@ -27,7 +26,7 @@ namespace StudyFlow.Backend.Controllers
             {
                 var token = await _authService.LoginAsync(loginDTO);
 
-                if (!token.IsNullOrEmpty())
+                if (!string.IsNullOrEmpty(token))
                 {
                     return Ok(token);
                 }

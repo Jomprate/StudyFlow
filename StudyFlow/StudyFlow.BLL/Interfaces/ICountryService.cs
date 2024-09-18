@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using StudyFlow.DAL.Entities;
+﻿using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.BLL.Interfaces
 {

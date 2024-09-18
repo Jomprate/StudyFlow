@@ -13,6 +13,10 @@ namespace StudyFlow.DAL.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Profile> Profiles { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Enrollment> Enrollments { get; set; }
+        public DbSet<Scheduled> Scheduleds { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -269,6 +273,49 @@ namespace StudyFlow.DAL.Data
                 .HasKey(e => new { e.StudentId, e.CourseId });
 
             #endregion Enrollment
+
+            #region Courses
+
+            modelBuilder.Entity<Course>()
+                .HasKey(u => u.Id);
+            modelBuilder.Entity<Course>()
+                .HasOne(c => c.Teacher)
+                .WithMany(u => u.ListCourse)
+                .HasForeignKey(c => c.TeacherId);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.ListSubject)
+                .WithOne(s => s.Course)
+                .HasForeignKey(s => s.CourseId);
+            modelBuilder.Entity<Course>()
+                .HasMany(c => c.ListEnrollment)
+                .WithOne(e => e.Course)
+                .HasForeignKey(e => e.CourseId);
+
+            #endregion Courses
+
+            #region Subjects
+
+            modelBuilder.Entity<Subject>()
+                .HasKey(u => u.Id);
+            modelBuilder.Entity<Subject>()
+                .HasMany(c => c.ListScheduled)
+                .WithOne(s => s.Subject)
+                .HasForeignKey(s => s.SubjectId);
+
+            #endregion Subjects
+
+            #region Scheduleds
+
+            modelBuilder.Entity<Scheduled>()
+                .HasKey(u => u.Id);
+            modelBuilder.Entity<Scheduled>()
+                .HasOne(s => s.Subject)
+                .WithMany(s => s.ListScheduled)
+                .HasForeignKey(s => s.SubjectId);
+            modelBuilder.Entity<Scheduled>()
+                .HasAlternateKey(s => new { s.SubjectId, s.ScheduledDate });
+
+            #endregion Scheduleds
         }
     }
 }
