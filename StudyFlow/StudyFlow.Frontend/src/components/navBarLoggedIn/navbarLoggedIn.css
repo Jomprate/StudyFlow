@@ -22,6 +22,9 @@
 .sf__navbar_logged_in-links_logo img {
     width: 40px;
     height: auto;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .sf__navbar_logged_in-links_container {

@@ -10,6 +10,10 @@ i18n
     .init({
         fallbackLng: 'en',
         debug: true,
+        backend: {
+            // Aquí defines la URL desde donde cargar las traducciones
+            loadPath: 'https://localhost:7033/api/Localization/{{lng}}', // Cambia esta ruta según tu API
+        },
         interpolation: {
             escapeValue: false,
         },
