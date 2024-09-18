@@ -11,8 +11,8 @@ using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Interfaces;
 using StudyFlow.DAL.Services;
 using Azure.Identity;
-using StudyFlow.Insfractructure.Interfaces;
-using StudyFlow.Insfractructure.Services;
+using StudyFlow.Infrastructure.Interfaces;
+using StudyFlow.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];

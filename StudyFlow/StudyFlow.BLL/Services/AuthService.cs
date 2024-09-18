@@ -2,7 +2,7 @@
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Interfaces;
-using StudyFlow.Insfractructure.Interfaces;
+using StudyFlow.Infrastructure.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace StudyFlow.BLL.Services
@@ -40,7 +40,7 @@ namespace StudyFlow.BLL.Services
                 }
 
                 var userDto = user.ToGetDTO();
-                return _jwtService.GenerateToken(new Insfractructure.Entities.ClaimEntity() { Id = user.Id, Roles = user.ListProfile.Select(s => s.Name), ExpirationDuration = "ExpiryDurationLogin" });
+                return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Roles = user.ListProfile.Select(s => s.Name), ExpirationDuration = "ExpiryDurationLogin" });
             }
 
             return string.Empty;
@@ -77,7 +77,7 @@ namespace StudyFlow.BLL.Services
         {
             try
             {
-                return _jwtService.GenerateToken(new Insfractructure.Entities.ClaimEntity() { Id = id, ExpirationDuration = "ExpiryDurationRecovery" });
+                return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = id, ExpirationDuration = "ExpiryDurationRecovery" });
             }
             catch
             {

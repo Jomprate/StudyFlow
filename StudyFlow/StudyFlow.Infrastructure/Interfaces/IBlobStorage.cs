@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudyFlow.Insfractructure.Interfaces
+namespace StudyFlow.Infrastructure.Interfaces
 {
     public interface IBlobStorage
     {

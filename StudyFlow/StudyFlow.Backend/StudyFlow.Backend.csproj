@@ -23,7 +23,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\StudyFlow.BLL\StudyFlow.BLL.csproj" />
 		<ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
-		<ProjectReference Include="..\StudyFlow.Insfractructure\StudyFlow.Insfractructure.csproj" />
+		<ProjectReference Include="..\StudyFlow.Infrastructure\StudyFlow.Infrastructure.csproj" />
 		<ProjectReference Include="..\StudyFlow.Shared\StudyFlow.Shared.csproj" />
 	</ItemGroup>
 

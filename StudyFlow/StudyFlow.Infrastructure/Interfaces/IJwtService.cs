@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using StudyFlow.Insfractructure.Entities;
+using StudyFlow.Infrastructure.Entities;
 
-namespace StudyFlow.Insfractructure.Interfaces
+namespace StudyFlow.Infrastructure.Interfaces
 {
     public interface IJwtService
     {

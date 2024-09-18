@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using StudyFlow.Insfractructure.Entities;
-using StudyFlow.Insfractructure.Interfaces;
+using StudyFlow.Infrastructure.Entities;
+using StudyFlow.Infrastructure.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace StudyFlow.Insfractructure.Services
+namespace StudyFlow.Infrastructure.Services
 {
     public class JwtService : IJwtService
     {
