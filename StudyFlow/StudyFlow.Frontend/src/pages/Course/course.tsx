@@ -9,9 +9,9 @@ import user_p from '../../assets/user_p.svg';
 
 interface Announcement {
     id: number;
-    title: string;
     description: string;
     date: string;
+    user: string;
 }
 
 const Course: React.FC = () => {
@@ -60,9 +60,9 @@ const Course: React.FC = () => {
                                     announcements.map((announcement) => (
                                         <li key={announcement.id}>
                                             <AnnouncementBox
-                                                title={announcement.title}
                                                 description={announcement.description}
                                                 date={announcement.date}
+                                                user={announcement.user}
                                             />
                                         </li>
                                     ))
