@@ -1,19 +1,26 @@
 import React from 'react';
-import './announcementBox.css'; // Asegúrate de que el archivo CSS esté correctamente en la ruta
+import './announcementBox.css';
+import userImage from '../../../assets/user_p.svg';  // Asegúrate de que esta ruta apunte al archivo correcto
 
-// Definimos los tipos de los props
 interface AnnouncementBoxProps {
-    title: string;
     description: string;
     date: string;
+    user: string;
 }
 
-const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({ title, description, date }) => {
+const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({ description, date, user }) => {
     return (
         <div className="announcement-box">
-            <h3>{title}</h3>
-            <p>{description}</p>
-            <small>{date}</small>
+            <div className="announcement-header">
+                {/* Imagen del usuario */}
+                <img src={userImage} alt="Imagen del usuario" className="announcement-user-image" />
+                <div>
+                    {/* Nombre del usuario y fecha */}
+                    <p className="announcement-user-name">{user || "Usuario desconocido"}</p>
+                    <small>{date || "Fecha no disponible"}</small>
+                </div>
+            </div>
+            <p>{description || "Descripción no disponible"}</p>
         </div>
     );
 };

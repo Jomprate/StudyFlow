@@ -5,29 +5,49 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 15px;
     transition: box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
-    .announcement-box:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
+.announcement-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
 
-    .announcement-box h3 {
-        margin: 0 0 10px;
-        font-size: 20px;
-        font-weight: bold;
-        color: #333;
-    }
+.announcement-user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    filter: invert(42%) sepia(93%) saturate(4507%) hue-rotate(199deg) brightness(96%) contrast(107%);
+    /* Ajusta los valores del filtro para obtener el color deseado */
+    margin-right: 10px;
+}
 
-    .announcement-box p {
-        margin: 0 0 10px;
-        font-size: 16px;
-        line-height: 1.5;
-        color: #666;
-    }
+.announcement-user-name {
+    font-size: 18px; /* Aumenta el tamaño de la fuente */
+    color: #333; /* Color más oscuro */
+    font-weight: bold; /* Aplica negrilla */
+    margin: 0; /* Asegura que no haya margen adicional */
+}
 
-    .announcement-box small {
-        display: block;
-        color: #999;
-        font-size: 12px;
-        text-align: right;
-    }
+.announcement-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.announcement-header small {
+    display: block;
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.announcement-box p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+}
