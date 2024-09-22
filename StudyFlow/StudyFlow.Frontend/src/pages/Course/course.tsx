@@ -7,11 +7,16 @@ import AnnouncementBox from '../../components/announcementBox/announcementBox/An
 import announcementsData from './announcements.json';
 import user_p from '../../assets/user_p.svg';
 
+interface Video {
+    url: string;
+}
+
 interface Announcement {
     id: number;
     description: string;
     date: string;
     user: string;
+    videos?: Video[];
 }
 
 const Course: React.FC = () => {
@@ -21,7 +26,10 @@ const Course: React.FC = () => {
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
 
     useEffect(() => {
-        setAnnouncements(announcementsData);
+        setAnnouncements(announcementsData.map(announcement => ({
+            ...announcement,
+            videos: announcement.videos ?? []
+        })));
     }, []);
 
     const handleAnnouncementClick = () => {
@@ -63,6 +71,7 @@ const Course: React.FC = () => {
                                                 description={announcement.description}
                                                 date={announcement.date}
                                                 user={announcement.user}
+                                                videos={announcement.videos}
                                             />
                                         </li>
                                     ))

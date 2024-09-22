@@ -3,42 +3,43 @@
     "id": 1,
     "description": "Descripción del primer anuncio",
     "date": "2024-09-15",
-    "user": "Juan Carlos Zuluaga Cardona"
+    "user": "Juan Carlos Zuluaga Cardona",
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=0lGYeAwzslU"
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=0lGYeAwzslU"
+      }
+    ]
   },
   {
     "id": 2,
     "description": "Descripción del segundo anuncio",
     "date": "2024-09-16",
-    "user": "María Pérez"
+    "user": "María Pérez",
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=duj3ywogmz0"
+      }
+    ]
   },
   {
     "id": 3,
     "description": "Descripción del tercer anuncio",
     "date": "2024-09-17",
-    "user": "Carlos García"
+    "user": "Carlos García",
+    "videos": []
   },
   {
     "id": 4,
     "description": "Descripción del cuarto anuncio",
     "date": "2024-09-17",
-    "user": "Ana Martínez"
-  },
-  {
-    "id": 5,
-    "description": "Descripción del quinto anuncio",
-    "date": "2024-09-17",
-    "user": "Luis Rodríguez"
-  },
-  {
-    "id": 6,
-    "description": "Descripción del sexto anuncio",
-    "date": "2024-09-17",
-    "user": "Sofía Gómez"
-  },
-  {
-    "id": 7,
-    "description": "Descripción del septimo anuncio",
-    "date": "2024-09-17",
-    "user": "Andrés Ramírez"
+    "user": "Ana Martínez",
+    "videos": [
+      {
+        "url": "https://www.youtube.com/watch?v=nr2WVkriE4g"
+      }
+    ]
   }
 ]

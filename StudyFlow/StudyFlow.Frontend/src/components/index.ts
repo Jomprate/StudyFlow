@@ -17,3 +17,5 @@ export { default as LoadingScreen } from "./LoadingScreen/LoadingScreen";
 export { default as CourseCard } from "./courseCard/CourseCard"
 export { default as AnnouncementBox_Create } from "./announcementBox/announcementBox_Create/AnnouncementBox_Create"
 export { default as AnnouncementBox } from "./announcementBox/announcementBox/AnnouncementBox"
+
+export { default as YTVideoCard } from "./cards/YoutubeVideoCard/YTVideoCard"
