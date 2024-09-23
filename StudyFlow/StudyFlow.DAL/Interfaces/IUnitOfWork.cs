@@ -4,11 +4,11 @@ namespace StudyFlow.DAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        CountryRepository CountryRepository { get; }
-        CourseRepository CourseRepository { get; }
-        UserRepository UserRepository { get; }
-        ProfileRepository ProfileRepository { get; }
-        EnrollmentRepository EnrollmentRepository { get; }
+        ICountryRepository CountryRepository { get; }
+        ICourseRepository CourseRepository { get; }
+        IUserRepository UserRepository { get; }
+        IEnrollmentRepository EnrollmentRepository { get; }
+        ISubjectRepository SubjectRepository { get; }
 
         void BeginTransaction();
 

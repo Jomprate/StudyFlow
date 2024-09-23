@@ -1,11 +1,20 @@
 ﻿using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Entities.Helper;
 
 namespace StudyFlow.DAL.Interfaces
 {
-    public interface ICourseRepository
+    public interface ICourseRepository : IRepository<Course>
     {
-        Task<IEnumerable<Course>> GetGetAllCourseByStudentIdAsync(Guid studentId);
+        Task<Course> GetByIdWithTeacherAsync(Guid id);
 
-        Task<IEnumerable<Course>> GetCoursesByTeacherNameAsync(string name);
+        Task<IEnumerable<Course>> GetAllCourseByTeacherIdAsync(Guid teacherId);
+
+        Task<IEnumerable<Course>> GetAllCourseByStudentIdAsync(Guid studentId);
+
+        Task<PaginationResult<Course>> GetCoursesByTeacherNameAsync(Pagination pagination);
+
+        Task<PaginationResult<Course>> GetAllCourseByTeacherIdAsync(Guid teacherId, Pagination pagination);
+
+        Task<PaginationResult<Course>> GetAllCourseByStudentIdAsync(Guid studentId, Pagination pagination);
     }
 }

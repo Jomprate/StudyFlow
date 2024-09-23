@@ -18,4 +18,8 @@
 		<ProjectReference Include="..\StudyFlow.Infrastructure\StudyFlow.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="DTOS\Parameters\Request\" />
+	</ItemGroup>
+
 </Project>

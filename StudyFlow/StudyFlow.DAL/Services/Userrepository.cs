@@ -1,46 +1,84 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StudyFlow.DAL.Services
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly DataContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public UserRepository(DataContext context) : base(context)
+        public UserRepository(DataContext context, SignInManager<User> signInManager) : base(context)
         {
             _context = context;
+            _signInManager = signInManager;
         }
 
-        public async Task<User> GetUserByEmailWithProfileAsync(string email)
+        public async Task<User> LoginAsync(string email, string password)
         {
-            return await _context.Users
-                .Include(u => u.ListProfile)
-                .Include(c => c.Country)
-                .FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+
+            return null;
         }
 
-        public async Task<IEnumerable<User>> GetUsersWithProfileAsync()
+        public async Task<User> RegisterAsync(User user, string password)
         {
-            return await _context.Users
-                .Include(u => u.ListProfile)
-                .Include(c => c.Country)
-                .ToArrayAsync();
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                return user;
+            }
+
+            return null;
         }
 
-        public async Task<User> GetUserByIdWithProfileAsync(Guid id)
+        public override async Task<PaginationResult<User>> GetAsync(Pagination pagination)
+        {
+            var query = _context.Users
+                .AsNoTracking()
+                .Include(x => x.Country)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter) && query.Any())
+            {
+                query = query.Where(x => x.Email.Contains(pagination.Filter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int totalRecords = await query.CountAsync();
+
+            return new PaginationResult<User>()
+            {
+                ListResult = await query
+                    .Paginate(pagination)
+                    .ToListAsync(),
+                TotalRecords = totalRecords,
+                TotalPages = (int)Math.Ceiling(totalRecords / (double)pagination.RecordsNumber),
+                Pagination = pagination
+            };
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _context.Users
-                .Include(u => u.ListProfile)
-                .Include(c => c.Country)
-                .FirstOrDefaultAsync(u => u.Id == id);
+                .AsNoTracking()
+                .Include(x => x.Country)
+                .FirstOrDefaultAsync(x => x.Email == email);
         }
     }
 }

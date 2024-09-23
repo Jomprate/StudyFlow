@@ -20,30 +20,23 @@ namespace StudyFlow.BLL.Services
 
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByEmailWithProfileAsync(loginDTO.Email);
+            var user = await _unitOfWork.UserRepository.LoginAsync(loginDTO.Email, loginDTO.Password);
 
             if (user == null)
             {
                 return string.Empty;
             }
 
-            bool isvalid = PasswordService.VerifyPassword(user.Password, loginDTO.Password);
+            user.IsOnline = true;
+            var result = await _unitOfWork.UserRepository.UpdateAsync(user);
 
-            if (isvalid)
+            if (!result)
             {
-                user.IsOnline = true;
-                var result = await _unitOfWork.UserRepository.UpdateAsync(user);
-
-                if (!result)
-                {
-                    return string.Empty;
-                }
-
-                var userDto = user.ToGetDTO();
-                return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Roles = user.ListProfile.Select(s => s.Name), ExpirationDuration = "ExpiryDurationLogin" });
+                return string.Empty;
             }
 
-            return string.Empty;
+            var userDto = user.ToGetDTO();
+            return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Roles = null, ExpirationDuration = "ExpiryDurationLogin" });
         }
 
         public async Task<bool> LogoutAsync(string token)

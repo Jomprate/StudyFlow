@@ -1,11 +1,6 @@
 ﻿using StudyFlow.BLL.DTOS.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StudyFlow.BLL.DTOS.Parameters
+namespace StudyFlow.BLL.DTOS.Parameters.Response
 {
     public class ParametersDTOResponse
     {

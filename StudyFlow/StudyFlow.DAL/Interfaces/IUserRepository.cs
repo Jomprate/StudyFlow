@@ -1,13 +1,12 @@
 ﻿using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Entities.Helper;
 
 namespace StudyFlow.DAL.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> GetUserByIdWithProfileAsync(Guid id);
+        Task<User> LoginAsync(string email, string password);
 
-        Task<User> GetUserByEmailWithProfileAsync(string email);
-
-        Task<IEnumerable<User>> GetUsersWithProfileAsync();
+        Task<User> GetUserByEmailAsync(string email);
     }
 }
