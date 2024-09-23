@@ -8,9 +8,9 @@ namespace StudyFlow.Backend.Controllers
     [Route("api/[controller]")]
     public class OnBoardingStudentController : ControllerBase
     {
-        private readonly IOnboardingStudentService _onboardingStudentService;
+        private readonly IOnBoardingStudentService _onboardingStudentService;
 
-        public OnBoardingStudentController(IOnboardingStudentService onboardingStudentService)
+        public OnBoardingStudentController(IOnBoardingStudentService onboardingStudentService)
         {
             _onboardingStudentService = onboardingStudentService;
         }
@@ -19,11 +19,11 @@ namespace StudyFlow.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddRequestToCourseFromStudentAsync([FromBody] OnBoardingStudentCourseDTORequest onBoardingStudentDTO)
+        public async Task<IActionResult> AddRequestToCourseFromStudent([FromBody] EnrollmentFromStudentDTORequest enrollmentFromStudentDTORequest)
         {
             try
             {
-                var result = await _onboardingStudentService.AddRequestToCourseFromStudentAsync(onBoardingStudentDTO);
+                var result = await _onboardingStudentService.AddRequestToCourseFromStudentAsync(enrollmentFromStudentDTORequest);
 
                 return result;
             }
@@ -34,15 +34,15 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [HttpPost("DeleteRequestToCourseFromStudent")]
+        [HttpDelete("DeleteRequestToCourseFromStudent")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteRequestToCourseFromStudentAsync([FromBody] OnBoardingStudentCourseDTORequest onBoardingStudentDTO)
+        public async Task<IActionResult> DeleteRequestToCourseFromStudentAsync([FromBody] EnrollmentFromStudentDTORequest enrollmentFromStudentDTORequest)
         {
             try
             {
-                var result = await _onboardingStudentService.DeleteRequestToCourseFromStudentAsync(onBoardingStudentDTO);
+                var result = await _onboardingStudentService.DeleteRequestToCourseFromStudentAsync(enrollmentFromStudentDTORequest);
 
                 return result;
             }
@@ -53,15 +53,15 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [HttpGet("GetCoursesByStudentId")]
+        [HttpGet("GetCoursesByStudent")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCoursesByStudentId([FromQuery] OnBoardingStudentCourseDTORequest onBoardingStudentDTO)
+        public async Task<IActionResult> GetCoursesByStudent([FromQuery] GetCourseStudentDTORequest getCourseStudentDTORequest)
         {
             try
             {
-                var result = await _onboardingStudentService.GetCoursesByStudentId(onBoardingStudentDTO);
+                var result = await _onboardingStudentService.GetCoursesByStudentIdAsync(getCourseStudentDTORequest);
 
                 return result;
             }
@@ -72,15 +72,110 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [HttpGet("GetCoursesByTeacher")]
+        [HttpGet("GetCoursesByTeacherName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCoursesByTeacher([FromQuery] OnBoardingStudentCourseDTORequest onBoardingStudentDTO)
+        public async Task<IActionResult> GetCoursesByTeacherName([FromQuery] GetCourseStudentDTORequest getCourseStudentDTORequest)
         {
             try
             {
-                var result = await _onboardingStudentService.GetCoursesByTeacherAsync(onBoardingStudentDTO);
+                var result = await _onboardingStudentService.GetCoursesByTeacherNameAsync(getCourseStudentDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetSubjectsByStudent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSubjectsByStudent([FromQuery] OnBoardingStudentSubjectDTORequest onBoardingStudentSubjectDTORequest)
+        {
+            try
+            {
+                var result = await _onboardingStudentService.GetSubjectsByStudentIdAsync(onBoardingStudentSubjectDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetSubjectsByTeacher")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSubjectsByTeacher([FromQuery] OnBoardingStudentSubjectDTORequest onBoardingStudentSubjectDTORequest)
+        {
+            try
+            {
+                var result = await _onboardingStudentService.GetSubjectsByTeacherIdAsync(onBoardingStudentSubjectDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetSubjectsFromCourseByType")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetSubjectsFromCourseByType([FromQuery] OnBoardingStudentSubjectDTORequest onBoardingStudentSubjectDTORequest)
+        {
+            try
+            {
+                var result = await _onboardingStudentService.GetSubjectsFromCourseByTypeAsync(onBoardingStudentSubjectDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetEnrollmentsCompletedByStudent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetEnrollmentsCompletedByStudent([FromQuery] EnrollmentFromStudentDTORequest enrollmentFromStudentDTORequest)
+        {
+            try
+            {
+                var result = await _onboardingStudentService.GetEnrollmentsCompletedByStudentIdAsync(enrollmentFromStudentDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetEnrollmentEnabledByStudent")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetEnrollmentEnabledByStudent([FromQuery] EnrollmentFromStudentDTORequest enrollmentFromStudentDTORequest)
+        {
+            try
+            {
+                var result = await _onboardingStudentService.GetEnrollmentEnabledByStudentIdAsync(enrollmentFromStudentDTORequest);
 
                 return result;
             }

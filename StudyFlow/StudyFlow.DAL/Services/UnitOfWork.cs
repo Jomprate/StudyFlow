@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Storage;
 using StudyFlow.DAL.Data;
+using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
 
 namespace StudyFlow.DAL.Services
@@ -10,26 +12,28 @@ namespace StudyFlow.DAL.Services
 
         private readonly DataContext _context;
         private IDbContextTransaction _transaction;
-        private UserRepository _userRepository;
-        private CourseRepository _courseRepository;
-        private CountryRepository _countryRepository;
-        private ProfileRepository _profileRepository;
-        private EnrollmentRepository _enrollmentRepository;
+        private IUserRepository _userRepository;
+        private ICourseRepository _courseRepository;
+        private ICountryRepository _countryRepository;
+        private ISubjectRepository _subjectRepository;
+        private IEnrollmentRepository _enrollmentRepository;
+        private SignInManager<User> _signInManager;
 
         #endregion Private Fields
 
         #region Constructors
 
-        public UnitOfWork(DataContext context)
+        public UnitOfWork(DataContext context, SignInManager<User> signInManager)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _signInManager = signInManager;
         }
 
         #endregion Constructors
 
         #region Public Properties
 
-        public CountryRepository CountryRepository
+        public ICountryRepository CountryRepository
         {
             get
             {
@@ -37,23 +41,15 @@ namespace StudyFlow.DAL.Services
             }
         }
 
-        public UserRepository UserRepository
+        public IUserRepository UserRepository
         {
             get
             {
-                return _userRepository ??= new UserRepository(_context);
+                return _userRepository ??= new UserRepository(_context, _signInManager);
             }
         }
 
-        public ProfileRepository ProfileRepository
-        {
-            get
-            {
-                return _profileRepository ??= new ProfileRepository(_context);
-            }
-        }
-
-        public CourseRepository CourseRepository
+        public ICourseRepository CourseRepository
         {
             get
             {
@@ -61,11 +57,19 @@ namespace StudyFlow.DAL.Services
             }
         }
 
-        public EnrollmentRepository EnrollmentRepository
+        public IEnrollmentRepository EnrollmentRepository
         {
             get
             {
                 return _enrollmentRepository ??= new EnrollmentRepository(_context);
+            }
+        }
+
+        public ISubjectRepository SubjectRepository
+        {
+            get
+            {
+                return _subjectRepository ??= new SubjectRepository(_context);
             }
         }
 

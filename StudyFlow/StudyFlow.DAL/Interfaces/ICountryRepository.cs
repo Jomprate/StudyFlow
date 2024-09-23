@@ -1,6 +1,8 @@
-﻿namespace StudyFlow.DAL.Interfaces
+﻿using StudyFlow.DAL.Entities;
+
+namespace StudyFlow.DAL.Interfaces
 {
-    internal interface ICountryRepository
+    public interface ICountryRepository : IRepository<Country>
     {
     }
 }

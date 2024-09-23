@@ -1,10 +1,10 @@
 ﻿using StudyFlow.BLL.DTOS.Entities;
+using StudyFlow.DAL.Entities.Helper;
 
 namespace StudyFlow.BLL.DTOS.OnboardingStudent.Response
 {
     public class OnBoardingStudentCourseDTOResponse
     {
-        public IEnumerable<CourseDTO>? ListCourses { get; set; } = Enumerable.Empty<CourseDTO>();
-        public IEnumerable<CourseDTO>? ListRequest { get; set; } = Enumerable.Empty<CourseDTO>();
+        public PaginationResult<CourseDTO>? PaginationResult { get; set; } = null!;
     }
 }

@@ -7,6 +7,7 @@
         Exam = 2,
         Quiz = 3,
         Project = 4,
-        Other = 5
+        Other = 5,
+        Default = 99
     }
 }

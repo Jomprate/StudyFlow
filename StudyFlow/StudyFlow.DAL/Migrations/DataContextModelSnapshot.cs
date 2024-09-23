@@ -22,19 +22,167 @@ namespace StudyFlow.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProfileUser", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
                 {
-                    b.Property<int>("ListProfileId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ListUserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ListProfileId", "ListUserId");
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ListUserId");
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
-                    b.ToTable("ProfileUser");
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("91fea7e1-6e8c-4fb1-bd9b-dec8c967bea5"),
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa6b38d7-4157-43d3-b5d5-df1d9b821763"),
+                            Name = "Teacher",
+                            NormalizedName = "TEACHER"
+                        },
+                        new
+                        {
+                            Id = new Guid("d6899615-c40a-47f3-ad83-1e5cdc6d7174"),
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            RoleId = new Guid("aa6b38d7-4157-43d3-b5d5-df1d9b821763")
+                        },
+                        new
+                        {
+                            UserId = new Guid("cb51ed40-41f5-4c46-8de1-5075e28db511"),
+                            RoleId = new Guid("d6899615-c40a-47f3-ad83-1e5cdc6d7174")
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Country", b =>
@@ -1257,6 +1405,217 @@ namespace StudyFlow.DAL.Migrations
                     b.HasIndex("TeacherId");
 
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("aa72e3ff-69e4-4c0a-8cca-ef1f74930734"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1940),
+                            Description = "Mathematics is the study of numbers, quantities, and shapes.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Mathematics",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1961)
+                        },
+                        new
+                        {
+                            Id = new Guid("5431d737-dc2c-4a1c-910b-b21244e0a692"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1964),
+                            Description = "Science is the study of the natural world.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Science",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1965)
+                        },
+                        new
+                        {
+                            Id = new Guid("3c97699a-50dd-42fd-958e-9a85af102f1b"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1980),
+                            Description = "Computer science is the study of algorithmic processes, computational machines, and computation itself.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Computer Science",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1980)
+                        },
+                        new
+                        {
+                            Id = new Guid("216cb810-6d9f-4ed8-a776-6b42cec0abbd"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1983),
+                            Description = "History is the study of the past.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "History",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1983)
+                        },
+                        new
+                        {
+                            Id = new Guid("ef2c9e05-5e92-482f-91bb-fea420b639b7"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1985),
+                            Description = "Geography is the study of places and the relationships between people and their environments.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Geography",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(1985)
+                        },
+                        new
+                        {
+                            Id = new Guid("c248da0a-7ffd-4ff8-8080-4094f708046d"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2007),
+                            Description = "English is the study of the English language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "English",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2007)
+                        },
+                        new
+                        {
+                            Id = new Guid("55442da2-0d0d-4991-95c5-a1ebb2b168ab"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2009),
+                            Description = "Spanish is the study of the Spanish language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Spanish",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2009)
+                        },
+                        new
+                        {
+                            Id = new Guid("59370662-91e2-4eae-a2cd-1b6ae5e3aa20"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2011),
+                            Description = "French is the study of the French language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "French",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2012)
+                        },
+                        new
+                        {
+                            Id = new Guid("13452618-04f6-45e5-80e3-887df0df10a3"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2013),
+                            Description = "German is the study of the German language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "German",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2014)
+                        },
+                        new
+                        {
+                            Id = new Guid("941c35d9-b87b-452d-b13a-5a0eb517f30d"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2015),
+                            Description = "Italian is the study of the Italian language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Italian",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2016)
+                        },
+                        new
+                        {
+                            Id = new Guid("b0c215b2-bd80-463a-8a45-72ca6faae0c1"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2018),
+                            Description = "Chinese is the study of the Chinese language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Chinese",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2018)
+                        },
+                        new
+                        {
+                            Id = new Guid("d18fc20f-aa72-4d93-ba31-7ee2cd2aa508"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2020),
+                            Description = "Japanese is the study of the Japanese language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Japanese",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2020)
+                        },
+                        new
+                        {
+                            Id = new Guid("68454ecb-d7f3-4bc0-aad0-7d40085593eb"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2022),
+                            Description = "Korean is the study of the Korean language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Korean",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2022)
+                        },
+                        new
+                        {
+                            Id = new Guid("3c8825f3-f903-45c9-8dac-0a87a51ef37e"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2034),
+                            Description = "Arabic is the study of the Arabic language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Arabic",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2034)
+                        },
+                        new
+                        {
+                            Id = new Guid("abec027a-b94f-4644-9528-2cfee456b8f3"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2036),
+                            Description = "Russian is the study of the Russian language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Russian",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2045)
+                        },
+                        new
+                        {
+                            Id = new Guid("25aa75fe-3291-43e7-88b7-656c114147ce"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2060),
+                            Description = "Portuguese is the study of the Portuguese language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Portuguese",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2061)
+                        },
+                        new
+                        {
+                            Id = new Guid("51bd0dab-acb3-41b8-8617-4e93cb88f2f0"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2063),
+                            Description = "Dutch is the study of the Dutch language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Dutch",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2063)
+                        },
+                        new
+                        {
+                            Id = new Guid("74c7276a-8bf8-4242-a198-79b19546a73b"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2065),
+                            Description = "Swedish is the study of the Swedish language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Swedish",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2065)
+                        },
+                        new
+                        {
+                            Id = new Guid("f38bea0b-d0b7-40da-a8ed-925567940f02"),
+                            CreatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2067),
+                            Description = "Norwegian is the study of the Norwegian language.",
+                            HaveLogo = false,
+                            IsEnabled = false,
+                            Name = "Norwegian",
+                            TeacherId = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            UpdatedAt = new DateTime(2024, 9, 22, 20, 0, 20, 546, DateTimeKind.Local).AddTicks(2068)
+                        });
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Enrollment", b =>
@@ -1318,47 +1677,6 @@ namespace StudyFlow.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("StudyFlow.DAL.Entities.Profile", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Profiles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Administrador",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Profesor",
-                            Name = "Teacher"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Estudiante",
-                            Name = "Student"
-                        });
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Scheduled", b =>
@@ -1427,15 +1745,26 @@ namespace StudyFlow.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -1454,15 +1783,44 @@ namespace StudyFlow.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<Guid?>("NotificationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("UserType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -1471,30 +1829,120 @@ namespace StudyFlow.DAL.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("b0a2064f-6a0a-499e-a686-7671b07b5a52"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "0683d624-740c-47fc-b7fe-b07611c466c5",
+                            CountryId = 43,
+                            Email = "teacheruser@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Teacher",
+                            HaveProfilePicture = false,
+                            IsEnabled = false,
+                            IsOnline = false,
+                            LastName = "User",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "TEACHERUSER@EXAMPLE.COM",
+                            NormalizedUserName = "TEACHERUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIZ+zidWYHZTzmFbgcf1e4ecbwYq0B1loHoo6vSWZwvGuzotIIS8c7FC0yE1yf0c8A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8d04f9fb-7fd7-470e-a9c2-0a75c7089c16",
+                            TwoFactorEnabled = false,
+                            UserType = 0
+                        },
+                        new
+                        {
+                            Id = new Guid("cb51ed40-41f5-4c46-8de1-5075e28db511"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "be50d84c-97e5-46cc-9616-75960435b626",
+                            CountryId = 35,
+                            Email = "studentuser@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Student",
+                            HaveProfilePicture = false,
+                            IsEnabled = false,
+                            IsOnline = false,
+                            LastName = "User",
+                            LockoutEnabled = true,
+                            NormalizedEmail = "STUDENTUSER@EXAMPLE.COM",
+                            NormalizedUserName = "STUDENTUSER",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBEsk28JVcNbNYQTwlRHwQU8qBQoYDlihbBk1l6IlZ0CnvMM01f3Do0l6PN8E70w2g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "064bd6bb-f112-4422-8aac-c3525cf12fdc",
+                            TwoFactorEnabled = false,
+                            UserType = 0
+                        });
                 });
 
-            modelBuilder.Entity("ProfileUser", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("StudyFlow.DAL.Entities.Profile", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
                         .WithMany()
-                        .HasForeignKey("ListProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("StudyFlow.DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("StudyFlow.DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("StudyFlow.DAL.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("ListUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("StudyFlow.DAL.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Course", b =>
                 {
                     b.HasOne("StudyFlow.DAL.Entities.User", "Teacher")
-                        .WithMany("ListCourse")
+                        .WithMany("ListCourses")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Teacher");
@@ -1509,7 +1957,7 @@ namespace StudyFlow.DAL.Migrations
                         .IsRequired();
 
                     b.HasOne("StudyFlow.DAL.Entities.User", "Student")
-                        .WithMany("ListEnrollment")
+                        .WithMany("ListEnrollments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1523,11 +1971,13 @@ namespace StudyFlow.DAL.Migrations
                 {
                     b.HasOne("StudyFlow.DAL.Entities.Course", "Course")
                         .WithMany()
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("StudyFlow.DAL.Entities.User", "User")
-                        .WithMany("ListNotification")
-                        .HasForeignKey("UserId");
+                        .WithMany("ListNotifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Course");
 
@@ -1539,7 +1989,7 @@ namespace StudyFlow.DAL.Migrations
                     b.HasOne("StudyFlow.DAL.Entities.Subject", "Subject")
                         .WithMany("ListScheduled")
                         .HasForeignKey("SubjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Subject");
@@ -1550,7 +2000,7 @@ namespace StudyFlow.DAL.Migrations
                     b.HasOne("StudyFlow.DAL.Entities.Course", "Course")
                         .WithMany("ListSubject")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -1561,7 +2011,7 @@ namespace StudyFlow.DAL.Migrations
                     b.HasOne("StudyFlow.DAL.Entities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -1581,11 +2031,11 @@ namespace StudyFlow.DAL.Migrations
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>
                 {
-                    b.Navigation("ListCourse");
+                    b.Navigation("ListCourses");
 
-                    b.Navigation("ListEnrollment");
+                    b.Navigation("ListEnrollments");
 
-                    b.Navigation("ListNotification");
+                    b.Navigation("ListNotifications");
                 });
 #pragma warning restore 612, 618
         }

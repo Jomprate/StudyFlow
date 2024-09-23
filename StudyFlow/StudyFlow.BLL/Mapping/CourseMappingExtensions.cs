@@ -2,23 +2,23 @@
 
 namespace StudyFlow.BLL.Mapping
 {
-    public static class CourseMappingExtensions
+    internal static class CourseMappingExtensions
     {
-        public static StudyFlow.DAL.Entities.Course ToEntity(this StudyFlow.BLL.DTOS.Entities.CourseDTO dto)
+        internal static DAL.Entities.Course ToEntity(this CourseDTO dto)
         {
-            return new StudyFlow.DAL.Entities.Course
+            return new DAL.Entities.Course
             {
                 Name = dto.Name,
                 Description = dto.Description,
-                HaveLogo = string.IsNullOrEmpty(dto.Logo),
+                HaveLogo = !string.IsNullOrEmpty(dto.Logo),
                 IsEnabled = dto.IsEnabled ?? false,
                 TeacherId = dto.TeacherDTO.Id ?? Guid.Empty
             };
         }
 
-        public static StudyFlow.BLL.DTOS.Entities.CourseDTO ToDTO(this StudyFlow.DAL.Entities.Course entity)
+        internal static CourseDTO ToDTO(this DAL.Entities.Course entity)
         {
-            return new StudyFlow.BLL.DTOS.Entities.CourseDTO
+            return new CourseDTO
             {
                 Id = entity.Id,
                 Name = entity.Name,

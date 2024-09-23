@@ -13,6 +13,7 @@ using StudyFlow.DAL.Services;
 using Azure.Identity;
 using StudyFlow.Infrastructure.Interfaces;
 using StudyFlow.Infrastructure.Services;
+using StudyFlow.DAL.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];
@@ -25,16 +26,31 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name=LocalConnection"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProfileService, ProfileService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IOnboardingStudentService, OnboardingStudentService>();
+builder.Services.AddScoped<IOnBoardingStudentService, OnBoardingStudentService>();
+builder.Services.AddScoped<IOnBoardingTeacherService, OnBoardingTeacherService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IJwtService>(new JwtService(builder.Configuration));
-builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(keyVaultUri));
+builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(builder.Configuration));
 builder.Services.AddSingleton<IBlobStorage>(new BlobStorage(imageContainer));
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(x =>
+{
+    x.User.RequireUniqueEmail = true;
+    x.Password.RequireDigit = false;
+    x.Password.RequiredUniqueChars = 0;
+    x.Password.RequireLowercase = false;
+    x.Password.RequireNonAlphanumeric = false;
+    x.Password.RequireUppercase = false;
+})
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddCors();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources"); // Agrega la localización
 var jwtService = new JwtService(builder.Configuration);

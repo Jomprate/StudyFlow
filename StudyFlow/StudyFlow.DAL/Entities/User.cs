@@ -1,21 +1,33 @@
-﻿namespace StudyFlow.DAL.Entities
+﻿using Microsoft.AspNetCore.Identity;
+using StudyFlow.DAL.Enumeration;
+using System.ComponentModel.DataAnnotations;
+
+namespace StudyFlow.DAL.Entities
 {
-    public class User : EntityAuditBase
+    public class User : IdentityUser<Guid>
     {
-        public Guid Id { get; set; }
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+
+        [EmailAddress]
+        [ProtectedPersonalData]
+        [Required]
+        public override string Email
+        {
+            get => base.Email ?? string.Empty;
+            set => base.Email = value ?? string.Empty;
+        }
+
+        public bool HaveProfilePicture { get; set; }
+        public UserTypeEnum UserType { get; set; }
+        public bool IsEnabled { get; set; }
+        public bool IsOnline { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; } = null!;
-        public string? PhoneNumber { get; set; }
-        public bool HaveProfilePicture { get; set; }
-        public bool IsOnline { get; set; }
-        public bool IsEnabled { get; set; }
-        public ICollection<Profile> ListProfile { get; set; } = new List<Profile>();
-        public ICollection<Enrollment> ListEnrollment { get; set; } = new List<Enrollment>();
-        public ICollection<Course> ListCourse { get; set; } = new List<Course>();
-        public ICollection<Notification> ListNotification { get; set; } = new List<Notification>();
+        public Guid? NotificationId { get; set; }
+        public IEnumerable<Notification>? ListNotifications { get; set; }
+        public Guid? CourseId { get; set; }
+        public IEnumerable<Course>? ListCourses { get; set; }
+        public IEnumerable<Enrollment>? ListEnrollments { get; set; }
     }
 }

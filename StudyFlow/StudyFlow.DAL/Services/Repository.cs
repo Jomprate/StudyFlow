@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
 
 namespace StudyFlow.DAL.Services
@@ -19,6 +20,15 @@ namespace StudyFlow.DAL.Services
         {
             try
             {
+                if (entity.GetType().IsSubclassOf(typeof(EntityAuditBase)))
+                {
+                    var method = typeof(EntityAuditBase).GetMethod("OnAuditEntity");
+
+                    if (method != null)
+                    {
+                        method.Invoke(entity, new object[] { });
+                    }
+                }
                 var entry = await _dataContext.Set<T>().AddAsync(entity);
                 return entry.Entity;
             }
@@ -82,6 +92,27 @@ namespace StudyFlow.DAL.Services
             {
                 throw;
             }
+        }
+
+        public virtual async Task<PaginationResult<T>> GetAsync(Pagination pagination)
+        {
+            var queryable = _dataContext.Set<T>().AsNoTracking().AsQueryable();
+            int totalRecords = await queryable.CountAsync();
+
+            return new PaginationResult<T>()
+            {
+                TotalRecords = await queryable.CountAsync(),
+                ListResult = await queryable
+                    .Paginate(pagination)
+                    .ToListAsync(),
+                TotalPages = (int)Math.Ceiling(totalRecords / (double)pagination.RecordsNumber),
+                Pagination = pagination
+            };
+        }
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dataContext.Set<T>().AnyAsync(predicate);
         }
     }
 }

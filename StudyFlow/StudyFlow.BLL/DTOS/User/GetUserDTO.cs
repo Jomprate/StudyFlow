@@ -6,7 +6,7 @@ namespace StudyFlow.BLL.DTOS.User
 {
     public class GetUserDTO
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
@@ -23,6 +23,5 @@ namespace StudyFlow.BLL.DTOS.User
         public string? ProfilePicture { get; set; }
         public bool IsEnabled { get; set; }
         public bool IsOnline { get; set; }
-        public List<ProfileDTO> listProfile { get; set; } = new List<ProfileDTO>();
     }
 }
