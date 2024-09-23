@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
@@ -22,27 +23,48 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> CreateUserAsync(AddUserDTO user)
         {
-            var country = await _unitOfWork.CountryRepository.GetByIdAsync(user.CountryId);
-
-            if (country == null)
+            try
             {
-                return ApiResponseHelper.NotFound($"Not found country with the Id {user.CountryId}.");
+                var country = await _unitOfWork.CountryRepository.GetByIdAsync(user.CountryId);
+                if (country == null)
+                {
+                    return ApiResponseHelper.NotFound($"Not found country with the Id {user.CountryId}.");
+                }
+
+                User userToCreate = user.ToEntity();
+                userToCreate.PasswordHash = PasswordService.HashPassword(user.Password);
+
+                userToCreate.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
+
+                User newUser = await _unitOfWork.UserRepository.CreateAsync(userToCreate);
+
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    bool uploaded = await _blobStorage.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
+                    if (!uploaded)
+                    {
+                        return new BadRequestObjectResult("Failed to upload profile picture.");
+                    }
+                }
+
+                var result = await _unitOfWork.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    return ApiResponseHelper.Create("User created successfully.");
+                }
+                else
+                {
+                    return new BadRequestObjectResult("Failed to create user.");
+                }
             }
-
-            User userToCreate = user.ToEntity();
-            userToCreate.PasswordHash = PasswordService.HashPassword(user.Password);
-            userToCreate.HaveProfilePicture = string.IsNullOrEmpty(user.ProfilePicture) ? false : true;
-            User newUser = await _unitOfWork.UserRepository.CreateAsync(userToCreate);
-            bool uploaded = await _blobStorage.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
-            var result = uploaded ? _unitOfWork.SaveChangesAsync() : null;
-
-            if (result != null && result.Result > 0)
+            catch (DbUpdateException ex)
             {
-                return ApiResponseHelper.Create("User created");
+                return new BadRequestObjectResult($"Error saving user to the database. Details: {ex.InnerException?.Message}");
             }
-            else
+            catch (Exception ex)
             {
-                throw new ArgumentException("Failed to create user.");
+                return new BadRequestObjectResult($"An unexpected error occurred: {ex.Message}");
             }
         }
 
@@ -69,7 +91,43 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetAllUsersAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var users = await _unitOfWork.UserRepository.GetAllAsync();
+
+                if (users == null || !users.Any())
+                {
+                    return ApiResponseHelper.NotFound("No users found.");
+                }
+
+                var userDtos = new List<GetUserDTO>();
+
+                foreach (var user in users)
+                {
+                    string? profilePicture = user.HaveProfilePicture
+                        ? await _blobStorage.DownloadAsync(user.Id.ToString())
+                        : null;
+
+                    userDtos.Add(new GetUserDTO
+                    {
+                        Id = user.Id,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        ProfilePicture = profilePicture,
+                        IsEnabled = user.IsEnabled,
+                        IsOnline = user.IsOnline,
+                        Country = user.Country
+                    });
+                }
+
+                return ApiResponseHelper.Success(userDtos);
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult($"An unexpected error occurred: {ex.Message}");
+            }
         }
 
         public async Task<IActionResult> GetUserByCourseAsync(Guid courseId)
