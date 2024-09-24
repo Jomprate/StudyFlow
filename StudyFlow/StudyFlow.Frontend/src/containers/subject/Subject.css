@@ -41,6 +41,7 @@
     border-radius: 100px;
     border: 1px solid var(--black);
     font-size: 16px;
+    padding: 6px 8px;
 }
 
 .subject-form button {
