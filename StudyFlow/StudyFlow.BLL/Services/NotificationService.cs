@@ -16,12 +16,10 @@ namespace StudyFlow.BLL.Services
     public class NotificationService : INotificationService
     {
         private IUnitOfWork _unitOfWork;
-        private IBlobStorage _blobStorage;
 
-        public NotificationService(IUnitOfWork unitOfWork, IBlobStorage blobStorage)
+        public NotificationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _blobStorage = blobStorage;
         }
 
         public async Task<IActionResult> CreateNotificationAsync(NotificationDTO notification)

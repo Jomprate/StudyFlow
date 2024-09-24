@@ -17,7 +17,7 @@ namespace StudyFlow.DAL.Services
         private ICountryRepository _countryRepository;
         private ISubjectRepository _subjectRepository;
         private IEnrollmentRepository _enrollmentRepository;
-        private IRepository<Notification> _notificationRepository;
+        private INotificationRepository _notificationRepository;
         private SignInManager<User> _signInManager;
 
         #endregion Private Fields
