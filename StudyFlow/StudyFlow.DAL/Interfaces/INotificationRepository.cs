@@ -6,6 +6,5 @@ namespace StudyFlow.DAL.Interfaces
 {
     public interface INotificationRepository : IRepository<Notification>
     {
-        Task<IEnumerable<Notification>> GetNotificationByIdAsync(Guid id);
     }
 }

@@ -15,12 +15,5 @@ namespace StudyFlow.DAL.Services
         {
             _dataContext = dataContext;
         }
-
-        public async Task<IEnumerable<Notification>> GetNotificationByIdAsync(Guid id)
-        {
-            return await _dataContext.Notifications
-                .Where(u => u.Id == id)
-                .ToArrayAsync();
-        }
     }
 }

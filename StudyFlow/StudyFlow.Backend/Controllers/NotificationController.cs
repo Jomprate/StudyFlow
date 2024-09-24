@@ -109,7 +109,7 @@ public class NotificationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteCountryAsync(Guid id)
+    public async Task<IActionResult> DeleteNotificationAsync(Guid id)
     {
         try
         {
