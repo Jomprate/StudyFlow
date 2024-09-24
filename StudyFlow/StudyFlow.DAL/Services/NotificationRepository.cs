@@ -7,7 +7,7 @@ using StudyFlow.DAL.Interfaces;
 
 namespace StudyFlow.DAL.Services
 {
-    public class NotificationRepository : Repository<Notification>, INotificationRepository
+    public class NotificationRepository : Repository<Notification>
     {
         private readonly DataContext _dataContext;
 
