@@ -87,3 +87,15 @@ a {
         margin: 4rem 2rem;
     }
 }
+
+:root {
+    --black: #1a1a1a;
+    --white: #fff;
+    --shadow: rgba(26, 26, 26, 0.5);
+}
+
+:root:has(.dark) {
+    --black: #fff;
+    --white: #1a1a1a;
+    --shadow: rgba(255, 255, 255, 0.5);
+}
