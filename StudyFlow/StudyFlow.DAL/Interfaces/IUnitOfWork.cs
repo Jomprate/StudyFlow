@@ -9,6 +9,7 @@ namespace StudyFlow.DAL.Interfaces
         IUserRepository UserRepository { get; }
         IEnrollmentRepository EnrollmentRepository { get; }
         ISubjectRepository SubjectRepository { get; }
+        INotificationRepository NotificationRepository { get; }
 
         void BeginTransaction();
 

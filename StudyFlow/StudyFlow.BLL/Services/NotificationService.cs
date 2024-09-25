@@ -1,101 +1,134 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using StudyFlow.BLL.DTOS.ApiResponse;
+using StudyFlow.BLL.DTOS.Entities;
+using StudyFlow.BLL.DTOS.OnBoardingTeacher;
+using StudyFlow.BLL.DTOS.OnBoardingTeacher.Request;
 using StudyFlow.BLL.Interfaces;
+using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Entities.Helper;
+using StudyFlow.DAL.Enumeration;
 using StudyFlow.DAL.Interfaces;
+using StudyFlow.Infrastructure.Interfaces;
 
 namespace StudyFlow.BLL.Services
 {
     public class NotificationService : INotificationService
     {
-        private readonly IRepository<Notification> _repository;
+        private IUnitOfWork _unitOfWork;
 
-        public NotificationService(IRepository<Notification> repository)
+        public NotificationService(IUnitOfWork unitOfWork)
         {
-            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<IActionResult> CreateNotificationAsync(Notification notification)
+        public async Task<IActionResult> CreateNotificationAsync(NotificationDTO notification)
         {
-            if (notification == null)
+            var course = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == notification.CourseId);
+
+            if (!course)
             {
-                return new BadRequestObjectResult("Notification data is required.");
+                return ApiResponseHelper.NotFound($"Course with Id {notification.CourseId} not found.");
             }
 
-            var result = await _repository.CreateAsync(notification);
+            Notification createNotification = notification.ToEntity();
 
-            return new CreatedResult("", result);
+            try
+            {
+                await _unitOfWork.NotificationRepository.CreateAsync(createNotification);
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw new Exception("Failed to add subject to course", ex);
+            }
+
+            return ApiResponseHelper.Create(true);
         }
 
-        public async Task<IActionResult> DeleteNotificationAsync(int id)
+        public async Task<IActionResult> DeleteNotificationAsync(Guid id)
         {
-            if (id <= 0)
+            var notification = await _unitOfWork.NotificationRepository.GetByIdAsync(id);
+
+            if (notification is null)
             {
-                return new BadRequestObjectResult(new { Error = "The Id cannot be 0 or null." });
+                return ApiResponseHelper.NotFound($"Subject with Id {id} not found.");
             }
 
-            var notification = await _repository.GetByIdAsync(id);
+            bool result = await _unitOfWork.NotificationRepository.DeleteAsync(notification);
 
-            if (notification == null)
+            try
             {
-                return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {id}." });
+                if (result)
+                {
+                    await _unitOfWork.SaveChangesAsync();
+                    return ApiResponseHelper.NoContent();
+                }
+
+                throw new ArgumentException("Failed to delete subject");
             }
-
-            var result = await _repository.DeleteAsync(notification);
-
-            if (result)
+            catch (Exception ex)
             {
-                return new OkObjectResult(new { Message = "Notification deleted successfully" });
-            }
-            else
-            {
-                return new BadRequestObjectResult(new { Message = "Failed to delete notification" });
+                _unitOfWork.Rollback();
+                throw new Exception("Failed to delete subject", ex);
             }
         }
 
         public async Task<IActionResult> GetNotificationsAsync()
         {
-            var notifications = await _repository.GetAllAsync();
+            var notifications = await _unitOfWork.NotificationRepository.GetAllAsync();
             if (!notifications.Any())
             {
-                return new NotFoundObjectResult("No notifications found.");
+                return ApiResponseHelper.NotFound($"Notifications not found.");
             }
-            return new OkObjectResult(notifications);
+            return ApiResponseHelper.Success(notifications);
         }
 
-        public async Task<IActionResult> GetNotificationByIdAsync(int id)
+        public async Task<IActionResult> GetNotificationByIdAsync(Guid id)
         {
-            var notification = await _repository.GetByIdAsync(id);
+            var notification = await _unitOfWork.NotificationRepository.GetByIdAsync(id);
+
             if (notification == null)
             {
-                return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {id}." });
+                return ApiResponseHelper.NotFound($"Notification with Id {id} not found.");
             }
-            return new OkObjectResult(notification);
+
+            var notificationDto = notification.ToDTO();
+
+            return ApiResponseHelper.Success(notificationDto);
         }
 
-        //public async Task<IActionResult> GetnotificationByUserIDAsync(User user)
-        //{
-        //    var notification = await _repository.FindAsync(i => i.UserID == user.Id);
-        //    if (!notification.Any())
-        //    {
-        //        return new NotFoundObjectResult("No notification found in the specified user.");
-        //    }
-        //    return new OkObjectResult(notification);
-        //}
-
-        public async Task<IActionResult> UpdateNotificationAsync(Notification notification)
+        public async Task<IActionResult> UpdateNotificationAsync(NotificationDTO notification)
         {
-            var currentNotification = await _repository.GetByIdAsync(notification.Id);
-            if (currentNotification == null)
+            if (notification.Id.Equals(""))
             {
-                return new NotFoundObjectResult(new { Error = $"Not found notification with the Id {notification.Id}." });
+                return ApiResponseHelper.BadRequest("notificationId is required.");
             }
 
-            // Actualizar los datos de la institución
-            currentNotification.Message = notification.Message;
-            var result = await _repository.UpdateAsync(currentNotification);
+            var currentNotification = await _unitOfWork.NotificationRepository.GetByIdAsync(notification.Id);
 
-            return new OkObjectResult(result);
+            if (currentNotification is null)
+            {
+                return ApiResponseHelper.NotFound($"Subject with Id {notification.Id} not found.");
+            }
+
+            currentNotification.Message = notification.Message;
+            currentNotification.State = notification.State;
+
+            bool result = await _unitOfWork.NotificationRepository.UpdateAsync(currentNotification);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+                return ApiResponseHelper.NoContent();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw new Exception("Failed to update subject", ex);
+            }
         }
     }
 }

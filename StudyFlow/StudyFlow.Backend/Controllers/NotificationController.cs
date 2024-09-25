@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities;
 
@@ -43,7 +44,7 @@ public class NotificationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetByIdAsync(int id)
+    public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         try
         {
@@ -64,7 +65,7 @@ public class NotificationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Post(Notification notification)
+    public async Task<IActionResult> Post(NotificationDTO notification)
     {
         try
         {
@@ -86,7 +87,7 @@ public class NotificationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> PutAsync(Notification notification)
+    public async Task<IActionResult> PutAsync(NotificationDTO notification)
     {
         try
         {
@@ -108,7 +109,7 @@ public class NotificationController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteCountryAsync(int id)
+    public async Task<IActionResult> DeleteNotificationAsync(Guid id)
     {
         try
         {

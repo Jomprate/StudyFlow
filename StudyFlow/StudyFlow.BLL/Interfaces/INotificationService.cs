@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.DAL.Entities;
 
 namespace StudyFlow.BLL.Interfaces
@@ -7,12 +8,12 @@ namespace StudyFlow.BLL.Interfaces
     {
         Task<IActionResult> GetNotificationsAsync();
 
-        Task<IActionResult> GetNotificationByIdAsync(int id);
+        Task<IActionResult> GetNotificationByIdAsync(Guid id);
 
-        Task<IActionResult> CreateNotificationAsync(Notification notification);
+        Task<IActionResult> CreateNotificationAsync(NotificationDTO notification);
 
-        Task<IActionResult> UpdateNotificationAsync(Notification notification);
+        Task<IActionResult> UpdateNotificationAsync(NotificationDTO notification);
 
-        Task<IActionResult> DeleteNotificationAsync(int id);
+        Task<IActionResult> DeleteNotificationAsync(Guid id);
     }
 }
