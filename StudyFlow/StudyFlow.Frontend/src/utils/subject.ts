@@ -7,8 +7,10 @@ interface createSubject {
   type?: string | undefined;
   userId?: string | undefined;
 }
-interface getSubjectByCourse {
-  courseId: string | undefined;
+interface getSubjec {
+  courseId?: string | undefined;
+  studentId?: string | undefined;
+  teacherId?: string | undefined;
 }
 interface course {
   id: string | undefined;
@@ -65,7 +67,7 @@ const formaterData = (data: subjectData) => {
   });
 };
 
-const getSubjectByCourse = ({ courseId = '' }: getSubjectByCourse) => {
+const getSubjectByCourse = ({ courseId = '' }: getSubjec) => {
   return (
     axios
       .get(`https://localhost:7033/GetSubjectByCourseId?CourseId=${courseId}`)
@@ -120,4 +122,32 @@ const deleteSubject = (id: string | undefined) => {
     .catch((e) => console.log(e));
 };
 
-export { createSubject, getSubjectByCourse, updateSubject, deleteSubject };
+//b0a2064f-6a0a-499e-a686-7671b07b5a52
+const getSubjectByTeacher = ({ teacherId = '' }: getSubjec) => {
+  return (
+    axios
+      .get(`https://localhost:7033/api/OnBoardingStudent/GetSubjectsByTeacher?TeacherId=${teacherId}`)
+      .then((response) => {
+        const res = response.data.data;
+        return formaterData(res);
+      })
+      // eslint-disable-next-line no-console
+      .catch((e) => console.log(e))
+  );
+};
+
+//cb51ed40-41f5-4c46-8de1-5075e28db511
+const getSubjectByStudent = ({ studentId = '' }: getSubjec) => {
+  return (
+    axios
+      .get(`https://localhost:7033/api/OnBoardingStudent/GetSubjectsByStudent?StudentId=${studentId}`)
+      .then((response) => {
+        const res = response.data.data;
+        return formaterData(res);
+      })
+      // eslint-disable-next-line no-console
+      .catch((e) => console.log(e))
+  );
+};
+
+export { createSubject, getSubjectByCourse, updateSubject, deleteSubject, getSubjectByStudent, getSubjectByTeacher };

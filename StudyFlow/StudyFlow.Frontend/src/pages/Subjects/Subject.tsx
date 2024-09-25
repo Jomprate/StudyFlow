@@ -1,5 +1,5 @@
 import { Navbar } from "../../Components";
-import { Footer, Subject as SubjectCtn, SubjectId, SubjectUpdate } from "../../containers";
+import { Footer, Subject as SubjectCtn, SubjectId, SubjectStudentId, SubjectTeacherId, SubjectUpdate } from "../../containers";
 import './Subject.css';
 
 interface subject {
@@ -10,6 +10,8 @@ const Subject = ({ method = 'post' }: subject) => {
   const getSubject = () => {
     if (method === 'get') return <SubjectId />
     if (method === 'put') return <SubjectUpdate />
+    if (method === 'get-student-id') return <SubjectStudentId />
+    if (method === 'get-teacher-id') return <SubjectTeacherId />
 
     return <SubjectCtn />
   }

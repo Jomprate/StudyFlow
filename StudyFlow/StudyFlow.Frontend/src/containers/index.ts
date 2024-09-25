@@ -5,3 +5,5 @@ export { default as HomeHeaderLoggedIn } from './homeHeaderLoggedIn/HomeHeaderLo
 export { default as Subject } from './subject/Subject';
 export { default as SubjectId } from './subject/SubjectId';
 export { default as SubjectUpdate } from './subject/SubjectUpdate';
+export { default as SubjectStudentId } from './subject/SubjectStudentId';
+export { default as SubjectTeacherId } from './subject/SubjectTeacherId';
