@@ -7,3 +7,4 @@ export { default as SubjectId } from './subject/SubjectId';
 export { default as SubjectUpdate } from './subject/SubjectUpdate';
 export { default as SubjectStudentId } from './subject/SubjectStudentId';
 export { default as SubjectTeacherId } from './subject/SubjectTeacherId';
+export { default as NotificationGet } from './notification/NotificationGet';

@@ -1,0 +1,94 @@
+.notification-get {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 16px;
+    margin-top: 50px;
+}
+
+.notification-get-tittle {
+    animation: shine 5s linear infinite;
+    background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
+    color: transparent;
+    font-size: 24px;
+    overflow-wrap: break-word;
+    width: max-content;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 200%;
+}
+
+.table {
+    background: var(--black);
+    border-radius: 9px;
+    border: 1px solid var(--black);
+    box-shadow: 0px 4px 10px var(--shadow);
+    color: var(--white);
+    display: flex;
+    flex-direction: column; 
+    font-size: 14px;
+    margin: 0 16px;
+    max-width: 1300px;
+    width: 97%;
+    overflow: hidden;
+}
+
+.row:first-child {
+    text-transform: uppercase;
+}
+
+.row {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    width: 100%;
+}
+
+.row.color {
+    background: var(--gray);
+}
+
+.row div {
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 6px;
+    min-width: 115px;
+}
+
+.link {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.notification-get-button {
+    background: var(--black);
+    border-radius: 100px;
+    border: 1px solid var(--white);
+    border: none;
+    box-shadow: 0px 4px 10px var(--shadow);
+    color: var(--white);
+    font-size: 16px;
+    margin: 0 auto;
+    padding: 6px 8px;
+    width: max-content;
+}
+
+.notification-get-button:hover {
+    background: var(--white);
+    border: 1px solid var(--black);
+    color: var(--black);
+}
+
+@media screen and (max-width: 992px) {
+    .table {
+        overflow-x: auto;
+    }
+}
+
+@keyframes shine {
+    to {
+      background-position: 200% center;
+    }
+  }
+  
