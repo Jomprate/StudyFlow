@@ -12,6 +12,7 @@ const Menu: React.FC = () => (
     <>
         <p><Link to="/">{useTranslation().t('Home')}</Link></p>
         <p><Link to="/countries">{useTranslation().t('Countries')}</Link></p>
+        <p><Link to="/subject">{useTranslation().t('Subject')}</Link></p>
         <p><Link to="/home_logged_in">test a</Link></p>
         <p><a href="#testb">test b</a></p>
         <p><a href="#about">About Us</a></p>
@@ -32,6 +33,7 @@ const Navbar: React.FC = () => {
             i18n
                 .changeLanguage(savedLanguage)
                 .then(() => {
+                    // eslint-disable-next-line no-console
                     console.log('Idioma cambiado a:', savedLanguage);
                 })
                 .catch((error) => {

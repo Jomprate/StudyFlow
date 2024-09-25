@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 import Countries from '../pages/Countries';
-import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout';
+import LoggedInMainLayout from '../Components/layouts/loggedInMainLayout/LoggedInMainLayout';
 import Courses from '../pages/courses/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';
 import Settings from '../pages/Settings/Settings.tsx';
 import Course from '../pages/Course/course.tsx';
+import Subject from '../pages/Subjects/Subject.tsx';
 
 const Router = () => {
     return (
@@ -14,6 +15,11 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/countries" element={<Countries />} />
+                <Route path="/subject" element={<Subject />} />
+                <Route path="/subject/:courseId" element={<Subject method='get' />} />
+                <Route path="/subject/update/:subjectId" element={<Subject method='put' />} />
+                <Route path="/subject/student/:studentId" element={<Subject method='get-student-id' />} />
+                <Route path="/subject/teacher/:teacherId" element={<Subject method='get-teacher-id' />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />
