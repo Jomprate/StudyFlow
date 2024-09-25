@@ -1,32 +1,31 @@
-import React, { useState } from 'react';
-import './Subject.css';
-import { createSubject } from '../../utils/subject';
+import { useState } from 'react';
+import './SubjectUpdate.css';
+import { updateSubject } from '../../utils/subject';
+import { useParams } from 'react-router-dom';
 
-const Subject = () => {
-  const [data, setData] = useState({
-    courseId: '',
-    link: '',
-    name: '',
-    type: '',
-    userId: '',
-  });
+const SubjectUpdate = () => {
+    const { subjectId } = useParams();
+    const [data, setData] = useState({
+        courseId: '',
+        link: '',
+        name: '',
+        type: '',
+        userId: '',
+      });
+    
+      const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target;
+        setData((prev) => ({ ...prev, [name]: value }));
+      };
+    
+      const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        updateSubject(subjectId, data);
+      };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const isEmpy = Object.values(data).some((value) => value === '');
-    if (isEmpy) alert('Llenar todos los datos');
-    else createSubject(data);
-  };
-
-  return (
-    <div className="subject">
-      <p className="subject-title">Crear Tarea</p>
-      <form onSubmit={onSubmit} className="subject-form">
+    return <div className='subject-update'>
+        <p className='subject-update-title'>Modificar Tarea</p>
+        <form onSubmit={onSubmit} className="subject-form">
         <div>
           <label htmlFor="courseId">Id del Curso:</label>
           <input type="text" name="courseId" value={data?.courseId} onChange={handleChange} />
@@ -50,7 +49,6 @@ const Subject = () => {
         <button type="submit">Crear</button>
       </form>
     </div>
-  );
-};
+}
 
-export default Subject;
+export default SubjectUpdate;

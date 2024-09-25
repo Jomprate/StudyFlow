@@ -7,6 +7,25 @@ interface createSubject {
   type?: string | undefined;
   userId?: string | undefined;
 }
+interface getSubjectByCourse {
+  courseId: string | undefined;
+}
+interface course {
+  id: string | undefined;
+}
+interface item {
+  id: string | undefined;
+  name: string | undefined;
+  link: string | undefined;
+  type: string | undefined;
+  course: course;
+}
+interface paginationResult {
+  listResult: Array<item>;
+}
+interface subjectData {
+  paginationResult: paginationResult;
+}
 
 const createSubject = ({ courseId = '', link = '', name = '', type = '', userId = '' }: createSubject) => {
   const body = {
@@ -33,4 +52,72 @@ const createSubject = ({ courseId = '', link = '', name = '', type = '', userId 
   );
 };
 
-export { createSubject }
+const formaterData = (data: subjectData) => {
+  const arrayData = data?.paginationResult?.listResult;
+  return arrayData.map((item) => {
+    return {
+      courseId: item.course.id,
+      id: item.id,
+      link: item.link,
+      name: item.name,
+      type: item.type,
+    };
+  });
+};
+
+const getSubjectByCourse = ({ courseId = '' }: getSubjectByCourse) => {
+  return (
+    axios
+      .get(`https://localhost:7033/GetSubjectByCourseId?CourseId=${courseId}`)
+      .then((response) => {
+        const res = response.data.data;
+        return formaterData(res);
+      })
+      // eslint-disable-next-line no-console
+      .catch((e) => console.log(e))
+  );
+};
+
+const updateSubject = (subjectId: string | undefined, data: createSubject) => {
+  const { courseId = '', link = '', name = '', type = '', userId = '' } = data;
+  const body = {
+    courseId,
+    subjectDTO: {
+      id: subjectId,
+      course: {
+        id: courseId,
+        teacherDTO: {
+          id: userId,
+          fullName: 'string',
+        },
+      },
+      name,
+      type,
+      link,
+      listScheduleds: {
+        id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        subjectId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+        scheduledDate: new Date().toISOString(),
+        link: 'string',
+      },
+    },
+  };
+
+  return (
+    axios
+      .put('https://localhost:7033/SetSubjectByCourse', body)
+      .then((response) => response)
+      // eslint-disable-next-line no-console
+      .catch((e) => console.log('Error', e))
+  );
+};
+
+const deleteSubject = (id: string | undefined) => {
+  return axios
+    .delete(`https://localhost:7033/DeleteSubjectById?subjectId=${id}`)
+    .then((response) => response)
+    // eslint-disable-next-line no-console
+    .catch((e) => console.log(e));
+};
+
+export { createSubject, getSubjectByCourse, updateSubject, deleteSubject };
