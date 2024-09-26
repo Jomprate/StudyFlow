@@ -22,7 +22,9 @@ const Router = () => {
                 <Route path="/subject/student/:studentId" element={<Subject method='get-student-id' />} />
                 <Route path="/subject/teacher/:teacherId" element={<Subject method='get-teacher-id' />} />
                 <Route path="/notification" element={<Notification />} />
+                <Route path="/notification/:notificationId" element={<Notification />} />
                 <Route path="/notification/create" element={<Notification method='post' />} />
+                <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />

@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import './NotificationCreate.css';
-import { createNotification, notification } from '../../utils/notification';
+import './NotificationUpdate.css';
+import { notification, updateNotification } from '../../utils/notification';
+import { useParams } from 'react-router-dom';
 
-const NotificationCreate = () => {
+const NotificationUpdate = () => {
+  const { notificationId } = useParams();
   const [data, setData] = useState<notification>({
     courseId: '',
     message: '',
@@ -17,12 +19,12 @@ const NotificationCreate = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createNotification({...data, state: parseInt(data?.state?.toString())});
+    updateNotification(notificationId, {...data, state: parseInt(data?.state?.toString())});
   };
 
   return (
     <div className="notification-create">
-      <p className="notification-create-title">Crear Notificación</p>
+      <p className="notification-create-title">Modificar Notificación</p>
       <form onSubmit={onSubmit} className="subject-form">
         <div>
           <label htmlFor="courseId">Id del Curso:</label>
@@ -38,12 +40,12 @@ const NotificationCreate = () => {
         </div>
         <div>
           <label htmlFor="state">Estado:</label>
-          <input type="number" name="state" value={data?.state} onChange={handleChange} />
+          <input type="text" name="state" value={data?.state} onChange={handleChange} />
         </div>
-        <button type="submit">Crear</button>
+        <button type="submit">Modificar</button>
       </form>
     </div>
   );
 };
 
-export default NotificationCreate;
+export default NotificationUpdate;
