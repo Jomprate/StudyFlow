@@ -68,10 +68,6 @@ const SubjectId = () => {
     getSubjectByStudent({ studentId }).then((response) => setData(response));
   }, [studentId]);
 
-  //   useEffect(() => {
-  //     console.log('data id', data)
-  //   }, [data])
-
   return (
     <div className="subject-id">
       <p className="subject-id-tittle">Tareas del estudiante</p>

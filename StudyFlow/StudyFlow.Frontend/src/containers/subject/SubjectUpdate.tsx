@@ -46,7 +46,7 @@ const SubjectUpdate = () => {
           <label htmlFor="link">Link:</label>
           <input type="text" name="link" value={data?.link} onChange={handleChange} />
         </div>
-        <button type="submit">Crear</button>
+        <button type="submit">Modificar</button>
       </form>
     </div>
 }
