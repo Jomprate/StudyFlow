@@ -31,13 +31,14 @@ const courseCrete = ({ userId, name, description }: course) => {
     isEnabled: false,
   };
 
-  return (
-    axios
-      .post('https://localhost:7033/CreateCourse', body)
-      .then((response) => response)
+  return axios
+    .post('https://localhost:7033/CreateCourse', body)
+    .then(() => alert('Se creo el curso'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
-  );
+      console.log(e);
+      alert('Error al crear curso');
+    });
 };
 
 const formmatedData = (data: courseData) => {
@@ -103,9 +104,12 @@ const courseUpdate = (id: string | undefined, { userId, description, name }: cou
   return (
     axios
       .put('https://localhost:7033/UpdateCourse', body)
-      .then((response) => response)
-      // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
+      .then(() => alert('Se modifico el curso'))
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log(e);
+        alert('Error al modificar curso');
+      })
   );
 };
 
@@ -113,9 +117,12 @@ const courseDelete = (id: string | undefined) => {
   return (
     axios
       .delete(`https://localhost:7033/DeleteCourse?courseId=${id}`)
-      .then((response) => response)
-      // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
+      .then(() => alert('Se elimino el curso'))
+      .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.log(e);
+        alert('Error al eliminar curso');
+      })
   );
 };
 

@@ -6,7 +6,7 @@ import { course, courseDelete, getAllCourse, getCourseById } from '../../utils/c
 type data = void | course[];
 
 const CourseGet = () => {
-  const { userId, courseId } = useParams();
+  const { courseId } = useParams();
   const [searchParams] = useSearchParams();
   const page = searchParams.get('page');
   const [data, setData] = useState<data>([]);
@@ -82,14 +82,17 @@ const CourseGet = () => {
   };
 
   useEffect(() => {
-    if (userId && userId !== '') getAllCourse(userId, page).then((response) => setData(response));
     if (courseId && courseId !== '') getCourseById(courseId).then((response) => setCourse(response));
-  }, [userId, courseId, page]);
+    getAllCourse('b0a2064f-6a0a-499e-a686-7671b07b5a52', page).then((response) => setData(response));
+  }, [courseId, page]);
 
   return (
     <div className="course-get">
       <p className="course-get-tittle">Cursos</p>
       {getTable()}
+      <Link className="course-get-button" to="/course/create">
+        Crear
+      </Link>
     </div>
   );
 };

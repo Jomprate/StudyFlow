@@ -1,27 +1,27 @@
 .subject-id {
     align-items: center;
     display: flex;
-    flex-direction: column;
     flex: 1;
+    flex-direction: column;
     margin-top: 50px;
 }
 
 .subject-id-tittle {
+    -webkit-background-clip: text;
     animation: shine 5s linear infinite;
     background: linear-gradient(90deg, rgba(3, 53, 78, 1) 0%, rgba(130, 214, 238, 1) 50%, rgba(3, 53, 78, 1) 100%);
+    background-clip: text;
+    background-size: 200%;
     color: transparent;
     font-size: 24px;
     overflow-wrap: break-word;
     width: max-content;
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-size: 200%;
 }
 
 .table {
     background: var(--black);
-    border-radius: 9px;
     border: 1px solid var(--black);
+    border-radius: 9px;
     box-shadow: 0px 4px 10px var(--shadow);
     color: var(--white);
     display: flex;
@@ -29,8 +29,8 @@
     font-size: 14px;
     margin: 0 16px;
     max-width: 1300px;
-    width: 97%;
     overflow: hidden;
+    width: 97%;
 }
 
 .row:first-child {
@@ -50,14 +50,33 @@
 
 .row div {
     flex-wrap: wrap;
-    width: 100%;
-    padding: 6px;
     min-width: 115px;
+    padding: 6px;
+    width: 100%;
 }
 
 .link {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.subject-get-button {
+    background: var(--black);
+    border: 1px solid var(--white);
+    border: none;
+    border-radius: 100px;
+    box-shadow: 0px 4px 10px var(--shadow);
+    color: var(--white);
+    font-size: 16px;
+    margin: 0 auto;
+    padding: 6px 8px;
+    width: max-content;
+}
+
+.subject-get-button:hover {
+    background: var(--white);
+    border: 1px solid var(--black);
+    color: var(--black);
 }
 
 @media screen and (max-width: 992px) {

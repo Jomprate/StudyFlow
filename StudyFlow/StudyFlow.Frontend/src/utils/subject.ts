@@ -45,13 +45,14 @@ const createSubject = ({ courseId = '', link = '', name = '', type = '', userId 
     },
   };
 
-  return (
-    axios
-      .post('https://localhost:7033/AddSubjectByCourse', body)
-      .then((response) => response)
+  return axios
+    .post('https://localhost:7033/AddSubjectByCourse', body)
+    .then(() => alert('Se creo la tarea'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log('Error', e))
-  );
+      console.log(e);
+      alert('Error al crear tarea');
+    });
 };
 
 const formaterData = (data: subjectData) => {
@@ -105,21 +106,25 @@ const updateSubject = (subjectId: string | undefined, data: createSubject) => {
     },
   };
 
-  return (
-    axios
-      .put('https://localhost:7033/SetSubjectByCourse', body)
-      .then((response) => response)
+  return axios
+    .put('https://localhost:7033/SetSubjectByCourse', body)
+    .then(() => alert('Se modifico la tarea'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log('Error', e))
-  );
+      console.log(e);
+      alert('Error al modificar tarea');
+    });
 };
 
 const deleteSubject = (id: string | undefined) => {
   return axios
     .delete(`https://localhost:7033/DeleteSubjectById?subjectId=${id}`)
-    .then((response) => response)
-    // eslint-disable-next-line no-console
-    .catch((e) => console.log(e));
+    .then(() => alert('Se elimino la tarea'))
+    .catch((e) => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+      alert('Error al eliminar tarea');
+    });
 };
 
 //b0a2064f-6a0a-499e-a686-7671b07b5a52
