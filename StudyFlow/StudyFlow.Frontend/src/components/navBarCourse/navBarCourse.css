@@ -1,0 +1,40 @@
+.navBarCourse {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* Permite un ajuste fino de la posición */
+    top: 0;
+}
+
+.navBarCourse-links {
+    display: flex;
+    gap: 20px;
+}
+
+    .navBarCourse-links button {
+        background-color: #2c3e50; /* Color de fondo oscuro */
+        color: #fff; /* Color del texto e ícono */
+        border: none; /* Sin borde */
+        padding: 10px 20px; /* Espaciado interno */
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 5px; /* Bordes redondeados */
+        cursor: pointer;
+        display: flex; /* Alinear ícono y texto */
+        align-items: center; /* Centrar verticalmente */
+        gap: 10px; /* Espacio entre el ícono y el texto */
+        transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    }
+
+        .navBarCourse-links button:hover {
+            background-color: #34495e; /* Color de fondo más claro al pasar el ratón */
+        }
+
+        .navBarCourse-links button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.5); /* Efecto de foco */
+        }
