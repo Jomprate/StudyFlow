@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course.css';
 import { useTheme } from '../../ThemeContext';
-import AnnouncementBox_Create from '../../components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
-import AnnouncementBox from '../../components/announcementBox/announcementBox/AnnouncementBox';
+import AnnouncementBox_Create from '../../Components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
+import AnnouncementBox from '../../Components/announcementBox/announcementBox/AnnouncementBox';
 import announcementsData from './announcements.json';
 import user_p from '../../assets/user_p.svg';
 
@@ -40,8 +40,8 @@ const Course: React.FC = () => {
         <div className={`course-page ${theme}`}>
             <div className="course-container">
                 <div className="course-header">
-                    <h1>2024-II G2 Construcción de Software</h1>
-                    <h2>Especialización Ingeniería de Software</h2>
+                    <h1>2024-II G2 Construcciï¿½n de Software</h1>
+                    <h2>Especializaciï¿½n Ingenierï¿½a de Software</h2>
                 </div>
 
                 <div className="course-layout">
