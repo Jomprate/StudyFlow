@@ -17,8 +17,8 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/countries" element={<Countries />} />
-                <Route path="/subject" element={<Subject />} />
-                <Route path="/subject/:courseId" element={<Subject method='get' />} />
+                <Route path="/subject/create" element={<Subject />} />
+                <Route path="/subject" element={<Subject method='get' />} />
                 <Route path="/subject/update/:subjectId" element={<Subject method='put' />} />
                 <Route path="/subject/student/:studentId" element={<Subject method='get-student-id' />} />
                 <Route path="/subject/teacher/:teacherId" element={<Subject method='get-teacher-id' />} />
@@ -27,8 +27,8 @@ const Router = () => {
                 <Route path="/notification/create" element={<Notification method='post' />} />
                 <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
                 <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
-                <Route path="/course" element={<CourseCrud />} />
-                <Route path="/course/user/:userId" element={<CourseCrud method='get'/>} />
+                <Route path="/course/create" element={<CourseCrud />} />
+                <Route path="/course" element={<CourseCrud method='get'/>} />
                 <Route path="/course/:courseId" element={<CourseCrud method='get'/>} />
                 <Route path="/course/update/:courseId" element={<CourseCrud method='put'/>} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>

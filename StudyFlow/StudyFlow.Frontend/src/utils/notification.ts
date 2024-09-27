@@ -29,7 +29,7 @@ const getAll = () => {
   );
 };
 
-const getNotificationById = (id : string | undefined) => {
+const getNotificationById = (id: string | undefined) => {
   return (
     axios
       .get(`https://localhost:7033/api/Notification/${id}`)
@@ -40,7 +40,7 @@ const getNotificationById = (id : string | undefined) => {
       // eslint-disable-next-line no-console
       .catch((e) => console.log(e))
   );
-}
+};
 
 const createNotification = ({ courseId, userId, message, state }: notification) => {
   const body = {
@@ -57,13 +57,14 @@ const createNotification = ({ courseId, userId, message, state }: notification) 
     },
   };
 
-  return (
-    axios
-      .post('https://localhost:7033/createNotification', body)
-      .then((response) => response)
+  return axios
+    .post('https://localhost:7033/createNotification', body)
+    .then(() => alert('Se creo la notificacion'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
-  );
+      console.log(e);
+      alert('Error al crear notificacion');
+    });
 };
 
 const updateNotification = (id: string | undefined, { courseId, userId, message, state }: notification) => {
@@ -82,23 +83,25 @@ const updateNotification = (id: string | undefined, { courseId, userId, message,
     },
   };
 
-  return (
-    axios
-      .put('https://localhost:7033/api/Notification', body)
-      .then((response) => response)
+  return axios
+    .put('https://localhost:7033/api/Notification', body)
+    .then(() => alert('Se modifico la notificacion'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
-  );
+      console.log(e);
+      alert('Error al modificar notificacion');
+    });
 };
 
 const deleteNotification = (id: string | undefined) => {
-  return (
-    axios
-      .delete(`https://localhost:7033/api/Notification/${id}`)
-      .then((response) => response)
+  return axios
+    .delete(`https://localhost:7033/api/Notification/${id}`)
+    .then(() => alert('Se elimino la notificacion'))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      .catch((e) => console.log(e))
-  );
+      console.log(e);
+      alert('Error al eliminar notificacion');
+    });
 };
 
 export { getAll, createNotification, updateNotification, deleteNotification, getNotificationById };
