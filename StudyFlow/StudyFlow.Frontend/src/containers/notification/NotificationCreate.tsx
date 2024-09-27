@@ -17,7 +17,10 @@ const NotificationCreate = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createNotification({...data, state: parseInt(data?.state?.toString())});
+    const isEmpy = Object.values(data).some((value) => value === '');
+    if (isEmpy) alert('Llenar todos los datos');
+    else createNotification({...data, state: parseInt(data?.state?.toString())});
+    
   };
 
   return (

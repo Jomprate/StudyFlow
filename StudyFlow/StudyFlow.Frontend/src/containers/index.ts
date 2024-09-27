@@ -10,3 +10,6 @@ export { default as SubjectTeacherId } from './subject/SubjectTeacherId';
 export { default as NotificationGet } from './notification/NotificationGet';
 export { default as NotificationCreate } from './notification/NotificationCreate';
 export { default as NotificationUpdate } from './notification/NotificationUpdate';
+export { default as CourseCreate } from './course/CourseCreate';
+export { default as CourseGet } from './course/CourseGet';
+export { default as CourseUpdate } from './course/CourseUpdate';

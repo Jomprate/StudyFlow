@@ -9,6 +9,7 @@ import Settings from '../pages/Settings/Settings.tsx';
 import Course from '../pages/Course/course.tsx';
 import Subject from '../pages/Subjects/Subject.tsx';
 import Notification from '../pages/Notification/Notification.tsx';
+import CourseCrud from '../pages/Course/CourseCrud.tsx';
 
 const Router = () => {
     return (
@@ -25,6 +26,11 @@ const Router = () => {
                 <Route path="/notification/:notificationId" element={<Notification />} />
                 <Route path="/notification/create" element={<Notification method='post' />} />
                 <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
+                <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
+                <Route path="/course" element={<CourseCrud />} />
+                <Route path="/course/user/:userId" element={<CourseCrud method='get'/>} />
+                <Route path="/course/:courseId" element={<CourseCrud method='get'/>} />
+                <Route path="/course/update/:courseId" element={<CourseCrud method='put'/>} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />

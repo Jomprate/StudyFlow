@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course.css';
 import { useTheme } from '../../ThemeContext';
-import NavBarCourse from '@components/NavBarCourse/NavBarCourse'; // Asegúrate de que la ruta sea correcta
-import Course_Announces from './Course_Announces/Course_Announces'; // Asegúrate de que la ruta sea correcta
-import Course_Classwork from './Course_Classwork/Course_Classwork'; // Asegúrate de que la ruta sea correcta
-import Course_People from './Course_People/Course_People'; // Asegúrate de que la ruta sea correcta
+import NavBarCourse from '@components/NavBarCourse/NavBarCourse'; // Asegï¿½rate de que la ruta sea correcta
+import Course_Announces from './Course_Announces/Course_Announces'; // Asegï¿½rate de que la ruta sea correcta
+import Course_Classwork from './Course_Classwork/Course_Classwork'; // Asegï¿½rate de que la ruta sea correcta
+import Course_People from './Course_People/Course_People'; // Asegï¿½rate de que la ruta sea correcta
 
 const Course: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
 
-    // Estado para controlar qué sección está activa
+    // Estado para controlar quï¿½ secciï¿½n estï¿½ activa
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
-    // Renderizado condicional basado en la sección activa
+    // Renderizado condicional basado en la secciï¿½n activa
     const renderSection = () => {
         switch (activeSection) {
             case 'announcements':
@@ -30,7 +30,7 @@ const Course: React.FC = () => {
 
     return (
         <div className={`course-page ${theme}`}>
-            {/* Aquí pasamos la función setActiveSection al NavBarCourse */}
+            {/* Aquï¿½ pasamos la funciï¿½n setActiveSection al NavBarCourse */}
             <NavBarCourse setActiveSection={setActiveSection} />
             <div className="course-container">
                 <div className="course-header">
@@ -39,7 +39,7 @@ const Course: React.FC = () => {
                 </div>
 
                 <div className="course-layout">
-                    {renderSection()} {/* Renderizar la sección correspondiente */}
+                    {renderSection()} {/* Renderizar la secciï¿½n correspondiente */}
                 </div>
             </div>
         </div>

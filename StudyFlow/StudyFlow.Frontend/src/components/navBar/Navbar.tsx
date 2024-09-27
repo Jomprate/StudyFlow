@@ -23,6 +23,9 @@ const Menu: React.FC = () => (
       <Link to="/notification">{useTranslation().t('Notification')}</Link>
     </p>
     <p>
+      <Link to="/course">{useTranslation().t('Course')}</Link>
+    </p>
+    <p>
       <Link to="/home_logged_in">test a</Link>
     </p>
     <p>
