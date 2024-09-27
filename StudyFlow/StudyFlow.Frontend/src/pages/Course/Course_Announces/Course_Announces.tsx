@@ -39,11 +39,6 @@ const Announces: React.FC = () => {
     return (
         <div className={`announces-page ${theme}`}>
             <div className="announces-container">
-                <div className="announces-header">
-                    <h1>2024-II G2 Construcción de Software</h1>
-                    <h2>Especialización Ingeniería de Software</h2>
-                </div>
-
                 <div className="announces-layout">
                     <div className="announces-sidebar">
                         <div className="announces-upcoming">
@@ -80,6 +75,9 @@ const Announces: React.FC = () => {
                                 )}
                             </ul>
                         </div>
+                    </div>
+
+                    <div className="announces-empty">
                     </div>
                 </div>
             </div>

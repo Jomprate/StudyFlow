@@ -14,7 +14,6 @@ const Course: React.FC = () => {
     // Estado para controlar qu� secci�n est� activa
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
-    // Renderizado condicional basado en la secci�n activa
     const renderSection = () => {
         switch (activeSection) {
             case 'announcements':
@@ -30,7 +29,7 @@ const Course: React.FC = () => {
 
     return (
         <div className={`course-page ${theme}`}>
-            {/* Aqu� pasamos la funci�n setActiveSection al NavBarCourse */}
+
             <NavBarCourse setActiveSection={setActiveSection} />
             <div className="course-container">
                 <div className="course-header">
@@ -39,7 +38,7 @@ const Course: React.FC = () => {
                 </div>
 
                 <div className="course-layout">
-                    {renderSection()} {/* Renderizar la secci�n correspondiente */}
+                    {renderSection()}
                 </div>
             </div>
         </div>
