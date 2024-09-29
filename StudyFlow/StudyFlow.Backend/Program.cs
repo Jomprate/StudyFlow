@@ -14,6 +14,7 @@ using Azure.Identity;
 using StudyFlow.Infrastructure.Interfaces;
 using StudyFlow.Infrastructure.Services;
 using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];
@@ -35,6 +36,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOnBoardingStudentService, OnBoardingStudentService>();
 builder.Services.AddScoped<IOnBoardingTeacherService, OnBoardingTeacherService>();
+builder.Services.AddScoped<IAnnounceRepository, AnnounceRepository>();
+builder.Services.AddScoped<IAnnounceService, AnnounceService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IJwtService>(new JwtService(builder.Configuration));
 builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(builder.Configuration));

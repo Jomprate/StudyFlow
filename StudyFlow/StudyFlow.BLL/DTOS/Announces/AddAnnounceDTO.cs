@@ -1,21 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace StudyFlow.BLL.DTOS.Announce
 {
     public class AddAnnounceDTO
     {
-        [Required]
+        [Required(ErrorMessage = "Title is required")]
         public string Title { get; set; } = null!;
 
-        [Required]
         public string HtmlContent { get; set; } = null!;
 
-        public List<string>? YouTubeVideos { get; set; }
+        public Guid UserId { get; set; }
 
-        public List<string>? GoogleDriveLinks { get; set; }
+        public Guid CourseId { get; set; }
 
-        public List<string>? AlternateLinks { get; set; }
+        public List<string> YouTubeVideos { get; set; } = new List<string>();
 
-        public Guid UserId { get; set; } // Se establece automáticamente basado en el usuario autenticado
+        public List<string> GoogleDriveLinks { get; set; } = new List<string>();
+
+        public List<string> AlternateLinks { get; set; } = new List<string>();
     }
 }

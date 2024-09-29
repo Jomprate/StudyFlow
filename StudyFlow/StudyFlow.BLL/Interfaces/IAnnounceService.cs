@@ -1,4 +1,5 @@
-﻿using StudyFlow.BLL.DTOS.Announce;
+﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Announce;
 using StudyFlow.DAL.Entities.Helper;
 using System;
 using System.Collections.Generic;
@@ -8,37 +9,26 @@ namespace StudyFlow.BLL.Interfaces
 {
     public interface IAnnounceService
     {
-        // Obtener todos los anuncios con paginación
-        Task<PaginationResult<GetAnnounceDTO>> GetAllAnnouncesAsync(Pagination pagination);
+        Task<IActionResult> GetAllAnnouncesAsync(Pagination pagination);
 
-        // Obtener todos los anuncios sin paginación
-        Task<IEnumerable<GetAnnounceDTO>> GetAllAnnouncesAsync();
+        Task<IActionResult> GetAllAnnouncesAsync();
 
-        // Obtener anuncios por UserId con paginación
-        Task<PaginationResult<GetAnnounceDTO>> GetAnnouncesByUserIdAsync(Guid userId, Pagination pagination);
+        Task<IActionResult> GetAnnouncesByUserIdAsync(Guid userId, Pagination pagination);
 
-        // Obtener un anuncio específico con detalles por ID
-        Task<GetAnnounceDTO> GetAnnounceWithDetailsAsync(Guid id);
+        Task<IActionResult> GetAnnounceWithDetailsAsync(Guid id);
 
-        // Obtener anuncios que contienen enlaces a YouTube
-        Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesWithYouTubeVideosAsync();
+        Task<IActionResult> CreateAnnounceAsync(AddAnnounceDTO announceDTO);
 
-        // Obtener anuncios que contienen enlaces a Google Drive
-        Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesWithGoogleDriveLinksAsync();
+        Task<IActionResult> UpdateAnnounceAsync(Guid id, AddAnnounceDTO announceDTO);
 
-        // Crear un nuevo anuncio
-        Task<Guid> CreateAnnounceAsync(AddAnnounceDTO announceDTO);
+        Task<IActionResult> DeleteAnnounceAsync(Guid id);
 
-        // Actualizar un anuncio existente
-        Task<bool> UpdateAnnounceAsync(Guid id, AddAnnounceDTO announceDTO);
+        Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId);
 
-        // Eliminar un anuncio por ID
-        Task<bool> DeleteAnnounceAsync(Guid id);
+        Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination);
 
-        // Obtener anuncios por CourseId sin paginación
-        Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesByCourseIdAsync(Guid courseId);
+        Task<IActionResult> GetAllAnnouncesWithDetailsAsync();
 
-        // Obtener anuncios por CourseId con paginación
-        Task<PaginationResult<GetAnnounceDTO>> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination);
+        Task<IActionResult> GetAllAnnouncesWithDetailsAsync(Pagination pagination);
     }
 }

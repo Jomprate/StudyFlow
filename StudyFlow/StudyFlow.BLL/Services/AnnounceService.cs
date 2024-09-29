@@ -1,9 +1,11 @@
-﻿using StudyFlow.BLL.DTOS.Announce;
+﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Announce;
+using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
-using StudyFlow.DAL.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,129 +15,346 @@ namespace StudyFlow.BLL.Services
     public class AnnounceService : IAnnounceService
     {
         private readonly IAnnounceRepository _announceRepository;
-        private IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AnnounceService(IUnitOfWork unitOfWork, IAnnounceRepository announceRepository)
+        public AnnounceService(IAnnounceRepository announceRepository, IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork;
             _announceRepository = announceRepository;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<GetAnnounceDTO>> GetAllAnnouncesAsync()
+        public async Task<IActionResult> GetAllAnnouncesAsync(Pagination pagination)
+        {
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
+            var announcesResult = await _announceRepository.GetAllAnnouncesAsync(pagination);
+            announcesResult.ListResult = announcesResult.ListResult
+                .Where(a => !a.IsDeleted)
+                .ToList();
+
+            if (!announcesResult.ListResult.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found.");
+            }
+
+            return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
+            {
+                ListResult = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList(),
+                TotalRecords = announcesResult.TotalRecords,
+                TotalPages = announcesResult.TotalPages,
+                Pagination = announcesResult.Pagination
+            });
+        }
+
+        public async Task<IActionResult> GetAllAnnouncesAsync()
         {
             var announces = await _announceRepository.GetAllAnnouncesAsync();
-            return announces.Select(a => MapToDTO(a));
+            var filteredAnnounces = announces
+                .Where(a => !a.IsDeleted)
+                .Select(a => MapToDTO(a));
+
+            if (!filteredAnnounces.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found.");
+            }
+
+            return ApiResponseHelper.Success(filteredAnnounces);
         }
 
-        public async Task<PaginationResult<GetAnnounceDTO>> GetAllAnnouncesAsync(Pagination pagination)
+        public async Task<IActionResult> GetAllAnnouncesWithDetailsAsync()
         {
-            var announcesResult = await _announceRepository.GetAllAnnouncesAsync(pagination);
-            return new PaginationResult<GetAnnounceDTO>
+            var announces = await _announceRepository.GetAllAnnouncesWithDetailsAsync();
+            var filteredAnnounces = announces
+                .Where(a => !a.IsDeleted)
+                .Select(a => MapToDTO(a));
+
+            if (!filteredAnnounces.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found with details.");
+            }
+
+            return ApiResponseHelper.Success(filteredAnnounces);
+        }
+
+        public async Task<IActionResult> GetAllAnnouncesWithDetailsAsync(Pagination pagination)
+        {
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
+            var announcesResult = await _announceRepository.GetAllAnnouncesWithDetailsAsync(pagination);
+            announcesResult.ListResult = announcesResult.ListResult
+                .Where(a => !a.IsDeleted)
+                .ToList();
+
+            if (!announcesResult.ListResult.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found with details.");
+            }
+
+            return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
             {
                 ListResult = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList(),
                 TotalRecords = announcesResult.TotalRecords,
                 TotalPages = announcesResult.TotalPages,
                 Pagination = announcesResult.Pagination
-            };
+            });
         }
 
-        public async Task<PaginationResult<GetAnnounceDTO>> GetAnnouncesByUserIdAsync(Guid userId, Pagination pagination)
+        public async Task<IActionResult> GetAnnouncesByUserIdAsync(Guid userId, Pagination pagination)
         {
+            if (userId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("UserId is required.");
+            }
+
+            var userExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == userId);
+            if (!userExists)
+            {
+                return ApiResponseHelper.NotFound($"User with Id {userId} not found.");
+            }
+
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
             var announcesResult = await _announceRepository.GetAnnouncesByUserIdAsync(userId, pagination);
-            return new PaginationResult<GetAnnounceDTO>
+            announcesResult.ListResult = announcesResult.ListResult
+                .Where(a => !a.IsDeleted)
+                .ToList();
+
+            if (!announcesResult.ListResult.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found for the specified user.");
+            }
+
+            return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
             {
                 ListResult = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList(),
                 TotalRecords = announcesResult.TotalRecords,
                 TotalPages = announcesResult.TotalPages,
                 Pagination = announcesResult.Pagination
-            };
+            });
         }
 
-        public async Task<GetAnnounceDTO> GetAnnounceWithDetailsAsync(Guid id)
+        public async Task<IActionResult> GetAnnounceWithDetailsAsync(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Announce Id is required.");
+            }
+
             var announce = await _announceRepository.GetAnnounceWithDetailsAsync(id);
-            if (announce == null)
-                throw new KeyNotFoundException("Announce not found");
+            if (announce == null || announce.IsDeleted)
+            {
+                return ApiResponseHelper.NotFound("Announce not found.");
+            }
 
-            return MapToDTO(announce);
+            return ApiResponseHelper.Success(MapToDTO(announce));
         }
 
-        public async Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesWithYouTubeVideosAsync()
+        public async Task<IActionResult> CreateAnnounceAsync(AddAnnounceDTO announceDTO)
         {
-            var announces = await _announceRepository.GetAnnouncesWithYouTubeVideosAsync();
-            return announces.Select(a => MapToDTO(a));
-        }
+            if (announceDTO == null)
+            {
+                return ApiResponseHelper.BadRequest("Announce data is required.");
+            }
 
-        public async Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesWithGoogleDriveLinksAsync()
-        {
-            var announces = await _announceRepository.GetAnnouncesWithGoogleDriveLinksAsync();
-            return announces.Select(a => MapToDTO(a));
-        }
+            if (string.IsNullOrWhiteSpace(announceDTO.Title))
+            {
+                return ApiResponseHelper.BadRequest("Title cannot be empty.");
+            }
 
-        public async Task<Guid> CreateAnnounceAsync(AddAnnounceDTO announceDTO)
-        {
+            if (string.IsNullOrWhiteSpace(announceDTO.HtmlContent))
+            {
+                return ApiResponseHelper.BadRequest("HtmlContent cannot be empty.");
+            }
+
+            if (announceDTO.UserId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("UserId is required.");
+            }
+
+            var userExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == announceDTO.UserId);
+            if (!userExists)
+            {
+                return ApiResponseHelper.NotFound($"User with Id {announceDTO.UserId} not found.");
+            }
+
+            announceDTO.YouTubeVideos ??= new List<string>();
+            announceDTO.GoogleDriveLinks ??= new List<string>();
+            announceDTO.AlternateLinks ??= new List<string>();
+
             var announce = new Announce
             {
                 Title = announceDTO.Title,
                 HtmlContent = announceDTO.HtmlContent,
-                YouTubeVideos = announceDTO.YouTubeVideos ?? new List<string>(),
-                GoogleDriveLinks = announceDTO.GoogleDriveLinks ?? new List<string>(),
-                AlternateLinks = announceDTO.AlternateLinks ?? new List<string>(),
+                YouTubeVideos = announceDTO.YouTubeVideos,
+                GoogleDriveLinks = announceDTO.GoogleDriveLinks,
+                AlternateLinks = announceDTO.AlternateLinks,
                 UserId = announceDTO.UserId,
                 CourseId = announceDTO.CourseId
             };
 
-            await _announceRepository.AddAsync(announce);
-            await _unitOfWork.SaveChangesAsync();
+            try
+            {
+                await _announceRepository.AddAnnounceAsync(announce);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.InternalServerError("Failed to create announce.", ex.Message);
+            }
 
-            return announce.Id;
+            return ApiResponseHelper.Create(announce.Id);
         }
 
-        public async Task<bool> UpdateAnnounceAsync(Guid id, AddAnnounceDTO announceDTO)
+        public async Task<IActionResult> UpdateAnnounceAsync(Guid id, AddAnnounceDTO announceDTO)
         {
-            var announce = await _announceRepository.GetByIdAsync(id);
-            if (announce == null) return false;
+            if (id == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Announce Id is required.");
+            }
 
-            announce.Title = announceDTO.Title;
-            announce.HtmlContent = announceDTO.HtmlContent;
-            announce.YouTubeVideos = announceDTO.YouTubeVideos ?? new List<string>();
-            announce.GoogleDriveLinks = announceDTO.GoogleDriveLinks ?? new List<string>();
-            announce.AlternateLinks = announceDTO.AlternateLinks ?? new List<string>();
-            announce.CourseId = announceDTO.CourseId;
+            if (announceDTO == null)
+            {
+                return ApiResponseHelper.BadRequest("Announce data is required.");
+            }
 
-            _announceRepository.Update(announce);
-            await _unitOfWork.SaveChangesAsync();
+            if (string.IsNullOrWhiteSpace(announceDTO.Title))
+            {
+                return ApiResponseHelper.BadRequest("Title cannot be empty.");
+            }
 
-            return true;
+            if (string.IsNullOrWhiteSpace(announceDTO.HtmlContent))
+            {
+                return ApiResponseHelper.BadRequest("HtmlContent cannot be empty.");
+            }
+
+            if (announceDTO.UserId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("UserId is required.");
+            }
+
+            var userExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == announceDTO.UserId);
+            if (!userExists)
+            {
+                return ApiResponseHelper.NotFound($"User with Id {announceDTO.UserId} not found.");
+            }
+
+            var existingAnnounce = await _announceRepository.GetAnnounceWithDetailsAsync(id);
+            if (existingAnnounce == null || existingAnnounce.IsDeleted)
+            {
+                return ApiResponseHelper.NotFound("Announce not found.");
+            }
+
+            announceDTO.YouTubeVideos ??= new List<string>();
+            announceDTO.GoogleDriveLinks ??= new List<string>();
+            announceDTO.AlternateLinks ??= new List<string>();
+
+            existingAnnounce.Title = announceDTO.Title;
+            existingAnnounce.HtmlContent = announceDTO.HtmlContent;
+            existingAnnounce.YouTubeVideos = announceDTO.YouTubeVideos;
+            existingAnnounce.GoogleDriveLinks = announceDTO.GoogleDriveLinks;
+            existingAnnounce.AlternateLinks = announceDTO.AlternateLinks;
+            existingAnnounce.UserId = announceDTO.UserId;
+            existingAnnounce.CourseId = announceDTO.CourseId;
+
+            try
+            {
+                await _announceRepository.UpdateAnnounceAsync(existingAnnounce);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.InternalServerError("Failed to update announce.", ex.Message);
+            }
+
+            return ApiResponseHelper.NoContent();
         }
 
-        public async Task<bool> DeleteAnnounceAsync(Guid id)
+        public async Task<IActionResult> DeleteAnnounceAsync(Guid id)
         {
-            var announce = await _announceRepository.GetByIdAsync(id);
-            if (announce == null) return false;
+            if (id == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Announce Id is required.");
+            }
 
-            _announceRepository.Delete(announce);
-            await _unitOfWork.SaveChangesAsync();
+            var announce = await _announceRepository.GetAnnounceWithDetailsAsync(id);
+            if (announce == null || announce.IsDeleted)
+            {
+                return ApiResponseHelper.NotFound("Announce not found.");
+            }
 
-            return true;
+            announce.IsDeleted = true;
+
+            try
+            {
+                await _announceRepository.UpdateAnnounceAsync(announce);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.InternalServerError("Failed to delete announce.", ex.Message);
+            }
+
+            return ApiResponseHelper.NoContent();
         }
 
-        public async Task<IEnumerable<GetAnnounceDTO>> GetAnnouncesByCourseIdAsync(Guid courseId)
+        public async Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId)
         {
+            if (courseId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Course Id is required.");
+            }
+
             var announces = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId);
-            return announces.Select(a => MapToDTO(a));
+            var filteredAnnounces = announces
+                .Where(a => !a.IsDeleted)
+                .Select(a => MapToDTO(a));
+
+            if (!filteredAnnounces.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found for the specified course.");
+            }
+
+            return ApiResponseHelper.Success(filteredAnnounces);
         }
 
-        public async Task<PaginationResult<GetAnnounceDTO>> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination)
+        public async Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination)
         {
+            if (courseId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Course Id is required.");
+            }
+
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
             var announcesResult = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId, pagination);
-            return new PaginationResult<GetAnnounceDTO>
+            announcesResult.ListResult = announcesResult.ListResult
+                .Where(a => !a.IsDeleted)
+                .ToList();
+
+            if (!announcesResult.ListResult.Any())
+            {
+                return ApiResponseHelper.NotFound("No announces found for the specified course.");
+            }
+
+            return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
             {
                 ListResult = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList(),
                 TotalRecords = announcesResult.TotalRecords,
                 TotalPages = announcesResult.TotalPages,
                 Pagination = announcesResult.Pagination
-            };
+            });
         }
 
         private GetAnnounceDTO MapToDTO(Announce announce)
@@ -145,11 +364,10 @@ namespace StudyFlow.BLL.Services
                 Id = announce.Id,
                 Title = announce.Title,
                 HtmlContent = announce.HtmlContent,
-                ProfilePicture = announce.User?.HaveProfilePicture == true ? announce.User.ProfilePicture : null,
                 YouTubeVideos = announce.YouTubeVideos,
                 GoogleDriveLinks = announce.GoogleDriveLinks,
                 AlternateLinks = announce.AlternateLinks,
-                UserName = announce.User != null ? $"{announce.User.FirstName} {announce.User.LastName}" : "Unknown User"
+                UserName = announce.User != null ? $"{announce.User.FirstName} {announce.User.LastName}" : "Unknown User",
             };
         }
     }
