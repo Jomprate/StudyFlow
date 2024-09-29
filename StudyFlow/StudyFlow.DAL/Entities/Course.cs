@@ -11,5 +11,6 @@
         public User Teacher { get; set; } = null!;
         public ICollection<Enrollment> ListEnrollment { get; set; } = new List<Enrollment>();
         public ICollection<Subject> ListSubject { get; set; } = new List<Subject>();
+        public ICollection<Announce> Announces { get; set; } = new List<Announce>();
     }
 }

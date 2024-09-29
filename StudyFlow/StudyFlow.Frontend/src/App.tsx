@@ -7,7 +7,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 
 function App() {
-    const [i18nReady, setI18nReady] = useState(false); // Controla si i18next está listo
+    const [i18nReady, setI18nReady] = useState(false);
     const [backendReady, setBackendReady] = useState(false); // Controla si el backend está listo
     const [showLoadingScreen, setShowLoadingScreen] = useState(true); // Estado de la pantalla de carga
     const { theme } = useTheme();
