@@ -19,6 +19,8 @@ namespace StudyFlow.DAL.Data
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Scheduled> Scheduleds { get; set; }
 
+        public DbSet<Announce> Announces { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
