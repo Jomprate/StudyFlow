@@ -2,7 +2,7 @@
 
 namespace StudyFlow.DAL.Entities
 {
-    public class Announce
+    public class Announce : EntityAuditBase
     {
         [Key]
         public Guid Id { get; set; }
