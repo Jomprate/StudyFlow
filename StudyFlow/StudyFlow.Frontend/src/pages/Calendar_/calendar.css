@@ -16,49 +16,68 @@ html, body {
     align-items: stretch;
     min-height: 100vh;
     width: 100%;
-    padding: -10px;
     margin: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    padding: -10px;
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .calendar-container {
     padding: 20px;
-    font-family: Arial, sans-serif;
+    margin-right: 20px;
 }
 
     .calendar-container h1 {
-        color: #4169e1;
+        color: var(--heading-color);
         text-align: center;
     }
 
     .calendar-container p {
         font-size: 1.1rem;
-        color: #333;
+        color: var(--text-color);
     }
 
-.calendar_page.dark {
-    background-color: #0a3340;
-    color: #ffffff;
+:root {
+    --background-color: #ffffff;
+    --text-color: #0a3340;
+    --heading-color: #4169e1;
 }
 
-    .calendar_page.dark .requests-container h1 {
-        color: #80b3ff;
+.dark {
+    --background-color: #0a3340;
+    --text-color: #ffffff;
+    --heading-color: #80b3ff;
+}
+
+.light {
+    --background-color: #ffffff;
+    --text-color: #0a3340;
+    --heading-color: #4169e1;
+}
+
+.calendar_page.dark {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+    .calendar_page.dark .calendar-container h1 {
+        color: var(--heading-color);
     }
 
-    .calendar_page.dark .requests-container p {
-        color: #cccccc;
+    .calendar_page.dark .calendar-container p {
+        color: var(--text-color);
     }
 
 .calendar_page.light {
-    background-color: #fff;
-    color: #0a3340;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
-.calendar_page.dark .requests-container h1 {
-    color: #80b3ff;
-}
+    .calendar_page.light .calendar-container h1 {
+        color: var(--heading-color);
+    }
 
-.calendar_page.dark .requests-container p {
-    color: #cccccc;
-}
+    .calendar_page.light .calendar-container p {
+        color: var(--text-color);
+    }
