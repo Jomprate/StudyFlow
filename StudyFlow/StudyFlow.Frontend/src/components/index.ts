@@ -13,10 +13,10 @@ export { default as Slider } from "./slider/Slider";
 export { default as NavbarLoggedIn } from "./navBarLoggedIn/NavbarLoggedIn";
 export { default as SideBarMenu } from "./sideBarMenu/SideBarMenu";
 export { default as LoggedInMainLayout } from './layouts/loggedInMainLayout/LoggedInMainLayout';
-export { default as LoadingScreen } from "./LoadingScreen/LoadingScreen";
+export { default as LoadingScreen } from "./loadingScreen/LoadingScreen";
 export { default as CourseCard } from "./courseCard/CourseCard";
 export { default as AnnouncementBox_Create } from "./announcementBox/announcementBox_Create/AnnouncementBox_Create";
 export { default as AnnouncementBox } from "./announcementBox/announcementBox/AnnouncementBox";
 export { default as YTVideoCard } from "./cards/YoutubeVideoCard/YTVideoCard";
 
-export { default as NavbarCourse } from './navBarCourse/NavbarCourse';
+export { default as NavbarCourse } from './navBarCourse/NavBarCourse';

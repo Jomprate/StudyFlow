@@ -24,6 +24,7 @@ namespace StudyFlow.DAL.Data
             SeedRole(modelBuilder);
             SeedUserRole(modelBuilder);
             SeedDataForStudyFlow(modelBuilder);
+            SeedAnnounces(modelBuilder);
         }
 
         public static void SeedCountry(ModelBuilder modelBuilder)
@@ -497,6 +498,115 @@ namespace StudyFlow.DAL.Data
                     Description = "Norwegian is the study of the Norwegian language.",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
+                }
+            );
+        }
+
+        public static void SeedAnnounces(ModelBuilder modelBuilder)
+        {
+            var userId = Guid.Parse("6fe44fdc-cac4-4d08-82d6-8a672b6960c0");
+            var courseId = Guid.Parse("e70b6d49-1025-4cdb-b25d-f9c5dbe8d8ec");
+
+            modelBuilder.Entity<Announce>().HasData(
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Introducción a la Construcción de Software",
+                    HtmlContent = "Vamos a discutir los conceptos básicos de construcción de software y su importancia en el desarrollo de sistemas robustos.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Pruebas Unitarias en Construcción de Software",
+                    HtmlContent = "En esta sesión aprenderemos sobre la importancia de las pruebas unitarias y cómo aplicarlas efectivamente.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Refactorización y Buenas Prácticas",
+                    HtmlContent = "Exploraremos cómo la refactorización puede mejorar el código sin modificar su funcionalidad y las buenas prácticas para mantenerlo limpio.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Integración Continua (CI) en Proyectos de Software",
+                    HtmlContent = "Hablaremos sobre cómo implementar integración continua para detectar problemas antes de que lleguen a producción.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Entorno de Desarrollo Local y DevOps",
+                    HtmlContent = "Aprenderemos cómo configurar un entorno de desarrollo local y la importancia de prácticas DevOps en el ciclo de desarrollo.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Gestión de Dependencias y Control de Versiones",
+                    HtmlContent = "Analizaremos cómo gestionar dependencias del proyecto y las mejores prácticas para el control de versiones con Git.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Metodologías Ágiles en la Construcción de Software",
+                    HtmlContent = "Exploraremos cómo aplicar metodologías ágiles, como Scrum y Kanban, durante el desarrollo de software.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Documentación del Código y del Proyecto",
+                    HtmlContent = "La documentación es esencial para la construcción de software de calidad. Discutiremos cómo documentar adecuadamente el proyecto.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Arquitectura y Patrones de Diseño",
+                    HtmlContent = "Aprenderemos sobre los patrones de diseño y cómo aplicarlos para construir una arquitectura robusta.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
+                },
+                new Announce
+                {
+                    Id = Guid.NewGuid(),
+                    Title = "Herramientas para la Construcción de Software",
+                    HtmlContent = "Veremos herramientas como Visual Studio, Docker y Jenkins, que facilitan el proceso de construcción de software.",
+                    ProfilePicture = null,
+                    CourseId = courseId,
+                    UserId = userId,
+                    IsDeleted = false
                 }
             );
         }

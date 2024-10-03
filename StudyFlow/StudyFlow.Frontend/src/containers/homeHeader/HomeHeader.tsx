@@ -1,7 +1,7 @@
 import React from 'react';
 import './homeheader.css';
 import { useTranslation } from 'react-i18next';
-import { Card, Slider } from '../../Components';
+import { Card, Slider } from '../../components';
 import People from '../../assets/studyflow-people.png';
 import { SwiperSlide } from 'swiper/react';
 import itmImg from '../../assets/itm.png';

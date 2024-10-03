@@ -1,6 +1,6 @@
 import React from 'react';
 import './Home.css';
-import { Navbar } from '../../Components';
+import { Navbar } from '../../components';
 import { Footer, HomeHeader } from '../../containers';
 
 const Home: React.FC = () => {

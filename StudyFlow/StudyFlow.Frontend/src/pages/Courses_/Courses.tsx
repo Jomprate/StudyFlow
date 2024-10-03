@@ -22,7 +22,7 @@ const Courses: React.FC = () => {
                             key={course.id}
                             name={course.name}
                             description={course.description}
-                            professor={course.professor}
+                            teacher={course.professor}
                             image={course.image}
                         />
                     ))}

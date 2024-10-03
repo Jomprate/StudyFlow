@@ -1,16 +1,16 @@
 import React from 'react';
 import './courseCard.css';
-import { useTheme } from '../../ThemeContext'; // Asegúrate de que el contexto está funcionando correctamente
-import CurseImage from '../../assets/user_p.svg'; // Importación del SVG como imagen
+import { useTheme } from '../../ThemeContext';
+import CurseImage from '../../assets/user_p.svg';
 
 interface CourseCardProps {
     name: string;
     description: string;
-    professor: string;
+    teacher: string;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({ name, description, professor }) => {
-    const { theme } = useTheme(); // Esto debería devolver 'light' o 'dark'
+const CourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) => {
+    const { theme } = useTheme();
 
     return (
         <div className={`course-card ${theme}`}>
@@ -19,7 +19,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ name, description, professor })
                 <div className="course-title-container">
                     <h2 className="course-title">{name}</h2>
                 </div>
-                <p className="course-professor">Profesor: {professor}</p>
+                <p className="course-teacher">Profesor: {teacher}</p>
                 <p className="course-description">{description}</p>
             </div>
         </div>

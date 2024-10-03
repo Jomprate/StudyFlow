@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.Announce;
 using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.Interfaces;
@@ -241,6 +242,11 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.BadRequest("UserId is required.");
             }
 
+            if (announceDTO.CourseId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("CourseId is required.");
+            }
+
             var userExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == announceDTO.UserId);
             if (!userExists)
             {
@@ -253,15 +259,12 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound("Announce not found.");
             }
 
-            announceDTO.YouTubeVideos ??= new List<string>();
-            announceDTO.GoogleDriveLinks ??= new List<string>();
-            announceDTO.AlternateLinks ??= new List<string>();
-
+            // Actualizar los datos del anuncio
             existingAnnounce.Title = announceDTO.Title;
             existingAnnounce.HtmlContent = announceDTO.HtmlContent;
-            existingAnnounce.YouTubeVideos = announceDTO.YouTubeVideos;
-            existingAnnounce.GoogleDriveLinks = announceDTO.GoogleDriveLinks;
-            existingAnnounce.AlternateLinks = announceDTO.AlternateLinks;
+            existingAnnounce.YouTubeVideos = announceDTO.YouTubeVideos ?? new List<string>();
+            existingAnnounce.GoogleDriveLinks = announceDTO.GoogleDriveLinks ?? new List<string>();
+            existingAnnounce.AlternateLinks = announceDTO.AlternateLinks ?? new List<string>();
             existingAnnounce.UserId = announceDTO.UserId;
             existingAnnounce.CourseId = announceDTO.CourseId;
 
@@ -270,10 +273,15 @@ namespace StudyFlow.BLL.Services
                 await _announceRepository.UpdateAnnounceAsync(existingAnnounce);
                 await _unitOfWork.SaveChangesAsync();
             }
+            catch (DbUpdateException dbEx)
+            {
+                return ApiResponseHelper.InternalServerError("Database error occurred while updating announce.", dbEx.InnerException?.Message ?? dbEx.Message);
+            }
             catch (Exception ex)
             {
-                return ApiResponseHelper.InternalServerError("Failed to update announce.", ex.Message);
+                return ApiResponseHelper.InternalServerError("An unexpected error occurred while updating announce.", ex.Message);
             }
+
 
             return ApiResponseHelper.NoContent();
         }
