@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course.css';
 import { useTheme } from '../../ThemeContext';
-import NavBarCourse from '@components/NavBarCourse/NavBarCourse'; // Aseg�rate de que la ruta sea correcta
-import Course_Announces from './Course_Announces/Course_Announces'; // Aseg�rate de que la ruta sea correcta
-import Course_Classwork from './Course_Classwork/Course_Classwork'; // Aseg�rate de que la ruta sea correcta
-import Course_People from './Course_People/Course_People'; // Aseg�rate de que la ruta sea correcta
+import NavBarCourse from '@components/navBarCourse/NavBarCourse';
+import Course_Announces from './Course_Announces/Course_Announces';
+import Course_Classwork from './Course_ClassWork_/Course_Classwork';
+import Course_People from './Course_People/Course_People';
 
 const Course: React.FC = () => {
     const { t } = useTranslation();

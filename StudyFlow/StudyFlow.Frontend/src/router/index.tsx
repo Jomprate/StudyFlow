@@ -1,15 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 import Countries from '../pages/Countries';
-import LoggedInMainLayout from '../Components/layouts/loggedInMainLayout/LoggedInMainLayout';
-import Courses from '../pages/courses/Courses.tsx';
+import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout';
+import Courses from '../pages/Courses_/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';
 import Settings from '../pages/Settings/Settings.tsx';
-import Course from '../pages/Course/course.tsx';
+import Course from '../pages/Course_/course.tsx';
 import Subject from '../pages/Subjects/Subject.tsx';
 import Notification from '../pages/Notification/Notification.tsx';
-import CourseCrud from '../pages/Course/CourseCrud.tsx';
+import CourseCrud from '../pages/Course_/CourseCrud.tsx';
+import Calendar from '../pages/Calendar_/Calendar.tsx';
 
 const Router = () => {
     return (
@@ -28,13 +29,14 @@ const Router = () => {
                 <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
                 <Route path="/notification/update/:notificationId" element={<Notification method='put' />} />
                 <Route path="/course/create" element={<CourseCrud />} />
-                <Route path="/course" element={<CourseCrud method='get'/>} />
-                <Route path="/course/:courseId" element={<CourseCrud method='get'/>} />
-                <Route path="/course/update/:courseId" element={<CourseCrud method='put'/>} />
+                <Route path="/course" element={<CourseCrud method='get' />} />
+                <Route path="/course/:courseId" element={<CourseCrud method='get' />} />
+                <Route path="/course/update/:courseId" element={<CourseCrud method='put' />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />
                     <Route path="notifications" element={<Notifications />} />
+                    <Route path="calendar" element={<Calendar />} />
                     <Route path="requests" element={<Requests />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>

@@ -1,54 +1,173 @@
-.announcement-box {
-    margin: 5px;
+.announcementBox_Create_announcement-box {
+    margin: 20px auto;
     width: 100%;
-    border: 1px solid #ccc;
-    padding: 16px;
-    border-radius: 4px;
-    background-color: white;
+    max-width: 700px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
-.announcement-input {
+.announcementBox_Create_title-input {
     width: 100%;
-    height: 100px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 18px;
+    margin-bottom: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-weight: bold;
+}
+
+    .announcementBox_Create_title-input:focus {
+        border-color: #4285f4;
+    }
+
+.announcementBox_Create_announcement-editor {
+    width: 100%;
+    min-height: 180px;
     border: none;
     outline: none;
+    padding: 10px;
     font-size: 16px;
-    padding: 8px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    overflow-y: hidden;
+    white-space: pre-wrap;
+    transition: background-color 0.3s ease;
     resize: none;
 }
 
-.controls {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-}
-
-    .controls button {
-        border: none;
-        background-color: transparent;
-        font-size: 16px;
-        cursor: pointer;
+    .announcementBox_Create_announcement-editor:focus {
+        background-color: #f0f0f0;
     }
 
-.footer {
+    .announcementBox_Create_announcement-editor:empty::before {
+        content: attr(placeholder);
+        color: #999;
+        pointer-events: none;
+    }
+
+    /* Estilo para listas y sublistas */
+    .announcementBox_Create_announcement-editor ul,
+    .announcementBox_Create_announcement-editor ol {
+        margin: 8px 0;
+        padding-left: 30px;
+        list-style-position: outside;
+    }
+
+        .announcementBox_Create_announcement-editor ul ul,
+        .announcementBox_Create_announcement-editor ol ol,
+        .announcementBox_Create_announcement-editor ul ol,
+        .announcementBox_Create_announcement-editor ol ul {
+            margin: 8px 0;
+            padding-left: 40px; /* Aumentar la sangría para sublistas */
+            list-style-type: inherit;
+        }
+
+    .announcementBox_Create_announcement-editor ul {
+        list-style-type: disc; /* Viñetas para listas no numeradas */
+    }
+
+    .announcementBox_Create_announcement-editor ol {
+        list-style-type: decimal; /* Números para listas numeradas */
+    }
+
+    .announcementBox_Create_announcement-editor li {
+        margin: 6px 0;
+        line-height: 1.5;
+        list-style-position: outside;
+    }
+
+.announcementBox_Create_controls {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+    gap: 10px;
+    margin: 15px 0;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+    justify-content: flex-start;
 }
 
-.submit-btn {
-    padding: 8px 16px;
-    background-color: #4285f4;
-    color: white;
+.announcementBox_Create_control-button {
     border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+    padding: 10px;
+    transition: color 0.3s, background-color 0.2s;
+}
+
+    .announcementBox_Create_control-button:hover,
+    .announcementBox_Create_control-button.active {
+        color: #333;
+        background-color: #e0e0e0;
+        border-radius: 8px;
+    }
+
+.announcementBox_Create_footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.announcementBox_Create_footer-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.announcementBox_Create_cancel-button {
+    color: #888;
+}
+
+    .announcementBox_Create_cancel-button:hover {
+        color: #555;
+    }
+
+.announcementBox_Create_publish-button {
+    background-color: #4285f4;
+    color: #fff;
     border-radius: 4px;
     cursor: pointer;
 }
 
-    .submit-btn:disabled {
+    .announcementBox_Create_publish-button:disabled {
         background-color: #ccc;
+        cursor: not-allowed;
     }
 
-    .submit-btn:enabled {
-        background-color: #4285f4;
+    .announcementBox_Create_publish-button:not(:disabled):hover {
+        background-color: #357ae8;
     }
+
+/* Tema claro */
+.light .announcementBox_Create_announcement-box {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.light .announcementBox_Create_title-input,
+.light .announcementBox_Create_announcement-editor {
+    background-color: #f9f9f9;
+    color: #000000;
+}
+
+/* Tema oscuro */
+.dark .announcementBox_Create_announcement-box {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.dark .announcementBox_Create_title-input,
+.dark .announcementBox_Create_announcement-editor {
+    background-color: #444444;
+    color: #ffffff;
+}
