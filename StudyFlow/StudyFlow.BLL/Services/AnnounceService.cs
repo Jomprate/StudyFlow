@@ -282,7 +282,6 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.InternalServerError("An unexpected error occurred while updating announce.", ex.Message);
             }
 
-
             return ApiResponseHelper.NoContent();
         }
 
@@ -376,6 +375,8 @@ namespace StudyFlow.BLL.Services
                 GoogleDriveLinks = announce.GoogleDriveLinks,
                 AlternateLinks = announce.AlternateLinks,
                 UserName = announce.User != null ? $"{announce.User.FirstName} {announce.User.LastName}" : "Unknown User",
+                CreationDate = announce.CreatedAt,
+                LastModificationDate = announce.UpdatedAt
             };
         }
     }

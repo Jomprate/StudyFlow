@@ -22,7 +22,8 @@ namespace StudyFlow.DAL.Repositories
 
         public async Task<Announce> AddAnnounceAsync(Announce announce)
         {
-            await _context.Set<Announce>().AddAsync(announce);
+            //await _context.Set<Announce>().AddAsync(announce);
+            await CreateAsync(announce);
             return announce;
         }
 
@@ -36,19 +37,20 @@ namespace StudyFlow.DAL.Repositories
             }
 
             announce.IsDeleted = true;
-            _context.Set<Announce>().Update(announce);
+            await UpdateAsync(announce);
+            //_context.Set<Announce>().Update(announce);
             return true;
         }
 
         public async Task<bool> UpdateAnnounceAsync(Announce announce)
         {
-            var existingAnnounce = await _context.Set<Announce>().FindAsync(announce.Id);
+            var existingAnnounce = await _context.Set<Announce>().AsNoTracking().FirstOrDefaultAsync(w => w.Id == announce.Id);
             if (existingAnnounce == null || existingAnnounce.IsDeleted)
             {
                 return false;
             }
 
-            _context.Entry(existingAnnounce).CurrentValues.SetValues(announce);
+            await UpdateAsync(announce);
             return true;
         }
 

@@ -20,5 +20,9 @@ namespace StudyFlow.BLL.DTOS.Announce
         public List<string> AlternateLinks { get; set; } = new List<string>();
 
         public string UserName { get; set; } = null!;
+
+        public DateTime CreationDate { get; set; }
+
+        public DateTime LastModificationDate { get; set; }
     }
 }
