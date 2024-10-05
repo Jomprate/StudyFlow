@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FaHome, FaBook, FaUsers } from 'react-icons/fa'; // Importa los íconos que necesitas
+import { FaHome, FaBook, FaUsers } from 'react-icons/fa';
 import './navBarCourse.css';
 
 interface NavBarCourseProps {
@@ -14,15 +14,15 @@ const NavBarCourse: React.FC<NavBarCourseProps> = ({ setActiveSection }) => {
         <nav className="navBarCourse">
             <div className="navBarCourse-links">
                 <button onClick={() => setActiveSection('announcements')}>
-                    <FaHome /> {/* Ícono de casa */}
+                    <FaHome />
                     {t('announcements')}
                 </button>
                 <button onClick={() => setActiveSection('classwork')}>
-                    <FaBook /> {/* Ícono de libro */}
+                    <FaBook />
                     {t('classwork')}
                 </button>
                 <button onClick={() => setActiveSection('people')}>
-                    <FaUsers /> {/* Ícono de personas */}
+                    <FaUsers />
                     {t('people')}
                 </button>
             </div>

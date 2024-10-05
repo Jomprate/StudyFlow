@@ -321,4 +321,67 @@
   <data name="global_error_requestSetup" xml:space="preserve">
     <value>Error setting up the request: {{message}}</value>
   </data>
+  <data name="month_January" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_February" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_March" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_April" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_May" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_June" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_July" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_August" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_September" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_October" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_November" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="month_December" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="day_Sunday" xml:space="preserve">
+    <value>Sunday</value>
+  </data>
+  <data name="day_Monday" xml:space="preserve">
+    <value>Monday</value>
+  </data>
+  <data name="day_Tuesday" xml:space="preserve">
+    <value>Tuesday</value>
+  </data>
+  <data name="day_Wednesday" xml:space="preserve">
+    <value>Wednesday</value>
+  </data>
+  <data name="day_Thursday" xml:space="preserve">
+    <value>Thursday</value>
+  </data>
+  <data name="day_Friday" xml:space="preserve">
+    <value>Friday</value>
+  </data>
+  <data name="day_Saturday" xml:space="preserve">
+    <value>Saturday</value>
+  </data>
+  <data name="calendar_CalendarTitle" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="Calendar_Week" xml:space="preserve">
+    <value>Week</value>
+  </data>
 </root>

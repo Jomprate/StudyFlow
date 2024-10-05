@@ -38,6 +38,10 @@ html, body {
         color: var(--text-color);
     }
 
+.fc-col-header-cell {
+    text-transform: capitalize;
+}
+
 :root {
     --background-color: #ffffff;
     --text-color: #0a3340;

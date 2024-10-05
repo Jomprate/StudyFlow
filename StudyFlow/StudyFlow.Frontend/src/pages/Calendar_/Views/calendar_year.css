@@ -1,0 +1,97 @@
+.calendar_year-view {
+    padding: 20px;
+    margin-right: 20px;
+}
+
+    .calendar_year-view h1 {
+        color: var(--heading-color);
+        text-align: center;
+    }
+
+.year-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+    .year-navigation .navigation-button {
+        background-color: var(--heading-color);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+        .year-navigation .navigation-button:hover {
+            background-color: #2a4e8a;
+            transform: scale(1.05);
+        }
+
+    .year-navigation .year-label {
+        font-size: 1.5rem;
+        color: var(--heading-color);
+        text-align: center;
+        line-height: 1;
+        padding-bottom: 12px;
+    }
+
+.year-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.year-grid-month {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 2px solid var(--heading-color);
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    text-transform: capitalize;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 8px;
+}
+
+    .year-grid-month:hover {
+        background-color: var(--heading-color);
+        color: #ffffff;
+        transform: scale(1.05);
+    }
+
+.year-text {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--heading-color);
+    margin-bottom: 10px;
+}
+
+.calendar_year-view .fc-daygrid-month {
+    margin: 10px;
+    border: 1px solid #d1c4e9;
+    padding: 5px;
+    background-color: #f3e5f5;
+}
+
+    .calendar_year-view .fc-daygrid-month .fc-day {
+        border: 1px solid #e1bee7;
+        padding: 2px;
+        color: #6a1b9a;
+    }
+
+    .calendar_year-view .fc-daygrid-month .fc-daygrid-day-events {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }

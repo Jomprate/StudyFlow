@@ -1,0 +1,27 @@
+.calendar_week-view {
+    padding: 20px;
+    margin-right: 20px;
+}
+
+    .calendar_week-view h1 {
+        color: var(--heading-color);
+        text-align: center;
+    }
+
+    .calendar_week-view .fc-timegrid-slot {
+        border-top: 1px solid #d0d0d0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .calendar_week-view .fc-timegrid-event {
+        background-color: #c8e6c9;
+        color: #388e3c;
+        border-radius: 4px;
+        padding: 3px 6px;
+        font-size: 0.9rem;
+    }
+
+    .calendar_week-view .fc-timegrid-axis {
+        color: var(--text-color);
+        font-weight: 500;
+    }
