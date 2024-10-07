@@ -18,6 +18,8 @@
     border: 2px solid #4a90e2;
 }
 
+
+
 .course-layout {
     margin-top: 20px;
     display: flex;
@@ -62,8 +64,6 @@
     align-items: flex-start;
     justify-content: flex-start;
 }
-
-
 
 .course-page.light {
     background-color: var(--color-background-light);

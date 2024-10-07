@@ -20,3 +20,11 @@ export { default as AnnouncementBox } from "./announcementBox/announcementBox/An
 export { default as YTVideoCard } from "./cards/YoutubeVideoCard/YTVideoCard";
 
 export { default as NavbarCourse } from './navBarCourse/NavBarCourse';
+
+export { default as AnnouncementsModalBase } from "./announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsModalBase";
+export { default as AnnouncementsYouTubeModal } from "./announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsYouTubeModal";
+export { default as AnnouncementsOtherLinksModal } from "./announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsOtherLinksModal";
+export { default as AnnouncementsGoogleDriveModal } from "./announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsGoogleDriveModal";
+export { default as YTVideoAnnounceCard } from "./cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard";
+export { default as OtherLinksAnnounceCard } from "./cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard";
+export { default as GoogleDriveAnnounceCard } from "./cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard";

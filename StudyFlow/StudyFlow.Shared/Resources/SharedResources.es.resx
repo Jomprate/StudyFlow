@@ -348,4 +348,73 @@
   <data name="calendar_CalendarTitle" xml:space="preserve">
     <value>Calendario</value>
   </data>
+  <data name="month_April" xml:space="preserve">
+    <value>Abril</value>
+  </data>
+  <data name="month_August" xml:space="preserve">
+    <value>Agosto</value>
+  </data>
+  <data name="month_December" xml:space="preserve">
+    <value>Diciembre</value>
+  </data>
+  <data name="month_February" xml:space="preserve">
+    <value>Febrero</value>
+  </data>
+  <data name="month_January" xml:space="preserve">
+    <value>Enero</value>
+  </data>
+  <data name="month_July" xml:space="preserve">
+    <value>Julio</value>
+  </data>
+  <data name="month_June" xml:space="preserve">
+    <value>Junio</value>
+  </data>
+  <data name="month_March" xml:space="preserve">
+    <value>Marzo</value>
+  </data>
+  <data name="month_May" xml:space="preserve">
+    <value>Mayo</value>
+  </data>
+  <data name="month_November" xml:space="preserve">
+    <value>Noviembre</value>
+  </data>
+  <data name="month_October" xml:space="preserve">
+    <value>Octubre</value>
+  </data>
+  <data name="month_September" xml:space="preserve">
+    <value>Septiembre</value>
+  </data>
+  <data name="announce_googleDriveModal_Title" xml:space="preserve">
+    <value>Enlace a Google Drive</value>
+  </data>
+  <data name="announce_googleDriveModal_Label" xml:space="preserve">
+    <value>Enlace al archivo de Google Drive</value>
+  </data>
+  <data name="announce_googleDriveModal_Description" xml:space="preserve">
+    <value>Introduce el enlace al archivo de Google Drive que quieras añadir. Asegúrate de que el enlace es accesible para evitar problemas.</value>
+  </data>
+  <data name="announce_otherLinksModal_Title" xml:space="preserve">
+    <value>Otro enlace</value>
+  </data>
+  <data name="announce_otherLinksModal_Label" xml:space="preserve">
+    <value>Enlace</value>
+  </data>
+  <data name="announce_otherLinksModal_Description" xml:space="preserve">
+    <value>Introduce el enlace que deseas añadir, asegurándote de que sea accesible para todos los usuarios.</value>
+  </data>
+  <data name="announce_youtubeModal_Title" xml:space="preserve">
+    <value>Enlace a Video de YouTube</value>
+  </data>
+  <data name="announce_youtubeModal_Description" xml:space="preserve">
+    <value>Ingresa el enlace del video de YouTube que deseas añadir. Asegúrate de que el enlace sea válido y accesible sin restricciones para garantizar una correcta visualización.</value>
+  </data>
+  <data name="announce_youtubeModal_Label" xml:space="preserve">
+    <value>Enlace de YouTube</value>
+  </data>
+  <data name="announce_Publish" xml:space="preserve">
+    <value>Publicar</value>
+  </data>
+  <data name="announce_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
 </root>

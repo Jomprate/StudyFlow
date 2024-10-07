@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import './course_announces.css';  // Cambiado para apuntar al archivo CSS correcto
+import './course_announces.css';
 import { useTheme } from '../../../ThemeContext';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
@@ -40,13 +40,6 @@ const Announces: React.FC = () => {
         <div className={`announces-page ${theme}`}>
             <div className="announces-container">
                 <div className="announces-layout">
-                    <div className="announces-sidebar">
-                        <div className="announces-upcoming">
-                            <h3>{t('upcoming')}</h3>
-                            <p>{t('no_tasks')}</p>
-                            <a href="#">{t('see_all')}</a>
-                        </div>
-                    </div>
 
                     <div className="announces-main">
                         <div className="announcement-create-container" onClick={handleAnnouncementClick}>

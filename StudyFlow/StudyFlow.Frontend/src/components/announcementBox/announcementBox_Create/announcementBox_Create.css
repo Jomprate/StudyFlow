@@ -1,3 +1,4 @@
+/* Estilo general del contenedor */
 .announcementBox_Create_announcement-box {
     margin: 20px auto;
     width: 100%;
@@ -11,6 +12,7 @@
     padding: 20px;
 }
 
+/* Input del título */
 .announcementBox_Create_title-input {
     width: 100%;
     border: 1px solid #e0e0e0;
@@ -27,6 +29,7 @@
         border-color: #4285f4;
     }
 
+/* Editor de anuncios */
 .announcementBox_Create_announcement-editor {
     width: 100%;
     min-height: 180px;
@@ -52,7 +55,6 @@
         pointer-events: none;
     }
 
-    /* Estilo para listas y sublistas */
     .announcementBox_Create_announcement-editor ul,
     .announcementBox_Create_announcement-editor ol {
         margin: 8px 0;
@@ -65,16 +67,16 @@
         .announcementBox_Create_announcement-editor ul ol,
         .announcementBox_Create_announcement-editor ol ul {
             margin: 8px 0;
-            padding-left: 40px; /* Aumentar la sangría para sublistas */
+            padding-left: 40px;
             list-style-type: inherit;
         }
 
     .announcementBox_Create_announcement-editor ul {
-        list-style-type: disc; /* Viñetas para listas no numeradas */
+        list-style-type: disc;
     }
 
     .announcementBox_Create_announcement-editor ol {
-        list-style-type: decimal; /* Números para listas numeradas */
+        list-style-type: decimal;
     }
 
     .announcementBox_Create_announcement-editor li {
@@ -83,13 +85,16 @@
         list-style-position: outside;
     }
 
+/* Botones de formato */
 .announcementBox_Create_controls {
     display: flex;
+    flex-wrap: wrap; /* Para permitir que los botones se muevan a la siguiente línea si no hay espacio */
     gap: 10px;
     margin: 15px 0;
     border-top: 1px solid #e0e0e0;
     padding-top: 10px;
     justify-content: flex-start;
+    align-items: center;
 }
 
 .announcementBox_Create_control-button {
@@ -97,24 +102,49 @@
     background: none;
     cursor: pointer;
     font-size: 20px;
-    color: #555;
+    color: #949494;
     padding: 10px;
     transition: color 0.3s, background-color 0.2s;
+    border-radius: 50%;
 }
 
     .announcementBox_Create_control-button:hover,
     .announcementBox_Create_control-button.active {
-        color: #333;
-        background-color: #e0e0e0;
+        color: #555;
         border-radius: 8px;
+        background-color: #e0e0e0;
     }
 
-.announcementBox_Create_footer {
+/* Contenedor del pie */
+.announcementBox_Create_footer-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
     margin-top: 20px;
+    width: 100%;
 }
 
+@media (min-width: 768px) {
+    .announcementBox_Create_footer-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+/* Botones de enlaces externos */
+.announcementBox_Create_external-data-links {
+    display: flex;
+    gap: 15px;
+}
+
+/* Botones de acción */
+.announcementBox_Create_action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Botón de cancelar */
 .announcementBox_Create_footer-button {
     border: none;
     background: none;
@@ -132,6 +162,7 @@
         color: #555;
     }
 
+/* Botón de publicar */
 .announcementBox_Create_publish-button {
     background-color: #4285f4;
     color: #fff;
@@ -171,3 +202,86 @@
     background-color: #444444;
     color: #ffffff;
 }
+
+/* Botón de enlace externo */
+.announcementBox_Create_external-data-link-button {
+    border: none;
+    background-color: #4285f4;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+    .announcementBox_Create_external-data-link-button:hover {
+        background-color: #357ae8;
+    }
+
+/* Iconos */
+:root {
+    --icon-size: 28px;
+}
+
+.icon-large {
+    font-size: var(--icon-size);
+    line-height: 1;
+}
+
+/* Separador */
+.announcementBox_Create_separator {
+    width: 100%;
+    height: 1px;
+    background-color: #d1d1d1;
+    border: none;
+    margin: 10px 0;
+}
+
+/* Lista de videos de YouTube */
+.youtube-video-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+@media (min-width: 768px) {
+    .youtube-video-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Dos columnas para pantallas más grandes */
+        gap: 20px; /* Espacio entre las tarjetas */
+    }
+}
+
+.youtube-video-item,
+.googledrive-link-item,
+.other-link-item {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* Botón de eliminar */
+.remove-video-button,
+.remove-link-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+    .remove-video-button:hover,
+    .remove-link-button:hover {
+        transform: scale(1.2);
+    }
