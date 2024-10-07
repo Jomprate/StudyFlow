@@ -322,40 +322,40 @@
     <value>Error setting up the request: {{message}}</value>
   </data>
   <data name="month_January" xml:space="preserve">
-    <value></value>
+    <value>January</value>
   </data>
   <data name="month_February" xml:space="preserve">
-    <value></value>
+    <value>February</value>
   </data>
   <data name="month_March" xml:space="preserve">
-    <value></value>
+    <value>March</value>
   </data>
   <data name="month_April" xml:space="preserve">
-    <value></value>
+    <value>April</value>
   </data>
   <data name="month_May" xml:space="preserve">
-    <value></value>
+    <value>May</value>
   </data>
   <data name="month_June" xml:space="preserve">
-    <value></value>
+    <value>June</value>
   </data>
   <data name="month_July" xml:space="preserve">
-    <value></value>
+    <value>July</value>
   </data>
   <data name="month_August" xml:space="preserve">
-    <value></value>
+    <value>August</value>
   </data>
   <data name="month_September" xml:space="preserve">
-    <value></value>
+    <value>September</value>
   </data>
   <data name="month_October" xml:space="preserve">
-    <value></value>
+    <value>October</value>
   </data>
   <data name="month_November" xml:space="preserve">
-    <value></value>
+    <value>November</value>
   </data>
   <data name="month_December" xml:space="preserve">
-    <value></value>
+    <value>December</value>
   </data>
   <data name="day_Sunday" xml:space="preserve">
     <value>Sunday</value>
@@ -383,5 +383,38 @@
   </data>
   <data name="Calendar_Week" xml:space="preserve">
     <value>Week</value>
+  </data>
+  <data name="announce_googleDriveModal_Title" xml:space="preserve">
+    <value>Google Drive Link</value>
+  </data>
+  <data name="announce_googleDriveModal_Label" xml:space="preserve">
+    <value>Link to Google Drive file</value>
+  </data>
+  <data name="announce_googleDriveModal_Description" xml:space="preserve">
+    <value>Enter the link to the Google Drive file you want to add. Make sure the link is accessible to avoid problems.</value>
+  </data>
+  <data name="announce_otherLinksModal_Title" xml:space="preserve">
+    <value>Other Link</value>
+  </data>
+  <data name="announce_otherLinksModal_Label" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="announce_otherLinksModal_Description" xml:space="preserve">
+    <value>Enter the link you wish to add, making sure it is accessible to all users.</value>
+  </data>
+  <data name="announce_youtubeModal_Title" xml:space="preserve">
+    <value>Link to YouTube Video</value>
+  </data>
+  <data name="announce_youtubeModal_Label" xml:space="preserve">
+    <value>YouTube link</value>
+  </data>
+  <data name="announce_youtubeModal_Description" xml:space="preserve">
+    <value>Enter the link of the YouTube video you wish to add. Make sure the link is valid and accessible without restrictions to ensure proper viewing.</value>
+  </data>
+  <data name="announce_Publish" xml:space="preserve">
+    <value>Publish</value>
+  </data>
+  <data name="announce_Cancel" xml:space="preserve">
+    <value>Cancel</value>
   </data>
 </root>

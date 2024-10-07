@@ -1,10 +1,20 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './announcementBox_Create.css';
+import '../../cards/YoutubeVideoCard/ytvideoCard.css';
+import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
+import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
+import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import { useTheme } from '../../../ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faUnderline, faListUl, faListOl, faEraser, faIndent } from '@fortawesome/free-solid-svg-icons';
+import { faBold, faItalic, faUnderline, faListUl, faListOl, faIndent, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import AnnouncementsYouTubeModal from './AnnouncementsModals/AnnouncementsYouTubeModal';
+import AnnouncementsGoogleDriveModal from './AnnouncementsModals/AnnouncementsGoogleDriveModal';
+import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOtherLinksModal';
+import { useTranslation } from 'react-i18next';
 
 const AnnouncementBox_Create: React.FC = () => {
+    const { t } = useTranslation();
     const editorRef = useRef<HTMLDivElement>(null);
     const { theme } = useTheme();
     const [title, setTitle] = useState<string>('');
@@ -15,18 +25,34 @@ const AnnouncementBox_Create: React.FC = () => {
         underline: false,
     });
 
-    // Function to handle the input to update state
+    const [isYouTubeModalOpen, setIsYouTubeModalOpen] = useState(false);
+    const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
+    const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
+
+    // Lists to store links temporarily
+    const [youtubeLinks, setYouTubeLinks] = useState<string[]>([]);
+    const [googleDriveLinks, setGoogleDriveLinks] = useState<string[]>([]);
+    const [otherLinks, setOtherLinks] = useState<string[]>([]);
+
+    useEffect(() => {
+        // Load links from session storage on component mount
+        const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
+        const storedGoogleDriveLinks = sessionStorage.getItem('googleDriveLinks');
+        const storedOtherLinks = sessionStorage.getItem('otherLinks');
+
+        if (storedYouTubeLinks) setYouTubeLinks(JSON.parse(storedYouTubeLinks));
+        if (storedGoogleDriveLinks) setGoogleDriveLinks(JSON.parse(storedGoogleDriveLinks));
+        if (storedOtherLinks) setOtherLinks(JSON.parse(storedOtherLinks));
+    }, []);
+
     const handleInput = () => {
         if (editorRef.current) {
             const content = editorRef.current.innerHTML;
             setIsPublishDisabled(content.trim() === '' || title.trim() === '');
-
-            // Update formatting
             updateActiveFormats();
         }
     };
 
-    // Function to update the active formats based on the current selection
     const updateActiveFormats = () => {
         setActiveFormats({
             bold: document.queryCommandState('bold'),
@@ -35,62 +61,14 @@ const AnnouncementBox_Create: React.FC = () => {
         });
     };
 
-    // Handle key commands for indentation
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            if (editorRef.current) {
-                const selection = window.getSelection();
-                if (selection && selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    const selectedElement = range.startContainer.parentElement;
-
-                    if (selectedElement && selectedElement.tagName === 'LI') {
-                        const liElement = selectedElement as HTMLLIElement;
-                        const parentList = liElement.parentElement;
-
-                        if (e.shiftKey) {
-                            // Reduce indentation (outdent)
-                            if (parentList && (parentList.tagName === 'UL' || parentList.tagName === 'OL')) {
-                                const grandParent = parentList.parentElement;
-                                if (grandParent && (grandParent.tagName === 'UL' || grandParent.tagName === 'OL')) {
-                                    grandParent.insertBefore(liElement, parentList.nextSibling);
-                                }
-                            }
-                        } else {
-                            // Increase indentation (indent)
-                            if (parentList && (parentList.tagName === 'UL' || parentList.tagName === 'OL')) {
-                                const previousElement = liElement.previousElementSibling;
-                                if (previousElement && previousElement.tagName === 'LI') {
-                                    let sublist = previousElement.querySelector('ul, ol') as HTMLElement | null;
-                                    if (!sublist) {
-                                        sublist = document.createElement(
-                                            parentList.tagName === 'UL' ? 'ul' : 'ol'
-                                        ) as HTMLElement;
-                                        sublist.style.listStyleType = parentList.tagName === 'UL' ? 'disc' : 'decimal';
-                                        sublist.style.marginLeft = '20px';
-                                        previousElement.appendChild(sublist);
-                                    }
-                                    sublist.appendChild(liElement);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    // Function to apply formatting using execCommand
     const applyFormatting = (command: string) => {
         if (editorRef.current) {
             document.execCommand(command, false);
-            handleInput(); // Ensure content is updated
+            handleInput();
         }
     };
 
-    // Function to toggle list type between ordered and unordered
-    const toggleListType = (ordered: boolean) => {
+    const createSublist = (ordered: boolean) => {
         if (editorRef.current) {
             const selection = window.getSelection();
             if (selection && selection.rangeCount > 0) {
@@ -100,27 +78,16 @@ const AnnouncementBox_Create: React.FC = () => {
                 if (selectedElement && selectedElement.tagName === 'LI') {
                     const liElement = selectedElement as HTMLLIElement;
 
-                    // Check if a sublist already exists
                     let sublist = liElement.querySelector('ul, ol') as HTMLElement | null;
-                    if (sublist) {
-                        // If it exists and is of a different type, replace it
-                        if ((ordered && sublist.tagName.toLowerCase() === 'ul') || (!ordered && sublist.tagName.toLowerCase() === 'ol')) {
-                            const newSublist = document.createElement(ordered ? 'ol' : 'ul');
-                            newSublist.innerHTML = sublist.innerHTML;
-                            sublist.replaceWith(newSublist);
-                            sublist = newSublist;
-                        }
-                    } else {
-                        // Create a new sublist if it doesn't exist
+                    if (!sublist) {
                         sublist = document.createElement(ordered ? 'ol' : 'ul');
                         sublist.style.listStyleType = ordered ? 'decimal' : 'disc';
                         sublist.style.marginLeft = '20px';
                         liElement.appendChild(sublist);
                     }
 
-                    // Create a new list item in the sublist
                     const newSubItem = document.createElement('li');
-                    newSubItem.textContent = 'Nuevo subitem';
+                    newSubItem.textContent = t('announce_newSubitem');
                     sublist.appendChild(newSubItem);
                 }
             }
@@ -130,9 +97,37 @@ const AnnouncementBox_Create: React.FC = () => {
     const handleSubmit = () => {
         if (editorRef.current) {
             const content = editorRef.current.innerHTML;
-            console.log('Title Submitted: ', title);
-            console.log('Announcement Submitted: ', content);
+
+            const addAnnounceDTO = {
+                title: title,
+                htmlContent: content,
+                userId: "GUID", // Aquí debes asignar el ID del usuario correspondiente
+                courseId: "GUID", // Aquí debes asignar el ID del curso correspondiente
+                youTubeVideos: youtubeLinks,
+                googleDriveLinks: googleDriveLinks,
+                alternateLinks: otherLinks,
+            };
+
+            console.log('JSON AddAnnounceDTO:', JSON.stringify(addAnnounceDTO, null, 2));
         }
+    };
+
+    const addYouTubeLink = (link: string) => {
+        const updatedLinks = [...youtubeLinks, link];
+        setYouTubeLinks(updatedLinks);
+        sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
+    };
+
+    const addGoogleDriveLink = (link: string) => {
+        const updatedLinks = [...googleDriveLinks, link];
+        setGoogleDriveLinks(updatedLinks);
+        sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
+    };
+
+    const addOtherLink = (link: string) => {
+        const updatedLinks = [...otherLinks, link];
+        setOtherLinks(updatedLinks);
+        sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
     };
 
     return (
@@ -147,17 +142,16 @@ const AnnouncementBox_Create: React.FC = () => {
                     );
                 }}
                 className="announcementBox_Create_title-input"
-                placeholder="Título del anuncio"
+                placeholder={t('announce_title')}
             />
             <div
                 ref={editorRef}
                 className="announcementBox_Create_announcement-editor"
                 contentEditable={true}
                 onInput={handleInput}
-                onKeyDown={handleKeyDown}
                 onMouseUp={updateActiveFormats}
-                placeholder="Anuncia algo a la clase"
             ></div>
+
             <div className="announcementBox_Create_controls">
                 <button
                     onClick={() => applyFormatting('bold')}
@@ -183,28 +177,127 @@ const AnnouncementBox_Create: React.FC = () => {
                 <button onClick={() => applyFormatting('insertOrderedList')} className="announcementBox_Create_control-button">
                     <FontAwesomeIcon icon={faListOl} />
                 </button>
-                <button onClick={() => toggleListType(false)} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faIndent} /> Sublista (viñetas)
+                <button onClick={() => createSublist(false)} className="announcementBox_Create_control-button">
+                    <FontAwesomeIcon icon={faIndent} />
                 </button>
-                <button onClick={() => toggleListType(true)} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faIndent} /> Sublista (numerada)
-                </button>
-                <button onClick={() => applyFormatting('removeFormat')} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faEraser} />
+                <button onClick={() => createSublist(true)} className="announcementBox_Create_control-button">
+                    <FontAwesomeIcon icon={faIndent} />
                 </button>
             </div>
-            <div className="announcementBox_Create_footer">
-                <button className="announcementBox_Create_footer-button announcementBox_Create_cancel-button">Cancelar</button>
-                <button
-                    className="announcementBox_Create_footer-button announcementBox_Create_publish-button"
-                    onClick={handleSubmit}
-                    disabled={isPublishDisabled}
-                >
-                    Publicar
-                </button>
+
+            <hr className="announcementBox_Create_separator" />
+
+            {/* YouTube Video List */}
+            <div className="youtube-video-list">
+                {youtubeLinks.map((link, index) => (
+                    <div key={index} className="youtube-video-item">
+                        <YTVideoAnnounceCard url={link} />
+                        <button
+                            className="remove-video-button"
+                            onClick={() => {
+                                const updatedLinks = youtubeLinks.filter((_, i) => i !== index);
+                                setYouTubeLinks(updatedLinks);
+                                sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
+                            }}
+                        >
+                            X
+                        </button>
+                    </div>
+                ))}
             </div>
-        </div >
+
+            {/* Google Drive Links List */}
+            <div className="googledrive-links-list">
+                {googleDriveLinks.map((link, index) => (
+                    <div key={index} className="googledrive-link-item">
+                        <GoogleDriveAnnounceCard url={link} />
+                        <button
+                            className="remove-link-button"
+                            onClick={() => {
+                                const updatedLinks = googleDriveLinks.filter((_, i) => i !== index);
+                                setGoogleDriveLinks(updatedLinks);
+                                sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
+                            }}
+                        >
+                            X
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {/* Other Links List */}
+            <div className="other-links-list">
+                {otherLinks.map((link, index) => (
+                    <div key={index} className="other-link-item">
+                        <OtherLinksAnnounceCard url={link} />
+                        <button
+                            className="remove-link-button"
+                            onClick={() => {
+                                const updatedLinks = otherLinks.filter((_, i) => i !== index);
+                                setOtherLinks(updatedLinks);
+                                sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
+                            }}
+                        >
+                            X
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            <div className="announcementBox_Create_footer-container">
+                <div className="announcementBox_Create_external-data-links">
+                    <button
+                        className="announcementBox_Create_external-data-link-button"
+                        onClick={() => setIsYouTubeModalOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faYoutube} className="icon-large" />
+                    </button>
+                    <button
+                        className="announcementBox_Create_external-data-link-button"
+                        onClick={() => setIsGoogleDriveModalOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faGoogleDrive} className="icon-large" />
+                    </button>
+                    <button
+                        className="announcementBox_Create_external-data-link-button"
+                        onClick={() => setIsOtherLinksModalOpen(true)}
+                    >
+                        <FontAwesomeIcon icon={faLink} className="icon-large" />
+                    </button>
+                </div>
+
+                <div className="announcementBox_Create_action-buttons">
+                    <button className="announcementBox_Create_footer-button announcementBox_Create_cancel-button">
+                        {t('announce_Cancel')}
+                    </button>
+                    <button
+                        className="announcementBox_Create_footer-button announcementBox_Create_publish-button"
+                        onClick={handleSubmit}
+                        disabled={isPublishDisabled}
+                    >
+                        {t('announce_Publish')}
+                    </button>
+                </div>
+            </div>
+
+            <AnnouncementsYouTubeModal
+                isOpen={isYouTubeModalOpen}
+                onClose={() => setIsYouTubeModalOpen(false)}
+                onSave={addYouTubeLink}
+            />
+            <AnnouncementsGoogleDriveModal
+                isOpen={isGoogleDriveModalOpen}
+                onClose={() => setIsGoogleDriveModalOpen(false)}
+                onSave={addGoogleDriveLink}
+            />
+            <AnnouncementsOtherLinksModal
+                isOpen={isOtherLinksModalOpen}
+                onClose={() => setIsOtherLinksModalOpen(false)}
+                onSave={addOtherLink}
+            />
+        </div>
     );
+
 };
 
 export default AnnouncementBox_Create;

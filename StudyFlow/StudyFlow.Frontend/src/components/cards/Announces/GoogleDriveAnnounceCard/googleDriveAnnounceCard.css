@@ -1,0 +1,84 @@
+.googledriveAnnounceCard_card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    min-width: 320px;
+    max-width: 320px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .googledriveAnnounceCard_card:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+.googledriveAnnounceCard_thumbnail {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    margin-right: 10px;
+    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.googledriveAnnounceCard_details {
+    display: flex;
+    flex-direction: column;
+}
+
+    .googledriveAnnounceCard_details h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        color: #333;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .googledriveAnnounceCard_details p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+/* Tema claro */
+.light .googledriveAnnounceCard_card {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.light .googledriveAnnounceCard_details h3 {
+    color: #333;
+}
+
+.light .googledriveAnnounceCard_details p {
+    color: #666;
+}
+
+/* Tema oscuro */
+.dark .googledriveAnnounceCard_card {
+    background-color: white;
+    border: 1px solid #444;
+    color: #fff;
+}
+
+.dark .googledriveAnnounceCard_details h3 {
+    color: #333;
+}
+
+.dark .googledriveAnnounceCard_details p {
+    color: #333;
+}

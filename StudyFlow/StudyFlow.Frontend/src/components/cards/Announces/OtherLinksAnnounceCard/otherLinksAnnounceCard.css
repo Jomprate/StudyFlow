@@ -1,0 +1,84 @@
+.otherLinksAnnounceCard_card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    min-width: 320px;
+    max-width: 320px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .otherLinksAnnounceCard_card:hover {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+.otherLinksAnnounceCard_thumbnail {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    margin-right: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.otherLinksAnnounceCard_details {
+    display: flex;
+    flex-direction: column;
+}
+
+    .otherLinksAnnounceCard_details h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        color: #333;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+
+    .otherLinksAnnounceCard_details p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+/* Tema claro */
+.light .otherLinksAnnounceCard_card {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.light .otherLinksAnnounceCard_details h3 {
+    color: #333;
+}
+
+.light .otherLinksAnnounceCard_details p {
+    color: #666;
+}
+
+/* Tema oscuro */
+.dark .otherLinksAnnounceCard_card {
+    background-color: white;
+    border: 1px solid #444;
+    color: #fff;
+}
+
+.dark .otherLinksAnnounceCard_details h3 {
+    color: #333;
+}
+
+.dark .otherLinksAnnounceCard_details p {
+    color: #333;
+}
