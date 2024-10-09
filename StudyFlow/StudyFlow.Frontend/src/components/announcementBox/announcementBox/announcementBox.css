@@ -7,6 +7,8 @@
     transition: box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .announcement-header {
@@ -21,6 +23,7 @@
     border-radius: 8px;
     filter: invert(42%) sepia(93%) saturate(4507%) hue-rotate(199deg) brightness(96%) contrast(107%);
     margin-right: 10px;
+    object-fit: cover;
 }
 
 .announcement-user-name {
@@ -44,23 +47,31 @@
     margin-top: 5px;
 }
 
-.announcement-box p {
-    margin: 0;
+.announcement-description {
+    margin-top: 10px;
     font-size: 16px;
     line-height: 1.5;
     color: #666;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
 }
 
-.video-grid {
+.video-grid,
+.googledrive-grid,
+.other-links-grid {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 15px;
 }
 
-.video-card {
+.video-card,
+.googledrive-card,
+.other-link-card {
     display: flex;
-    flex-direction: row;
     align-items: center;
     background-color: white;
     border: 1px solid #ddd;
@@ -68,37 +79,49 @@
     padding: 10px;
     width: 100%;
     max-width: 320px;
-    text-decoration: none;
-    color: inherit;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s ease;
 }
 
-    .video-card:hover {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
-
-.video-thumbnail {
-    width: 100px;
-    height: 100px;
-    border-radius: 8px;
+.video-thumbnail,
+.googledrive-thumbnail,
+.other-link-thumbnail {
+    width: 50px;
+    height: 50px;
     margin-right: 10px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
-.video-details {
+.video-details,
+.googledrive-details,
+.other-link-details {
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
-    .video-details h3 {
+    .video-details h3,
+    .googledrive-details h3,
+    .other-link-details h3 {
         font-size: 16px;
         font-weight: bold;
         margin: 0;
         color: #333;
     }
 
-    .video-details p {
+    .video-details p,
+    .googledrive-details p,
+    .other-link-details p {
         margin: 5px 0 0;
         font-size: 14px;
         color: #666;
     }
+
+@media (max-width: 768px) {
+    .video-card,
+    .googledrive-card,
+    .other-link-card {
+        max-width: 100%;
+    }
+}

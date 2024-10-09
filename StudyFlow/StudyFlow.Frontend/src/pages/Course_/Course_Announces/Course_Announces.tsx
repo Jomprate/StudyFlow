@@ -2,35 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course_announces.css';
 import { useTheme } from '../../../ThemeContext';
+import YTVideoAnnounceCard from '../../../components/cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
+import GoogleDriveAnnounceCard from '../../../components/cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
+import OtherLinksAnnounceCard from '../../../components/cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
-import announcementsData from '../announcements.json';
 import user_p from '../../../assets/user_p.svg';
-
-interface Video {
-    url: string;
-}
-
-interface Announcement {
-    id: number;
-    description: string;
-    date: string;
-    user: string;
-    videos?: Video[];
-}
+import { getAnnouncesByCourseId } from '../../../services/api';
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-    const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+    const [announcements, setAnnouncements] = useState<any[]>([]);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
 
+    const courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e';
+
     useEffect(() => {
-        setAnnouncements(announcementsData.map(announcement => ({
-            ...announcement,
-            videos: announcement.videos ?? []
-        })));
-    }, []);
+        const fetchAnnouncements = async () => {
+            try {
+                const listResult = await getAnnouncesByCourseId(courseId);
+                setAnnouncements(listResult);
+            } catch (error) {
+                console.error('Error al traer los anuncios:', error);
+            }
+        };
+
+        fetchAnnouncements();
+    }, [courseId]);
 
     const handleAnnouncementClick = () => {
         setShowAnnouncementBox(!showAnnouncementBox);
@@ -40,7 +39,6 @@ const Announces: React.FC = () => {
         <div className={`announces-page ${theme}`}>
             <div className="announces-container">
                 <div className="announces-layout">
-
                     <div className="announces-main">
                         <div className="announcement-create-container" onClick={handleAnnouncementClick}>
                             <img src={user_p} alt="User Icon" className="announcement-icon" />
@@ -55,12 +53,16 @@ const Announces: React.FC = () => {
                                 {announcements.length > 0 ? (
                                     announcements.map((announcement) => (
                                         <li key={announcement.id}>
+                                            {/* Renderizamos cada anuncio dentro de un AnnouncementBox */}
                                             <AnnouncementBox
-                                                description={announcement.description}
-                                                date={announcement.date}
-                                                user={announcement.user}
-                                                videos={announcement.videos}
+                                                description={announcement.description} // HTML del anuncio
+                                                date={announcement.creationDate}
+                                                user={announcement.userName}
+                                                videos={announcement.youTubeVideos.map((url: string) => ({ url }))}
+                                                googleDriveLinks={announcement.googleDriveLinks.map((url: string) => ({ url }))}
+                                                alternateLinks={announcement.alternateLinks.map((url: string) => ({ url }))}
                                             />
+
                                         </li>
                                     ))
                                 ) : (

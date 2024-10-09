@@ -11,6 +11,7 @@ import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import AnnouncementsYouTubeModal from './AnnouncementsModals/AnnouncementsYouTubeModal';
 import AnnouncementsGoogleDriveModal from './AnnouncementsModals/AnnouncementsGoogleDriveModal';
 import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOtherLinksModal';
+import { createAnnounce } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
 
 const AnnouncementBox_Create: React.FC = () => {
@@ -94,21 +95,30 @@ const AnnouncementBox_Create: React.FC = () => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (editorRef.current) {
             const content = editorRef.current.innerHTML;
 
+            const defaultUserId = "6fe44fdc-cac4-4d08-82d6-8a672b6960c0"; // UserId quemado
+            const defaultCourseId = "3c8825f3-f903-45c9-8dac-0a87a51ef37e"; // CourseId quemado
+
+            // Crear objeto DTO con valores quemados
             const addAnnounceDTO = {
                 title: title,
                 htmlContent: content,
-                userId: "GUID", // Aquí debes asignar el ID del usuario correspondiente
-                courseId: "GUID", // Aquí debes asignar el ID del curso correspondiente
+                userId: defaultUserId,
+                courseId: defaultCourseId,
                 youTubeVideos: youtubeLinks,
                 googleDriveLinks: googleDriveLinks,
                 alternateLinks: otherLinks,
             };
 
-            console.log('JSON AddAnnounceDTO:', JSON.stringify(addAnnounceDTO, null, 2));
+            try {
+                const response = await createAnnounce(addAnnounceDTO);
+                console.log('Anuncio creado con éxito:', response);
+            } catch (error: any) {
+                console.error('Error creando el anuncio:', error);
+            }
         }
     };
 
@@ -297,7 +307,6 @@ const AnnouncementBox_Create: React.FC = () => {
             />
         </div>
     );
-
 };
 
 export default AnnouncementBox_Create;

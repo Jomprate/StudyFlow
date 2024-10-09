@@ -1,4 +1,3 @@
-/* Estilo general del contenedor */
 .announcementBox_Create_announcement-box {
     margin: 20px auto;
     width: 100%;
@@ -12,7 +11,6 @@
     padding: 20px;
 }
 
-/* Input del título */
 .announcementBox_Create_title-input {
     width: 100%;
     border: 1px solid #e0e0e0;
@@ -29,7 +27,6 @@
         border-color: #4285f4;
     }
 
-/* Editor de anuncios */
 .announcementBox_Create_announcement-editor {
     width: 100%;
     min-height: 180px;
@@ -85,10 +82,9 @@
         list-style-position: outside;
     }
 
-/* Botones de formato */
 .announcementBox_Create_controls {
     display: flex;
-    flex-wrap: wrap; /* Para permitir que los botones se muevan a la siguiente línea si no hay espacio */
+    flex-wrap: wrap;
     gap: 10px;
     margin: 15px 0;
     border-top: 1px solid #e0e0e0;
@@ -132,19 +128,16 @@
     }
 }
 
-/* Botones de enlaces externos */
 .announcementBox_Create_external-data-links {
     display: flex;
     gap: 15px;
 }
 
-/* Botones de acción */
 .announcementBox_Create_action-buttons {
     display: flex;
     gap: 10px;
 }
 
-/* Botón de cancelar */
 .announcementBox_Create_footer-button {
     border: none;
     background: none;
@@ -162,7 +155,6 @@
         color: #555;
     }
 
-/* Botón de publicar */
 .announcementBox_Create_publish-button {
     background-color: #4285f4;
     color: #fff;
@@ -203,7 +195,6 @@
     color: #ffffff;
 }
 
-/* Botón de enlace externo */
 .announcementBox_Create_external-data-link-button {
     border: none;
     background-color: #4285f4;
@@ -224,7 +215,6 @@
         background-color: #357ae8;
     }
 
-/* Iconos */
 :root {
     --icon-size: 28px;
 }
@@ -234,7 +224,6 @@
     line-height: 1;
 }
 
-/* Separador */
 .announcementBox_Create_separator {
     width: 100%;
     height: 1px;
@@ -243,7 +232,6 @@
     margin: 10px 0;
 }
 
-/* Lista de videos de YouTube */
 .youtube-video-list {
     display: flex;
     flex-direction: column;
@@ -254,8 +242,8 @@
 @media (min-width: 768px) {
     .youtube-video-list {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Dos columnas para pantallas más grandes */
-        gap: 20px; /* Espacio entre las tarjetas */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
     }
 }
 
@@ -267,7 +255,6 @@
     margin-bottom: 10px;
 }
 
-/* Botón de eliminar */
 .remove-video-button,
 .remove-link-button {
     position: absolute;
