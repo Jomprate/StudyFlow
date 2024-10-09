@@ -91,6 +91,8 @@ export const getuserbyid = async (userid: string): Promise<userdata> => {
     }
 };
 
+// Countries
+
 export const getCountries = async (): Promise<{ id: number; name: string; isoCode: string }[]> => {
     try {
         const response = await api.get('/Country/GetAllCountries/');
@@ -135,3 +137,110 @@ export const getCountriesWithLanguage = async (): Promise<{ isoCode: string; nam
         throw new Error(errorMessage);
     }
 };
+
+// Announces
+
+export const createAnnounce = async (announceDTO: {
+    title: string;
+    htmlContent: string;
+    userId?: string;
+    courseId?: string;
+    youTubeVideos?: string[];
+    googleDriveLinks?: string[];
+    alternateLinks?: string[];
+}): Promise<{ id: string }> => {
+    try {
+        // Valores temporales quemados
+        const defaultUserId = "6fe44fdc-cac4-4d08-82d6-8a672b6960c0"; // UserId quemado
+        const defaultCourseId = "3c8825f3-f903-45c9-8dac-0a87a51ef37e"; // CourseId quemado
+
+        // Si no se proporcionan userId y courseId, usar los valores quemados
+        const userId = announceDTO.userId || defaultUserId;
+        const courseId = announceDTO.courseId || defaultCourseId;
+
+        if (!announceDTO) {
+            throw new Error(i18n.t('error.announceDataRequired'));
+        }
+
+        if (!announceDTO.title.trim()) {
+            throw new Error(i18n.t('error.titleCannotBeEmpty'));
+        }
+
+        if (!announceDTO.htmlContent.trim()) {
+            throw new Error(i18n.t('error.htmlContentCannotBeEmpty'));
+        }
+
+        announceDTO.youTubeVideos = announceDTO.youTubeVideos || [];
+        announceDTO.googleDriveLinks = announceDTO.googleDriveLinks || [];
+        announceDTO.alternateLinks = announceDTO.alternateLinks || [];
+
+        const announceResponse = await api.post('/Announce/CreateAnnounce', {
+            title: announceDTO.title,
+            htmlContent: announceDTO.htmlContent,
+            youTubeVideos: announceDTO.youTubeVideos,
+            googleDriveLinks: announceDTO.googleDriveLinks,
+            alternateLinks: announceDTO.alternateLinks,
+            userId: userId, // Usar el valor quemado si no se proporcionó
+            courseId: courseId, // Usar el valor quemado si no se proporcionó
+        });
+
+        return announceResponse.data;
+    } catch (error: any) {
+        // Manejo de errores
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
+
+
+
+export const getAnnouncesByCourseId = async (courseId: string): Promise<any[]> => {
+    // Course ID quemado temporalmente dentro de la función
+    courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e'; // Course ID quemado
+
+    try {
+        // Asegúrate de incluir el prefijo `/api` en la URL
+        const response = await api.get(`/Announce/GetAnnouncesByCourse/${courseId}`);
+
+        const contentType = response.headers['content-type'] || '';
+        if (contentType.includes('application/json')) {
+            if (response.data && response.data.success && response.data.data && Array.isArray(response.data.data.listResult)) {
+                const announcementsArray = response.data.data.listResult.map((announcement: any) => ({
+                    id: announcement.id,
+                    title: announcement.title,
+                    description: announcement.htmlContent, // Mapeamos correctamente el campo
+                    userName: announcement.userName,
+                    creationDate: announcement.creationDate,
+                    youTubeVideos: announcement.youTubeVideos,
+                    googleDriveLinks: announcement.googleDriveLinks,
+                    alternateLinks: announcement.alternateLinks,
+                }));
+
+                return announcementsArray;
+            } else {
+                throw new Error('Unexpected response format');
+            }
+        } else {
+            throw new Error(`Response is not JSON, received content-type: ${contentType}`);
+        }
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
+
+
+
+
