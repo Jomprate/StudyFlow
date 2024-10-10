@@ -22,8 +22,8 @@ const CourseCreate = () => {
     };
 
     return (
-        <div className="icourse-create">
-            <p className="icourse-create-title">Crear Curso</p>
+        <div className="course-create">
+            <p className="course-create-title">Crear Curso</p>
             <form onSubmit={onSubmit} className="subject-form">
                 <div>
                     <label htmlFor="userId">Id del Usuario:</label>

@@ -32,7 +32,7 @@ const CourseGet = () => {
                     <div>{course.description}</div>
                     <div>{course.logo ?? 'None'}</div>
                     <div className="link">
-                        <Link to={`/icourse/update/${course.id}`}>Editar</Link>
+                        <Link to={`/course/update/${course.id}`}>Editar</Link>
                     </div>
                     <div className="link" onClick={() => handleDelete(course.id)}>
                         Eliminar
@@ -49,7 +49,7 @@ const CourseGet = () => {
                 <div>{item.description}</div>
                 <div>{item.logo ?? 'None'}</div>
                 <div className="link">
-                    <Link to={`/icourse/update/${item.id}`}>Editar</Link>
+                    <Link to={`/course/update/${item.id}`}>Editar</Link>
                 </div>
                 <div className="link" onClick={() => handleDelete(item.id)}>
                     Eliminar
@@ -87,10 +87,10 @@ const CourseGet = () => {
     }, [courseId, page]);
 
     return (
-        <div className="icourse-get">
-            <p className="icourse-get-tittle">Cursos</p>
+        <div className="course-get">
+            <p className="course-get-tittle">Cursos</p>
             {getTable()}
-            <Link className="icourse-get-button" to="/icourse/create">
+            <Link className="course-get-button" to="/course/create">
                 Crear
             </Link>
         </div>
