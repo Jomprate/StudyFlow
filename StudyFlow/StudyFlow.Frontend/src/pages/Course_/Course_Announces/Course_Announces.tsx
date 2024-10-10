@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course_announces.css';
 import { useTheme } from '../../../ThemeContext';
-import YTVideoAnnounceCard from '../../../components/cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
-import GoogleDriveAnnounceCard from '../../../components/cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
-import OtherLinksAnnounceCard from '../../../components/cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
+//import YTVideoAnnounceCard from '../../../components/cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
+//import GoogleDriveAnnounceCard from '../../../components/cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
+//import OtherLinksAnnounceCard from '../../../components/cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
@@ -60,7 +60,7 @@ const Announces: React.FC = () => {
                                                 user={announcement.userName}
                                                 videos={announcement.youTubeVideos.map((url: string) => ({ url }))}
                                                 googleDriveLinks={announcement.googleDriveLinks.map((url: string) => ({ url }))}
-                                                alternateLinks={announcement.alternateLinks.map((url: string) => ({ url }))}
+                                                otherLinks={announcement.alternateLinks.map((url: string) => ({ url }))}
                                             />
 
                                         </li>

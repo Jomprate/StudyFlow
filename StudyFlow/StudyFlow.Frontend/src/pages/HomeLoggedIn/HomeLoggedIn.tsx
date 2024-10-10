@@ -6,7 +6,7 @@ import { HomeHeaderLoggedIn } from '../../containers';
 const HomeLoggedIn: React.FC = () => {
     return (
         <div className="homepage">
-            <NavbarLoggedIn />
+            <NavbarLoggedIn sidebarVisible={true} toggleSidebar={() => { }} />
             <HomeHeaderLoggedIn />
 
         </div>

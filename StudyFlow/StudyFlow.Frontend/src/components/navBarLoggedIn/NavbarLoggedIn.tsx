@@ -20,7 +20,7 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     const [menuVisible, setMenuVisible] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleLanguageChange = (e: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
+    const handleLanguageChange = ({ value }: DropdownProps) => {
         i18n.changeLanguage(value?.toString()).catch(console.error);
     };
 

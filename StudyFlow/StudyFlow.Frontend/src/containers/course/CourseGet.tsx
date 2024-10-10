@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import './CourseGet.css';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { course, courseDelete, getAllCourse, getCourseById } from '../../utils/course';
+import { Icourse, courseDelete, getAllCourse, getCourseById } from '../../utils/course';
 
-type data = void | course[];
+type data = void | Icourse[];
 
 const CourseGet = () => {
     const { courseId } = useParams();
     const [searchParams] = useSearchParams();
     const page = searchParams.get('page');
     const [data, setData] = useState<data>([]);
-    const [course, setCourse] = useState<void | course>();
+    const [course, setCourse] = useState<void | Icourse>();
 
     const getRowClass = (index: number) => {
         if ((index + 1) % 2 !== 0) return '';
@@ -32,7 +32,7 @@ const CourseGet = () => {
                     <div>{course.description}</div>
                     <div>{course.logo ?? 'None'}</div>
                     <div className="link">
-                        <Link to={`/course/update/${course.id}`}>Editar</Link>
+                        <Link to={`/icourse/update/${course.id}`}>Editar</Link>
                     </div>
                     <div className="link" onClick={() => handleDelete(course.id)}>
                         Eliminar
@@ -49,7 +49,7 @@ const CourseGet = () => {
                 <div>{item.description}</div>
                 <div>{item.logo ?? 'None'}</div>
                 <div className="link">
-                    <Link to={`/course/update/${item.id}`}>Editar</Link>
+                    <Link to={`/icourse/update/${item.id}`}>Editar</Link>
                 </div>
                 <div className="link" onClick={() => handleDelete(item.id)}>
                     Eliminar
@@ -87,10 +87,10 @@ const CourseGet = () => {
     }, [courseId, page]);
 
     return (
-        <div className="course-get">
-            <p className="course-get-tittle">Cursos</p>
+        <div className="icourse-get">
+            <p className="icourse-get-tittle">Cursos</p>
             {getTable()}
-            <Link className="course-get-button" to="/course/create">
+            <Link className="icourse-get-button" to="/icourse/create">
                 Crear
             </Link>
         </div>

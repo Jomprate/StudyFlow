@@ -4,9 +4,11 @@ import { useTheme } from '../../ThemeContext';
 import CurseImage from '../../assets/user_p.svg';
 
 interface CourseCardProps {
+    key: number;
     name: string;
     description: string;
     teacher: string;
+    image: string;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) => {

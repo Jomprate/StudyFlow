@@ -6,7 +6,7 @@ import Courses from '../pages/Courses_/Courses.tsx';
 import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';
 import Settings from '../pages/Settings/Settings.tsx';
-import Course from '../pages/Course_/course.tsx';
+import Course from '../pages/Course_/Course_.tsx';
 import Subject from '../pages/Subjects/Subject.tsx';
 import Notification from '../pages/Notification/Notification.tsx';
 import CourseCrud from '../pages/Course_/CourseCrud.tsx';
