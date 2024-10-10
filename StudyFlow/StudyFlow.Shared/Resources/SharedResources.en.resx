@@ -417,4 +417,19 @@
   <data name="announce_Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="pagination_previous" xml:space="preserve">
+    <value>Previous</value>
+  </data>
+  <data name="pagination_next" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="pagination_recordsPerPage" xml:space="preserve">
+    <value>Records per page:</value>
+  </data>
+  <data name="pagination_showAll" xml:space="preserve">
+    <value>Show All</value>
+  </data>
+  <data name="pagination_pageInfo" xml:space="preserve">
+    <value>Page {{currentPage}} of {{totalPages}}</value>
+  </data>
 </root>

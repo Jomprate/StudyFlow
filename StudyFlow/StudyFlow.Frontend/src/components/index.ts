@@ -28,3 +28,5 @@ export { default as AnnouncementsGoogleDriveModal } from "./announcementBox/anno
 export { default as YTVideoAnnounceCard } from "./cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard";
 export { default as OtherLinksAnnounceCard } from "./cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard";
 export { default as GoogleDriveAnnounceCard } from "./cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard";
+
+export { default as Pagination } from "./pagination/Pagination";

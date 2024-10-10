@@ -1,0 +1,94 @@
+/* Estilos comunes para el contenedor de la paginación */
+.pagination-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #333;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+    .pagination-container button {
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+        background-color: #4a90e2;
+        color: white;
+    }
+
+        .pagination-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+    .pagination-container span {
+        margin: 0 10px;
+        font-weight: bold;
+    }
+
+/* Estilos para el selector de registros por página */
+.records-per-page-container {
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+}
+
+    .records-per-page-container label {
+        margin-right: 10px;
+    }
+
+    .records-per-page-container select {
+        padding: 5px;
+        border: 1px solid #4a90e2;
+        border-radius: 4px;
+        background-color: #fff;
+        color: #333;
+    }
+
+/* Estilos para el tema claro */
+.pagination-container.light {
+    background-color: #f9f9f9;
+    border: 1px solid #333;
+    color: #000;
+}
+
+    .pagination-container.light button {
+        background-color: #4a90e2;
+        color: white;
+    }
+
+        .pagination-container.light button:disabled {
+            background-color: #2d588a;
+            color: white;
+        }
+
+
+/* Estilos para el tema oscuro */
+.pagination-container.dark {
+    background-color: #333;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+    .pagination-container.dark button {
+        background-color: #555;
+        color: white;
+    }
+
+        .pagination-container.dark button:disabled {
+            background-color: #777;
+        }
+
+.records-per-page-container select.light {
+    background-color: #fff;
+    color: #333;
+}
+
+.records-per-page-container select.dark {
+    background-color: #333;
+    color: #fff;
+}

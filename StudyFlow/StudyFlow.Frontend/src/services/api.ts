@@ -8,6 +8,25 @@ const api = axios.create({
     },
 });
 
+export const checkBackendStatus = async (callback: (isReady: boolean) => void) => {
+    try {
+        console.log("Checking backend status...");
+        const response = await api.get('/Status');
+        console.log("Backend response:", response.data);
+
+        if (response.data.status === 'ready') {
+            console.log("Backend is ready, setting backendReady to true");
+            callback(true); // Backend is ready
+        } else {
+            console.warn("Backend is not ready. Retrying in 2 seconds...");
+            setTimeout(() => checkBackendStatus(callback), 2000); // Retry after 2 seconds
+        }
+    } catch (error) {
+        console.error("Error while checking backend status:", error);
+        setTimeout(() => checkBackendStatus(callback), 2000); // Retry after 2 seconds on error
+    }
+};
+
 interface userdata {
     firstname: string;
     lastname: string;
@@ -198,8 +217,6 @@ export const createAnnounce = async (announceDTO: {
     }
 };
 
-
-
 export const getAnnouncesByCourseId = async (courseId: string): Promise<any[]> => {
     // Course ID quemado temporalmente dentro de la función
     courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e'; // Course ID quemado
@@ -241,6 +258,53 @@ export const getAnnouncesByCourseId = async (courseId: string): Promise<any[]> =
     }
 };
 
+interface PaginatedResponse<T> {
+    data: T[];
+    totalPages: number;
+}
 
+export const getAnnouncesByCourseIdPaginated = async (
+    courseId: string,
+    page: number,
+    recordsNumber: number
+): Promise<PaginatedResponse<any>> => {
+    courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e'; // Course ID quemado
 
+    try {
+        const response = await api.get(`/Announce/GetAnnouncesByCourse/${courseId}?page=${page}&recordsNumber=${recordsNumber}`);
 
+        const contentType = response.headers['content-type'] || '';
+        if (contentType.includes('application/json')) {
+            if (response.data && response.data.success && response.data.data && Array.isArray(response.data.data.listResult)) {
+                const announcementsArray = response.data.data.listResult.map((announcement: any) => ({
+                    id: announcement.id,
+                    title: announcement.title,
+                    description: announcement.htmlContent,
+                    userName: announcement.userName,
+                    creationDate: announcement.creationDate,
+                    youTubeVideos: announcement.youTubeVideos,
+                    googleDriveLinks: announcement.googleDriveLinks,
+                    alternateLinks: announcement.alternateLinks,
+                }));
+
+                return {
+                    data: announcementsArray,
+                    totalPages: response.data.data.totalPages,
+                };
+            } else {
+                throw new Error('Unexpected response format');
+            }
+        } else {
+            throw new Error(`Response is not JSON, received content-type: ${contentType}`);
+        }
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};

@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import './course_announces.css';
 import { useTheme } from '../../../ThemeContext';
-//import YTVideoAnnounceCard from '../../../components/cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
-//import GoogleDriveAnnounceCard from '../../../components/cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
-//import OtherLinksAnnounceCard from '../../../components/cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
-import { getAnnouncesByCourseId } from '../../../services/api';
+import { getAnnouncesByCourseIdPaginated } from '../../../services/api';
+import Pagination from '@components/pagination/Pagination';
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const [currentPage, setCurrentPage] = useState(1);
     const [announcements, setAnnouncements] = useState<any[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [recordsPerPage, setRecordsPerPage] = useState(10); // Inicializamos con 10 registros por página
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
 
     const courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e';
@@ -21,18 +22,27 @@ const Announces: React.FC = () => {
     useEffect(() => {
         const fetchAnnouncements = async () => {
             try {
-                const listResult = await getAnnouncesByCourseId(courseId);
-                setAnnouncements(listResult);
+                const data = await getAnnouncesByCourseIdPaginated(courseId, currentPage, recordsPerPage);
+                setAnnouncements(data.data); // Mantenemos la lista de anuncios
+                setTotalPages(data.totalPages); // Total de páginas para la paginación
             } catch (error) {
-                console.error('Error al traer los anuncios:', error);
+                console.error('Error fetching paginated announcements:', error);
             }
         };
 
         fetchAnnouncements();
-    }, [courseId]);
+    }, [courseId, currentPage, recordsPerPage]);
 
     const handleAnnouncementClick = () => {
         setShowAnnouncementBox(!showAnnouncementBox);
+    };
+
+    // Lógica para actualizar la cantidad de registros por página y recalcular la página correcta
+    const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
+        const firstItemIndex = (currentPage - 1) * recordsPerPage;
+        const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
+        setRecordsPerPage(newRecordsPerPage);
+        setCurrentPage(newPage); // Ajusta la página actual según el nuevo número de registros
     };
 
     return (
@@ -62,7 +72,6 @@ const Announces: React.FC = () => {
                                                 googleDriveLinks={announcement.googleDriveLinks.map((url: string) => ({ url }))}
                                                 otherLinks={announcement.alternateLinks.map((url: string) => ({ url }))}
                                             />
-
                                         </li>
                                     ))
                                 ) : (
@@ -70,10 +79,18 @@ const Announces: React.FC = () => {
                                 )}
                             </ul>
                         </div>
+
+                        {/* Mantiene la paginación dentro de announces-main */}
+                        <Pagination
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                            recordsPerPage={recordsPerPage}
+                            onRecordsPerPageChange={handleRecordsPerPageChange} // Actualiza los registros por página
+                        />
                     </div>
 
-                    <div className="announces-empty">
-                    </div>
+                    <div className="announces-empty"></div>
                 </div>
             </div>
         </div>

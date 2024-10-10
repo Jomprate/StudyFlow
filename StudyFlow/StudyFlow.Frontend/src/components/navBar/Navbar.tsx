@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
         }
     }, [i18n]);
 
-    const handleLanguageChange = ({ value }: DropdownProps) => {
+    const handleLanguageChange = (_e: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
         i18n
             .changeLanguage(value?.toString())
             .then(() => {
