@@ -432,4 +432,16 @@
   <data name="pagination_pageInfo" xml:space="preserve">
     <value>Page {{currentPage}} of {{totalPages}}</value>
   </data>
+  <data name="delModal_delete_button" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="delModal_cancel_button" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="announce_delete_message" xml:space="preserve">
+    <value>Are you sure you want to delete this announce? You will not be able to recover it.</value>
+  </data>
+  <data name="announce_delete_title" xml:space="preserve">
+    <value>Delete Announce</value>
+  </data>
 </root>

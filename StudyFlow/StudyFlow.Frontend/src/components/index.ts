@@ -30,3 +30,5 @@ export { default as OtherLinksAnnounceCard } from "./cards/Announces/OtherLinksA
 export { default as GoogleDriveAnnounceCard } from "./cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard";
 
 export { default as Pagination } from "./pagination/Pagination";
+
+export { default as DeleteModal } from "./modals/deleteModal/DeleteModal";

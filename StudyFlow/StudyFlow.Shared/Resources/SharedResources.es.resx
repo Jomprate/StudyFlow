@@ -432,4 +432,16 @@
   <data name="pagination_pageInfo" xml:space="preserve">
     <value>Página {{currentPage}} de {{totalPages}}</value>
   </data>
+  <data name="delModal_delete_button" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="delModal_cancel_button" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="announce_delete_message" xml:space="preserve">
+    <value>¿Estás seguro de que deseas eliminar este anuncio? No podrás recuperarlo.</value>
+  </data>
+  <data name="announce_delete_title" xml:space="preserve">
+    <value>Borrar Anuncio</value>
+  </data>
 </root>
