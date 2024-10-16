@@ -69,7 +69,6 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [AuthorizeHeader]
         [HttpGet("GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

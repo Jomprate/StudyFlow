@@ -137,7 +137,31 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+
+            if (user == null)
+            {
+                return ApiResponseHelper.NotFound($"Not found user with the Id {id}.");
+            }
+
+            string? profilePicture = user.HaveProfilePicture
+                ? await _blobStorage.DownloadAsync(user.Id.ToString())
+                : null;
+
+            var userDto = new GetUserDTO
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                ProfilePicture = profilePicture,
+                IsEnabled = user.IsEnabled,
+                IsOnline = user.IsOnline,
+                Country = user.Country
+            };
+
+            return ApiResponseHelper.Success(userDto);
         }
 
         public async Task<IActionResult> UpdateUserAsync(UpdateUserDTO user)
