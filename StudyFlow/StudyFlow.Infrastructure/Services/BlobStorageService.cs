@@ -1,24 +1,23 @@
-﻿using StudyFlow.Infrastructure.Interfaces;
-using Azure.Storage.Blobs;
+﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using System;
-using System.Threading.Tasks;
-using System.Runtime.ConstrainedExecution;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StudyFlow.Infrastructure.Interfaces;
 
 namespace StudyFlow.Infrastructure.Services
 {
-    public class BlobStorage : IBlobStorage
+    public class BlobStorageService : IStorageService
     {
         private string _connectionString;
         private readonly string _containerString;
+        private readonly IConfiguration _configuration;
 
-        public BlobStorage(string containerString)
+        public BlobStorageService(IConfiguration configuration)
         {
-            _containerString = containerString;
+            _configuration = configuration;
         }
 
-        public void ConfigureBlobStorage(IServiceCollection services)
+        public async Task ConfigureBlobStorage(IServiceCollection services)
         {
             var serviceProvider = services.BuildServiceProvider();
             var keyVaultService = serviceProvider.GetService<IKeyVaultService>();
@@ -28,7 +27,7 @@ namespace StudyFlow.Infrastructure.Services
                 throw new InvalidOperationException("IKeyVaultService is not registered in the service collection.");
             }
 
-            _connectionString = keyVaultService.GetSecretAsync("BlobStorageConnectionString").Result;
+            _connectionString = await keyVaultService.GetSecretAsync("BlobStorageConnectionString");
         }
 
         public async Task<bool> DeleteAsync(string blobName)

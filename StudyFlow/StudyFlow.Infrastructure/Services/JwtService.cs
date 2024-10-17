@@ -81,14 +81,11 @@ namespace StudyFlow.Infrastructure.Services
 
         private IEnumerable<Claim>? GenerateClaims(ClaimEntity claimEntity)
         {
-            var claims = new List<Claim>();
-
-            foreach (var profile in claimEntity.Roles)
+            var claims = new List<Claim>()
             {
-                claims.Add(new Claim(ClaimTypes.Role, profile));
-            }
-
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, claimEntity.Id.ToString()));
+                new Claim(ClaimTypes.Name, claimEntity.Id.ToString()),
+                new Claim(ClaimTypes.Role, claimEntity.Rol)
+            };
 
             return claims;
         }

@@ -25,7 +25,7 @@ public class Startup
 
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "StudyFlow Backend", Version = "v1" });
 
             // Añade el filtro personalizado
             c.OperationFilter<AuthorizationHeaderOperationFilter>();
@@ -49,7 +49,10 @@ public class Startup
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
-                        }
+                        },
+                        Scheme= "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header
                     },
                     new string[] {}
                 }

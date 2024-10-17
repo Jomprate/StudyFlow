@@ -14,10 +14,11 @@ namespace StudyFlow.DAL.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public UserRepository(DataContext context, SignInManager<User> signInManager) : base(context)
+        public UserRepository(DataContext context, SignInManager<User> signInManager, UserManager<User> userManager) : base(context)
         {
             _context = context;
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         public async Task<User> LoginAsync(string email, string password)
@@ -80,5 +81,9 @@ namespace StudyFlow.DAL.Services
                 .Include(x => x.Country)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        public async Task<string> GenerateEmailConfirmationTokenAsync(User user) => await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        public async Task<IdentityResult> ConfirmEmailAsync(User user, string token) => await _userManager.ConfirmEmailAsync(user, token);
     }
 }

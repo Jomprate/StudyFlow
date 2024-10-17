@@ -23,5 +23,6 @@ namespace StudyFlow.BLL.DTOS.User
         public string? ProfilePicture { get; set; }
         public bool IsEnabled { get; set; }
         public bool IsOnline { get; set; }
+        public ProfileDTO Profile { get; set; } = null!;
     }
 }

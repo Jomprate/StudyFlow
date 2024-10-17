@@ -27,7 +27,6 @@ namespace StudyFlow.BLL.DTOS.User
 
         public int CountryId { get; set; }
         public string? ProfilePicture { get; set; }
-        public bool IsEnabled { get; set; }
-        public List<int> listProfileId { get; set; } = new List<int>();
+        public int ProfileId { get; set; }
     }
 }

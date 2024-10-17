@@ -15,6 +15,7 @@ using StudyFlow.Infrastructure.Interfaces;
 using StudyFlow.Infrastructure.Services;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];
@@ -24,7 +25,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name=LocalConnection"));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
@@ -39,9 +39,11 @@ builder.Services.AddScoped<IOnBoardingTeacherService, OnBoardingTeacherService>(
 builder.Services.AddScoped<IAnnounceRepository, AnnounceRepository>();
 builder.Services.AddScoped<IAnnounceService, AnnounceService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddSingleton<IJwtService>(new JwtService(builder.Configuration));
-builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(builder.Configuration));
-builder.Services.AddSingleton<IBlobStorage>(new BlobStorage(imageContainer));
+builder.Services.AddSingleton<IKeyVaultService>(new KeyVaultService(builder.Configuration, builder.Environment.IsDevelopment()));
+builder.Services.AddSingleton<IStorageService>(builder.Environment.IsDevelopment() ? new LocalStorageService(builder.Configuration) : new BlobStorageService(builder.Configuration));
+builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer("name = StudyFlowDB"));
 builder.Services.AddIdentity<User, IdentityRole<Guid>>(x =>
 {
     x.User.RequireUniqueEmail = true;
@@ -59,6 +61,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 var jwtService = new JwtService(builder.Configuration);
 jwtService.ConfigureJwtAuthentication(builder.Services);
 builder.Services.AddAuthorization();
+
 // Configuración del middleware de localización
 var app = builder.Build();
 
@@ -73,7 +76,7 @@ var localizationOptions = new RequestLocalizationOptions
 
 // Middleware para aplicar la localización
 app.UseRequestLocalization(localizationOptions);
-var blobStorageService = app.Services.GetRequiredService<IBlobStorage>();
+var blobStorageService = app.Services.GetRequiredService<IStorageService>();
 blobStorageService.ConfigureBlobStorage(builder.Services);
 
 if (app.Environment.IsDevelopment())

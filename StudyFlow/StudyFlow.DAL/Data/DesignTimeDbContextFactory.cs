@@ -12,7 +12,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DataContex
             AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-        optionsBuilder.UseSqlServer(configuration.GetConnectionString("LocalConnection"),
+        optionsBuilder.UseSqlServer(configuration.GetConnectionString("StudyFlowDB"),
             b => b.MigrationsAssembly("StudyFlow.DAL"));
 
         return new DataContext(optionsBuilder.Options);
