@@ -104,5 +104,22 @@ namespace StudyFlow.Backend.Controllers
                     new { Error = "An unexpected error occurred.", Details = ex.Message });
             }
         }
+
+        [HttpPost("ConfirmEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] Guid id, string token)
+        {
+            try
+            {
+                return await _userService.ConfirmMailUserTokenAsync(id, token);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
     }
 }

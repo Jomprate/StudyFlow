@@ -18,5 +18,7 @@ namespace StudyFlow.BLL.Interfaces
         Task<IActionResult> UpdateUserAsync(UpdateUserDTO user);
 
         Task<IActionResult> DeleteUserAsync(Guid id);
+
+        Task<IActionResult> ConfirmMailUserTokenAsync(Guid userId, string token);
     }
 }

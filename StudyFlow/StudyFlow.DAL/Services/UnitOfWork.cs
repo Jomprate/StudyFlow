@@ -19,15 +19,17 @@ namespace StudyFlow.DAL.Services
         private IEnrollmentRepository _enrollmentRepository;
         private INotificationRepository _notificationRepository;
         private SignInManager<User> _signInManager;
+        private UserManager<User> _userManager;
 
         #endregion Private Fields
 
         #region Constructors
 
-        public UnitOfWork(DataContext context, SignInManager<User> signInManager)
+        public UnitOfWork(DataContext context, SignInManager<User> signInManager, UserManager<User> userManager)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         #endregion Constructors
@@ -46,7 +48,7 @@ namespace StudyFlow.DAL.Services
         {
             get
             {
-                return _userRepository ??= new UserRepository(_context, _signInManager);
+                return _userRepository ??= new UserRepository(_context, _signInManager, _userManager);
             }
         }
 

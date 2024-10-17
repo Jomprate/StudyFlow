@@ -18,16 +18,16 @@ namespace StudyFlow.BLL.Services
         #region Private Fields
 
         private IUnitOfWork _unitOfWork;
-        private IBlobStorage _blobStorage;
+        private IStorageService _storageService;
 
         #endregion Private Fields
 
         #region Constructors
 
-        public OnBoardingTeacherService(IUnitOfWork unitOfWork, IBlobStorage blobStorage)
+        public OnBoardingTeacherService(IUnitOfWork unitOfWork, IStorageService blobStorage)
         {
             _unitOfWork = unitOfWork;
-            _blobStorage = blobStorage;
+            _storageService = blobStorage;
         }
 
         #endregion Constructors
@@ -53,7 +53,7 @@ namespace StudyFlow.BLL.Services
             listCoursesDto = courses.ListResult.Select(s => s.ToDTO()).ToList();
             listCoursesDto = listCoursesDto.Select(s =>
             {
-                s.Logo = courses.ListResult.Any(w => w.HaveLogo && w.Id == s.Id) ? _blobStorage.DownloadAsync(s.Id.ToString()).Result : string.Empty;
+                s.Logo = courses.ListResult.Any(w => w.HaveLogo && w.Id == s.Id) ? _storageService.DownloadAsync(s.Id.ToString()).Result : string.Empty;
                 return s;
             }).ToList();
 
@@ -85,7 +85,7 @@ namespace StudyFlow.BLL.Services
             }
 
             CourseDTO courseDTO = course.ToDTO();
-            courseDTO.Logo = course.HaveLogo ? await _blobStorage.DownloadAsync(course.Id.ToString()) : string.Empty;
+            courseDTO.Logo = course.HaveLogo ? await _storageService.DownloadAsync(course.Id.ToString()) : string.Empty;
 
             return ApiResponseHelper.Success(courseDTO);
         }
@@ -114,7 +114,7 @@ namespace StudyFlow.BLL.Services
 
                 if (!string.IsNullOrEmpty(courseDTO.Logo))
                 {
-                    _blobStorage.UploadAsync(courseDTO.Logo, course.Id.ToString());
+                    _storageService.UploadAsync(courseDTO.Logo, course.Id.ToString());
                 }
 
                 _unitOfWork.SaveChangesAsync();
@@ -155,7 +155,7 @@ namespace StudyFlow.BLL.Services
 
                 if (!string.IsNullOrEmpty(courseDTO.Logo) && result)
                 {
-                    _blobStorage.UploadAsync(courseDTO.Logo, course.Id.ToString());
+                    _storageService.UploadAsync(courseDTO.Logo, course.Id.ToString());
                 }
 
                 _unitOfWork.SaveChangesAsync();
@@ -186,7 +186,7 @@ namespace StudyFlow.BLL.Services
 
                 if (result)
                 {
-                    var isDeleted = course.HaveLogo ? _blobStorage.DeleteAsync(course.Id.ToString()).Result : false;
+                    var isDeleted = course.HaveLogo ? _storageService.DeleteAsync(course.Id.ToString()).Result : false;
                     _unitOfWork.SaveChangesAsync();
                     return ApiResponseHelper.NoContent();
                 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace StudyFlow.Infrastructure.Interfaces
 {
-    public interface IBlobStorage
+    public interface IStorageService
     {
-        void ConfigureBlobStorage(IServiceCollection services);
+        Task ConfigureBlobStorage(IServiceCollection services);
 
         Task<bool> UploadAsync(string base64String, string blobName);
 

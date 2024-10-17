@@ -36,7 +36,7 @@ namespace StudyFlow.BLL.Services
             }
 
             var userDto = user.ToGetDTO();
-            return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Roles = null, ExpirationDuration = "ExpiryDurationLogin" });
+            return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Rol = user.UserType.ToString(), ExpirationDuration = "ExpiryDurationLogin" });
         }
 
         public async Task<bool> LogoutAsync(string token)

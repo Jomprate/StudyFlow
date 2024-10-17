@@ -9,7 +9,7 @@ namespace StudyFlow.Infrastructure.Entities
     public class ClaimEntity
     {
         public Guid Id { get; set; }
-        public IEnumerable<string> Roles { get; set; } = Enumerable.Empty<string>();
+        public string Rol { get; set; } = string.Empty;
         public string ExpirationDuration { get; set; } = null!;
     }
 }

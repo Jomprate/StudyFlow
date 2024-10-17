@@ -11,14 +11,14 @@ namespace StudyFlow.Infrastructure.Services
         private readonly bool _isDevelopment = true;
         private readonly IConfiguration _configuration;
 
-        public KeyVaultService(IConfiguration configuration)
+        public KeyVaultService(IConfiguration configuration, bool isDevelopment)
         {
             _configuration = configuration;
-            _isDevelopment = _configuration["Development:IsDevelopment"].Equals("true", StringComparison.OrdinalIgnoreCase);
+            _isDevelopment = isDevelopment;
 
             if (!_isDevelopment)
             {
-                string keyVaultUri = _configuration["KeyVaultUri"];
+                string keyVaultUri = _configuration["AzureKeyVault:KeyVaultUri"];
                 _secretClient = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
             }
         }
