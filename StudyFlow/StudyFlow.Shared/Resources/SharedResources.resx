@@ -448,7 +448,7 @@
     <value>Activation Email</value>
   </data>
   <data name="resendEmail_instructions" xml:space="preserve">
-    <value>If you did not receive the email to activate your account, or if you accidentally deleted it, you can request that we send you a new activation link. Please also check your spam or junk mail folder.</value>
+    <value></value>
   </data>
   <data name="global_resendEmail" xml:space="preserve">
     <value>Resend Activation Email</value>

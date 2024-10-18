@@ -6,6 +6,8 @@ import { useTheme } from '../../../ThemeContext';
 import { createUser, getCountriesWithLanguage } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
+import ImageCropModal from '../imageCropModal/ImageCropModal';
+import UserCreatedModal from '../userCreatedModal/UserCreatedModal';
 
 interface Country {
     id: number;
@@ -36,6 +38,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         }
     });
 
+    const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [problemMessage, setProblemMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
@@ -44,6 +47,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const [countries, setCountries] = useState<Country[]>([]);
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
     const fetchCountries = async () => {
         try {
@@ -82,40 +86,110 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         e.target.value = filteredValue;
     };
 
+    const [isUserCreatedModalOpen, setIsUserCreatedModalOpen] = useState(false);
+
+    //const onSubmit = async (data: any) => {
+    //    if (data.password !== data.repeatPassword) {
+    //        setProblemMessage('Las contraseñas no coinciden');
+    //        return;
+    //    }
+
+    //    const { repeatPassword, ...finalData } = data;
+    //    finalData.profilePicture = croppedImage || imagePreview;
+
+    //    try {
+    //        await createUser(finalData);
+    //        setProblemMessage('Usuario creado con éxito');
+    //        reset();
+    //        setImagePreview(null);
+    //        setCroppedImage(null);
+    //        setFileName('');
+    //        setOpen(false);
+    //    } catch (error: any) {
+    //        setProblemMessage(error.message || 'Ocurrió un error inesperado');
+    //    }
+    //};
+
     const onSubmit = async (data: any) => {
         if (data.password !== data.repeatPassword) {
             setProblemMessage('Las contraseñas no coinciden');
             return;
         }
 
-        const { repeatPassword, ...finalData } = data;
-        finalData.profilePicture = imagePreview;
+        const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
+
+        // Verifica si profileId es un número, de lo contrario, establece un valor por defecto
+        const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0; // Asegura que sea un número válido
+
+        // Si la imagen está en Base64, remueve el prefijo MIME
+        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
+
+        // Construye el objeto final con todos los campos requeridos
+        const finalData = {
+            firstName,
+            lastName,
+            email,
+            password,  // Enviamos `password` en minúsculas (sin caracteres especiales)
+            phoneNumber: phoneNumber || null, // Campo opcional
+            countryId: Number(countryId), // Asegura que sea un número
+            profilePicture: cleanProfilePicture, // Enviar solo la parte de datos de la cadena Base64
+            profileId: validProfileId, // Usa el valor válido o un valor por defecto
+        };
+
+        // Imprime en consola lo que se va a enviar
+        console.log("Datos enviados al backend:", finalData);
 
         try {
             await createUser(finalData);
             setProblemMessage('Usuario creado con éxito');
-            reset();
-            setImagePreview(null);
-            setFileName('');
-            setOpen(false);
+            reset(); // Reseteamos el formulario
+            setImagePreview(null); // Limpiamos la imagen previsualizada
+            setCroppedImage(null); // Limpiamos la imagen recortada
+            setFileName(''); // Reiniciamos el nombre del archivo
+            setOpen(false); // Cerramos el modal o ventana si está abierta
+            setIsUserCreatedModalOpen(true); // Abrir modal de usuario creado
         } catch (error: any) {
-            setProblemMessage(error.message || 'Ocurrió un error inesperado');
+            let errorMessage = 'Ocurrió un error inesperado';
+            if (error.response && error.response.data) {
+                errorMessage = typeof error.response.data === 'string'
+                    ? error.response.data
+                    : JSON.stringify(error.response.data);
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+
+            setProblemMessage(errorMessage);
         }
     };
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+    const handleCroppedImage = (croppedImage: string) => {
+        setCroppedImage(croppedImage);
+        setIsCropModalOpen(false);
+    };
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setFileName(file.name);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-        }
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            const imageURL = reader.result?.toString() || "";
+            setImagePreview(imageURL);
+            setIsCropModalOpen(true);
+        });
+        reader.readAsDataURL(file);
+        setFileName(file.name);
     };
+
+    <input
+        type="file"
+        ref={fileInputRef}
+        accept="image/png, image/jpeg, image/jpg"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+    />
 
     const handleSelectClick = () => {
         if (fileInputRef.current) {
@@ -324,23 +398,36 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
                         <div className="right-column">
                             <div className="form-group user-image">
-                                {imagePreview ? (
-                                    <img src={imagePreview} alt="User" className="user-placeholder uploaded-image" />
+                                {croppedImage ? (
+                                    <img
+                                        src={croppedImage}
+                                        alt="User"
+                                        className="user-placeholder uploaded-image"
+                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                    />
                                 ) : (
-                                    <img src={userPlaceholder} alt="User Placeholder" className="user-placeholder" />
+                                    <img
+                                        src={userPlaceholder}
+                                        alt="User Placeholder"
+                                        className="user-placeholder"
+                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                    />
                                 )}
                             </div>
 
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_image')}</label>
+
                                 <div className="image-field">
+                                    {/* Input de archivo, solo permite imágenes PNG y JPEG */}
                                     <input
                                         type="file"
                                         ref={fileInputRef}
-                                        accept="image/*"
+                                        accept="image/png, image/jpeg, image/jpg"
                                         onChange={handleFileChange}
                                         style={{ display: 'none' }}
                                     />
+
                                     <input
                                         type="text"
                                         value={fileName}
@@ -348,6 +435,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         className="file-name-input"
                                         placeholder={t('global_noFileSelected')}
                                     />
+
+                                    {/* Botón para abrir el explorador de archivos */}
                                     <button type="button" className="select-button" onClick={handleSelectClick}>
                                         {t('Seleccionar')}
                                     </button>
@@ -392,7 +481,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                         </button>
                     </div>
                 </form>
+
+                {isCropModalOpen && (
+                    <ImageCropModal
+                        open={isCropModalOpen}
+                        onClose={() => setIsCropModalOpen(false)}
+                        onCropComplete={handleCroppedImage}
+                        imageSrc={imagePreview!}
+                        fileName={''} />
+                )}
+
+                {/* Modal para indicar que el usuario fue creado */}
+                <UserCreatedModal
+                    open={isUserCreatedModalOpen}
+                    setOpen={setIsUserCreatedModalOpen}
+                    onBackToLogin={() => {
+                        setIsUserCreatedModalOpen(false);
+                        setOpen(false); // Cerrar ambos modales
+                    }}
+                />
+
             </div>
+
         </div>
     );
 };

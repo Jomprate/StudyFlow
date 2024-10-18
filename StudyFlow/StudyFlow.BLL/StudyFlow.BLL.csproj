@@ -16,6 +16,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\StudyFlow.DAL\StudyFlow.DAL.csproj" />
 		<ProjectReference Include="..\StudyFlow.Infrastructure\StudyFlow.Infrastructure.csproj" />
+		<ProjectReference Include="..\StudyFlow.Shared\StudyFlow.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

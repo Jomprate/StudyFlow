@@ -46,21 +46,38 @@ export const setauthtoken = (token: string | null) => {
     }
 };
 
-export const createUser = async (userdata: userdata): Promise<void> => {
+export const createUser = async (userDTO: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    phoneNumber?: string;
+    countryId: number;
+    profilePicture?: string;
+    profileId: number;
+}): Promise<void> => {
     try {
-        const response = await api.post('/user/createuser', userdata);
+        const response = await api.post('/user/createuser', userDTO);
         return response.data;
     } catch (error: any) {
-        const errorMessage = error.response
-            ? i18n.t('global_error_apiResponse', { message: error.response.data })
-            : error.request
-                ? i18n.t('global_error_noResponse')
-                : i18n.t('global_error_requestSetup', { message: error.message });
+        // Captura y formatea adecuadamente el error
+        let errorMessage = 'An unexpected error occurred';
 
-        console.error(errorMessage);
-        throw new Error(errorMessage);
+        if (error.response && error.response.data) {
+            // Si `error.response.data` es un objeto, lo convertimos en string
+            errorMessage = typeof error.response.data === 'string'
+                ? error.response.data
+                : JSON.stringify(error.response.data);
+        } else if (error.message) {
+            // Si hay un `error.message`, usamos eso
+            errorMessage = error.message;
+        }
+
+        console.error(errorMessage); // Para depuración
+        throw new Error(errorMessage); // Lanzamos el error para que sea capturado por `onSubmit`
     }
 };
+
 
 export const getallusers = async (): Promise<userdata[]> => {
     try {

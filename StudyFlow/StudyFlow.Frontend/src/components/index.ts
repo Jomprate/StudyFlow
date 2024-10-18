@@ -5,8 +5,11 @@ export { default as Feature } from "./feature/Feature";
 export { default as Navbar } from "./navBar/Navbar";
 
 export { default as AuthModal } from "./modals/authModal/AuthModal";
+export { default as ImageCropModal } from "./modals/imageCropModal/ImageCropModal";
 export { default as LoginModal } from "./modals/loginModal/LoginModal";
 export { default as RecoverPasswordModal } from "./modals/recoverPasswordModal/RecoverPasswordModal";
+export { default as ResendActivationEmail } from "./modals/resendActivationEmailModal/ResendActivationEmailModal";
+export { default as UserCreatedModal } from "./modals/userCreatedModal/UserCreatedModal";
 
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";

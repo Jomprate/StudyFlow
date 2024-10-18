@@ -27,58 +27,90 @@ namespace StudyFlow.BLL.Services
         {
             try
             {
-                var exist = await _unitOfWork.CountryRepository.AnyAsync(w => w.Id == user.CountryId);
-
-                if (!exist)
+                // Verificar si el país existe
+                var countryExists = await _unitOfWork.CountryRepository.AnyAsync(w => w.Id == user.CountryId);
+                if (!countryExists)
                 {
                     return ApiResponseHelper.NotFound($"Not found country with the Id {user.CountryId}.");
                 }
 
-                exist = await _unitOfWork.UserRepository.AnyAsync(w => w.Email == user.Email);
-
-                if (exist)
+                // Verificar si el email ya está registrado
+                var emailExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Email == user.Email);
+                if (emailExists)
                 {
                     return new BadRequestObjectResult("User with this email already exists.");
                 }
 
+                // Crear el usuario
                 User userToCreate = user.ToEntity();
                 userToCreate.IsEnabled = false;
                 userToCreate.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
                 User newUser = await _unitOfWork.UserRepository.RegisterAsync(userToCreate, user.Password);
 
+                // Si el usuario no fue creado, devolver error
                 if (newUser == null)
                 {
                     return new BadRequestObjectResult("Failed to create user.");
                 }
 
+                // Guardar cambios en la base de datos
+                var result = await _unitOfWork.SaveChangesAsync();
+
+                // No lanzar error inmediatamente si SaveChangesAsync devuelve 0
+                if (result <= 0)
+                {
+                    // Verificar si el usuario realmente se creó antes de lanzar el error
+                    var checkUser = await _unitOfWork.UserRepository.GetByIdAsync(newUser.Id);
+                    if (checkUser == null)
+                    {
+                        return new BadRequestObjectResult("Failed to save user after creation.");
+                    }
+                }
+
+                // Añadir una pausa antes de verificar si el usuario fue creado
+                await Task.Delay(2000); // Esperar 2 segundos (ajusta el tiempo si lo prefieres)
+
+                // Verificar si el usuario fue creado utilizando GetUserByIdAsync
+                var checkUserResult = await GetUserByIdAsync(newUser.Id);
+                if (checkUserResult is NotFoundObjectResult)
+                {
+                    return new BadRequestObjectResult("Failed to verify user creation.");
+                }
+
+                // Subir imagen de perfil, si aplica
                 if (!string.IsNullOrEmpty(user.ProfilePicture))
                 {
                     bool uploaded = await _storageService.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
                     if (!uploaded)
                     {
-                        return new BadRequestObjectResult("Failed to upload profile picture.");
+                        return new BadRequestObjectResult(new { Message = "Failed to upload profile picture.", UserId = newUser.Id });
                     }
                 }
 
-                var result = await _unitOfWork.SaveChangesAsync();
+                // Generar el token de confirmación de email
                 string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(newUser);
+
+                // Crear el enlace de confirmación
+                string confirmationLink = $"https://yourdomain.com/confirm-email?userId={newUser.Id}&token={token}";
+
+                // Crear el cuerpo del correo en formato HTML
 
                 try
                 {
-                    _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", "You have successfully registered to StudyFlow." + token);
+                    // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink y token
+                    string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink, token);
+
+                    // Enviar el correo usando el servicio de correo
+                    await _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", emailBody);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    // Manejar el error y mostrar el mensaje de error en los logs
+                    Console.WriteLine($"Error sending email: {ex.Message}");
                 }
 
-                if (result > 0)
-                {
-                    return ApiResponseHelper.Create("User created successfully.");
-                }
-                else
-                {
-                    return new BadRequestObjectResult("Failed to create user.");
-                }
+                // Devolver respuesta de éxito con el ID del usuario
+                return ApiResponseHelper.Create(new { Message = "User created successfully.", UserId = newUser.Id });
             }
             catch (DbUpdateException ex)
             {

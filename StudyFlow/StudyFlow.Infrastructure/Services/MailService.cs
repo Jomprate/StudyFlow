@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -18,22 +16,27 @@ namespace StudyFlow.Infrastructure.Services
 
             using (MailMessage mail = new MailMessage())
             {
+                mail.From = new MailAddress(senderEmail);
+                mail.To.Add(email);
+                mail.Subject = subject;
+
+                // Colocar el cuerpo del mensaje recibido en formato HTML
+                mail.Body = message;
+                mail.IsBodyHtml = true;  // Asegurar que se interpreta como HTML
+                mail.BodyEncoding = Encoding.UTF8;
+
                 using (SmtpClient smtpClient = new SmtpClient("smtp.gmail.com", 587))
                 {
-                    mail.From = new MailAddress(senderEmail);
-                    mail.To.Add(email);
-                    mail.Subject = subject;
-                    mail.Body = message;
-
                     smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
                     smtpClient.EnableSsl = true;
 
                     try
                     {
-                        smtpClient.Send(mail);
+                        await smtpClient.SendMailAsync(mail);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Console.WriteLine($"Error sending email: {ex.Message}");
                         throw;
                     }
                 }

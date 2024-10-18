@@ -444,4 +444,16 @@
   <data name="announce_delete_title" xml:space="preserve">
     <value>Borrar Anuncio</value>
   </data>
+  <data name="login_resendActivationEmail" xml:space="preserve">
+    <value>Email de activación</value>
+  </data>
+  <data name="resendEmail_instructions" xml:space="preserve">
+    <value>Si no ha recibido el correo electrónico para activar su cuenta, o si lo ha borrado accidentalmente, puede solicitar que le enviemos un nuevo enlace de activación. Compruebe también su carpeta de correo no deseado o spam.</value>
+  </data>
+  <data name="global_resendEmail" xml:space="preserve">
+    <value>Reenviar correo de activacion</value>
+  </data>
+  <data name="login_resendEmail" xml:space="preserve">
+    <value>Reenviar Correo</value>
+  </data>
 </root>

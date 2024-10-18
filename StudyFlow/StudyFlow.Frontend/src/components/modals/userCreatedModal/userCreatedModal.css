@@ -8,14 +8,14 @@
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999 !important;
 }
 
     .modal-overlay.show {
         display: flex;
     }
 
-.login-modal {
+.user-created-modal {
     padding: 30px;
     background-color: var(--color-background-light);
     border-radius: 12px;
@@ -25,9 +25,10 @@
     position: relative;
     animation: fadeIn 0.4s ease-out;
     color: var(--color_text-light-1);
+    z-index: 10000 !important;
 }
 
-    .login-modal.dark {
+    .user-created-modal.dark {
         background-color: var(--color-background-dark);
         color: var(--color_text-dark-1);
     }
@@ -48,37 +49,42 @@
         color: #e74c3c;
     }
 
-.login-modal-header {
+.user-created-modal-header {
     text-align: center;
     font-size: 1.8rem;
     font-weight: bold;
     color: inherit;
     margin-bottom: 20px;
+    margin-top: 2px;
 }
 
-.login-modal-body {
-    display: flex;
-    flex-direction: column;
+.user-created-message {
+    font-size: 0.9rem;
+    color: var(--color-text-light-2);
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 15px;
 }
 
-.login-modal-form {
+.user-created-modal-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.login-modal-field {
+.user-created-modal-field {
     display: flex;
     flex-direction: column;
 }
 
-.login-modal-label {
+.user-created-modal-label {
     font-weight: 500;
     margin-bottom: 5px;
     color: inherit;
 }
 
-.login-modal-input {
+.user-created-modal-input {
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
@@ -90,22 +96,17 @@
     color: var(--input-color-light);
 }
 
-.login-modal.dark .login-modal-input {
+.user-created-modal.dark .user-created-modal-input {
     background-color: var(--input-background-dark);
     color: var(--input-color-dark);
 }
 
-.login-modal-input:focus {
+.user-created-modal-input:focus {
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.login-modal-error {
-    color: #e74c3c;
-    font-size: 0.8rem;
-}
-
-.login-modal-submit {
+.user-created-modal-submit {
     padding: 12px;
     font-size: 1rem;
     font-weight: 600;
@@ -118,72 +119,24 @@
     width: 100%;
 }
 
-    .login-modal-submit:hover {
+    .user-created-modal-submit:hover {
         background-color: var(--color-hover);
     }
 
-.login-modal-footer {
+.user-created-modal-footer {
     margin-top: 20px;
     text-align: center;
 }
 
-.forgot-password-text {
-    font-size: 0.9rem;
-    color: inherit;
-}
-
-.forgot-password-link {
+.back-to-login-link {
     color: var(--color-links);
     text-decoration: none;
     font-weight: 600;
 }
 
-    .forgot-password-link:hover {
+    .back-to-login-link:hover {
         text-decoration: underline;
     }
-
-.resend-email-text {
-    font-size: 0.9rem;
-    color: inherit;
-}
-
-.resend-email-link {
-    color: var(--color-links);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-    .resend-email-link:hover {
-        text-decoration: underline;
-    }
-
-.password-container {
-    position: relative;
-}
-
-.password-input {
-    padding-right: 40px;
-}
-
-.toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #333;
-}
-
-    .toggle-password:hover {
-        color: var(--color-hover);
-    }
-
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear,
-input[type="password"]::-webkit-inner-spin-button {
-    display: none;
-}
 
 @keyframes fadeIn {
     from {
@@ -198,17 +151,25 @@ input[type="password"]::-webkit-inner-spin-button {
 }
 
 @media screen and (max-width: 650px) {
-    .login-modal {
+    .user-created-modal, .login-modal {
         max-width: 90%;
         margin: 0 auto;
         padding: 20px;
     }
+
+    .user-created-modal-header, .login-modal-header {
+        font-size: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 490px) {
-    .login-modal {
+    .user-created-modal, .login-modal {
         max-width: 95%;
         margin: 0 auto;
         padding: 15px;
+    }
+
+    .user-created-modal-header, .login-modal-header {
+        font-size: 1.3rem;
     }
 }

@@ -6,6 +6,7 @@ import { useTheme } from '../../../ThemeContext';
 import { handleEmailValidation } from '../../../helpers/validationHelpers';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import RecoverPasswordModal from '../recoverPasswordModal/RecoverPasswordModal';
+import ResendActivationEmailModal from '../resendActivationEmailModal/ResendActivationEmailModal';
 
 interface LoginModalProps {
     open: boolean;
@@ -16,6 +17,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const [openRecoverPasswordModal, setOpenRecoverPasswordModal] = useState(false);
+    const [openResendActivationEmailModal, setOpenResendActivationEmailModal] = useState(false);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         mode: 'onSubmit',
@@ -48,9 +50,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
         setOpen(false);
     };
 
+    const handleResendActivationEmailClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+        e.preventDefault();
+        setOpenResendActivationEmailModal(true);
+        setOpen(false);
+    };
+
     const handleBackToLogin = () => {
         setOpen(true);
         setOpenRecoverPasswordModal(false);
+        setOpenResendActivationEmailModal(false);
     };
 
     return (
@@ -124,6 +133,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                             {t('login_recoverPassword')}
                                         </a>
                                     </p>
+
+                                    <p className="resend-email-text">
+                                        {t('login_resendActivationEmail')}
+                                        &nbsp;
+                                        <a href="#" onClick={handleResendActivationEmailClick} className="resend-email-link">
+                                            {t('login_resendEmail')}
+                                        </a>
+                                    </p>
                                 </div>
                             </form>
                         </div>
@@ -135,6 +152,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                 <RecoverPasswordModal
                     open={openRecoverPasswordModal}
                     setOpen={setOpenRecoverPasswordModal}
+                    onBackToLogin={handleBackToLogin}
+                />
+            )}
+
+            {openResendActivationEmailModal && (
+                <ResendActivationEmailModal
+                    open={openResendActivationEmailModal}
+                    setOpen={setOpenResendActivationEmailModal}
                     onBackToLogin={handleBackToLogin}
                 />
             )}
