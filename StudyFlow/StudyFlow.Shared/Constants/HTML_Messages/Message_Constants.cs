@@ -82,8 +82,6 @@
                 <p>Thank you for registering! Please confirm your email by clicking the button below:</p>
                 <a href='{0}' class='btn'>Confirm Email</a>
                 <p>Please note that this link will expire in 1 hour.</p>
-                <p>The token will be valid for 1 hour.</p>
-                <p>This is the token that you will need to enter in the confirmation email: {1}</p>
                 <p>If you did not request this, please ignore this email.</p>
             </div>
             <div class='footer'>
@@ -94,3 +92,4 @@
 </body>
 </html>";
 }
+

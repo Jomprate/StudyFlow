@@ -1,0 +1,53 @@
+/* Estilos comunes para la página de confirmación */
+.confirmpage {
+    padding-top: 80px; /* Ajusta según la altura del Navbar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--background-color-light); /* Mismo color de fondo que el home */
+}
+
+/* Estilos específicos para el contenido */
+.confirmpage-content {
+    text-align: center;
+    padding: 2rem;
+    background-color: var(--background-content-light); /* Mismo color del contenido */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.confirmpage h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--title-color-light); /* Mismo color del título */
+}
+
+.confirmpage p {
+    font-size: 1.2rem;
+    color: var(--text-color-light); /* Mismo color del texto */
+    margin-bottom: 2rem;
+}
+
+/* Estilos para el tema claro */
+.confirmpage.light {
+    background-color: var(--background-color-light); /* Mismo color del fondo claro */
+}
+
+    .confirmpage.light .confirmpage-content {
+        background-color: var(--background-content-light); /* Color de contenido claro */
+        color: var(--text-color-light); /* Color del texto claro */
+    }
+
+/* Estilos para el tema oscuro */
+.confirmpage.dark {
+    background-color: var(--background-color-dark); /* Mismo color del fondo oscuro */
+}
+
+    .confirmpage.dark .confirmpage-content {
+        background-color: var(--background-content-dark); /* Color de contenido oscuro */
+        color: var(--text-color-dark); /* Color del texto oscuro */
+    }

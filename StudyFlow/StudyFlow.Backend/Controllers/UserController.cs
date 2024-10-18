@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
+using static StudyFlow.BLL.Services.UserService;
 
 namespace StudyFlow.Backend.Controllers
 {
@@ -109,11 +110,12 @@ namespace StudyFlow.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] Guid id, string token)
+        public async Task<IActionResult> ConfirmEmailAsync([FromBody] EmailConfirmationRequest request)
         {
             try
             {
-                return await _userService.ConfirmMailUserTokenAsync(id, token);
+                // Ahora se pasa el objeto 'request' al servicio
+                return await _userService.ConfirmMailUserTokenAsync(request);
             }
             catch (Exception ex)
             {

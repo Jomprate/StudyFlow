@@ -88,28 +88,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
     const [isUserCreatedModalOpen, setIsUserCreatedModalOpen] = useState(false);
 
-    //const onSubmit = async (data: any) => {
-    //    if (data.password !== data.repeatPassword) {
-    //        setProblemMessage('Las contraseñas no coinciden');
-    //        return;
-    //    }
-
-    //    const { repeatPassword, ...finalData } = data;
-    //    finalData.profilePicture = croppedImage || imagePreview;
-
-    //    try {
-    //        await createUser(finalData);
-    //        setProblemMessage('Usuario creado con éxito');
-    //        reset();
-    //        setImagePreview(null);
-    //        setCroppedImage(null);
-    //        setFileName('');
-    //        setOpen(false);
-    //    } catch (error: any) {
-    //        setProblemMessage(error.message || 'Ocurrió un error inesperado');
-    //    }
-    //};
-
     const onSubmit = async (data: any) => {
         if (data.password !== data.repeatPassword) {
             setProblemMessage('Las contraseñas no coinciden');
@@ -119,7 +97,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
         // Verifica si profileId es un número, de lo contrario, establece un valor por defecto
-        const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0; // Asegura que sea un número válido
+        const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
         // Si la imagen está en Base64, remueve el prefijo MIME
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
@@ -129,9 +107,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             firstName,
             lastName,
             email,
-            password,  // Enviamos `password` en minúsculas (sin caracteres especiales)
-            phoneNumber: phoneNumber || null, // Campo opcional
-            countryId: Number(countryId), // Asegura que sea un número
+            password,
+            phoneNumber: phoneNumber || null,
+            countryId: Number(countryId),
             profilePicture: cleanProfilePicture, // Enviar solo la parte de datos de la cadena Base64
             profileId: validProfileId, // Usa el valor válido o un valor por defecto
         };

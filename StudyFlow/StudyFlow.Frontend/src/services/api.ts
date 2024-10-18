@@ -78,7 +78,6 @@ export const createUser = async (userDTO: {
     }
 };
 
-
 export const getallusers = async (): Promise<userdata[]> => {
     try {
         const response = await api.get('/user/getallusers');
@@ -320,6 +319,30 @@ export const getAnnouncesByCourseIdPaginated = async (
             : error.request
                 ? i18n.t('global_error_noResponse')
                 : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
+
+// Función para confirmar el correo
+export const confirmEmail = async (userId: string, token: string): Promise<void> => {
+    try {
+        const response = await api.post('/user/ConfirmEmail', {
+            userId,  // Enviado en el cuerpo
+            token,   // Enviado en el cuerpo
+        });
+        return response.data;
+    } catch (error: any) {
+        let errorMessage = 'An unexpected error occurred';
+
+        if (error.response && error.response.data) {
+            errorMessage = typeof error.response.data === 'string'
+                ? error.response.data
+                : JSON.stringify(error.response.data);
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
 
         console.error(errorMessage);
         throw new Error(errorMessage);

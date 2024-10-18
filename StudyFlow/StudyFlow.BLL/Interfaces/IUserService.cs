@@ -2,6 +2,7 @@
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
+using static StudyFlow.BLL.Services.UserService;
 
 namespace StudyFlow.BLL.Interfaces
 {
@@ -19,6 +20,8 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> DeleteUserAsync(Guid id);
 
-        Task<IActionResult> ConfirmMailUserTokenAsync(Guid userId, string token);
+        //Task<IActionResult> ConfirmMailUserTokenAsync(Guid userId, string token);
+
+        Task<IActionResult> ConfirmMailUserTokenAsync(EmailConfirmationRequest request);
     }
 }

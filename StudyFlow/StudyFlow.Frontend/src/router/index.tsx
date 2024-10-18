@@ -11,12 +11,14 @@ import Subject from '../pages/Subjects/Subject.tsx';
 import Notification from '../pages/Notification/Notification.tsx';
 import CourseCrud from '../pages/Course_/CourseCrud.tsx';
 import Calendar from '../pages/Calendar_/Calendar.tsx';
+import ConfirmPage from '../pages/ConfirmEmailPage/Confirm_page.tsx';
 
 const Router = () => {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/confirmpage" element={<ConfirmPage />} />
                 <Route path="/countries" element={<Countries />} />
                 <Route path="/subject/create" element={<Subject />} />
                 <Route path="/subject" element={<Subject method='get' />} />

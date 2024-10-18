@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.DTOS.User;
@@ -56,10 +57,9 @@ namespace StudyFlow.BLL.Services
                 // Guardar cambios en la base de datos
                 var result = await _unitOfWork.SaveChangesAsync();
 
-                // No lanzar error inmediatamente si SaveChangesAsync devuelve 0
+                // Verificar si los cambios fueron guardados correctamente
                 if (result <= 0)
                 {
-                    // Verificar si el usuario realmente se creó antes de lanzar el error
                     var checkUser = await _unitOfWork.UserRepository.GetByIdAsync(newUser.Id);
                     if (checkUser == null)
                     {
@@ -67,45 +67,28 @@ namespace StudyFlow.BLL.Services
                     }
                 }
 
-                // Añadir una pausa antes de verificar si el usuario fue creado
-                await Task.Delay(2000); // Esperar 2 segundos (ajusta el tiempo si lo prefieres)
-
-                // Verificar si el usuario fue creado utilizando GetUserByIdAsync
-                var checkUserResult = await GetUserByIdAsync(newUser.Id);
-                if (checkUserResult is NotFoundObjectResult)
-                {
-                    return new BadRequestObjectResult("Failed to verify user creation.");
-                }
-
-                // Subir imagen de perfil, si aplica
-                if (!string.IsNullOrEmpty(user.ProfilePicture))
-                {
-                    bool uploaded = await _storageService.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
-                    if (!uploaded)
-                    {
-                        return new BadRequestObjectResult(new { Message = "Failed to upload profile picture.", UserId = newUser.Id });
-                    }
-                }
-
                 // Generar el token de confirmación de email
                 string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(newUser);
 
-                // Crear el enlace de confirmación
-                string confirmationLink = $"https://yourdomain.com/confirm-email?userId={newUser.Id}&token={token}";
+                // Codificar el token y el userId para que no tengan problemas en la URL
+                string encodedToken = Uri.EscapeDataString(token);
+                string encodedUserId = Uri.EscapeDataString(newUser.Id.ToString());
+
+                // Crear el enlace de confirmación - Aquí aseguramos que apunte a 'confirmpage'
+                string confirmationLink = $"http://localhost:5173/confirmpage?userId={encodedUserId}&token={encodedToken}";
 
                 // Crear el cuerpo del correo en formato HTML
-
                 try
                 {
-                    // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink y token
-                    string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink, token);
+                    // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink
+                    string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink);
 
                     // Enviar el correo usando el servicio de correo
                     await _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", emailBody);
                 }
                 catch (Exception ex)
                 {
-                    // Manejar el error y mostrar el mensaje de error en los logs
+                    // Loguear el error pero continuar con el flujo
                     Console.WriteLine($"Error sending email: {ex.Message}");
                 }
 
@@ -247,25 +230,54 @@ namespace StudyFlow.BLL.Services
             }
         }
 
-        public async Task<IActionResult> ConfirmMailUserTokenAsync(Guid userId, string token)
+        public class EmailConfirmationRequest
         {
-            User user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+            public Guid UserId { get; set; }
+            public string Token { get; set; }
+        }
 
-            if (user == null)
+        [HttpPost("ConfirmEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ConfirmMailUserTokenAsync(EmailConfirmationRequest request)
+        {
+            try
             {
-                return ApiResponseHelper.NotFound($"Not found user with the Id {userId}.");
-            }
+                // Validar el userId
+                if (request.UserId == Guid.Empty || string.IsNullOrEmpty(request.Token))
+                {
+                    return ApiResponseHelper.BadRequest("Invalid userId or token.");
+                }
 
-            user.IsEnabled = true;
-            var result = await _unitOfWork.UserRepository.ConfirmEmailAsync(user, token);
-            if (result != null)
-            {
-                return ApiResponseHelper.Success("Email confirmed successfully.");
+                // Obtener el usuario por Id
+                User user = await _unitOfWork.UserRepository.GetByIdAsync(request.UserId);
+
+                if (user == null)
+                {
+                    return ApiResponseHelper.NotFound($"User with Id {request.UserId} not found.");
+                }
+
+                // Lógica para confirmar el email y validar el token
+                var result = await _unitOfWork.UserRepository.ConfirmEmailAsync(user, request.Token);
+
+                if (result.Succeeded)
+                {
+                    user.IsEnabled = true;
+                    await _unitOfWork.SaveChangesAsync();  // Guardar cambios
+
+                    return ApiResponseHelper.Success("Email confirmed successfully.");
+                }
+                else
+                {
+                    return ApiResponseHelper.BadRequest("Failed to confirm email. Invalid or expired token.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return new BadRequestObjectResult("Failed to confirm email.");
+                return ApiResponseHelper.InternalServerError("An unexpected error occurred", ex.Message);
             }
         }
+
     }
 }
