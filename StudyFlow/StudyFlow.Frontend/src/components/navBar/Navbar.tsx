@@ -7,6 +7,7 @@ import logo from '../../assets/logo_t.svg';
 import { AuthModal, LoginModal } from '../../components';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Menu: React.FC = () => (
     <>

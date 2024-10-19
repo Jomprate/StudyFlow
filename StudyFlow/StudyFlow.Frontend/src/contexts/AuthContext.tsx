@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 
 // Definir el tipo de roles permitidos
-type UserRole = 'student' | 'teacher' | 'admin' | null;
+type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
 
 // Estado inicial y tipos
 interface AuthState {

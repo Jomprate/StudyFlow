@@ -38,68 +38,37 @@ interface userdata {
     image?: string;
 }
 
-export const setAuthToken = (token: string | null) => {
-    if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Asegúrate de que Authorization esté en mayúscula
-    } else {
-        delete axios.defaults.headers.common['Authorization'];
-    }
-};
+//export const setAuthToken = (token: string | null) => {
+//    if (token) {
+//        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Asegúrate de que Authorization esté en mayúscula
+//    } else {
+//        delete axios.defaults.headers.common['Authorization'];
+//    }
+//};
 
 // LoginRequestDTO: DTO para enviar los datos al servidor
-interface LoginRequestDTO {
-    email: string;
-    password: string;
-}
-
-// LoginResponseDTO: DTO para recibir la respuesta del servidor
-interface LoginResponseDTO {
-    token: string;
-    role: string;
-}
 
 // Función para hacer login
-// Función para hacer login
-export const loginUser = async (loginDTO: LoginRequestDTO): Promise<LoginResponseDTO> => {
+export const loginUser = async (loginDTO: { email: string; password: string }): Promise<string> => {
     try {
-        // Validamos que el email y la password no sean nulos ni vacíos
-        if (!loginDTO.email || !loginDTO.password) {
-            throw new Error('Email and password are required');
-        }
-
         // Realizamos la petición al endpoint de login
-        const response = await api.post<LoginResponseDTO>('/Auth/Login', loginDTO);
-
-        // Verificamos si la respuesta es correcta
-        if (response.status === 200) {
-            const { token, role } = response.data;
-
-            // Verificamos que tanto el token como el rol existan en la respuesta
-            if (!token || !role) {
-                throw new Error('Invalid login response: token or role is missing');
+        const response = await api.post('/Auth/Login', loginDTO, {
+            headers: {
+                'Content-Type': 'application/json',
             }
+        });
 
-            // Retornamos el token y el rol
-            return response.data;
-        } else {
-            throw new Error(`Login failed with status code: ${response.status}`);
+        // Verificamos si la respuesta tiene el token
+        const token = response.data;  // Aquí asumimos que el token es el único dato devuelto en response.data
+
+        if (!token || typeof token !== 'string') {
+            throw new Error('Invalid login response: token is missing or not a string');
         }
+
+        // Retornamos el token
+        return token;
     } catch (error: any) {
-        // Captura y formatea adecuadamente el error
-        let errorMessage = 'An unexpected error occurred during login';
-
-        if (error.response && error.response.data) {
-            // Si `error.response.data` es un objeto, lo convertimos en string
-            errorMessage = typeof error.response.data === 'string'
-                ? error.response.data
-                : JSON.stringify(error.response.data);
-        } else if (error.message) {
-            // Si hay un `error.message`, usamos eso
-            errorMessage = error.message;
-        }
-
-        console.error('Login error:', errorMessage); // Para depuración
-        throw new Error(errorMessage); // Lanzamos el error para que sea capturado por `onSubmit`
+        throw new Error(error.response?.data || error.message || 'An unexpected error occurred during login');
     }
 };
 
@@ -120,7 +89,7 @@ export const logoutUser = async (): Promise<void> => {
         if (response.status === 200) {
             // Limpiar el token
             localStorage.removeItem('token');
-            setAuthToken(null); // Eliminar token de las cabeceras
+            //setAuthToken(null); // Eliminar token de las cabeceras
         } else {
             throw new Error('Logout failed.');
         }

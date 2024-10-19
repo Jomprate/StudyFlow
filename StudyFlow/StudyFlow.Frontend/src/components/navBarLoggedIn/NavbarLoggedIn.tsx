@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import './navbarLoggedIn.css';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
+import { useAuth } from '../../contexts/AuthContext'; // Importar el contexto de autenticación
 import logo from '../../assets/logo_t.svg';
-
 interface NavbarProps {
     sidebarVisible: boolean;
     toggleSidebar: () => void;
@@ -15,8 +15,9 @@ interface NavbarProps {
 const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }) => {
     const { i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
+    const { state, logout } = useAuth(); // Usar el contexto de autenticación
 
-    // Se crea un estado separado para controlar el menú desplegable del Navbar
+    // Estado para manejar la visibilidad del menú
     const [menuVisible, setMenuVisible] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +25,7 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
         i18n.changeLanguage(value?.toString()).catch(console.error);
     };
 
-    // Manejar clic fuera del menú para cerrar el dropdown del Navbar
+    // Manejar clic fuera del menú para cerrarlo
     const handleClickOutside = (event: MouseEvent) => {
         if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
             setMenuVisible(false);
@@ -42,6 +43,11 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
         };
     }, [menuVisible]);
 
+    const handleLogout = () => {
+        logout(); // Cerrar sesión usando el contexto
+        window.location.href = '/'; // Redirigir a la página de inicio después de cerrar sesión
+    };
+
     return (
         <div className={`gradient__bg sf__navbar_logged_in ${theme}`}>
             <div className="sf__navbar_logged_in-links">
@@ -53,15 +59,12 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
                     <img src={logo} alt="logo" />
                 </div>
                 <div className="sf__navbar_logged_in-links_container">
-                    <p><Link to="/">{i18n.t('Home')}</Link></p>
-                    <p><Link to="/countries">{i18n.t('Countries')}</Link></p>
-                    <p><Link to="/home_logged_in">test a</Link></p>
-                    <p><a href="#testb">test b</a></p>
+                    <p><Link to="/home_logged_in">{i18n.t('Home')}</Link></p>
                     <p><a href="#about">About Us</a></p>
                 </div>
             </div>
 
-            {/* Controles del idioma y tema */}
+            {/* Controles del idioma, tema y usuario */}
             <div className="sf__navbar_logged_in-controls">
                 <Dropdown
                     inline
@@ -80,22 +83,19 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
                     )}
                 </div>
                 <div className="sf__navbar_logged_in-logout-container">
-                    <button type="button" onClick={() => console.log('Logout')}>
+                    <button type="button" onClick={handleLogout}>
                         Logout
                     </button>
                 </div>
             </div>
 
-            {/* Icono que controla el menú del Navbar (separado del sidebar) */}
+            {/* Menú desplegable para pantallas más pequeñas */}
             <div className="sf__navbar_logged_in-menu" onClick={() => setMenuVisible(!menuVisible)}>
                 {menuVisible ? <RiCloseLine color="#fff" size={27} /> : <RiMenu3Line color="#fff" size={27} />}
                 {menuVisible && (
                     <div ref={menuRef} className="sf__navbar_logged_in-menu_container scale-up-center">
                         <div className="sf__navbar_logged_in-menu_container-group">
-                            <p><Link to="/">{i18n.t('Home')}</Link></p>
-                            <p><Link to="/countries">{i18n.t('Countries')}</Link></p>
-                            <p><Link to="/home_logged_in">test a</Link></p>
-                            <p><a href="#testb">test b</a></p>
+                            <p><Link to="/home_logged_in">{i18n.t('Home')}</Link></p>
                             <p><a href="#about">About Us</a></p>
                         </div>
                         <div className="sf__navbar_logged_in-menu_container-language sf__navbar_logged_in-menu_container-group">
@@ -119,7 +119,7 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
                             </div>
                         </div>
                         <div className="sf__navbar_logged_in-menu_container-group">
-                            <button type="button" onClick={() => console.log('Logout')}>
+                            <button type="button" onClick={handleLogout}>
                                 Logout
                             </button>
                         </div>

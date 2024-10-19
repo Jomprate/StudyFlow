@@ -9,7 +9,7 @@ import RecoverPasswordModal from '../recoverPasswordModal/RecoverPasswordModal';
 import ResendActivationEmailModal from '../resendActivationEmailModal/ResendActivationEmailModal';
 import { loginUser } from '../../../services/api'; // Importamos loginUser
 import { useAuth } from '../../../contexts/AuthContext'; // Importamos el contexto de Auth
-import { UserRole } from '../../../contexts/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 
 // Usamos el hook de autenticación para obtener login
 
@@ -23,14 +23,18 @@ interface LoginModalProps {
     setOpen: (open: boolean) => void;
 }
 
+interface DecodedToken {
+    role: 'Student' | 'Teacher' | 'Admin';
+    unique_name: string;
+}
+
 const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const [openRecoverPasswordModal, setOpenRecoverPasswordModal] = useState(false);
     const [openResendActivationEmailModal, setOpenResendActivationEmailModal] = useState(false);
     const [problemMessage, setProblemMessage] = useState('');
-    const { login } = useAuth();
-
+    const { login } = useAuth(); // Obtén la función login del contexto
     const { control, handleSubmit, formState: { errors } } = useForm({
         mode: 'onSubmit',
         defaultValues: {
@@ -41,45 +45,56 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    // Función para manejar el envío del formulario
-    // Función que se ejecuta al enviar el formulario de login
     const onSubmit = async (data: LoginFormData) => {
         try {
             console.log("Form Data:", data);
 
+            // Validación de email y password
             if (!data.email || !data.password) {
-                console.log("empty email or password");
+                console.log("Empty email or password");
                 throw new Error('Email or password cannot be null or empty');
             }
 
-            // Crea el objeto DTO que será enviado
+            // Crear el objeto DTO que será enviado, asegurando que los valores no tengan espacios extra
             const loginDTO = {
-                email: data.email,
-                password: data.password,
+                email: data.email.trim(),
+                password: data.password.trim()
             };
 
-            // Llamada a la API de login usando el DTO
-            const response = await loginUser(loginDTO);
+            // Llamada a la API de login usando el DTO, obtenemos el token
+            const token = await loginUser(loginDTO);
 
-            // Asignamos el rol devuelto o uno por defecto
-            const userRole: UserRole = response.role || 'student';
+            // Imprimimos el token JWT recibido
+            console.log('JWT Token:', token);
 
-            // Autenticamos al usuario en el contexto
-            login(userRole, data.email);
+            // Decodificar el token JWT para obtener la información del usuario
+            const decodedToken: DecodedToken = jwtDecode(token);
 
-            // Cerramos el modal y redirigimos según el rol
+            console.log('Decoded JWT:', decodedToken);
+
+            // Asignamos el rol del usuario a partir del token
+            const userRole = decodedToken.role;
+
+            // Llamada a la función login que maneja la autenticación en el contexto
+            login(userRole, decodedToken.unique_name); // Aquí actualizas el contexto
+
+            // Cerrar el modal de login
             setOpen(false);
 
-            // Redirigir según el rol
-            if (userRole === 'student') {
-                window.location.href = '/dashboard'; // Cambia la ruta según sea necesario
-            } else if (userRole === 'admin') {
-                window.location.href = '/admin';
+            // Redirigir al usuario basado en su rol
+            if (userRole === 'Student') {
+                console.log("Logged as student");
+                window.location.href = '/home_logged_in'; // Redirige al dashboard del estudiante
+            } else if (userRole === 'Admin') {
+                console.log("Logged as Admin");
+                window.location.href = '/home_logged_in'; // Redirige al panel de administración
+            } else if (userRole === 'Teacher') {
+                console.log("Logged as Teacher");
+                window.location.href = '//home_logged_in'; // Redirige al panel del profesor (ejemplo)
             }
         } catch (error: any) {
             setProblemMessage(error.message || 'Error during login');
             console.error('Login error:', error.message);
-            console.log(problemMessage);
         }
     };
 
