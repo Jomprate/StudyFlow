@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
 using System.Security.Claims;
@@ -120,6 +121,24 @@ namespace StudyFlow.Backend.Controllers
             try
             {
                 return await _userService.ConfirmMailUserTokenAsync(request);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("ResendConfirmEmailByEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ResendConfirmEmailByEmailAsync([FromBody] RecoverPasswordRequestDTO request)
+        {
+            try
+            {
+                return await _userService.ResendConfirmEmailByEmailAsync(request);
             }
             catch (Exception ex)
             {

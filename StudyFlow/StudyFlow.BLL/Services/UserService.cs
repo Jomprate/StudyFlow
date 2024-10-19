@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.ApiResponse;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
@@ -311,6 +312,37 @@ namespace StudyFlow.BLL.Services
             catch (Exception ex)
             {
                 return ApiResponseHelper.InternalServerError("An unexpected error occurred", ex.Message);
+            }
+        }
+
+        public async Task<IActionResult> ResendConfirmEmailByEmailAsync(RecoverPasswordRequestDTO request)
+        {
+            var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(request.Email);
+
+            // Generar el token de confirmación de email
+            string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(user);
+
+            // Codificar el token y el userId para que no tengan problemas en la URL
+            string encodedToken = Uri.EscapeDataString(token);
+            string encodedUserId = Uri.EscapeDataString(user.Id.ToString());
+
+            // Crear el enlace de confirmación - Aquí aseguramos que apunte a 'confirmpage'
+            string confirmationLink = $"http://localhost:5173/confirmpage?userId={encodedUserId}&token={encodedToken}";
+
+            // Crear el cuerpo del correo en formato HTML
+            try
+            {
+                // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink
+                string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink);
+
+                // Enviar el correo usando el servicio de correo
+                await _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", emailBody);
+
+                return ApiResponseHelper.Success("Confirmation email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.BadRequest("Failed to send confirmation email.");
             }
         }
     }

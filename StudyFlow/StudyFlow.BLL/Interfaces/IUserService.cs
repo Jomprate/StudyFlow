@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
@@ -23,5 +24,7 @@ namespace StudyFlow.BLL.Interfaces
         //Task<IActionResult> ConfirmMailUserTokenAsync(Guid userId, string token);
 
         Task<IActionResult> ConfirmMailUserTokenAsync(EmailConfirmationRequest request);
+
+        Task<IActionResult> ResendConfirmEmailByEmailAsync(RecoverPasswordRequestDTO request);
     }
 }
