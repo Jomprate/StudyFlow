@@ -96,6 +96,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
         const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
+        console.log(repeatPassword);
+
         // Verifica si profileId es un número, de lo contrario, establece un valor por defecto
         const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0;
 

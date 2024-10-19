@@ -3,6 +3,7 @@ import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
+import { AuthProvider } from './contexts/AuthContext'; // Asegúrate de importar AuthProvider
 import LoadingScreen from '@components/loadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api'; // Import existing checkBackendStatus
 
@@ -60,10 +61,13 @@ function App() {
     );
 }
 
+// WrappedApp envuelve todo en AuthProvider y ThemeProvider
 const WrappedApp: React.FC = () => (
-    <ThemeProvider>
-        <App />
-    </ThemeProvider>
+    <AuthProvider> {/* Asegúrate de envolver la aplicación con AuthProvider */}
+        <ThemeProvider>
+            <App />
+        </ThemeProvider>
+    </AuthProvider>
 );
 
 export default WrappedApp;

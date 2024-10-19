@@ -7,6 +7,16 @@ import { handleEmailValidation } from '../../../helpers/validationHelpers';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import RecoverPasswordModal from '../recoverPasswordModal/RecoverPasswordModal';
 import ResendActivationEmailModal from '../resendActivationEmailModal/ResendActivationEmailModal';
+import { loginUser } from '../../../services/api'; // Importamos loginUser
+import { useAuth } from '../../../contexts/AuthContext'; // Importamos el contexto de Auth
+import { UserRole } from '../../../contexts/AuthContext';
+
+// Usamos el hook de autenticación para obtener login
+
+interface LoginFormData {
+    email: string;
+    password: string;
+}
 
 interface LoginModalProps {
     open: boolean;
@@ -18,6 +28,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const { theme } = useTheme();
     const [openRecoverPasswordModal, setOpenRecoverPasswordModal] = useState(false);
     const [openResendActivationEmailModal, setOpenResendActivationEmailModal] = useState(false);
+    const [problemMessage, setProblemMessage] = useState('');
+    const { login } = useAuth();
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         mode: 'onSubmit',
@@ -29,9 +41,46 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const onSubmit = (data: any) => {
-        console.log("Form Data:", data);
-        setOpen(false);
+    // Función para manejar el envío del formulario
+    // Función que se ejecuta al enviar el formulario de login
+    const onSubmit = async (data: LoginFormData) => {
+        try {
+            console.log("Form Data:", data);
+
+            if (!data.email || !data.password) {
+                console.log("empty email or password");
+                throw new Error('Email or password cannot be null or empty');
+            }
+
+            // Crea el objeto DTO que será enviado
+            const loginDTO = {
+                email: data.email,
+                password: data.password,
+            };
+
+            // Llamada a la API de login usando el DTO
+            const response = await loginUser(loginDTO);
+
+            // Asignamos el rol devuelto o uno por defecto
+            const userRole: UserRole = response.role || 'student';
+
+            // Autenticamos al usuario en el contexto
+            login(userRole, data.email);
+
+            // Cerramos el modal y redirigimos según el rol
+            setOpen(false);
+
+            // Redirigir según el rol
+            if (userRole === 'student') {
+                window.location.href = '/dashboard'; // Cambia la ruta según sea necesario
+            } else if (userRole === 'admin') {
+                window.location.href = '/admin';
+            }
+        } catch (error: any) {
+            setProblemMessage(error.message || 'Error during login');
+            console.error('Login error:', error.message);
+            console.log(problemMessage);
+        }
     };
 
     const togglePasswordVisibility = () => {
@@ -91,7 +140,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                                 {...field}
                                                 placeholder={t('global_emailPlaceholder')}
                                                 className="login-modal-input"
-                                                onInput={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailValidation(e, t)}
+                                                onChange={(e) => {
+                                                    field.onChange(e); // Mantiene el control de react-hook-form
+                                                    handleEmailValidation(e, t); // Agrega la validación personalizada del email
+                                                }}
                                             />
                                         )}
                                     />
@@ -111,6 +163,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                                     {...field}
                                                     placeholder={t('login_passwordPlaceholder')}
                                                     className="login-modal-input password-input"
+                                                    onChange={field.onChange}
                                                 />
                                             )}
                                         />
