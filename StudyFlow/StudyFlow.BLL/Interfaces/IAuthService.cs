@@ -1,4 +1,6 @@
-﻿using StudyFlow.BLL.DTOS.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
+using StudyFlow.BLL.DTOS.Entities;
 
 namespace StudyFlow.BLL.Interfaces
 {
@@ -8,6 +10,8 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<bool> LogoutAsync(string token);
 
-        string RecoverPasswordByEmailAsync(Guid id);
+        Task<IActionResult> RecoverPasswordByEmailAsync(RecoverPasswordRequestDTO recoverPasswordRequestDTO);
+
+        Task<IActionResult> ResetPasswordAsync(ResetPasswordRequestDTO resetPasswordDTO);
     }
 }

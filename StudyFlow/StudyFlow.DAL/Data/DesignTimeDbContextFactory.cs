@@ -9,7 +9,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DataContex
     {
         var configuration = new ConfigurationBuilder().
             SetBasePath(Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "StudyFlow.Backend")).
-            AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+            AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true).Build();
 
         var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
         optionsBuilder.UseSqlServer(configuration.GetConnectionString("StudyFlowDB"),

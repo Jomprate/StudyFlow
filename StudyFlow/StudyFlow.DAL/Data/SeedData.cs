@@ -9,227 +9,233 @@ using System.Threading.Tasks;
 
 namespace StudyFlow.DAL.Data
 {
-    internal class SeedData
+    public static class DbContextExtensions
     {
         private static Guid teacherId;
         private static Guid studentId;
         private static Guid roleAdminId;
         private static Guid roleTeacherId;
         private static Guid roleStudentId;
+        private static Guid courseId;
+        private static Guid userId;
 
-        public static void Seed(ModelBuilder modelBuilder)
+        public static void Seed(this DataContext context)
         {
-            SeedCountry(modelBuilder);
-            SeedUser(modelBuilder);
-            SeedRole(modelBuilder);
-            SeedUserRole(modelBuilder);
-            SeedDataForStudyFlow(modelBuilder);
-            SeedAnnounces(modelBuilder);
+            SeedCountry(context);
+            SeedUser(context);
+            SeedRole(context);
+            SeedUserRole(context);
+            SeedDataForStudyFlow(context);
+            SeedAnnounces(context);
         }
 
-        public static void SeedCountry(ModelBuilder modelBuilder)
+        public static void SeedCountry(DataContext context)
         {
             var countries = new List<Country>
             {
-                new Country { Id = 1, Name = "Afghanistan", IsoCode = "AFG" },
-                new Country { Id = 2, Name = "Albania", IsoCode = "ALB" },
-                new Country { Id = 3, Name = "Algeria", IsoCode = "DZA" },
-                new Country { Id = 4, Name = "Andorra", IsoCode = "AND" },
-                new Country { Id = 5, Name = "Angola", IsoCode = "AGO" },
-                new Country { Id = 6, Name = "Antigua and Barbuda", IsoCode = "ATG" },
-                new Country { Id = 7, Name = "Argentina", IsoCode = "ARG" },
-                new Country { Id = 8, Name = "Armenia", IsoCode = "ARM" },
-                new Country { Id = 9, Name = "Australia", IsoCode = "AUS" },
-                new Country { Id = 10, Name = "Austria", IsoCode = "AUT" },
-                new Country { Id = 11, Name = "Azerbaijan", IsoCode = "AZE" },
-                new Country { Id = 12, Name = "Bahamas", IsoCode = "BHS" },
-                new Country { Id = 13, Name = "Bahrain", IsoCode = "BHR" },
-                new Country { Id = 14, Name = "Bangladesh", IsoCode = "BGD" },
-                new Country { Id = 15, Name = "Barbados", IsoCode = "BRB" },
-                new Country { Id = 16, Name = "Belarus", IsoCode = "BLR" },
-                new Country { Id = 17, Name = "Belgium", IsoCode = "BEL" },
-                new Country { Id = 18, Name = "Belize", IsoCode = "BLZ" },
-                new Country { Id = 19, Name = "Benin", IsoCode = "BEN" },
-                new Country { Id = 20, Name = "Bhutan", IsoCode = "BTN" },
-                new Country { Id = 21, Name = "Bolivia", IsoCode = "BOL" },
-                new Country { Id = 22, Name = "Bosnia and Herzegovina", IsoCode = "BIH" },
-                new Country { Id = 23, Name = "Botswana", IsoCode = "BWA" },
-                new Country { Id = 24, Name = "Brazil", IsoCode = "BRA" },
-                new Country { Id = 25, Name = "Brunei", IsoCode = "BRN" },
-                new Country { Id = 26, Name = "Bulgaria", IsoCode = "BGR" },
-                new Country { Id = 27, Name = "Burkina Faso", IsoCode = "BFA" },
-                new Country { Id = 28, Name = "Burundi", IsoCode = "BDI" },
-                new Country { Id = 29, Name = "Cabo Verde", IsoCode = "CPV" },
-                new Country { Id = 30, Name = "Cambodia", IsoCode = "KHM" },
-                new Country { Id = 31, Name = "Cameroon", IsoCode = "CMR" },
-                new Country { Id = 32, Name = "Canada", IsoCode = "CAN" },
-                new Country { Id = 33, Name = "Central African Republic", IsoCode = "CAF" },
-                new Country { Id = 34, Name = "Chad", IsoCode = "TCD" },
-                new Country { Id = 35, Name = "Chile", IsoCode = "CHL" },
-                new Country { Id = 36, Name = "China", IsoCode = "CHN" },
-                new Country { Id = 37, Name = "Colombia", IsoCode = "COL" },
-                new Country { Id = 38, Name = "Comoros", IsoCode = "COM" },
-                new Country { Id = 39, Name = "Congo", IsoCode = "COG" },
-                new Country { Id = 40, Name = "Congo, Democratic Republic of the", IsoCode = "COD" },
-                new Country { Id = 41, Name = "Costa Rica", IsoCode = "CRI" },
-                new Country { Id = 42, Name = "Croatia", IsoCode = "HRV" },
-                new Country { Id = 43, Name = "Cuba", IsoCode = "CUB" },
-                new Country { Id = 44, Name = "Cyprus", IsoCode = "CYP" },
-                new Country { Id = 45, Name = "Czech Republic", IsoCode = "CZE" },
-                new Country { Id = 46, Name = "Denmark", IsoCode = "DNK" },
-                new Country { Id = 47, Name = "Djibouti", IsoCode = "DJI" },
-                new Country { Id = 48, Name = "Dominica", IsoCode = "DMA" },
-                new Country { Id = 49, Name = "Dominican Republic", IsoCode = "DOM" },
-                new Country { Id = 50, Name = "Ecuador", IsoCode = "ECU" },
-                new Country { Id = 51, Name = "Egypt", IsoCode = "EGY" },
-                new Country { Id = 52, Name = "El Salvador", IsoCode = "SLV" },
-                new Country { Id = 53, Name = "Equatorial Guinea", IsoCode = "GNQ" },
-                new Country { Id = 54, Name = "Eritrea", IsoCode = "ERI" },
-                new Country { Id = 55, Name = "Estonia", IsoCode = "EST" },
-                new Country { Id = 56, Name = "Eswatini", IsoCode = "SWZ" },
-                new Country { Id = 57, Name = "Ethiopia", IsoCode = "ETH" },
-                new Country { Id = 58, Name = "Fiji", IsoCode = "FJI" },
-                new Country { Id = 59, Name = "Finland", IsoCode = "FIN" },
-                new Country { Id = 60, Name = "France", IsoCode = "FRA" },
-                new Country { Id = 61, Name = "Gabon", IsoCode = "GAB" },
-                new Country { Id = 62, Name = "Gambia", IsoCode = "GMB" },
-                new Country { Id = 63, Name = "Georgia", IsoCode = "GEO" },
-                new Country { Id = 64, Name = "Germany", IsoCode = "DEU" },
-                new Country { Id = 65, Name = "Ghana", IsoCode = "GHA" },
-                new Country { Id = 66, Name = "Greece", IsoCode = "GRC" },
-                new Country { Id = 67, Name = "Grenada", IsoCode = "GRD" },
-                new Country { Id = 68, Name = "Guatemala", IsoCode = "GTM" },
-                new Country { Id = 69, Name = "Guinea", IsoCode = "GIN" },
-                new Country { Id = 70, Name = "Guinea-Bissau", IsoCode = "GNB" },
-                new Country { Id = 71, Name = "Guyana", IsoCode = "GUY" },
-                new Country { Id = 72, Name = "Haiti", IsoCode = "HTI" },
-                new Country { Id = 73, Name = "Honduras", IsoCode = "HND" },
-                new Country { Id = 74, Name = "Hungary", IsoCode = "HUN" },
-                new Country { Id = 75, Name = "Iceland", IsoCode = "ISL" },
-                new Country { Id = 76, Name = "India", IsoCode = "IND" },
-                new Country { Id = 77, Name = "Indonesia", IsoCode = "IDN" },
-                new Country { Id = 78, Name = "Iran", IsoCode = "IRN" },
-                new Country { Id = 79, Name = "Iraq", IsoCode = "IRQ" },
-                new Country { Id = 80, Name = "Ireland", IsoCode = "IRL" },
-                new Country { Id = 81, Name = "Israel", IsoCode = "ISR" },
-                new Country { Id = 82, Name = "Italy", IsoCode = "ITA" },
-                new Country { Id = 83, Name = "Jamaica", IsoCode = "JAM" },
-                new Country { Id = 84, Name = "Japan", IsoCode = "JPN" },
-                new Country { Id = 85, Name = "Jordan", IsoCode = "JOR" },
-                new Country { Id = 86, Name = "Kazakhstan", IsoCode = "KAZ" },
-                new Country { Id = 87, Name = "Kenya", IsoCode = "KEN" },
-                new Country { Id = 88, Name = "Kiribati", IsoCode = "KIR" },
-                new Country { Id = 89, Name = "Korea, North", IsoCode = "PRK" },
-                new Country { Id = 90, Name = "Korea, South", IsoCode = "KOR" },
-                new Country { Id = 91, Name = "Kuwait", IsoCode = "KWT" },
-                new Country { Id = 92, Name = "Kyrgyzstan", IsoCode = "KGZ" },
-                new Country { Id = 93, Name = "Laos", IsoCode = "LAO" },
-                new Country { Id = 94, Name = "Latvia", IsoCode = "LVA" },
-                new Country { Id = 95, Name = "Lebanon", IsoCode = "LBN" },
-                new Country { Id = 96, Name = "Lesotho", IsoCode = "LSO" },
-                new Country { Id = 97, Name = "Liberia", IsoCode = "LBR" },
-                new Country { Id = 98, Name = "Libya", IsoCode = "LBY" },
-                new Country { Id = 99, Name = "Liechtenstein", IsoCode = "LIE" },
-                new Country { Id = 100, Name = "Lithuania", IsoCode = "LTU" },
-                new Country { Id = 101, Name = "Luxembourg", IsoCode = "LUX" },
-                new Country { Id = 102, Name = "Madagascar", IsoCode = "MDG" },
-                new Country { Id = 103, Name = "Malawi", IsoCode = "MWI" },
-                new Country { Id = 104, Name = "Malaysia", IsoCode = "MYS" },
-                new Country { Id = 105, Name = "Maldives", IsoCode = "MDV" },
-                new Country { Id = 106, Name = "Mali", IsoCode = "MLI" },
-                new Country { Id = 107, Name = "Malta", IsoCode = "MLT" },
-                new Country { Id = 108, Name = "Marshall Islands", IsoCode = "MHL" },
-                new Country { Id = 109, Name = "Mauritania", IsoCode = "MRT" },
-                new Country { Id = 110, Name = "Mauritius", IsoCode = "MUS" },
-                new Country { Id = 111, Name = "Mexico", IsoCode = "MEX" },
-                new Country { Id = 112, Name = "Micronesia", IsoCode = "FSM" },
-                new Country { Id = 113, Name = "Moldova", IsoCode = "MDA" },
-                new Country { Id = 114, Name = "Monaco", IsoCode = "MCO" },
-                new Country { Id = 115, Name = "Mongolia", IsoCode = "MNG" },
-                new Country { Id = 116, Name = "Montenegro", IsoCode = "MNE" },
-                new Country { Id = 117, Name = "Morocco", IsoCode = "MAR" },
-                new Country { Id = 118, Name = "Mozambique", IsoCode = "MOZ" },
-                new Country { Id = 119, Name = "Myanmar", IsoCode = "MMR" },
-                new Country { Id = 120, Name = "Namibia", IsoCode = "NAM" },
-                new Country { Id = 121, Name = "Nauru", IsoCode = "NRU" },
-                new Country { Id = 122, Name = "Nepal", IsoCode = "NPL" },
-                new Country { Id = 123, Name = "Netherlands", IsoCode = "NLD" },
-                new Country { Id = 124, Name = "New Zealand", IsoCode = "NZL" },
-                new Country { Id = 125, Name = "Nicaragua", IsoCode = "NIC" },
-                new Country { Id = 126, Name = "Niger", IsoCode = "NER" },
-                new Country { Id = 127, Name = "Nigeria", IsoCode = "NGA" },
-                new Country { Id = 128, Name = "North Macedonia", IsoCode = "MKD" },
-                new Country { Id = 129, Name = "Norway", IsoCode = "NOR" },
-                new Country { Id = 130, Name = "Oman", IsoCode = "OMN" },
-                new Country { Id = 131, Name = "Pakistan", IsoCode = "PAK" },
-                new Country { Id = 132, Name = "Palau", IsoCode = "PLW" },
-                new Country { Id = 133, Name = "Panama", IsoCode = "PAN" },
-                new Country { Id = 134, Name = "Papua New Guinea", IsoCode = "PNG" },
-                new Country { Id = 135, Name = "Paraguay", IsoCode = "PRY" },
-                new Country { Id = 136, Name = "Peru", IsoCode = "PER" },
-                new Country { Id = 137, Name = "Philippines", IsoCode = "PHL" },
-                new Country { Id = 138, Name = "Poland", IsoCode = "POL" },
-                new Country { Id = 139, Name = "Portugal", IsoCode = "PRT" },
-                new Country { Id = 140, Name = "Qatar", IsoCode = "QAT" },
-                new Country { Id = 141, Name = "Romania", IsoCode = "ROU" },
-                new Country { Id = 142, Name = "Russia", IsoCode = "RUS" },
-                new Country { Id = 143, Name = "Rwanda", IsoCode = "RWA" },
-                new Country { Id = 144, Name = "Saint Kitts and Nevis", IsoCode = "KNA" },
-                new Country { Id = 145, Name = "Saint Lucia", IsoCode = "LCA" },
-                new Country { Id = 146, Name = "Saint Vincent and the Grenadines", IsoCode = "VCT" },
-                new Country { Id = 147, Name = "Samoa", IsoCode = "WSM" },
-                new Country { Id = 148, Name = "San Marino", IsoCode = "SMR" },
-                new Country { Id = 149, Name = "Sao Tome and Principe", IsoCode = "STP" },
-                new Country { Id = 150, Name = "Saudi Arabia", IsoCode = "SAU" },
-                new Country { Id = 151, Name = "Senegal", IsoCode = "SEN" },
-                new Country { Id = 152, Name = "Serbia", IsoCode = "SRB" },
-                new Country { Id = 153, Name = "Seychelles", IsoCode = "SYC" },
-                new Country { Id = 154, Name = "Sierra Leone", IsoCode = "SLE" },
-                new Country { Id = 155, Name = "Singapore", IsoCode = "SGP" },
-                new Country { Id = 156, Name = "Slovakia", IsoCode = "SVK" },
-                new Country { Id = 157, Name = "Slovenia", IsoCode = "SVN" },
-                new Country { Id = 158, Name = "Solomon Islands", IsoCode = "SLB" },
-                new Country { Id = 159, Name = "Somalia", IsoCode = "SOM" },
-                new Country { Id = 160, Name = "South Africa", IsoCode = "ZAF" },
-                new Country { Id = 161, Name = "South Sudan", IsoCode = "SSD" },
-                new Country { Id = 162, Name = "Spain", IsoCode = "ESP" },
-                new Country { Id = 163, Name = "Sri Lanka", IsoCode = "LKA" },
-                new Country { Id = 164, Name = "Sudan", IsoCode = "SDN" },
-                new Country { Id = 165, Name = "Suriname", IsoCode = "SUR" },
-                new Country { Id = 166, Name = "Sweden", IsoCode = "SWE" },
-                new Country { Id = 167, Name = "Switzerland", IsoCode = "CHE" },
-                new Country { Id = 168, Name = "Syria", IsoCode = "SYR" },
-                new Country { Id = 169, Name = "Taiwan", IsoCode = "TWN" },
-                new Country { Id = 170, Name = "Tajikistan", IsoCode = "TJK" },
-                new Country { Id = 171, Name = "Tanzania", IsoCode = "TZA" },
-                new Country { Id = 172, Name = "Thailand", IsoCode = "THA" },
-                new Country { Id = 173, Name = "Timor-Leste", IsoCode = "TLS" },
-                new Country { Id = 174, Name = "Togo", IsoCode = "TGO" },
-                new Country { Id = 175, Name = "Tonga", IsoCode = "TON" },
-                new Country { Id = 176, Name = "Trinidad and Tobago", IsoCode = "TTO" },
-                new Country { Id = 177, Name = "Tunisia", IsoCode = "TUN" },
-                new Country { Id = 178, Name = "Turkey", IsoCode = "TUR" },
-                new Country { Id = 179, Name = "Turkmenistan", IsoCode = "TKM" },
-                new Country { Id = 180, Name = "Tuvalu", IsoCode = "TUV" },
-                new Country { Id = 181, Name = "Uganda", IsoCode = "UGA" },
-                new Country { Id = 182, Name = "Ukraine", IsoCode = "UKR" },
-                new Country { Id = 183, Name = "United Arab Emirates", IsoCode = "ARE" },
-                new Country { Id = 184, Name = "United Kingdom", IsoCode = "GBR" },
-                new Country { Id = 185, Name = "United States", IsoCode = "USA" },
-                new Country { Id = 186, Name = "Uruguay", IsoCode = "URY" },
-                new Country { Id = 187, Name = "Uzbekistan", IsoCode = "UZB" },
-                new Country { Id = 188, Name = "Vanuatu", IsoCode = "VUT" },
-                new Country { Id = 189, Name = "Vatican City", IsoCode = "VAT" },
-                new Country { Id = 190, Name = "Venezuela", IsoCode = "VEN" },
-                new Country { Id = 191, Name = "Vietnam", IsoCode = "VNM" },
-                new Country { Id = 192, Name = "Yemen", IsoCode = "YEM" },
-                new Country { Id = 193, Name = "Zambia", IsoCode = "ZMB" },
-                new Country { Id = 194, Name = "Zimbabwe", IsoCode = "ZWE" } };
+                new Country { Name = "Afghanistan", IsoCode = "AFG" },
+                new Country { Name = "Albania", IsoCode = "ALB" },
+                new Country { Name = "Algeria", IsoCode = "DZA" },
+                new Country { Name = "Andorra", IsoCode = "AND" },
+                new Country { Name = "Angola", IsoCode = "AGO" },
+                new Country { Name = "Antigua and Barbuda", IsoCode = "ATG" },
+                new Country { Name = "Argentina", IsoCode = "ARG" },
+                new Country { Name = "Armenia", IsoCode = "ARM" },
+                new Country { Name = "Australia", IsoCode = "AUS" },
+                new Country { Name = "Austria", IsoCode = "AUT" },
+                new Country { Name = "Azerbaijan", IsoCode = "AZE" },
+                new Country { Name = "Bahamas", IsoCode = "BHS" },
+                new Country { Name = "Bahrain", IsoCode = "BHR" },
+                new Country { Name = "Bangladesh", IsoCode = "BGD" },
+                new Country { Name = "Barbados", IsoCode = "BRB" },
+                new Country { Name = "Belarus", IsoCode = "BLR" },
+                new Country { Name = "Belgium", IsoCode = "BEL" },
+                new Country { Name = "Belize", IsoCode = "BLZ" },
+                new Country { Name = "Benin", IsoCode = "BEN" },
+                new Country { Name = "Bhutan", IsoCode = "BTN" },
+                new Country { Name = "Bolivia", IsoCode = "BOL" },
+                new Country { Name = "Bosnia and Herzegovina", IsoCode = "BIH" },
+                new Country { Name = "Botswana", IsoCode = "BWA" },
+                new Country { Name = "Brazil", IsoCode = "BRA" },
+                new Country { Name = "Brunei", IsoCode = "BRN" },
+                new Country { Name = "Bulgaria", IsoCode = "BGR" },
+                new Country { Name = "Burkina Faso", IsoCode = "BFA" },
+                new Country { Name = "Burundi", IsoCode = "BDI" },
+                new Country { Name = "Cabo Verde", IsoCode = "CPV" },
+                new Country { Name = "Cambodia", IsoCode = "KHM" },
+                new Country { Name = "Cameroon", IsoCode = "CMR" },
+                new Country { Name = "Canada", IsoCode = "CAN" },
+                new Country { Name = "Central African Republic", IsoCode = "CAF" },
+                new Country { Name = "Chad", IsoCode = "TCD" },
+                new Country { Name = "Chile", IsoCode = "CHL" },
+                new Country { Name = "China", IsoCode = "CHN" },
+                new Country { Name = "Colombia", IsoCode = "COL" },
+                new Country { Name = "Comoros", IsoCode = "COM" },
+                new Country { Name = "Congo", IsoCode = "COG" },
+                new Country { Name = "Congo, Democratic Republic of the", IsoCode = "COD" },
+                new Country { Name = "Costa Rica", IsoCode = "CRI" },
+                new Country { Name = "Croatia", IsoCode = "HRV" },
+                new Country { Name = "Cuba", IsoCode = "CUB" },
+                new Country { Name = "Cyprus", IsoCode = "CYP" },
+                new Country { Name = "Czech Republic", IsoCode = "CZE" },
+                new Country { Name = "Denmark", IsoCode = "DNK" },
+                new Country { Name = "Djibouti", IsoCode = "DJI" },
+                new Country { Name = "Dominica", IsoCode = "DMA" },
+                new Country { Name = "Dominican Republic", IsoCode = "DOM" },
+                new Country { Name = "Ecuador", IsoCode = "ECU" },
+                new Country { Name = "Egypt", IsoCode = "EGY" },
+                new Country { Name = "El Salvador", IsoCode = "SLV" },
+                new Country { Name = "Equatorial Guinea", IsoCode = "GNQ" },
+                new Country { Name = "Eritrea", IsoCode = "ERI" },
+                new Country { Name = "Estonia", IsoCode = "EST" },
+                new Country { Name = "Eswatini", IsoCode = "SWZ" },
+                new Country { Name = "Ethiopia", IsoCode = "ETH" },
+                new Country { Name = "Fiji", IsoCode = "FJI" },
+                new Country { Name = "Finland", IsoCode = "FIN" },
+                new Country { Name = "France", IsoCode = "FRA" },
+                new Country { Name = "Gabon", IsoCode = "GAB" },
+                new Country { Name = "Gambia", IsoCode = "GMB" },
+                new Country { Name = "Georgia", IsoCode = "GEO" },
+                new Country { Name = "Germany", IsoCode = "DEU" },
+                new Country { Name = "Ghana", IsoCode = "GHA" },
+                new Country { Name = "Greece", IsoCode = "GRC" },
+                new Country { Name = "Grenada", IsoCode = "GRD" },
+                new Country { Name = "Guatemala", IsoCode = "GTM" },
+                new Country { Name = "Guinea", IsoCode = "GIN" },
+                new Country { Name = "Guinea-Bissau", IsoCode = "GNB" },
+                new Country { Name = "Guyana", IsoCode = "GUY" },
+                new Country { Name = "Haiti", IsoCode = "HTI" },
+                new Country { Name = "Honduras", IsoCode = "HND" },
+                new Country { Name = "Hungary", IsoCode = "HUN" },
+                new Country { Name = "Iceland", IsoCode = "ISL" },
+                new Country { Name = "India", IsoCode = "IND" },
+                new Country { Name = "Indonesia", IsoCode = "IDN" },
+                new Country { Name = "Iran", IsoCode = "IRN" },
+                new Country { Name = "Iraq", IsoCode = "IRQ" },
+                new Country { Name = "Ireland", IsoCode = "IRL" },
+                new Country { Name = "Israel", IsoCode = "ISR" },
+                new Country { Name = "Italy", IsoCode = "ITA" },
+                new Country { Name = "Jamaica", IsoCode = "JAM" },
+                new Country { Name = "Japan", IsoCode = "JPN" },
+                new Country { Name = "Jordan", IsoCode = "JOR" },
+                new Country { Name = "Kazakhstan", IsoCode = "KAZ" },
+                new Country { Name = "Kenya", IsoCode = "KEN" },
+                new Country { Name = "Kiribati", IsoCode = "KIR" },
+                new Country { Name = "Korea, North", IsoCode = "PRK" },
+                new Country { Name = "Korea, South", IsoCode = "KOR" },
+                new Country { Name = "Kuwait", IsoCode = "KWT" },
+                new Country { Name = "Kyrgyzstan", IsoCode = "KGZ" },
+                new Country { Name = "Laos", IsoCode = "LAO" },
+                new Country { Name = "Latvia", IsoCode = "LVA" },
+                new Country { Name = "Lebanon", IsoCode = "LBN" },
+                new Country { Name = "Lesotho", IsoCode = "LSO" },
+                new Country { Name = "Liberia", IsoCode = "LBR" },
+                new Country { Name = "Libya", IsoCode = "LBY" },
+                new Country { Name = "Liechtenstein", IsoCode = "LIE" },
+                new Country { Name = "Lithuania", IsoCode = "LTU" },
+                new Country { Name = "Luxembourg", IsoCode = "LUX" },
+                new Country { Name = "Madagascar", IsoCode = "MDG" },
+                new Country { Name = "Malawi", IsoCode = "MWI" },
+                new Country { Name = "Malaysia", IsoCode = "MYS" },
+                new Country { Name = "Maldives", IsoCode = "MDV" },
+                new Country { Name = "Mali", IsoCode = "MLI" },
+                new Country { Name = "Malta", IsoCode = "MLT" },
+                new Country { Name = "Marshall Islands", IsoCode = "MHL" },
+                new Country { Name = "Mauritania", IsoCode = "MRT" },
+                new Country { Name = "Mauritius", IsoCode = "MUS" },
+                new Country { Name = "Mexico", IsoCode = "MEX" },
+                new Country { Name = "Micronesia", IsoCode = "FSM" },
+                new Country { Name = "Moldova", IsoCode = "MDA" },
+                new Country { Name = "Monaco", IsoCode = "MCO" },
+                new Country { Name = "Mongolia", IsoCode = "MNG" },
+                new Country { Name = "Montenegro", IsoCode = "MNE" },
+                new Country { Name = "Morocco", IsoCode = "MAR" },
+                new Country { Name = "Mozambique", IsoCode = "MOZ" },
+                new Country { Name = "Myanmar", IsoCode = "MMR" },
+                new Country { Name = "Namibia", IsoCode = "NAM" },
+                new Country { Name = "Nauru", IsoCode = "NRU" },
+                new Country { Name = "Nepal", IsoCode = "NPL" },
+                new Country { Name = "Netherlands", IsoCode = "NLD" },
+                new Country { Name = "New Zealand", IsoCode = "NZL" },
+                new Country { Name = "Nicaragua", IsoCode = "NIC" },
+                new Country { Name = "Niger", IsoCode = "NER" },
+                new Country { Name = "Nigeria", IsoCode = "NGA" },
+                new Country { Name = "North Macedonia", IsoCode = "MKD" },
+                new Country { Name = "Norway", IsoCode = "NOR" },
+                new Country { Name = "Oman", IsoCode = "OMN" },
+                new Country { Name = "Pakistan", IsoCode = "PAK" },
+                new Country { Name = "Palau", IsoCode = "PLW" },
+                new Country { Name = "Panama", IsoCode = "PAN" },
+                new Country { Name = "Papua New Guinea", IsoCode = "PNG" },
+                new Country { Name = "Paraguay", IsoCode = "PRY" },
+                new Country { Name = "Peru", IsoCode = "PER" },
+                new Country { Name = "Philippines", IsoCode = "PHL" },
+                new Country { Name = "Poland", IsoCode = "POL" },
+                new Country { Name = "Portugal", IsoCode = "PRT" },
+                new Country { Name = "Qatar", IsoCode = "QAT" },
+                new Country { Name = "Romania", IsoCode = "ROU" },
+                new Country { Name = "Russia", IsoCode = "RUS" },
+                new Country { Name = "Rwanda", IsoCode = "RWA" },
+                new Country { Name = "Saint Kitts and Nevis", IsoCode = "KNA" },
+                new Country { Name = "Saint Lucia", IsoCode = "LCA" },
+                new Country { Name = "Saint Vincent and the Grenadines", IsoCode = "VCT" },
+                new Country { Name = "Samoa", IsoCode = "WSM" },
+                new Country { Name = "San Marino", IsoCode = "SMR" },
+                new Country { Name = "Sao Tome and Principe", IsoCode = "STP" },
+                new Country { Name = "Saudi Arabia", IsoCode = "SAU" },
+                new Country { Name = "Senegal", IsoCode = "SEN" },
+                new Country { Name = "Serbia", IsoCode = "SRB" },
+                new Country { Name = "Seychelles", IsoCode = "SYC" },
+                new Country { Name = "Sierra Leone", IsoCode = "SLE" },
+                new Country { Name = "Singapore", IsoCode = "SGP" },
+                new Country { Name = "Slovakia", IsoCode = "SVK" },
+                new Country { Name = "Slovenia", IsoCode = "SVN" },
+                new Country { Name = "Solomon Islands", IsoCode = "SLB" },
+                new Country { Name = "Somalia", IsoCode = "SOM" },
+                new Country { Name = "South Africa", IsoCode = "ZAF" },
+                new Country { Name = "South Sudan", IsoCode = "SSD" },
+                new Country { Name = "Spain", IsoCode = "ESP" },
+                new Country { Name = "Sri Lanka", IsoCode = "LKA" },
+                new Country { Name = "Sudan", IsoCode = "SDN" },
+                new Country { Name = "Suriname", IsoCode = "SUR" },
+                new Country { Name = "Sweden", IsoCode = "SWE" },
+                new Country { Name = "Switzerland", IsoCode = "CHE" },
+                new Country { Name = "Syria", IsoCode = "SYR" },
+                new Country { Name = "Taiwan", IsoCode = "TWN" },
+                new Country { Name = "Tajikistan", IsoCode = "TJK" },
+                new Country { Name = "Tanzania", IsoCode = "TZA" },
+                new Country { Name = "Thailand", IsoCode = "THA" },
+                new Country { Name = "Timor-Leste", IsoCode = "TLS" },
+                new Country { Name = "Togo", IsoCode = "TGO" },
+                new Country { Name = "Tonga", IsoCode = "TON" },
+                new Country { Name = "Trinidad and Tobago", IsoCode = "TTO" },
+                new Country { Name = "Tunisia", IsoCode = "TUN" },
+                new Country { Name = "Turkey", IsoCode = "TUR" },
+                new Country { Name = "Turkmenistan", IsoCode = "TKM" },
+                new Country { Name = "Tuvalu", IsoCode = "TUV" },
+                new Country { Name = "Uganda", IsoCode = "UGA" },
+                new Country { Name = "Ukraine", IsoCode = "UKR" },
+                new Country { Name = "United Arab Emirates", IsoCode = "ARE" },
+                new Country { Name = "United Kingdom", IsoCode = "GBR" },
+                new Country { Name = "United States", IsoCode = "USA" },
+                new Country { Name = "Uruguay", IsoCode = "URY" },
+                new Country { Name = "Uzbekistan", IsoCode = "UZB" },
+                new Country { Name = "Vanuatu", IsoCode = "VUT" },
+                new Country { Name = "Vatican City", IsoCode = "VAT" },
+                new Country { Name = "Venezuela", IsoCode = "VEN" },
+                new Country { Name = "Vietnam", IsoCode = "VNM" },
+                new Country { Name = "Yemen", IsoCode = "YEM" },
+                new Country { Name = "Zambia", IsoCode = "ZMB" },
+                new Country { Name = "Zimbabwe", IsoCode = "ZWE" } };
 
-            modelBuilder.Entity<Country>().HasData(countries);
+            if (!context.Countries.Any())
+            {
+                context.Countries.AddRangeAsync(countries);
+                context.SaveChanges();
+            }
         }
 
-        public static void SeedUser(ModelBuilder modelBuilder)
+        public static void SeedUser(DataContext context)
         {
             var hasher = new PasswordHasher<User>();
 
@@ -279,39 +285,57 @@ namespace StudyFlow.DAL.Data
             studentId = user2.Id;
 
             // Insertar el usuario con el seed data
-            modelBuilder.Entity<User>().HasData(user, user2);
+            if (!context.Users.Any())
+            {
+                context.Users.AddRangeAsync(
+                    new List<User>
+                    {
+                        user,
+                        user2
+                    });
+                context.SaveChanges();
+            }
         }
 
-        public static void SeedRole(ModelBuilder modelBuilder)
+        public static void SeedRole(DataContext context)
         {
             roleAdminId = Guid.NewGuid();
             roleTeacherId = Guid.NewGuid();
             roleStudentId = Guid.NewGuid();
-            modelBuilder.Entity<IdentityRole<Guid>>().HasData(
-                new IdentityRole<Guid>
-                {
-                    Id = roleAdminId,
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole<Guid>
-                {
-                    Id = roleTeacherId,
-                    Name = "Teacher",
-                    NormalizedName = "TEACHER"
-                },
-                new IdentityRole<Guid>
-                {
-                    Id = roleStudentId,
-                    Name = "Student",
-                    NormalizedName = "STUDENT"
-                }
-            );
+
+            if (!context.Roles.Any())
+            {
+                context.Roles.AddRangeAsync(
+                    new List<IdentityRole<Guid>>
+                    {
+                        new IdentityRole<Guid>
+                        {
+                            Id = roleAdminId,
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new IdentityRole<Guid>
+                        {
+                            Id = roleTeacherId,
+                            Name = "Teacher",
+                            NormalizedName = "TEACHER"
+                        },
+                        new IdentityRole<Guid>
+                        {
+                            Id = roleStudentId,
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        }
+                    });
+                context.SaveChanges();
+            }
         }
 
-        public static void SeedUserRole(ModelBuilder modelBuilder)
+        public static void SeedUserRole(DataContext context)
         {
-            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+            if (!context.UserRoles.Any())
+            {
+                context.UserRoles.AddRange(
                 new IdentityUserRole<Guid>
                 {
                     RoleId = roleTeacherId,
@@ -322,12 +346,16 @@ namespace StudyFlow.DAL.Data
                     RoleId = roleStudentId,
                     UserId = studentId
                 }
-            );
+                );
+                context.SaveChanges();
+            }
         }
 
-        public static void SeedDataForStudyFlow(ModelBuilder modelBuilder)
+        public static void SeedDataForStudyFlow(DataContext context)
         {
-            modelBuilder.Entity<Course>().HasData(
+            if (!context.Courses.Any())
+            {
+                context.Courses.AddRange(
                 new Course
                 {
                     Id = Guid.NewGuid(),
@@ -348,7 +376,7 @@ namespace StudyFlow.DAL.Data
                 },
                 new Course
                 {
-                    Id = Guid.NewGuid(),
+                    Id = courseId = Guid.NewGuid(),
                     Name = "Computer Science",
                     TeacherId = teacherId,
                     Description = "Computer science is the study of algorithmic processes, computational machines, and computation itself.",
@@ -498,16 +526,16 @@ namespace StudyFlow.DAL.Data
                     Description = "Norwegian is the study of the Norwegian language.",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
-                }
-            );
+                });
+                context.SaveChanges();
+            }
         }
 
-        public static void SeedAnnounces(ModelBuilder modelBuilder)
+        public static void SeedAnnounces(DataContext context)
         {
-            var userId = Guid.Parse("6fe44fdc-cac4-4d08-82d6-8a672b6960c0");
-            var courseId = Guid.Parse("e70b6d49-1025-4cdb-b25d-f9c5dbe8d8ec");
-
-            modelBuilder.Entity<Announce>().HasData(
+            if (!context.Announces.Any())
+            {
+                context.Announces.AddRange(
                 new Announce
                 {
                     Id = Guid.NewGuid(),
@@ -515,7 +543,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Vamos a discutir los conceptos básicos de construcción de software y su importancia en el desarrollo de sistemas robustos.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -525,7 +553,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "En esta sesión aprenderemos sobre la importancia de las pruebas unitarias y cómo aplicarlas efectivamente.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -535,7 +563,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Exploraremos cómo la refactorización puede mejorar el código sin modificar su funcionalidad y las buenas prácticas para mantenerlo limpio.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -545,7 +573,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Hablaremos sobre cómo implementar integración continua para detectar problemas antes de que lleguen a producción.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -555,7 +583,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Aprenderemos cómo configurar un entorno de desarrollo local y la importancia de prácticas DevOps en el ciclo de desarrollo.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -565,7 +593,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Analizaremos cómo gestionar dependencias del proyecto y las mejores prácticas para el control de versiones con Git.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -575,7 +603,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Exploraremos cómo aplicar metodologías ágiles, como Scrum y Kanban, durante el desarrollo de software.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -585,7 +613,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "La documentación es esencial para la construcción de software de calidad. Discutiremos cómo documentar adecuadamente el proyecto.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -595,7 +623,7 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Aprenderemos sobre los patrones de diseño y cómo aplicarlos para construir una arquitectura robusta.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
                 },
                 new Announce
@@ -605,10 +633,11 @@ namespace StudyFlow.DAL.Data
                     HtmlContent = "Veremos herramientas como Visual Studio, Docker y Jenkins, que facilitan el proceso de construcción de software.",
                     ProfilePicture = null,
                     CourseId = courseId,
-                    UserId = userId,
+                    UserId = teacherId,
                     IsDeleted = false
-                }
-            );
+                });
+                context.SaveChanges();
+            }
         }
     }
 }

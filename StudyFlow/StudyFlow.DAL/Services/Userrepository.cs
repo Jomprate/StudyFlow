@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
+using System.Security.Policy;
 
 namespace StudyFlow.DAL.Services
 {
@@ -21,7 +23,7 @@ namespace StudyFlow.DAL.Services
             _userManager = userManager;
         }
 
-        public async Task<User> LoginAsync(string email, string password)
+        public async Task<SignInResult> LoginAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -29,13 +31,7 @@ namespace StudyFlow.DAL.Services
                 return null;
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
-            if (result.Succeeded)
-            {
-                return user;
-            }
-
-            return null;
+            return await _signInManager.PasswordSignInAsync(user, password, false, true);
         }
 
         public async Task<User> RegisterAsync(User user, string password)
@@ -77,7 +73,6 @@ namespace StudyFlow.DAL.Services
         public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _context.Users
-                .AsNoTracking()
                 .Include(x => x.Country)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
@@ -85,5 +80,18 @@ namespace StudyFlow.DAL.Services
         public async Task<string> GenerateEmailConfirmationTokenAsync(User user) => await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
         public async Task<IdentityResult> ConfirmEmailAsync(User user, string token) => await _userManager.ConfirmEmailAsync(user, token);
+
+        public override async Task<bool> DeleteAsync(User user)
+        {
+            var result = await _userManager.DeleteAsync(user);
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> IsEmailConfirmedAsync(User user) => await _userManager.IsEmailConfirmedAsync(user);
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user) => await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword) => await _userManager.ResetPasswordAsync(user, token, newPassword);
     }
 }

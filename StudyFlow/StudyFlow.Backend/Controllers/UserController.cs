@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
+using System.Security.Claims;
 using static StudyFlow.BLL.Services.UserService;
 
 namespace StudyFlow.Backend.Controllers
@@ -18,6 +20,7 @@ namespace StudyFlow.Backend.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllUsers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -35,6 +38,7 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("CreateUser")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,6 +74,7 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetUserById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,7 +93,7 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-        [AuthorizeHeader]
+        [Authorize]
         [HttpPut("UpdateUser")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -97,7 +102,7 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                return await _userService.UpdateUserAsync(user);
+                return await _userService.UpdateUserAsync(user, User.FindFirst(ClaimsIdentity.DefaultNameClaimType)?.Value);
             }
             catch (Exception ex)
             {
@@ -106,6 +111,7 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("ConfirmEmail")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -114,8 +120,25 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                // Ahora se pasa el objeto 'request' al servicio
                 return await _userService.ConfirmMailUserTokenAsync(request);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("ResendConfirmEmailByEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ResendConfirmEmailByEmailAsync([FromBody] RecoverPasswordRequestDTO request)
+        {
+            try
+            {
+                return await _userService.ResendConfirmEmailByEmailAsync(request);
             }
             catch (Exception ex)
             {

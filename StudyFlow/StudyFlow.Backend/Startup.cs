@@ -36,7 +36,7 @@ public class Startup
                 In = ParameterLocation.Header,
                 Description = "Please enter JWT token",
                 Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer"
             });
 
