@@ -45,7 +45,6 @@ namespace StudyFlow.BLL.Mapping
                 Email = entity.Email,
                 PhoneNumber = entity.PhoneNumber,
                 Country = entity.Country,
-                IsEnabled = entity.IsEnabled,
                 IsOnline = entity.IsOnline,
                 Profile = new ProfileDTO
                 {
@@ -64,7 +63,6 @@ namespace StudyFlow.BLL.Mapping
                 LastName = dto.LastName,
                 PhoneNumber = dto.PhoneNumber,
                 CountryId = dto.CountryId,
-                IsEnabled = dto.IsEnabled,
                 UserType = (UserTypeEnum)Enum.Parse(typeof(UserTypeEnum), dto.ProfileId.ToString()),
                 HaveProfilePicture = !string.IsNullOrWhiteSpace(dto.ProfilePicture),
             };

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
+using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
 
@@ -61,6 +63,42 @@ namespace StudyFlow.Backend.Controllers
                     return Ok("Logout successfully.");
                 }
                 return BadRequest("An unexpected error occurred.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("RecoverPasswordByEmail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RecoverPasswordByEmailAsync([FromBody] RecoverPasswordRequestDTO recoverPasswordRequestDTO)
+        {
+            try
+            {
+                return await _authService.RecoverPasswordByEmailAsync(recoverPasswordRequestDTO);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("ResetPasswordAsync")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordRequestDTO resetPasswordDTO)
+        {
+            try
+            {
+                return await _authService.ResetPasswordAsync(resetPasswordDTO);
             }
             catch (Exception ex)
             {

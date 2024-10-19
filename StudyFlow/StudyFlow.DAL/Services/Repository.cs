@@ -16,7 +16,7 @@ namespace StudyFlow.DAL.Services
             _dataContext = dataContext;
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public virtual async Task<T> CreateAsync(T entity)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace StudyFlow.DAL.Services
             }
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public virtual async Task<bool> DeleteAsync(T entity)
         {
             try
             {

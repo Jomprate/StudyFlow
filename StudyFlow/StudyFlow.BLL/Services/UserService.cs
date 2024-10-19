@@ -44,7 +44,6 @@ namespace StudyFlow.BLL.Services
 
                 // Crear el usuario
                 User userToCreate = user.ToEntity();
-                userToCreate.IsEnabled = false;
                 userToCreate.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
                 User newUser = await _unitOfWork.UserRepository.RegisterAsync(userToCreate, user.Password);
 
@@ -115,8 +114,7 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Not found user with the Id {id}.");
             }
 
-            await _unitOfWork.UserRepository.DeleteAsync(user);
-            bool result = _unitOfWork.SaveChangesAsync().Result > 0;
+            bool result = await _unitOfWork.UserRepository.DeleteAsync(user);
 
             if (result)
             {
@@ -155,7 +153,6 @@ namespace StudyFlow.BLL.Services
                         Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
                         ProfilePicture = profilePicture,
-                        IsEnabled = user.IsEnabled,
                         IsOnline = user.IsOnline,
                         Country = user.Country
                     });
@@ -171,7 +168,42 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetUserByCourseAsync(Guid courseId)
         {
-            throw new NotImplementedException();
+            bool courseExists = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == courseId);
+            if (!courseExists)
+            {
+                return ApiResponseHelper.NotFound($"Not found course with the Id {courseId}.");
+            }
+
+            var enrollments = await _unitOfWork.EnrollmentRepository.GetEnrollmentsByCourseIdAsync(courseId);
+            var userIds = enrollments.Select(e => e.StudentId).ToList();
+            var users = await _unitOfWork.UserRepository.FindAsync(f => userIds.Contains(f.Id));
+
+            if (users == null || !users.Any())
+            {
+                return ApiResponseHelper.NotFound("No users found.");
+            }
+
+            var userDtos = new List<GetUserDTO>();
+            foreach (var user in users)
+            {
+                string? profilePicture = user.HaveProfilePicture
+                    ? await _storageService.DownloadAsync(user.Id.ToString())
+                    : null;
+
+                userDtos.Add(new GetUserDTO
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+                    ProfilePicture = profilePicture,
+                    IsOnline = user.IsOnline,
+                    Country = user.Country
+                });
+            }
+
+            return ApiResponseHelper.Success(userDtos);
         }
 
         public async Task<IActionResult> GetUserByIdAsync(Guid id)
@@ -195,7 +227,6 @@ namespace StudyFlow.BLL.Services
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 ProfilePicture = profilePicture,
-                IsEnabled = user.IsEnabled,
                 IsOnline = user.IsOnline,
                 Country = user.Country
             };
@@ -203,8 +234,13 @@ namespace StudyFlow.BLL.Services
             return ApiResponseHelper.Success(userDto);
         }
 
-        public async Task<IActionResult> UpdateUserAsync(UpdateUserDTO user)
+        public async Task<IActionResult> UpdateUserAsync(UpdateUserDTO user, string userId)
         {
+            if (user.Id != Guid.Parse(userId))
+            {
+                return ApiResponseHelper.BadRequest("the user to modify must be the same in the token.");
+            }
+
             bool exist = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == user.Id);
             if (exist)
             {
@@ -263,7 +299,6 @@ namespace StudyFlow.BLL.Services
 
                 if (result.Succeeded)
                 {
-                    user.IsEnabled = true;
                     await _unitOfWork.SaveChangesAsync();  // Guardar cambios
 
                     return ApiResponseHelper.Success("Email confirmed successfully.");
@@ -278,6 +313,5 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.InternalServerError("An unexpected error occurred", ex.Message);
             }
         }
-
     }
 }

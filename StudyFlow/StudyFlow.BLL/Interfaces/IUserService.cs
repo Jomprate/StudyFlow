@@ -16,7 +16,7 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> CreateUserAsync(AddUserDTO user);
 
-        Task<IActionResult> UpdateUserAsync(UpdateUserDTO user);
+        Task<IActionResult> UpdateUserAsync(UpdateUserDTO user, string userId);
 
         Task<IActionResult> DeleteUserAsync(Guid id);
 

@@ -3,6 +3,7 @@ using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using StudyFlow.Infrastructure.Entities;
 using StudyFlow.Infrastructure.Interfaces;
@@ -15,7 +16,7 @@ namespace StudyFlow.Infrastructure.Services
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
-        private string _secretKey;
+        private static string? _secretKey;
 
         public JwtService(IConfiguration configuration)
         {
@@ -48,9 +49,48 @@ namespace StudyFlow.Infrastructure.Services
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = _configuration["Jwt:Issuer"],
-                    ValidAudience = _configuration["Jwt:Audience"],
+                    ValidIssuer = _configuration["JwtConfig:Issuer"],
+                    ValidAudience = _configuration["JwtConfig:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Log cuando se recibe un token
+                        context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>()
+                            .LogDebug("Token recibido: {Token}", context.Token);
+
+                        return Task.CompletedTask;
+                    },
+                    OnAuthenticationFailed = context =>
+                    {
+                        // Log para errores de autenticación
+                        context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>()
+                            .LogError(context.Exception, "Error en la autenticación");
+
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        // Log cuando el token se valida correctamente
+                        context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>()
+                            .LogInformation("Token validado correctamente");
+
+                        return Task.CompletedTask;
+                    },
+                    OnChallenge = context =>
+                    {
+                        // Log cuando la autenticación falla y se lanza un challenge
+                        context.HttpContext.RequestServices
+                            .GetRequiredService<ILogger<JwtBearerHandler>>()
+                            .LogWarning("Bearer fue desafiado (no autenticado): {Error}", context.Error);
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
         }
@@ -70,6 +110,7 @@ namespace StudyFlow.Infrastructure.Services
             {
                 Subject = new ClaimsIdentity(GenerateClaims(claimEntity)),
                 Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<double>($"JwtConfig:{claimEntity.ExpirationDuration}")),
+                NotBefore = DateTime.UtcNow,
                 Issuer = _configuration.GetValue<string>("JwtConfig:Issuer"),
                 Audience = _configuration.GetValue<string>("JwtConfig:Audience"),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

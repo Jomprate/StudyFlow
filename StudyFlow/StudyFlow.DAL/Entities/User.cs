@@ -20,7 +20,6 @@ namespace StudyFlow.DAL.Entities
 
         public bool HaveProfilePicture { get; set; }
         public UserTypeEnum UserType { get; set; }
-        public bool IsEnabled { get; set; }
         public bool IsOnline { get; set; }
         public int CountryId { get; set; }
         public Country Country { get; set; } = null!;

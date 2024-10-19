@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.DAL.Entities;
+using System.Reflection.Emit;
 
 namespace StudyFlow.DAL.Data
 {
@@ -105,8 +106,6 @@ namespace StudyFlow.DAL.Data
                 .HasAlternateKey(s => new { s.SubjectId, s.ScheduledDate });
 
             #endregion Scheduleds
-
-            SeedData.Seed(modelBuilder);
 
             DisableCascadingDelete(modelBuilder);
         }
