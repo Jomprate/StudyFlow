@@ -6,7 +6,7 @@ namespace StudyFlow.DAL.Interfaces
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<User> LoginAsync(string email, string password);
+        Task<SignInResult> LoginAsync(string email, string password);
 
         Task<User> RegisterAsync(User user, string password);
 

@@ -23,7 +23,7 @@ namespace StudyFlow.DAL.Services
             _userManager = userManager;
         }
 
-        public async Task<User> LoginAsync(string email, string password)
+        public async Task<SignInResult> LoginAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -31,13 +31,7 @@ namespace StudyFlow.DAL.Services
                 return null;
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
-            if (result.Succeeded)
-            {
-                return user;
-            }
-
-            return null;
+            return await _signInManager.PasswordSignInAsync(user, password, false, true);
         }
 
         public async Task<User> RegisterAsync(User user, string password)

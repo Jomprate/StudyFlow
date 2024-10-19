@@ -7,6 +7,7 @@ using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
+using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Interfaces;
 using StudyFlow.DAL.Services;
 using StudyFlow.Infrastructure.Interfaces;
@@ -32,17 +33,28 @@ namespace StudyFlow.BLL.Services
 
         public async Task<string> LoginAsync(LoginDTO loginDTO)
         {
-            var user = await _unitOfWork.UserRepository.LoginAsync(loginDTO.Email, loginDTO.Password);
+            var result = await _unitOfWork.UserRepository.LoginAsync(loginDTO.Email, loginDTO.Password);
 
-            if (user == null)
+            if (result == null)
             {
                 return string.Empty;
             }
 
-            user.IsOnline = true;
-            var result = await _unitOfWork.UserRepository.UpdateAsync(user);
+            if (result.IsLockedOut)
+            {
+                return "The account is locked out for many failed attempts";
+            }
+            else if (!result.Succeeded)
+            {
+                return "The email or the password is invalid. Try again.";
+            }
 
-            if (!result)
+            User user = await _unitOfWork.UserRepository.GetUserByEmailAsync(loginDTO.Email);
+
+            user.IsOnline = true;
+            var update = await _unitOfWork.UserRepository.UpdateAsync(user);
+
+            if (!update)
             {
                 return string.Empty;
             }
