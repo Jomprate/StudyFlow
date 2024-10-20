@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import './loginModal.css';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +12,7 @@ import { loginUser } from '../../../services/api'; // Importamos loginUser
 import { useAuth } from '../../../contexts/AuthContext'; // Importamos el contexto de Auth
 import { jwtDecode } from 'jwt-decode';
 
-// Usamos el hook de autenticación para obtener login
+// Definir los tipos de datos
 
 interface LoginFormData {
     email: string;
@@ -34,7 +35,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const [openRecoverPasswordModal, setOpenRecoverPasswordModal] = useState(false);
     const [openResendActivationEmailModal, setOpenResendActivationEmailModal] = useState(false);
     const [problemMessage, setProblemMessage] = useState('');
-    const { login } = useAuth(); // Obtén la función login del contexto
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
     const { control, handleSubmit, formState: { errors } } = useForm({
         mode: 'onSubmit',
         defaultValues: {
@@ -49,48 +52,29 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
         try {
             console.log("Form Data:", data);
 
-            // Validación de email y password
-            if (!data.email || !data.password) {
-                console.log("Empty email or password");
-                throw new Error('Email or password cannot be null or empty');
-            }
-
-            // Crear el objeto DTO que será enviado, asegurando que los valores no tengan espacios extra
             const loginDTO = {
                 email: data.email.trim(),
-                password: data.password.trim()
+                password: data.password.trim(),
             };
 
-            // Llamada a la API de login usando el DTO, obtenemos el token
             const token = await loginUser(loginDTO);
+            console.log('Received token:', token); // Verificar que el token es correcto
 
-            // Imprimimos el token JWT recibido
-            console.log('JWT Token:', token);
-
-            // Decodificar el token JWT para obtener la información del usuario
             const decodedToken: DecodedToken = jwtDecode(token);
+            console.log('Decoded JWT:', decodedToken); // Verificar que el token contiene los valores esperados
 
-            console.log('Decoded JWT:', decodedToken);
-
-            // Asignamos el rol del usuario a partir del token
             const userRole = decodedToken.role;
 
-            // Llamada a la función login que maneja la autenticación en el contexto
-            login(userRole, decodedToken.unique_name); // Aquí actualizas el contexto
+            login(decodedToken.role, decodedToken.unique_name); // Actualizar el estado global
 
-            // Cerrar el modal de login
             setOpen(false);
 
-            // Redirigir al usuario basado en su rol
             if (userRole === 'Student') {
-                console.log("Logged as student");
-                window.location.href = '/home_logged_in'; // Redirige al dashboard del estudiante
+                navigate('/home_logged_in');
             } else if (userRole === 'Admin') {
-                console.log("Logged as Admin");
-                window.location.href = '/home_logged_in'; // Redirige al panel de administración
+                navigate('/home_logged_in');
             } else if (userRole === 'Teacher') {
-                console.log("Logged as Teacher");
-                window.location.href = '//home_logged_in'; // Redirige al panel del profesor (ejemplo)
+                navigate('/home_logged_in');
             }
         } catch (error: any) {
             setProblemMessage(error.message || 'Error during login');

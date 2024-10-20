@@ -16,7 +16,11 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     const { i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
     const { state, logout } = useAuth(); // Usar el contexto de autenticación
+    const { isAuthenticated, role, userName } = state;
 
+    console.log('Auth state in Navbar:', state, isAuthenticated, role, userName); // Verifica si el estado se actualiza correctamente
+
+    console.log(state);
     // Estado para manejar la visibilidad del menú
     const [menuVisible, setMenuVisible] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -31,6 +35,10 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
             setMenuVisible(false);
         }
     };
+
+    useEffect(() => {
+        console.log('Auth state updated:', isAuthenticated, role, userName);
+    }, [isAuthenticated, role, userName]);
 
     useEffect(() => {
         if (menuVisible) {
