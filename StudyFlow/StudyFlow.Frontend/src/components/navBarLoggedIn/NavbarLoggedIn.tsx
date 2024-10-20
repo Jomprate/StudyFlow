@@ -1,12 +1,14 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
 import { RiMenu3Line, RiCloseLine, RiSunLine, RiMoonLine } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './navbarLoggedIn.css';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
 import { useAuth } from '../../contexts/AuthContext'; // Importar el contexto de autenticación
 import logo from '../../assets/logo_t.svg';
+import { logoutUser } from '../../services/api'; // Importar la función logoutUser
+
 interface NavbarProps {
     sidebarVisible: boolean;
     toggleSidebar: () => void;
@@ -17,10 +19,10 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     const { theme, toggleTheme } = useTheme();
     const { state, logout } = useAuth(); // Usar el contexto de autenticación
     const { isAuthenticated, role, userName } = state;
+    const navigate = useNavigate(); // Usar navigate para redirigir
 
     console.log('Auth state in Navbar:', state, isAuthenticated, role, userName); // Verifica si el estado se actualiza correctamente
 
-    console.log(state);
     // Estado para manejar la visibilidad del menú
     const [menuVisible, setMenuVisible] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -51,9 +53,14 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
         };
     }, [menuVisible]);
 
-    const handleLogout = () => {
-        logout(); // Cerrar sesión usando el contexto
-        window.location.href = '/'; // Redirigir a la página de inicio después de cerrar sesión
+    // Función para manejar el logout
+    const handleLogout = async () => {
+        try {
+            await logout(); // Llamar a la función logout del contexto
+            navigate('/'); // Redirigir al usuario a la página de inicio después del logout
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
     };
 
     return (

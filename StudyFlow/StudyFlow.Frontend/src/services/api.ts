@@ -38,13 +38,13 @@ interface userdata {
     image?: string;
 }
 
-//export const setAuthToken = (token: string | null) => {
-//    if (token) {
-//        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Asegúrate de que Authorization esté en mayúscula
-//    } else {
-//        delete axios.defaults.headers.common['Authorization'];
-//    }
-//};
+export const setAuthToken = (token: string | null) => {
+    if (token) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Configurar el encabezado Authorization
+    } else {
+        delete api.defaults.headers.common['Authorization']; // Eliminar el encabezado si no hay token
+    }
+};
 
 // LoginRequestDTO: DTO para enviar los datos al servidor
 
@@ -65,6 +65,12 @@ export const loginUser = async (loginDTO: { email: string; password: string }): 
             throw new Error('Invalid login response: token is missing or not a string');
         }
 
+        // Guardar el token en localStorage
+        localStorage.setItem('token', token);
+
+        // Configurar el token en los encabezados de axios
+        setAuthToken(token);
+
         // Retornamos el token
         return token;
     } catch (error: any) {
@@ -75,27 +81,30 @@ export const loginUser = async (loginDTO: { email: string; password: string }): 
 // Función para hacer logout
 export const logoutUser = async (): Promise<void> => {
     try {
+        // Obtener el token de localStorage
         const token = localStorage.getItem('token');
         if (!token) {
             throw new Error('No token found, unable to log out.');
         }
 
-        const response = await api.post('/Auth/Logout/', {}, {
+        // Hacer la solicitud de logout al API
+        const response = await api.post('/Auth/LogOut', {}, {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`, // Incluir el token en el encabezado
+            },
         });
 
+        // Si la respuesta es exitosa, limpiar el token
         if (response.status === 200) {
-            // Limpiar el token
-            localStorage.removeItem('token');
-            //setAuthToken(null); // Eliminar token de las cabeceras
+            localStorage.removeItem('token'); // Limpiar el token de localStorage
+            setAuthToken(null); // Remover el token de los encabezados de axios
+            console.log('Logout successful.');
         } else {
             throw new Error('Logout failed.');
         }
     } catch (error: any) {
         console.error('Error during logout:', error.message || error);
-        throw new Error(error.response?.data || 'An error occurred during logout.');
+        throw new Error(error.response?.data || 'An unexpected error occurred during logout.');
     }
 };
 
@@ -111,6 +120,39 @@ export const createUser = async (userDTO: {
 }): Promise<void> => {
     try {
         const response = await api.post('/user/createuser', userDTO);
+        return response.data;
+    } catch (error: any) {
+        // Captura y formatea adecuadamente el error
+        let errorMessage = 'An unexpected error occurred';
+
+        if (error.response && error.response.data) {
+            // Si `error.response.data` es un objeto, lo convertimos en string
+            errorMessage = typeof error.response.data === 'string'
+                ? error.response.data
+                : JSON.stringify(error.response.data);
+        } else if (error.message) {
+            // Si hay un `error.message`, usamos eso
+            errorMessage = error.message;
+        }
+
+        console.error(errorMessage); // Para depuración
+        throw new Error(errorMessage); // Lanzamos el error para que sea capturado por `onSubmit`
+    }
+};
+
+export const updateUser = async (userDTO: {
+    id: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    phoneNumber?: string;
+    countryId?: number;
+    profilePicture?: string;
+    profileId?: number;
+}): Promise<void> => {
+    try {
+        const response = await api.put(`/user/updateuser/${userDTO.id}`, userDTO);
         return response.data;
     } catch (error: any) {
         // Captura y formatea adecuadamente el error
