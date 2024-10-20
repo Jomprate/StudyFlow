@@ -7,6 +7,7 @@ import AnnouncementBox from '@components/announcementBox/announcementBox/Announc
 import user_p from '../../../assets/user_p.svg';
 import { getAnnouncesByCourseIdPaginated } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ const Announces: React.FC = () => {
     const [recordsPerPage, setRecordsPerPage] = useState(10); // Inicializamos con 10 registros por página
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
 
-    const courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e';
+    const courseId = 'e4dc593d-ab03-4dfe-a26c-08dcf144334f';
 
     useEffect(() => {
         const fetchAnnouncements = async () => {

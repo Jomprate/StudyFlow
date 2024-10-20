@@ -240,7 +240,7 @@ export const ResendEmailConfirm = async (email: string): Promise<string> => {
         if (error.status == 500) {
             throw new Error(errorMessage);
         }
-        
+
         return errorMessage.error.message;
     }
 };
@@ -305,8 +305,8 @@ export const createAnnounce = async (announceDTO: {
 }): Promise<{ id: string }> => {
     try {
         // Valores temporales quemados
-        const defaultUserId = "6fe44fdc-cac4-4d08-82d6-8a672b6960c0"; // UserId quemado
-        const defaultCourseId = "3c8825f3-f903-45c9-8dac-0a87a51ef37e"; // CourseId quemado
+        const defaultUserId = "6ec6a992-11de-469b-823e-08dcf1287ffe"; // UserId quemado
+        const defaultCourseId = "e4dc593d-ab03-4dfe-a26c-08dcf144334f"; // CourseId quemado
 
         // Si no se proporcionan userId y courseId, usar los valores quemados
         const userId = announceDTO.userId || defaultUserId;
@@ -403,7 +403,7 @@ export const getAnnouncesByCourseIdPaginated = async (
     page: number,
     recordsNumber: number
 ): Promise<PaginatedResponse<any>> => {
-    courseId = '3c8825f3-f903-45c9-8dac-0a87a51ef37e'; // Course ID quemado
+    courseId = 'e4dc593d-ab03-4dfe-a26c-08dcf144334f'; // Course ID quemado
 
     try {
         const response = await api.get(`/Announce/GetAnnouncesByCourse/${courseId}?page=${page}&recordsNumber=${recordsNumber}`);
