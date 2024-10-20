@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import './recoverPasswordModal.css';
+import { RecoveryPassword } from '../../../services/api';
+import Popup from '../PopUp/PopUp'; // Importar el Popup
 
 interface RecoverPasswordModalProps {
     open: boolean;
@@ -13,11 +15,14 @@ const RecoverPasswordModal: React.FC<RecoverPasswordModalProps> = ({ open, setOp
     const [email, setEmail] = useState('');
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const [showPopup, setShowPopup] = useState(false); // Estado para mostrar el popup
+    const [popupMessage, setPopupMessage] = useState(''); // Estado para el mensaje del Popup
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Correo de recuperación enviado a:', email);
-        setOpen(false);
+        const popupMessage: string = await RecoveryPassword(email);
+        setPopupMessage(popupMessage); // Establecer el mensaje del Popup
+        setShowPopup(true); // Mostrar el Popup
     };
 
     if (!open) return null;
@@ -59,7 +64,16 @@ const RecoverPasswordModal: React.FC<RecoverPasswordModalProps> = ({ open, setOp
                     </a>
                 </div>
             </div>
-        </div>
+            {/* Renderización condicional del Popup */}
+            {
+                showPopup && (
+                    <Popup
+                        message={popupMessage}
+                        onClose={() => { setShowPopup(false); setOpen(false); }} // Cerrar el popup cuando el usuario haga clic en OK
+                    />
+                )
+            }
+        </div >
     );
 };
 

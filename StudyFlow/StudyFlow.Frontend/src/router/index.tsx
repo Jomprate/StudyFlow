@@ -12,6 +12,7 @@ import Notification from '../pages/Notification/Notification.tsx';
 import CourseCrud from '../pages/Course_/CourseCrud.tsx';
 import Calendar from '../pages/Calendar_/Calendar.tsx';
 import ConfirmPage from '../pages/ConfirmEmailPage/Confirm_page.tsx';
+import RecoveryPassword from '../pages/RecoveryPassword/RecoveryPassword.tsx'
 
 const Router = () => {
     return (
@@ -42,6 +43,7 @@ const Router = () => {
                     <Route path="requests" element={<Requests />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
+                <Route path="/recoverypassword" element={<RecoveryPassword/>}/>
             </Routes>
         </BrowserRouter>
     );
