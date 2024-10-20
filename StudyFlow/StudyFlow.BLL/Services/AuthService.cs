@@ -15,6 +15,7 @@ using StudyFlow.Infrastructure.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Policy;
+using System.Web;
 
 namespace StudyFlow.BLL.Services
 {
@@ -91,8 +92,8 @@ namespace StudyFlow.BLL.Services
             }
 
             var token = await _unitOfWork.UserRepository.GeneratePasswordResetTokenAsync(user);
-            string encodedToken = WebUtility.UrlEncode(token);
-            string confirmationLink = $"http://localhost:5173/confirmpage?token={encodedToken}";
+            string encodedToken = HttpUtility.UrlEncode(token);
+            string confirmationLink = $"http://localhost:5173/RecoveryPassword?token={encodedToken}&user={user.Id}";
 
             try
             {
@@ -108,13 +109,13 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordRequestDTO resetPasswordDTO)
         {
-            var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(resetPasswordDTO.Email);
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(resetPasswordDTO.UserId);
             if (user == null)
             {
-                return ApiResponseHelper.BadRequest("The Email dont is register.");
+                return ApiResponseHelper.BadRequest("The user dont is register.");
             }
 
-            var result = await _unitOfWork.UserRepository.ResetPasswordAsync(user, WebUtility.UrlDecode(resetPasswordDTO.Token), resetPasswordDTO.NewPassword);
+            var result = await _unitOfWork.UserRepository.ResetPasswordAsync(user, HttpUtility.UrlDecode(resetPasswordDTO.Token), resetPasswordDTO.NewPassword);
             if (result.Succeeded)
             {
                 return ApiResponseHelper.Success("Password has been reset.");

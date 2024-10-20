@@ -238,7 +238,47 @@ export const ResendEmailConfirm = async (email: string): Promise<string> => {
         if (error.status == 500) {
             throw new Error(errorMessage);
         }
-        
+
+        return errorMessage.error.message;
+    }
+};
+
+export const RecoveryPassword = async (email: string): Promise<string> => {
+    const emailObj = { Email: email };
+
+    try {
+        const response = await api.post('/Auth/RecoverPasswordByEmail', emailObj);
+
+        if (response.status == 400) {
+            return JSON.stringify(response.data.data);
+        }
+        // Retornamos la respuesta como un string
+        return JSON.stringify(response.data.data);
+    } catch (error: any) {
+        const errorMessage = error.response?.data || error.message || 'An unexpected error occurred during email confirmation';
+        if (error.status == 500) {
+            throw new Error(errorMessage);
+        }
+
+        return errorMessage.error.message;
+    }
+};
+
+export const ResetPassword = async (ResetPasswordRequestDTO: { UserId: string; NewPassword: string; Token: string; }): Promise<string> => {
+    try {
+        const response = await api.post('/Auth/ResetPasswordAsync', ResetPasswordRequestDTO);
+
+        if (response.status == 400) {
+            return JSON.stringify(response.data.data);
+        }
+        // Retornamos la respuesta como un string
+        return JSON.stringify(response.data.data);
+    } catch (error: any) {
+        const errorMessage = error.response?.data || error.message || 'An unexpected error occurred during email confirmation';
+        if (error.status == 500) {
+            throw new Error(errorMessage);
+        }
+
         return errorMessage.error.message;
     }
 };
