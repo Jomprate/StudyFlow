@@ -59,35 +59,26 @@ namespace StudyFlow.BLL.Services
                 return string.Empty;
             }
 
+            _unitOfWork.SaveChangesAsync();
             var userDto = user.ToGetDTO();
             return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Rol = user.UserType.ToString(), ExpirationDuration = "ExpiryDurationLogin" });
         }
 
-        public async Task<bool> LogoutAsync(string token)
+        public async Task<bool> LogoutAsync(string userId)
         {
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadJwtToken(token);
-            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "nameid");
+            Guid.TryParse(userId, out Guid guid);
 
-            if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(guid);
+
+            if (user == null)
             {
-                var user = await _unitOfWork.UserRepository.GetByIdAsync(userId);
-
-                if (user == null)
-                {
-                    return false;
-                }
-
-                user.IsOnline = false;
-                var result = await _unitOfWork.UserRepository.UpdateAsync(user);
-
-                if (!result)
-                {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            user.IsOnline = false;
+            var result = await _unitOfWork.UserRepository.UpdateAsync(user);
+            _unitOfWork.SaveChangesAsync();
+            return result;
         }
 
         public async Task<IActionResult> RecoverPasswordByEmailAsync(RecoverPasswordRequestDTO recoverPasswordRequestDTO)

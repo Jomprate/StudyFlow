@@ -44,7 +44,7 @@ namespace StudyFlow.BLL.Mapping
                 LastName = entity.LastName,
                 Email = entity.Email,
                 PhoneNumber = entity.PhoneNumber,
-                Country = entity.Country,
+                Country = entity.CountryId,
                 IsOnline = entity.IsOnline,
                 Profile = new ProfileDTO
                 {

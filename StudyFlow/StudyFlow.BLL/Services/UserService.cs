@@ -54,6 +54,11 @@ namespace StudyFlow.BLL.Services
                     return new BadRequestObjectResult("Failed to create user.");
                 }
 
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    await _storageService.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
+                }
+
                 // Guardar cambios en la base de datos
                 var result = await _unitOfWork.SaveChangesAsync();
 
@@ -155,7 +160,7 @@ namespace StudyFlow.BLL.Services
                         PhoneNumber = user.PhoneNumber,
                         ProfilePicture = profilePicture,
                         IsOnline = user.IsOnline,
-                        Country = user.Country
+                        Country = user.CountryId
                     });
                 }
 
@@ -200,7 +205,7 @@ namespace StudyFlow.BLL.Services
                     PhoneNumber = user.PhoneNumber,
                     ProfilePicture = profilePicture,
                     IsOnline = user.IsOnline,
-                    Country = user.Country
+                    Country = user.CountryId
                 });
             }
 
@@ -229,7 +234,7 @@ namespace StudyFlow.BLL.Services
                 PhoneNumber = user.PhoneNumber,
                 ProfilePicture = profilePicture,
                 IsOnline = user.IsOnline,
-                Country = user.Country
+                Country = user.CountryId
             };
 
             return ApiResponseHelper.Success(userDto);

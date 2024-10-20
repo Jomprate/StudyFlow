@@ -4,6 +4,7 @@ using StudyFlow.Backend.Authorize;
 using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.Interfaces;
+using System.Security.Claims;
 
 namespace StudyFlow.Backend.Controllers
 {
@@ -18,6 +19,7 @@ namespace StudyFlow.Backend.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,21 +44,15 @@ namespace StudyFlow.Backend.Controllers
         }
 
         [HttpPost("LogOut")]
-        [AuthorizeHeader]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> LogoutAsync([FromHeader(Name = "Authorization")] string token)
+        public async Task<IActionResult> LogoutAsync()
         {
             try
             {
-                if (string.IsNullOrEmpty(token) || !token.StartsWith("Bearer "))
-                {
-                    return BadRequest("Token is required.");
-                }
-
-                var jwtToken = token.Substring("Bearer ".Length).Trim();
-                var result = await _authService.LogoutAsync(jwtToken);
+                var result = await _authService.LogoutAsync(User.FindFirst(ClaimsIdentity.DefaultNameClaimType)?.Value);
 
                 if (result)
                 {

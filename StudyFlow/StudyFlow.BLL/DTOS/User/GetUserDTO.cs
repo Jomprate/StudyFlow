@@ -19,7 +19,7 @@ namespace StudyFlow.BLL.DTOS.User
             ErrorMessage = "The PhoneNumber must be 7 or 10 digits.")]
         public string? PhoneNumber { get; set; }
 
-        public Country Country { get; set; } = null!;
+        public int Country { get; set; }
         public string? ProfilePicture { get; set; }
         public bool IsEnabled { get; set; }
         public bool IsOnline { get; set; }
