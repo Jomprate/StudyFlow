@@ -10,6 +10,7 @@ export { default as LoginModal } from "./modals/loginModal/LoginModal";
 export { default as RecoverPasswordModal } from "./modals/recoverPasswordModal/RecoverPasswordModal";
 export { default as ResendActivationEmail } from "./modals/resendActivationEmailModal/ResendActivationEmailModal";
 export { default as UserCreatedModal } from "./modals/userCreatedModal/UserCreatedModal";
+export { default as UpdateUserModal } from "./modals/updateUserModal/UpdateUserModal";
 
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";

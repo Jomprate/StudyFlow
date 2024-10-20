@@ -152,7 +152,8 @@ export const updateUser = async (userDTO: {
     profileId?: number;
 }): Promise<void> => {
     try {
-        const response = await api.put(`/user/updateuser/${userDTO.id}`, userDTO);
+        setAuthToken(localStorage.getItem('token') || null); // Cargar el token de localStorage en el encabezado de aut
+        const response = await api.put('/user/updateuser/', userDTO);
         return response.data;
     } catch (error: any) {
         // Captura y formatea adecuadamente el error
@@ -207,7 +208,8 @@ export const deleteuser = async (userid: string): Promise<void> => {
 
 export const getuserbyid = async (userid: string): Promise<userdata> => {
     try {
-        const response = await api.get(`/user/getuserbyid/${userid}`);
+        setAuthToken(localStorage.getItem('token') || null); // Cargar el token de localStorage en el encabezado de au
+        const response = await api.get(`/user/getuserbyid?id=${userid}`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response
