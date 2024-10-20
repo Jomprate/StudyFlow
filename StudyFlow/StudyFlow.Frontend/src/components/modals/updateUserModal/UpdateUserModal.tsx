@@ -3,12 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import './updateUserModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { updateUser, getCountriesWithLanguage } from '../../../services/api';
+import { updateUser, getCountriesWithLanguage, getuserbyid } from '../../../services/api'; // Importar getuserbyid
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import UserCreatedModal from '../userCreatedModal/UserCreatedModal';
-import { useAuth } from "../../../contexts/AuthContext";}
+import { useAuth } from "../../../contexts/AuthContext";
 
 interface Country {
     id: number;
@@ -19,9 +19,10 @@ interface Country {
 interface AuthModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    userId: string; // Añadimos userId como propiedad
 }
 
-const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
+const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) => {
     const { t, i18n } = useTranslation();
     const { theme } = useTheme();
     const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
@@ -65,6 +66,43 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         }
     };
 
+    // 1. Cargar los datos del usuario cuando el modal se abra
+    // Cargar los datos del usuario cuando el modal se abra
+    useEffect(() => {
+        if (open) {
+            const fetchUserData = async () => {
+                try {
+                    const response = await getuserbyid(userId); // Llamada a la API
+                    const userData = response.data; // Accede a los datos dentro de 'data'
+
+                    console.log(response); // Verifica los datos en la consola
+
+                    // Utiliza reset para cargar los datos en el formulario
+                    reset({
+                        firstName: userData.firstName || '',
+                        lastName: userData.lastName || '',
+                        email: userData.email || '',
+                        phoneNumber: userData.phoneNumber || '',
+                        countryId: userData.country ? userData.country.toString() : '',
+                        userType: userData.userType || '',
+                        image: userData.profilePicture || null,
+                    });
+
+                    // Añade el prefijo MIME adecuado a la imagen si está en Base64
+                    if (userData.profilePicture) {
+                        setImagePreview(`data:image/png;base64,${userData.profilePicture}`);
+                    } else {
+                        setImagePreview(null);
+                    }
+                } catch (error) {
+                    setProblemMessage('Error al cargar los datos del usuario');
+                }
+            };
+
+            fetchUserData();
+        }
+    }, [open, userId, reset, setImagePreview]);
+
     useEffect(() => {
         fetchCountries();
 
@@ -95,26 +133,19 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             return;
         }
 
-        const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
-
-        console.log(repeatPassword);
-
-        // Verifica si profileId es un número, de lo contrario, establece un valor por defecto
-        const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0;
-
         // Si la imagen está en Base64, remueve el prefijo MIME
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
-        // Construye el objeto final con todos los campos requeridos
+        // Construye el objeto final con todos los campos requeridos, sin incluir el `id`
         const finalData = {
-            firstName,
-            lastName,
-            email,
-            password,
-            phoneNumber: phoneNumber || null,
-            countryId: Number(countryId),
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            phoneNumber: data.phoneNumber || null,
+            countryId: Number(data.countryId),
             profilePicture: cleanProfilePicture, // Enviar solo la parte de datos de la cadena Base64
-            profileId: validProfileId, // Usa el valor válido o un valor por defecto
+            profileId: data.profileId // Usa el valor válido o un valor por defecto
         };
 
         // Imprime en consola lo que se va a enviar
@@ -122,7 +153,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
         try {
             await updateUser(finalData);
-            setProblemMessage('Usuario creado con éxito');
+            setProblemMessage('Usuario actualizado con éxito');
             reset(); // Reseteamos el formulario
             setImagePreview(null); // Limpiamos la imagen previsualizada
             setCroppedImage(null); // Limpiamos la imagen recortada
@@ -142,6 +173,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             setProblemMessage(errorMessage);
         }
     };
+
+
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -259,6 +292,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                             className={`${theme}-input`}
                                             {...field}
                                             placeholder={t('global_emailPlaceholder')}
+                                            readOnly // Aquí se añade el atributo readOnly
                                         />
                                     )}
                                 />
@@ -379,21 +413,13 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
                         <div className="right-column">
                             <div className="form-group user-image">
-                                {croppedImage ? (
-                                    <img
-                                        src={croppedImage}
-                                        alt="User"
-                                        className="user-placeholder uploaded-image"
-                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
-                                    />
-                                ) : (
-                                    <img
-                                        src={userPlaceholder}
-                                        alt="User Placeholder"
-                                        className="user-placeholder"
-                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
-                                    />
-                                )}
+                                {/* Mostrar la imagen seleccionada o la imagen por defecto (placeholder) */}
+                                <img
+                                    src={imagePreview || userPlaceholder}  // Si existe imagePreview, se muestra; si no, el placeholder
+                                    alt="User"
+                                    className="user-placeholder"
+                                    style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                />
                             </div>
 
                             <div className={`form-group ${theme}-text`}>
@@ -406,15 +432,15 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         ref={fileInputRef}
                                         accept="image/png, image/jpeg, image/jpg"
                                         onChange={handleFileChange}
-                                        style={{ display: 'none' }}
+                                        style={{ display: 'none' }}  // Se oculta el input de archivo
                                     />
 
                                     <input
                                         type="text"
-                                        value={fileName}
+                                        value={fileName}  // Mostrar el nombre del archivo seleccionado
                                         readOnly
                                         className="file-name-input"
-                                        placeholder={t('global_noFileSelected')}
+                                        placeholder={t('global_noFileSelected')}  // Placeholder si no hay archivo seleccionado
                                     />
 
                                     {/* Botón para abrir el explorador de archivos */}
@@ -423,6 +449,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     </button>
                                 </div>
                             </div>
+
 
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>
