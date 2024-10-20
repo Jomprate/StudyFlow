@@ -50,6 +50,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
+    const { state } = useAuth();
+
 
     const fetchCountries = async () => {
         try {
@@ -133,11 +135,15 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             return;
         }
 
+        // Obtén el ID desde AuthContext, si es necesario convertirlo, lo hacemos aquí
+        const { userName } = state; // Asegúrate de que estás obteniendo el `id` correctamente del contexto de autenticación
+
         // Si la imagen está en Base64, remueve el prefijo MIME
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
-        // Construye el objeto final con todos los campos requeridos, sin incluir el `id`
+        // Construye el objeto final con todos los campos requeridos, incluyendo el `id` que ahora obtenemos de Auth
         const finalData = {
+            id: userName, // Aquí usamos el `id` ya convertido
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -152,7 +158,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         console.log("Datos enviados al backend:", finalData);
 
         try {
-            await updateUser(finalData);
+            await updateUser(finalData); // Se asegura de que el ID es el tipo correcto aquí
             setProblemMessage('Usuario actualizado con éxito');
             reset(); // Reseteamos el formulario
             setImagePreview(null); // Limpiamos la imagen previsualizada
@@ -173,8 +179,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             setProblemMessage(errorMessage);
         }
     };
-
-
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -449,7 +453,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                     </button>
                                 </div>
                             </div>
-
 
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>

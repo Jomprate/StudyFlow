@@ -248,7 +248,7 @@ namespace StudyFlow.BLL.Services
             }
 
             bool exist = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == user.Id);
-            if (exist)
+            if (!exist)
             {
                 return ApiResponseHelper.NotFound($"Not found user with the Id {user.Id}.");
             }
