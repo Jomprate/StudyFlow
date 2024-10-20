@@ -324,6 +324,16 @@ namespace StudyFlow.BLL.Services
         {
             var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(request.Email);
 
+            if (user == null)
+            {
+                return ApiResponseHelper.NotFound($"User with email {request.Email} not found.");
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return ApiResponseHelper.BadRequest("Email already confirmed.");
+            }
+
             // Generar el token de confirmación de email
             string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(user);
 
