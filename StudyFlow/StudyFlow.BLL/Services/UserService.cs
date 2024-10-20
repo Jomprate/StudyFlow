@@ -7,6 +7,7 @@ using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
+using StudyFlow.DAL.Enumeration;
 using StudyFlow.DAL.Interfaces;
 using StudyFlow.Infrastructure.Interfaces;
 
@@ -253,11 +254,20 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Not found user with the Id {user.Id}.");
             }
 
-            var userToUpdate = user.ToEntity();
-            await _unitOfWork.UserRepository.UpdateAsync(userToUpdate);
-            var result = _unitOfWork.SaveChangesAsync();
+            User userEntity = await _unitOfWork.UserRepository.GetByIdAsync(user.Id);
 
-            if (userToUpdate.HaveProfilePicture)
+            userEntity.FirstName = user.FirstName;
+            userEntity.LastName = user.LastName;
+            userEntity.PhoneNumber = user.PhoneNumber;
+            //userEntity.Email = user.Email;
+            userEntity.CountryId = user.CountryId;
+            userEntity.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
+            userEntity.UserType = Enum.Parse<UserTypeEnum>(user.ProfileId.ToString());
+
+            await _unitOfWork.UserRepository.UpdateAsync(userEntity);
+            var result = await _unitOfWork.SaveChangesAsync();
+
+            if (string.IsNullOrWhiteSpace(user.ProfilePicture))
             {
                 _storageService.UploadAsync(user.ProfilePicture, user.Id.ToString());
             }
