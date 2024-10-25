@@ -1,10 +1,11 @@
 import React from 'react';
 import './courseCard.css';
-import { useTheme } from '../../ThemeContext';
-import CurseImage from '../../assets/user_p.svg';
+import { useTheme } from '../../../ThemeContext';
+import CurseImage from '../../../assets/user_p.svg';
+import { useTranslation } from 'react-i18next';
 
 interface CourseCardProps {
-    key: number;
+    key: string;
     name: string;
     description: string;
     teacher: string;
@@ -13,6 +14,7 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) => {
     const { theme } = useTheme();
+    const { t } = useTranslation();
 
     return (
         <div className={`course-card ${theme}`}>
@@ -21,7 +23,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) =
                 <div className="course-title-container">
                     <h2 className="course-title">{name}</h2>
                 </div>
-                <p className="course-teacher">Profesor: {teacher}</p>
+                <p className="course-teacher">{t('teacher')}: {teacher}</p>
                 <p className="course-description">{description}</p>
             </div>
         </div>

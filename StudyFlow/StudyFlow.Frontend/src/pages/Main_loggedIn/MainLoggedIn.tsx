@@ -4,13 +4,16 @@ import { useTheme } from '../../ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateCourseModal from '../../components/modals/createCourseModal/CreateCourseModal';
 import Popup from '../../components/modals/PopUp/PopUp';
-import { useTranslation } from 'react-i18next'; // Importa useTranslation para traducciones
+import { useTranslation } from 'react-i18next';
+import CourseCard from '../../components/cards/courseCard/CourseCard';
 
 interface Course {
     id: string;
     name: string;
+    description: string;
     createdBy?: string;
     enrolled?: boolean;
+    teacher: string;
 }
 
 interface Student {
@@ -21,19 +24,19 @@ interface Student {
 const MainLoggedIn: React.FC = () => {
     const { theme } = useTheme();
     const { state } = useAuth();
-    const { t } = useTranslation(); // Traducciones
+    const { t } = useTranslation();
 
     const [userCourses, setUserCourses] = useState<Course[]>([]);
     const [students, setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-    const [popupMessage, setPopupMessage] = useState(''); // Mensaje para el Popup
+    const [popupMessage, setPopupMessage] = useState('');
 
     useEffect(() => {
         const userRole = state.role;
         const allCourses: Course[] = [
-            { id: '1', name: 'Course 1', createdBy: 'teacherId', enrolled: true },
-            { id: '2', name: 'Course 2', createdBy: 'teacherId', enrolled: false },
+            { id: '1', name: 'Course 1', description: 'Description 1', teacher: 'Teacher A', createdBy: 'teacherId', enrolled: true },
+            { id: '2', name: 'Course 2', description: 'Description 2', teacher: 'Teacher B', createdBy: 'teacherId', enrolled: false },
         ];
         const enrolledStudents: Student[] = [
             { id: '1', name: 'John Doe' },
@@ -48,17 +51,16 @@ const MainLoggedIn: React.FC = () => {
         }
     }, [state.role]);
 
-    // Manejador para abrir el popup con un mensaje específico
     const handlePopupOpen = () => {
-        setPopupMessage(t('popup_message')); // Traduce el mensaje del Popup
+        setPopupMessage(t('popup_message'));
         setShowPopup(true);
     };
 
     return (
         <div className={`main_loggedIn_page ${theme}`}>
             <div className="main_loggedIn-header">
-                <h1>{t('main_title')}</h1> {/* Título traducido */}
-                <p>{t('main_subtitle')}</p> {/* Subtítulo traducido */}
+                <h1>{t('main_title')}</h1>
+                <p>{t('main_subtitle')}</p>
             </div>
 
             <div className="main_loggedIn-columns">
@@ -81,13 +83,17 @@ const MainLoggedIn: React.FC = () => {
                                 </button>
 
                                 <h2>{t('created_courses_title')}</h2>
-                                <ul className="course-list">
+                                <div className="course-list">
                                     {userCourses.map(course => (
-                                        <li key={course.id} className="course-item">
-                                            {course.name}
-                                        </li>
+                                        <CourseCard
+                                            key={course.id}
+                                            name={course.name}
+                                            description={course.description}
+                                            teacher={course.teacher}
+                                            image={course.image || ""}
+                                        />
                                     ))}
-                                </ul>
+                                </div>
                             </>
                         )}
                     </div>
@@ -116,7 +122,6 @@ const MainLoggedIn: React.FC = () => {
                 setOpen={setIsCreateCourseModalOpen}
             />
 
-            {/* Popup Component */}
             {showPopup && (
                 <Popup
                     message={popupMessage}

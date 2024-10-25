@@ -94,7 +94,7 @@
 /* Tema claro */
 .course-card.light {
     background-color: var(--color-card-background-light);
-    color: var(--color-text-dark-2); /* Aseguramos el color oscuro en modo claro */
+    color: var(--color-dark-text-1); /* Aseguramos el color oscuro en modo claro */
     border: 1px solid #4169e1; /* Borde azul fuerte en tema claro */
 }
 
@@ -106,5 +106,5 @@
     .course-card.light .course-professor,
     .course-card.light .course-description,
     .course-card.light .course-title {
-        color: var(--color-text-dark-2); /* Aseguramos que el texto sea oscuro en modo claro */
+        color: var(--color-dark-text-1); /* Aseguramos que el texto sea oscuro en modo claro */
     }
