@@ -14,70 +14,87 @@ html, body {
 .main_loggedIn_page {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: stretch;
     min-height: 100vh;
     width: 100%;
     margin: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
-    /* Tema claro y oscuro */
-    .main_loggedIn_page.light {
-        background-color: #fff;
-        color: #0a3340;
-    }
+/* Variables para manejar temas */
+:root {
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --primary-color: #4169e1;
+}
 
-    .main_loggedIn_page.dark {
-        background-color: #0a3340;
-        color: #ffffff;
-    }
+.main_loggedIn_page.light {
+    --background-color: #fff;
+    --text-color: #0a3340;
+    --primary-color: #4169e1;
+}
+
+.main_loggedIn_page.dark {
+    --background-color: #0a3340;
+    --text-color: #ffffff;
+    --primary-color: #80b3ff;
+}
 
 /* Contenedor principal */
 .main_loggedIn-container {
     padding: 20px;
     font-family: Arial, sans-serif;
+    flex-grow: 1;
 }
 
-    /* Estilos para los títulos y textos */
-    .main_loggedIn-container h1 {
-        color: #4169e1;
-        text-align: center;
-    }
-
-    .main_loggedIn-container p {
-        font-size: 1.1rem;
-        color: #333;
-    }
-
-.main_loggedIn_page.dark .main_loggedIn-container h1 {
-    color: #80b3ff;
-}
-
-.main_loggedIn_page.dark .main_loggedIn-container p {
-    color: #cccccc;
-}
-
-/* Botón de crear curso */
-.top-right {
-    display: flex;
-    justify-content: flex-end;
+/* Encabezado (título y descripción) */
+.main_loggedIn-header {
+    text-align: center;
     margin-bottom: 20px;
 }
 
+    .main_loggedIn-header h1 {
+        color: var(--primary-color);
+    }
+
+    .main_loggedIn-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+    }
+
+/* Diseño en columnas */
+.main_loggedIn-columns {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: flex-start; /* Alinea los elementos en la parte superior */
+}
+
+/* Columna izquierda */
+.main_loggedIn-left {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Columna derecha */
+.main_loggedIn-right {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Botón de crear curso */
 .create-course-button {
-    background-color: #4169e1;
+    background-color: var(--primary-color);
     color: #ffffff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-}
-
-.main_loggedIn_page.dark .create-course-button {
-    background-color: #80b3ff;
+    margin-bottom: 20px;
 }
 
 /* Lista de cursos */
@@ -87,14 +104,25 @@ html, body {
 }
 
 .course-item {
-    background-color: #f4f4f4;
+    background-color: var(--background-color);
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     font-size: 1.1rem;
+    color: var(--text-color);
 }
 
-.main_loggedIn_page.dark .course-item {
-    background-color: #1a1a1a;
-    color: #cccccc;
+/* Lista de estudiantes */
+.student-list {
+    list-style: none;
+    padding: 0;
+}
+
+.student-item {
+    background-color: var(--background-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    color: var(--text-color);
 }

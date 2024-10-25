@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Home from '../pages/Home/Home';
 import Countries from '../pages/Countries';
 import LoggedInMainLayout from '../components/layouts/loggedInMainLayout/LoggedInMainLayout';
@@ -37,6 +37,7 @@ const Router = () => {
                 <Route path="/course/:courseId" element={<CourseCrud method='get' />} />
                 <Route path="/course/update/:courseId" element={<CourseCrud method='put' />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
+                    <Route index element={<Navigate to="mainloggedin" />} />
                     <Route path="mainloggedin" element={<MainLoggedIn />} />
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />
