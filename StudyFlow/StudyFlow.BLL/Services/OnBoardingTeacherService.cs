@@ -70,6 +70,87 @@ namespace StudyFlow.BLL.Services
                 });
         }
 
+        public async Task<IActionResult> GetCoursesByTeacherIdAsync(Guid teacherId)
+        {
+            if (teacherId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("TeacherId is required.");
+            }
+
+            // Verificar la existencia del profesor
+            var teacherExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == teacherId);
+            if (!teacherExists)
+            {
+                return ApiResponseHelper.NotFound($"Teacher with Id {teacherId} not found.");
+            }
+
+            // Obtener todos los cursos del profesor sin paginación
+            var courses = await _unitOfWork.CourseRepository.GetAllCourseByTeacherIdAsync(teacherId);
+
+            if (courses == null || !courses.Any())
+            {
+                return ApiResponseHelper.NotFound("No courses found for the specified teacher.");
+            }
+
+            // Mapear los cursos a DTO y asignar el logo de forma asincrónica
+            var mappedCourses = new List<CourseDTO>();
+            foreach (var course in courses)
+            {
+                var logo = course.HaveLogo ? await _storageService.DownloadAsync(course.Id.ToString()) : string.Empty;
+                var courseDto = course.ToDTO();
+                courseDto.Logo = logo;
+                mappedCourses.Add(courseDto);
+            }
+
+            return ApiResponseHelper.Success(mappedCourses);
+        }
+
+        public async Task<IActionResult> GetCoursesByTeacherIdPaginatedAsync(Guid teacherId, Pagination pagination)
+        {
+            if (teacherId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("TeacherId is required.");
+            }
+
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
+            // Verificar la existencia del profesor
+            var teacherExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == teacherId);
+            if (!teacherExists)
+            {
+                return ApiResponseHelper.NotFound($"Teacher with Id {teacherId} not found.");
+            }
+
+            // Obtener los cursos del profesor con paginación
+            var coursesResult = await _unitOfWork.CourseRepository.GetAllCourseByTeacherIdAsync(teacherId, pagination);
+
+            if (!coursesResult.ListResult.Any())
+            {
+                return ApiResponseHelper.NotFound("No courses found for the specified teacher.");
+            }
+
+            // Mapear los cursos a DTO de manera asincrónica y construir la respuesta paginada
+            var mappedCourses = new List<CourseDTO>();
+            foreach (var course in coursesResult.ListResult)
+            {
+                var logo = course.HaveLogo ? await _storageService.DownloadAsync(course.Id.ToString()) : string.Empty;
+                var courseDto = course.ToDTO();
+                courseDto.Logo = logo;
+                mappedCourses.Add(courseDto);
+            }
+
+            return ApiResponseHelper.Success(new PaginationResult<CourseDTO>
+            {
+                ListResult = mappedCourses,
+                TotalRecords = coursesResult.TotalRecords,
+                TotalPages = coursesResult.TotalPages,
+                Pagination = coursesResult.Pagination
+            });
+        }
+
         public async Task<IActionResult> GetCourseByIdAsync(GetCourseTeacherDTORequest getCourseTeacherDTORequest)
         {
             if (getCourseTeacherDTORequest.CourseId is null)

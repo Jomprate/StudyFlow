@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.DTOS.OnBoardingTeacher.Request;
+using StudyFlow.DAL.Entities.Helper;
 
 namespace StudyFlow.BLL.Interfaces
 {
@@ -15,6 +16,10 @@ namespace StudyFlow.BLL.Interfaces
         Task<IActionResult> GetCourseByIdAsync(GetCourseTeacherDTORequest getCourseTeacherDTORequest);
 
         Task<IActionResult> GetCoursesAsync(GetCourseTeacherDTORequest getCourseTeacherDTORequest);
+
+        Task<IActionResult> GetCoursesByTeacherIdAsync(Guid teacherId);
+
+        Task<IActionResult> GetCoursesByTeacherIdPaginatedAsync(Guid teacherId, Pagination pagination);
 
         Task<IActionResult> AddEnrollmentByStudentAsync(AddEnrollmentByStudentDTORequest addEnrollmentByStudentDTORequest);
 

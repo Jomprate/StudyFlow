@@ -2,6 +2,7 @@
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.DTOS.OnBoardingTeacher.Request;
 using StudyFlow.BLL.Interfaces;
+using StudyFlow.DAL.Entities.Helper;
 
 namespace StudyFlow.Backend.Controllers
 {
@@ -48,6 +49,54 @@ namespace StudyFlow.Backend.Controllers
                 var result = await _onBoardingTeacherService.GetCoursesAsync(getCourseTeacherDTORequest);
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetCoursesByTeacherId")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCoursesByTeacherId(Guid teacherId)
+        {
+            try
+            {
+                if (teacherId == Guid.Empty)
+                {
+                    return BadRequest(new { Error = "TeacherId is required." });
+                }
+
+                var result = await _onBoardingTeacherService.GetCoursesByTeacherIdAsync(teacherId);
+
+                return result != null ? Ok(result) : NotFound(new { Error = "No courses found for the specified teacher." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpGet("GetCoursesByTeacherIdPaginated")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCoursesByTeacherIdPaginated(Guid teacherId, [FromQuery] Pagination pagination)
+        {
+            try
+            {
+                if (teacherId == Guid.Empty)
+                {
+                    return BadRequest(new { Error = "TeacherId is required." });
+                }
+
+                var result = await _onBoardingTeacherService.GetCoursesByTeacherIdPaginatedAsync(teacherId, pagination);
+
+                return result != null ? Ok(result) : NotFound(new { Error = "No courses found for the specified teacher." });
             }
             catch (Exception ex)
             {

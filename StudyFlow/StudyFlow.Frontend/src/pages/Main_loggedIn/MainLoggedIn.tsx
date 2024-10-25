@@ -6,6 +6,8 @@ import CreateCourseModal from '../../components/modals/createCourseModal/CreateC
 import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
 import CourseCard from '../../components/cards/courseCard/CourseCard';
+import Pagination from '@components/pagination/Pagination';
+import { getCoursesByTeacherIdPaginatedAsync } from '../../services/api';
 
 interface Course {
     id: string;
@@ -14,6 +16,7 @@ interface Course {
     createdBy?: string;
     enrolled?: boolean;
     teacher: string;
+    logo?: string;
 }
 
 interface Student {
@@ -31,29 +34,45 @@ const MainLoggedIn: React.FC = () => {
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [recordsPerPage, setRecordsPerPage] = useState(5); // Aumentamos registros por página
 
     useEffect(() => {
-        const userRole = state.role;
-        const allCourses: Course[] = [
-            { id: '1', name: 'Course 1', description: 'Description 1', teacher: 'Teacher A', createdBy: 'teacherId', enrolled: true },
-            { id: '2', name: 'Course 2', description: 'Description 2', teacher: 'Teacher B', createdBy: 'teacherId', enrolled: false },
-        ];
-        const enrolledStudents: Student[] = [
-            { id: '1', name: 'John Doe' },
-            { id: '2', name: 'Jane Smith' }
-        ];
+        const fetchCourses = async () => {
+            try {
+                const userRole = state.role;
+                const teacherId = state.userName;
 
-        if (userRole === 'Teacher') {
-            setUserCourses(allCourses.filter(course => course.createdBy === 'teacherId'));
-            setStudents(enrolledStudents);
-        } else {
-            setUserCourses(allCourses.filter(course => course.enrolled));
-        }
-    }, [state.role]);
+                if (userRole === 'Teacher' && teacherId) {
+                    const { data, totalPages } = await getCoursesByTeacherIdPaginatedAsync(
+                        teacherId,
+                        currentPage,
+                        recordsPerPage
+                    );
+
+                    // Verificar si los datos se reciben correctamente
+                    console.log("Fetched courses data:", data);
+
+                    setUserCourses(data);
+                    setTotalPages(totalPages);
+                }
+            } catch (error) {
+                console.error('Error fetching paginated courses:', error);
+            }
+        };
+
+        fetchCourses();
+    }, [state.role, state.userName, currentPage, recordsPerPage]);
 
     const handlePopupOpen = () => {
         setPopupMessage(t('popup_message'));
         setShowPopup(true);
+    };
+
+    const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
+        setRecordsPerPage(newRecordsPerPage);
+        setCurrentPage(1); // Reinicia a la primera página al cambiar el número de registros por página
     };
 
     return (
@@ -90,10 +109,19 @@ const MainLoggedIn: React.FC = () => {
                                             name={course.name}
                                             description={course.description}
                                             teacher={course.teacher}
-                                            image={course.image || ""}
+                                            image={course.logo || ""}
                                         />
                                     ))}
                                 </div>
+
+                                {/* Componente de paginación */}
+                                <Pagination
+                                    totalPages={totalPages}
+                                    currentPage={currentPage}
+                                    onPageChange={setCurrentPage}
+                                    recordsPerPage={recordsPerPage}
+                                    onRecordsPerPageChange={handleRecordsPerPageChange}
+                                />
                             </>
                         )}
                     </div>

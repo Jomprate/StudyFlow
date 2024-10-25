@@ -545,3 +545,117 @@ export const createCourse = async (courseDTO: {
         throw new Error(errorMessage);
     }
 };
+
+interface PaginatedCourseResponse<T> {
+    data: T[];
+    totalPages: number;
+    totalRecords: number;
+}
+
+//export const getCoursesByTeacherIdPaginated = async (
+//    teacherId: string,
+//    page: number,
+//    recordsNumber: number
+//): Promise<PaginatedCourseResponse<any>> => {
+//    try {
+//        const response = await api.get(`/OnBoardingTeacher/GetCourses`, {
+//            params: {
+//                teacherId,
+//                page,
+//                recordsNumber,
+//            }
+//        });
+
+//        if (response.data && response.data.success && response.data.data) {
+//            const coursesArray = response.data.data.PaginationResult.ListResult.map((course: any) => ({
+//                id: course.id,
+//                name: course.name,
+//                description: course.description,
+//                teacher: course.teacherName,
+//                logo: course.logo,
+//                isEnabled: course.isEnabled,
+//            }));
+
+//            return {
+//                data: coursesArray,
+//                totalPages: response.data.data.PaginationResult.TotalPages || 1,
+//                totalRecords: response.data.data.PaginationResult.TotalRecords || 0,
+//            };
+//        } else {
+//            throw new Error('Unexpected response format');
+//        }
+//    } catch (error: any) {
+//        const errorMessage = error.response
+//            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+//            : error.request
+//                ? i18n.t('global_error_noResponse')
+//                : i18n.t('global_error_requestSetup', { message: error.message });
+
+//        console.error("Error en la respuesta de la API:", errorMessage);
+//        throw new Error(errorMessage);
+//    }
+//};
+
+// Define la interfaz CourseDTO con las propiedades que necesita
+// Define la interfaz CourseDTO con las propiedades necesarias
+export interface CourseDTO {
+    id: string;
+    name: string;
+    description: string;
+    teacher: string;
+    logo?: string;
+    isEnabled: boolean;
+}
+
+export const getCoursesByTeacherIdPaginatedAsync = async (
+    teacherId: string,
+    page: number,
+    recordsNumber: number
+): Promise<{ data: CourseDTO[], totalPages: number, totalRecords: number }> => {
+    try {
+        // Realizar la solicitud GET con los parámetros de paginación
+        const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherIdPaginated`, {
+            params: {
+                TeacherId: teacherId,
+                'Pagination.Page': page,
+                'Pagination.RecordsNumber': recordsNumber
+            }
+        });
+
+        // Imprimir la respuesta completa para depuración
+        console.log("Full response data:", response.data);
+
+        const { value } = response.data;
+        if (value && value.data?.listResult) {
+            const { listResult, pagination } = value.data;
+
+            // Mapear los cursos a CourseDTO
+            const coursesArray: CourseDTO[] = listResult.map((course: any) => ({
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                teacher: course.teacherDTO?.fullName || "Unknown",
+                logo: course.logo || "",
+                isEnabled: course.isEnabled,
+            }));
+
+            return {
+                data: coursesArray,
+                totalPages: pagination.totalPages,
+                totalRecords: pagination.totalRecords
+            };
+        } else {
+            console.error("Unexpected response format:", response.data);
+            throw new Error('Unexpected response format');
+        }
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? `Error en la respuesta de la API: ${error.response.data}`
+            : error.request
+                ? 'No response received from API'
+                : `Error setting up request: ${error.message}`;
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
