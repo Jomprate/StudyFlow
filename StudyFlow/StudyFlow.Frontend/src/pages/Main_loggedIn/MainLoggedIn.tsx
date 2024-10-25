@@ -36,34 +36,37 @@ const MainLoggedIn: React.FC = () => {
     const [popupMessage, setPopupMessage] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(5); // Aumentamos registros por página
+    const [recordsPerPage, setRecordsPerPage] = useState(5);
+    const [courseCreated, setCourseCreated] = useState(false); // Estado para manejar la actualización
+
+    const fetchCourses = async () => {
+        try {
+            const userRole = state.role;
+            const teacherId = state.userName;
+
+            if (userRole === 'Teacher' && teacherId) {
+                const { data, totalPages } = await getCoursesByTeacherIdPaginatedAsync(
+                    teacherId,
+                    currentPage,
+                    recordsPerPage
+                );
+
+                setUserCourses(data);
+                setTotalPages(totalPages);
+            }
+        } catch (error) {
+            console.error('Error fetching paginated courses:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const userRole = state.role;
-                const teacherId = state.userName;
-
-                if (userRole === 'Teacher' && teacherId) {
-                    const { data, totalPages } = await getCoursesByTeacherIdPaginatedAsync(
-                        teacherId,
-                        currentPage,
-                        recordsPerPage
-                    );
-
-                    // Verificar si los datos se reciben correctamente
-                    console.log("Fetched courses data:", data);
-
-                    setUserCourses(data);
-                    setTotalPages(totalPages);
-                }
-            } catch (error) {
-                console.error('Error fetching paginated courses:', error);
-            }
-        };
-
         fetchCourses();
-    }, [state.role, state.userName, currentPage, recordsPerPage]);
+    }, [state.role, state.userName, currentPage, recordsPerPage, courseCreated]); // Se agrega `courseCreated`
+
+    // Función que se llama cuando se crea un nuevo curso
+    const handleCourseCreated = () => {
+        setCourseCreated(prev => !prev); // Cambia el estado para forzar la actualización
+    };
 
     const handlePopupOpen = () => {
         setPopupMessage(t('popup_message'));
@@ -72,7 +75,7 @@ const MainLoggedIn: React.FC = () => {
 
     const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
         setRecordsPerPage(newRecordsPerPage);
-        setCurrentPage(1); // Reinicia a la primera página al cambiar el número de registros por página
+        setCurrentPage(1);
     };
 
     return (
@@ -114,7 +117,6 @@ const MainLoggedIn: React.FC = () => {
                                     ))}
                                 </div>
 
-                                {/* Componente de paginación */}
                                 <Pagination
                                     totalPages={totalPages}
                                     currentPage={currentPage}
@@ -148,6 +150,7 @@ const MainLoggedIn: React.FC = () => {
             <CreateCourseModal
                 open={isCreateCourseModalOpen}
                 setOpen={setIsCreateCourseModalOpen}
+                onCourseCreated={handleCourseCreated} // Pasa el callback al modal
             />
 
             {showPopup && (
