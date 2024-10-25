@@ -13,6 +13,7 @@ import CourseCrud from '../pages/Course_/CourseCrud.tsx';
 import Calendar from '../pages/Calendar_/Calendar.tsx';
 import ConfirmPage from '../pages/ConfirmEmailPage/Confirm_page.tsx';
 import RecoveryPassword from '../pages/RecoveryPassword/RecoveryPassword.tsx'
+import MainLoggedIn from '../pages/Main_loggedIn/MainLoggedIn.tsx';
 
 const Router = () => {
     return (
@@ -36,6 +37,7 @@ const Router = () => {
                 <Route path="/course/:courseId" element={<CourseCrud method='get' />} />
                 <Route path="/course/update/:courseId" element={<CourseCrud method='put' />} />
                 <Route path="/home_logged_in" element={<LoggedInMainLayout />}>
+                    <Route path="mainloggedin" element={<MainLoggedIn />} />
                     <Route path="courses" element={<Courses />} />
                     <Route path="course" element={<Course />} />
                     <Route path="notifications" element={<Notifications />} />
@@ -43,7 +45,7 @@ const Router = () => {
                     <Route path="requests" element={<Requests />} />
                     <Route path="settings" element={<Settings />} />
                 </Route>
-                <Route path="/recoverypassword" element={<RecoveryPassword/>}/>
+                <Route path="/recoverypassword" element={<RecoveryPassword />} />
             </Routes>
         </BrowserRouter>
     );

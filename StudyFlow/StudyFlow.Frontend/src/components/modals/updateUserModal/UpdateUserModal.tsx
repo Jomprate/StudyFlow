@@ -159,8 +159,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         try {
             await updateUser(finalData); // Se asegura de que el ID es el tipo correcto aquí
             setProblemMessage('Usuario actualizado con éxito');
-            reset(); // Reseteamos el formulario
-            setImagePreview(null); // Limpiamos la imagen previsualizada
+            reset();
+            setImagePreview(null);
             setCroppedImage(null); // Limpiamos la imagen recortada
             setFileName(''); // Reiniciamos el nombre del archivo
             setOpen(false); // Cerramos el modal o ventana si está abierta

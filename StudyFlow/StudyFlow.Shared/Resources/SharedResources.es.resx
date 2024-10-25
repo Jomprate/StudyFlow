@@ -456,4 +456,7 @@
   <data name="login_resendEmail" xml:space="preserve">
     <value>Reenviar Correo</value>
   </data>
+  <data name="sideBar_loggedIn_Courses" xml:space="preserve">
+    <value>Cursos</value>
+  </data>
 </root>

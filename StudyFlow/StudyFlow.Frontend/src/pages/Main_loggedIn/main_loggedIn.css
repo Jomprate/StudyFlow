@@ -1,0 +1,100 @@
+/* Reset y configuración general */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+/* Estilos de la página principal */
+.main_loggedIn_page {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+    /* Tema claro y oscuro */
+    .main_loggedIn_page.light {
+        background-color: #fff;
+        color: #0a3340;
+    }
+
+    .main_loggedIn_page.dark {
+        background-color: #0a3340;
+        color: #ffffff;
+    }
+
+/* Contenedor principal */
+.main_loggedIn-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+    /* Estilos para los títulos y textos */
+    .main_loggedIn-container h1 {
+        color: #4169e1;
+        text-align: center;
+    }
+
+    .main_loggedIn-container p {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+.main_loggedIn_page.dark .main_loggedIn-container h1 {
+    color: #80b3ff;
+}
+
+.main_loggedIn_page.dark .main_loggedIn-container p {
+    color: #cccccc;
+}
+
+/* Botón de crear curso */
+.top-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.create-course-button {
+    background-color: #4169e1;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.main_loggedIn_page.dark .create-course-button {
+    background-color: #80b3ff;
+}
+
+/* Lista de cursos */
+.course-list {
+    list-style: none;
+    padding: 0;
+}
+
+.course-item {
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+}
+
+.main_loggedIn_page.dark .course-item {
+    background-color: #1a1a1a;
+    color: #cccccc;
+}

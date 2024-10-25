@@ -18,10 +18,17 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         <div className={`custom-sidebar ${visible ? '' : 'collapsed'}`}>
             <nav>
                 <ul>
+                    <li className={`item ${location.pathname === '/mainloggedin' ? 'active' : ''}`}>
+                        <Link to="mainloggedin">
+                            <AiOutlineHome className="icon" />
+                            {visible && <span>{t('Main')}</span>}
+                        </Link>
+                    </li>
+
                     <li className={`item ${location.pathname === '/courses' ? 'active' : ''}`}>
                         <Link to="courses">
                             <AiOutlineHome className="icon" />
-                            {visible && <span>{t('Courses')}</span>}
+                            {visible && <span>{t('sideBar_loggedIn_Courses')}</span>}
                         </Link>
                     </li>
                     <li className={`sub-item ${location.pathname === '/course' ? 'active' : ''}`}>
