@@ -52,7 +52,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const { state } = useAuth();
 
-
     const fetchCountries = async () => {
         try {
             const countriesList = await getCountriesWithLanguage();

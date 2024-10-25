@@ -13,10 +13,12 @@ import AnnouncementsGoogleDriveModal from './AnnouncementsModals/AnnouncementsGo
 import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOtherLinksModal';
 import { createAnnounce } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const AnnouncementBox_Create: React.FC = () => {
     const { t } = useTranslation();
     const editorRef = useRef<HTMLDivElement>(null);
+    const { state } = useAuth();
     const { theme } = useTheme();
     const [title, setTitle] = useState<string>('');
     const [isPublishDisabled, setIsPublishDisabled] = useState(true);
@@ -99,14 +101,15 @@ const AnnouncementBox_Create: React.FC = () => {
         if (editorRef.current) {
             const content = editorRef.current.innerHTML;
 
-            const defaultUserId = "6fe44fdc-cac4-4d08-82d6-8a672b6960c0"; // UserId quemado
-            const defaultCourseId = "3c8825f3-f903-45c9-8dac-0a87a51ef37e"; // CourseId quemado
-
+            //const defaultUserId = "6ec6a992-11de-469b-823e-08dcf1287ffe"; // UserId quemado
+            const defaultCourseId = "e4dc593d-ab03-4dfe-a26c-08dcf144334f"; // CourseId quemado
+            const userID = state.userName?.toString();
+            console.log('Usuario:', userID);
             // Crear objeto DTO con valores quemados
             const addAnnounceDTO = {
                 title: title,
                 htmlContent: content,
-                userId: defaultUserId,
+                userId: userID,
                 courseId: defaultCourseId,
                 youTubeVideos: youtubeLinks,
                 googleDriveLinks: googleDriveLinks,

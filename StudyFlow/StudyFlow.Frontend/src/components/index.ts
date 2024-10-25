@@ -36,3 +36,5 @@ export { default as GoogleDriveAnnounceCard } from "./cards/Announces/GoogleDriv
 export { default as Pagination } from "./pagination/Pagination";
 
 export { default as DeleteModal } from "./modals/deleteModal/DeleteModal";
+
+export { default as Popup } from "./modals/PopUp/PopUp";

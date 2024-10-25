@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Popup from '../../Components/modals/PopUp/PopUp'; // Importar el Popup
+import Popup from '../../components/modals/PopUp/PopUp'; // Importar el Popup
 import './RecoveryPassword.css';
 import { ResetPassword } from '../../services/api'; // Asegúrate de importar tu función de API
 

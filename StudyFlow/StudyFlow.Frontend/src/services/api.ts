@@ -28,6 +28,7 @@ export const checkBackendStatus = async (callback: (isReady: boolean) => void) =
 };
 
 interface userdata {
+    data: any;
     firstname: string;
     lastname: string;
     email: string;
