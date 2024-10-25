@@ -5,6 +5,8 @@ using StudyFlow.BLL.Interfaces;
 
 namespace StudyFlow.Backend.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class OnBoardingTeacherController : ControllerBase
     {
         private readonly IOnBoardingTeacherService _onBoardingTeacherService;

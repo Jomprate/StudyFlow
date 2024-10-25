@@ -12,6 +12,8 @@ export { default as ResendActivationEmail } from "./modals/resendActivationEmail
 export { default as UserCreatedModal } from "./modals/userCreatedModal/UserCreatedModal";
 export { default as UpdateUserModal } from "./modals/updateUserModal/UpdateUserModal";
 
+export { default as CreateCourseModal } from "./modals/createCourseModal/CreateCourseModal";
+
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";
 export { default as NavbarLoggedIn } from "./navBarLoggedIn/NavbarLoggedIn";

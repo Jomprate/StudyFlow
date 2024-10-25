@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './main_loggedIn.css';
 import { useTheme } from '../../ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
+import CreateCourseModal from '../../components/modals/createCourseModal/CreateCourseModal';
+import Popup from '../../components/modals/PopUp/PopUp';
+import { useTranslation } from 'react-i18next'; // Importa useTranslation para traducciones
 
 interface Course {
     id: string;
@@ -17,9 +20,14 @@ interface Student {
 
 const MainLoggedIn: React.FC = () => {
     const { theme } = useTheme();
+    const { state } = useAuth();
+    const { t } = useTranslation(); // Traducciones
+
     const [userCourses, setUserCourses] = useState<Course[]>([]);
     const [students, setStudents] = useState<Student[]>([]);
-    const { state } = useAuth();
+    const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState(''); // Mensaje para el Popup
 
     useEffect(() => {
         const userRole = state.role;
@@ -40,21 +48,39 @@ const MainLoggedIn: React.FC = () => {
         }
     }, [state.role]);
 
+    // Manejador para abrir el popup con un mensaje específico
+    const handlePopupOpen = () => {
+        setPopupMessage(t('popup_message')); // Traduce el mensaje del Popup
+        setShowPopup(true);
+    };
+
     return (
         <div className={`main_loggedIn_page ${theme}`}>
             <div className="main_loggedIn-header">
-                <h1>Main</h1>
-                <p>Here are your Information.</p>
+                <h1>{t('main_title')}</h1> {/* Título traducido */}
+                <p>{t('main_subtitle')}</p> {/* Subtítulo traducido */}
             </div>
 
             <div className="main_loggedIn-columns">
-                {/* Columna izquierda: Botón de crear curso y lista de cursos */}
                 <div className="column-box">
                     <div className="main_loggedIn-left">
                         {state.role === 'Teacher' && (
                             <>
-                                <button className="create-course-button">Create New Course</button>
-                                <h2>Your Created Courses:</h2>
+                                <button
+                                    className="create-course-button"
+                                    onClick={() => setIsCreateCourseModalOpen(true)}
+                                >
+                                    {t('create_course_button')}
+                                </button>
+
+                                <button
+                                    className="open-popup-button"
+                                    onClick={handlePopupOpen}
+                                >
+                                    {t('open_popup_button')}
+                                </button>
+
+                                <h2>{t('created_courses_title')}</h2>
                                 <ul className="course-list">
                                     {userCourses.map(course => (
                                         <li key={course.id} className="course-item">
@@ -67,12 +93,11 @@ const MainLoggedIn: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Columna derecha: Lista de estudiantes */}
                 <div className="column-box">
                     <div className="main_loggedIn-right">
                         {state.role === 'Teacher' && (
                             <>
-                                <h2>Enrolled Students:</h2>
+                                <h2>{t('enrolled_students_title')}</h2>
                                 <ul className="student-list">
                                     {students.map(student => (
                                         <li key={student.id} className="student-item">
@@ -85,6 +110,19 @@ const MainLoggedIn: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <CreateCourseModal
+                open={isCreateCourseModalOpen}
+                setOpen={setIsCreateCourseModalOpen}
+            />
+
+            {/* Popup Component */}
+            {showPopup && (
+                <Popup
+                    message={popupMessage}
+                    onClose={() => setShowPopup(false)}
+                />
+            )}
         </div>
     );
 };

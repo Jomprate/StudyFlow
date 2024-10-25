@@ -509,3 +509,39 @@ export const confirmEmail = async (userId: string, token: string): Promise<void>
         throw new Error(errorMessage);
     }
 };
+
+//Courses
+
+export const createCourse = async (courseDTO: {
+    id?: string;
+    teacherId: string;
+    name: string;
+    description?: string;
+    logo?: string;
+    isEnabled?: boolean;
+}): Promise<void> => {
+    try {
+        const response = await api.post('/OnBoardingTeacher/CreateCourse', {
+            id: courseDTO.id,  // Este campo puede ser opcional
+            teacherDTO: {
+                id: courseDTO.teacherId,  // El ID del maestro
+                fullName: "string"        // Puedes obtener este dato si es necesario
+            },
+            name: courseDTO.name,
+            description: courseDTO.description,
+            logo: courseDTO.logo,
+            isEnabled: courseDTO.isEnabled ?? true  // Por defecto, true si no está especificado
+        });
+
+        console.log('Course created successfully:', response.data);
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
