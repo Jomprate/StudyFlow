@@ -459,4 +459,7 @@
   <data name="sideBar_loggedIn_Courses" xml:space="preserve">
     <value>Cursos</value>
   </data>
+  <data name="update_userUpdate" xml:space="preserve">
+    <value>Actualizar Usuario</value>
+  </data>
 </root>

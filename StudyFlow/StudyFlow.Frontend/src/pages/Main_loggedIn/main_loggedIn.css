@@ -68,19 +68,18 @@ html, body {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    align-items: flex-start; /* Alinea los elementos en la parte superior */
+    align-items: flex-start;
+    margin-right: 20px;
 }
 
-/* Columna izquierda */
-.main_loggedIn-left {
+/* Estilos de caja para cada columna */
+.column-box {
     width: 48%;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Columna derecha */
-.main_loggedIn-right {
-    width: 48%;
+    padding: 20px;
+    background-color: var(--background-color);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
 }

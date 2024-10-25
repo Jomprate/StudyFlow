@@ -153,6 +153,7 @@ export const updateUser = async (userDTO: {
     profileId?: number;
 }): Promise<void> => {
     try {
+        console.log("the updated dto is :" + userDTO); // Imprimir el objeto en co
         setAuthToken(localStorage.getItem('token') || null); // Cargar el token de localStorage en el encabezado de aut
         const response = await api.put('/user/updateuser/', userDTO);
         return response.data;

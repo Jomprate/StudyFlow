@@ -35,8 +35,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             password: '',
             repeatPassword: '',
             countryId: '',
-            userType: '',
-            image: ''
+            profileId: '',
+            image: '',
         }
     });
 
@@ -67,8 +67,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         }
     };
 
-    // 1. Cargar los datos del usuario cuando el modal se abra
-    // Cargar los datos del usuario cuando el modal se abra
     useEffect(() => {
         if (open) {
             const fetchUserData = async () => {
@@ -76,7 +74,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                     const response = await getuserbyid(userId); // Llamada a la API
                     const userData = response.data; // Accede a los datos dentro de 'data'
 
-                    console.log(response); // Verifica los datos en la consola
+                    console.log("Datos del usuario:", userData); // Verifica que `profileId` y `userType` estén presentes
 
                     // Utiliza reset para cargar los datos en el formulario
                     reset({
@@ -85,7 +83,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                         email: userData.email || '',
                         phoneNumber: userData.phoneNumber || '',
                         countryId: userData.country ? userData.country.toString() : '',
-                        userType: userData.userType || '',
+                        profileId: userData.profileId || '', // Asegúrate de que se configure correctamente
                         image: userData.profilePicture || null,
                     });
 
@@ -140,7 +138,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         // Si la imagen está en Base64, remueve el prefijo MIME
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
-        // Construye el objeto final con todos los campos requeridos, incluyendo el `id` que ahora obtenemos de Auth
+        // Construye el objeto final con todos los campos requeridos, incluyendo el `profileId`
         const finalData = {
             id: userName, // Aquí usamos el `id` ya convertido
             firstName: data.firstName,
@@ -149,8 +147,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             password: data.password,
             phoneNumber: data.phoneNumber || null,
             countryId: Number(data.countryId),
-            profilePicture: cleanProfilePicture, // Enviar solo la parte de datos de la cadena Base64
-            profileId: data.profileId // Usa el valor válido o un valor por defecto
+            profilePicture: cleanProfilePicture,
+            profileId: parseInt(data.profileId || '2') // Asegúrate de que profileId se maneje correctamente
         };
 
         // Imprime en consola lo que se va a enviar
@@ -456,7 +454,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>
                                 <Controller
-                                    name="userType"
+                                    name="profileId"
                                     control={control}
                                     rules={{ required: t('User type is required') }}
                                     render={({ field }) => (
@@ -468,7 +466,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                         />
                                     )}
                                 />
-                                {errors.userType && <p className="update-user-modal-error">{errors.userType.message}</p>}
+                                {errors.profileId && <p className="update-user-modal-error">{errors.profileId.message}</p>}
                             </div>
 
                             {problemMessage && (

@@ -33,7 +33,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             password: '',
             repeatPassword: '',
             countryId: '',
-            userType: '',
+            profileId: '',
             image: ''
         }
     });
@@ -426,7 +426,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>
                                 <Controller
-                                    name="userType"
+                                    name="profileId"
                                     control={control}
                                     rules={{ required: t('User type is required') }}
                                     render={({ field }) => (
@@ -438,7 +438,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         />
                                     )}
                                 />
-                                {errors.userType && <p className="auth-modal-error">{errors.userType.message}</p>}
+                                {errors.profileId && <p className="auth-modal-error">{errors.profileId.message}</p>}
                             </div>
 
                             {problemMessage && (
