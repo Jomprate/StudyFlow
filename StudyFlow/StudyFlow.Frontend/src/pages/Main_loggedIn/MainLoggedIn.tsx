@@ -7,7 +7,7 @@ import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
 import CourseCard from '../../components/cards/courseCard/CourseCard';
 import Pagination from '@components/pagination/Pagination';
-import { getCoursesByTeacherIdPaginatedAsync } from '../../services/api';
+import { getCoursesByTeacherIdAsync } from '../../services/api';
 
 interface Course {
     id: string;
@@ -29,15 +29,18 @@ const MainLoggedIn: React.FC = () => {
     const { state } = useAuth();
     const { t } = useTranslation();
 
-    const [userCourses, setUserCourses] = useState<Course[]>([]);
+    const [allCourses, setAllCourses] = useState<Course[]>([]); // Contiene todos los cursos cargados
+    const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]); // Cursos para la página actual
     const [students, setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(5); // Aumentamos registros por página
+    const [recordsPerPage, setRecordsPerPage] = useState(5);
+    const [refreshCourses, setRefreshCourses] = useState(false);
 
+    // Cargar todos los cursos una sola vez
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -45,25 +48,31 @@ const MainLoggedIn: React.FC = () => {
                 const teacherId = state.userName;
 
                 if (userRole === 'Teacher' && teacherId) {
-                    const { data, totalPages } = await getCoursesByTeacherIdPaginatedAsync(
-                        teacherId,
-                        currentPage,
-                        recordsPerPage
-                    );
+                    // Cargar todos los cursos sin paginación desde el backend
+                    const courses = await getCoursesByTeacherIdAsync(teacherId);
 
-                    // Verificar si los datos se reciben correctamente
-                    console.log("Fetched courses data:", data);
-
-                    setUserCourses(data);
-                    setTotalPages(totalPages);
+                    setAllCourses(courses); // Guardar todos los cursos
+                    setTotalPages(Math.ceil(courses.length / recordsPerPage)); // Calcular el total de páginas
                 }
             } catch (error) {
-                console.error('Error fetching paginated courses:', error);
+                console.error('Error fetching all courses:', error);
             }
         };
 
         fetchCourses();
-    }, [state.role, state.userName, currentPage, recordsPerPage]);
+    }, [state.role, state.userName, refreshCourses]);
+
+    // Aplicar la paginación en el frontend
+    useEffect(() => {
+        const startIndex = (currentPage - 1) * recordsPerPage;
+        const endIndex = startIndex + recordsPerPage;
+        setPaginatedCourses(allCourses.slice(startIndex, endIndex));
+    }, [allCourses, currentPage, recordsPerPage]);
+
+    const handleCourseCreated = () => {
+        setRefreshCourses(prev => !prev);
+        setCurrentPage(1); // Volver a la primera página después de crear un curso
+    };
 
     const handlePopupOpen = () => {
         setPopupMessage(t('popup_message'));
@@ -72,7 +81,7 @@ const MainLoggedIn: React.FC = () => {
 
     const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
         setRecordsPerPage(newRecordsPerPage);
-        setCurrentPage(1); // Reinicia a la primera página al cambiar el número de registros por página
+        setCurrentPage(1); // Reiniciar a la primera página cuando cambie el número de registros por página
     };
 
     return (
@@ -103,15 +112,19 @@ const MainLoggedIn: React.FC = () => {
 
                                 <h2>{t('created_courses_title')}</h2>
                                 <div className="course-list">
-                                    {userCourses.map(course => (
-                                        <CourseCard
-                                            key={course.id}
-                                            name={course.name}
-                                            description={course.description}
-                                            teacher={course.teacher}
-                                            image={course.logo || ""}
-                                        />
-                                    ))}
+                                    {paginatedCourses.length > 0 ? (
+                                        paginatedCourses.map(course => (
+                                            <CourseCard
+                                                key={course.id}
+                                                name={course.name}
+                                                description={course.description}
+                                                teacher={course.teacher}
+                                                image={course.logo || ""}
+                                            />
+                                        ))
+                                    ) : (
+                                        <p>{t('no_courses_message')}</p>
+                                    )}
                                 </div>
 
                                 {/* Componente de paginación */}
@@ -148,6 +161,7 @@ const MainLoggedIn: React.FC = () => {
             <CreateCourseModal
                 open={isCreateCourseModalOpen}
                 setOpen={setIsCreateCourseModalOpen}
+                onCourseCreated={handleCourseCreated}
             />
 
             {showPopup && (

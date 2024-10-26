@@ -13,9 +13,10 @@ import 'react-toggle/style.css';
 interface CreateCourseModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
+    onCourseCreated?: () => void; // Callback para notificar la creación
 }
 
-const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen }) => {
+const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, onCourseCreated }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const { state } = useAuth();
@@ -82,6 +83,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen }) 
             setProblemMessage(t('course_created_successfully'));
             reset();
             setOpen(false);
+            if (onCourseCreated) onCourseCreated(); // Llama al callback para actualizar
         } catch (error: any) {
             setProblemMessage(t('error_creating_course'));
         }

@@ -659,3 +659,46 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
         throw new Error(errorMessage);
     }
 };
+
+export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<CourseDTO[]> => {
+    try {
+        // Realizar la solicitud GET para obtener todos los cursos
+        const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
+            params: { TeacherId: teacherId }
+        });
+
+        // Registrar la respuesta completa para ver su estructura
+        console.log("Full response data:", response.data);
+
+        const { value } = response.data;
+
+        // Verificar si `value` es directamente un array o si contiene `data`
+        const coursesData = Array.isArray(value) ? value : value?.data;
+
+        if (coursesData && Array.isArray(coursesData)) {
+            // Mapear los cursos a CourseDTO
+            const coursesArray: CourseDTO[] = coursesData.map((course: any) => ({
+                id: course.id,
+                name: course.name,
+                description: course.description,
+                teacher: course.teacherDTO?.fullName || "Unknown",
+                logo: course.logo || "",
+                isEnabled: course.isEnabled,
+            }));
+
+            return coursesArray;
+        } else {
+            console.error("Unexpected response format:", response.data);
+            throw new Error('Unexpected response format');
+        }
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? `Error en la respuesta de la API: ${error.response.data}`
+            : error.request
+                ? 'No response received from API'
+                : `Error setting up request: ${error.message}`;
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import { logoutUser } from '../services/api'; // Importar la función logoutUser para hacer la llamada al API
+import { logoutUser } from '../services/api';
 
 // Definir el tipo de roles permitidos
 type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
@@ -10,13 +10,13 @@ interface AuthState {
     isAuthenticated: boolean;
     role: UserRole;
     userName: string | null;
-    token: string | null; // Incluir el token en el estado
+    token: string | null;
 }
 
 interface AuthContextProps {
     state: AuthState;
-    login: (role: UserRole, userName: string, token: string) => void; // Añadir token a la función login
-    logout: () => Promise<void>; // El logout ahora devuelve una Promise para manejar asincronía
+    login: (role: UserRole, userName: string, token: string) => void;
+    logout: () => Promise<void>;
 }
 
 // Estado inicial de la aplicación
