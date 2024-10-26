@@ -117,5 +117,13 @@ namespace StudyFlow.DAL.Services
                 Pagination = pagination
             };
         }
+
+        public override async Task<bool> DeleteAsync(Course course)
+        {
+            course.IsDeleted = true;
+
+            _context.Courses.Update(course);
+            return true;
+        }
     }
 }
