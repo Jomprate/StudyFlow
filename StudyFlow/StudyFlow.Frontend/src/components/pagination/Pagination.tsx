@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import './pagination.css';
 
 interface PaginationProps {
-    totalPages: number; // Total de páginas calculadas en el componente principal
+    totalPages: number;
     currentPage: number;
     onPageChange: (page: number) => void;
     recordsPerPage: number;
@@ -29,27 +29,21 @@ const Pagination: React.FC<PaginationProps> = ({
         All = -1,
     }
 
-    // Navegar a la página anterior
     const handlePrev = () => {
         if (currentPage > 1) onPageChange(currentPage - 1);
     };
 
-    // Navegar a la página siguiente
     const handleNext = () => {
         if (currentPage < totalPages) onPageChange(currentPage + 1);
     };
 
-    // Manejar el cambio en la cantidad de registros por página
     const handleRecordsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newRecordsPerPage = parseInt(event.target.value, 10);
 
-        // Calcular el índice del primer ítem en la página actual
+        // Calcula la nueva página actual basada en la posición del primer elemento y el nuevo límite de registros
         const firstItemIndex = (currentPage - 1) * recordsPerPage;
-
-        // Calcular la nueva página en función del nuevo número de registros por página
         const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
 
-        // Pasamos el nuevo número de registros y la nueva página calculada
         onRecordsPerPageChange(newRecordsPerPage, newPage);
     };
 
@@ -58,12 +52,12 @@ const Pagination: React.FC<PaginationProps> = ({
             <button onClick={handlePrev} disabled={currentPage === 1}>
                 {t('pagination_previous')}
             </button>
-            <span>{t('pagination_pageInfo', { currentPage, totalPages })}</span> {/* Mostrar página actual y total */}
-            <button onClick={handleNext} disabled={currentPage === totalPages}>
+            <span>{t('pagination_pageInfo', { currentPage, totalPages })}</span>
+            <button onClick={handleNext} disabled={currentPage >= totalPages}>
                 {t('pagination_next')}
             </button>
             <div className="records-per-page-container">
-                <label htmlFor="recordsPerPage">{t('pagination_recordsPerPage')}</label> {/* Traducción para "Records per page" */}
+                <label htmlFor="recordsPerPage">{t('pagination_recordsPerPage')}</label>
                 <select
                     id="recordsPerPage"
                     value={recordsPerPage}
