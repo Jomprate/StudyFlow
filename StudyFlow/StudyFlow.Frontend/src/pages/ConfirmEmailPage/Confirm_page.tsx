@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Para obtener los parámetros de la URL
-import './confirm_page.css'; // Estilos específicos para confirm_page
-import { Navbar } from '../../components'; // Asegúrate de importar el Navbar
-import { Footer } from '../../containers'; // Si tienes un footer que quieras reutilizar
+import React, { useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import './confirm_page.css';
+import { Navbar } from '../../components';
+import { Footer } from '../../containers';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../../ThemeContext'; // Manejo de temas
-import { confirmEmail } from '../../services/api'; // Función para confirmar el email
+import { useTheme } from '../../ThemeContext';
+import { confirmEmail } from '../../services/api';
 
 const ConfirmPage: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-    const location = useLocation(); // Para obtener los parámetros de la URL
+    const location = useLocation();
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const hasConfirmedRef = useRef(false); // Control de ejecución única
 
-    // Obtener parámetros de la URL
     const queryParams = new URLSearchParams(location.search);
     const userId = queryParams.get('userId');
     const token = queryParams.get('token');
 
-    // Confirmar el email cuando los parámetros sean válidos
     useEffect(() => {
-        if (userId && token) {
+        if (userId && token && !hasConfirmedRef.current) {
+            hasConfirmedRef.current = true;
             confirmEmail(userId, token)
                 .then(() => {
                     setMessage(t('confirm_page_success_message'));
@@ -32,7 +32,7 @@ const ConfirmPage: React.FC = () => {
                 .finally(() => {
                     setIsLoading(false);
                 });
-        } else {
+        } else if (!userId || !token) {
             setMessage(t('confirm_page_invalid_params'));
             setIsLoading(false);
         }

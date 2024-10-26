@@ -21,7 +21,7 @@ const ResetPasswordPage: React.FC = () => {
     };
     // Obtener el token de los parámetros de la URL
     const query = new URLSearchParams(useLocation().search);
-    const token = decodeURIComponent(query.get('token')); // Decodificar el token
+    const token = decodeURIComponent(new URLSearchParams(location.search).get('token') || '');
     const userid = new URLSearchParams(location.search).get('user');
 
     if (token == null || userid == null) {

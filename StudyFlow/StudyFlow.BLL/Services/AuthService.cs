@@ -92,8 +92,9 @@ namespace StudyFlow.BLL.Services
             }
 
             var token = await _unitOfWork.UserRepository.GeneratePasswordResetTokenAsync(user);
-            string encodedToken = HttpUtility.UrlEncode(token);
-            string confirmationLink = $"http://localhost:5173/RecoveryPassword?token={encodedToken}&user={user.Id}";
+            string encodedToken = Uri.EscapeDataString(token);
+            string encodedUser = Uri.EscapeDataString(user.Id.ToString());
+            string confirmationLink = $"http://localhost:5173/RecoveryPassword?token={encodedToken}&user={encodedUser}";
 
             try
             {
@@ -115,7 +116,7 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.BadRequest("The user dont is register.");
             }
 
-            var result = await _unitOfWork.UserRepository.ResetPasswordAsync(user, HttpUtility.UrlDecode(resetPasswordDTO.Token), resetPasswordDTO.NewPassword);
+            var result = await _unitOfWork.UserRepository.ResetPasswordAsync(user, resetPasswordDTO.Token, resetPasswordDTO.NewPassword);
             if (result.Succeeded)
             {
                 return ApiResponseHelper.Success("Password has been reset.");
