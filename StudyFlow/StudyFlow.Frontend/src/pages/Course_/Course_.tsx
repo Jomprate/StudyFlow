@@ -44,6 +44,8 @@ const Course_: React.FC = () => {
 
                 // Guardar el resultado en el estado
                 setCourse(courseData);
+
+                console.log("Course fetched:", courseData);
             } catch (error) {
                 console.error("Error fetching course:", error);
             }
@@ -74,8 +76,8 @@ const Course_: React.FC = () => {
             <NavBarCourse setActiveSection={setActiveSection} />
             <div className="course-container">
                 <div className="course-header">
-                    <h1>{"The course Name is:"}</h1>
-                    <h2>{course.name}</h2>
+                    <h1>{course.data.name}</h1>
+                    <h2>{course.data.description}</h2>
                 </div>
 
                 <div className="course-layout">
