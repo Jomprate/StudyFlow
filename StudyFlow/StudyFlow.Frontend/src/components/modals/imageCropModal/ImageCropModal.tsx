@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
 import './imageCropModal.css';
 import getCroppedImg from '../../../utils/CropImage/cropImage';
@@ -14,10 +14,18 @@ interface ImageCropModalProps {
 const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileName, onClose, onCropComplete }) => {
     const [crop, setCrop] = useState({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
     const [problemMessage, setProblemMessage] = useState<string>('');
 
-    const onCropCompleteHandler = useCallback((_croppedArea: any, croppedPixels: any) => {
+    useEffect(() => {
+        if (imageSrc) {
+            setZoom(1);
+            setCrop({ x: 0, y: 0 });
+            setCroppedAreaPixels(null);
+        }
+    }, [imageSrc]);
+
+    const onCropCompleteHandler = useCallback((_, croppedPixels: { x: number; y: number; width: number; height: number }) => {
         setCroppedAreaPixels(croppedPixels);
     }, []);
 
@@ -29,8 +37,12 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
 
         try {
             const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
-            console.log('Cropped image in Base64:', croppedImage);
-            onCropComplete(croppedImage);
+
+            // Quita el prefijo "data:image/png;base64," para obtener solo los datos en base64
+            const base64Data = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
+
+            console.log("Imagen recortada (base64 sin prefijo):", base64Data); // Imprime la imagen recortada sin el prefijo
+            onCropComplete(base64Data); // Llama a onCropComplete con solo el base64 sin el prefijo
             onClose();
         } catch (error) {
             console.error('Error al recortar la imagen:', error);
@@ -45,6 +57,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
             <div className="image-crop-modal-content">
                 <button className="close-button" onClick={onClose}>&times;</button>
                 <h2 className="modal-header">Recortar Imagen</h2>
+
                 <div className="cropper-container" style={{ height: '400px', position: 'relative' }}>
                     <Cropper
                         image={imageSrc}
@@ -54,9 +67,8 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
                         onCropChange={setCrop}
                         onZoomChange={setZoom}
                         onCropComplete={onCropCompleteHandler}
-                        minZoom={0.3}
+                        minZoom={1}
                         maxZoom={3}
-                        zoomSpeed={0.1}
                     />
                 </div>
 
@@ -66,11 +78,12 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
                     <label>Zoom: {zoom.toFixed(2)}x</label>
                     <input
                         type="range"
-                        min={0.3}
+                        min={1}
                         max={3}
-                        step={0.05}
+                        step={0.1}
                         value={zoom}
                         onChange={(e) => setZoom(parseFloat(e.target.value))}
+                        className="zoom-range"
                     />
                 </div>
 
@@ -78,6 +91,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
                     <button className="modal-button" onClick={onClose}>Cancelar</button>
                     <button className="modal-button" onClick={handleConfirmCrop}>Confirmar Recorte</button>
                 </div>
+
                 {problemMessage && <p className="error-message">{problemMessage}</p>}
             </div>
         </div>

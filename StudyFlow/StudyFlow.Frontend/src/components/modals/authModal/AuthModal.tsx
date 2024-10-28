@@ -65,6 +65,12 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     };
 
     useEffect(() => {
+        if (open) {
+            reset(); // Limpiar el formulario al abrir AuthModal
+        }
+    }, [open, reset]);
+
+    useEffect(() => {
         fetchCountries();
 
         i18n.on('languageChanged', fetchCountries);
@@ -96,38 +102,36 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
         const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
-        console.log(repeatPassword);
+        // Validar profileId y convertirlo a número
+        const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
-        // Verifica si profileId es un número, de lo contrario, establece un valor por defecto
-        const validProfileId = !isNaN(Number(profileId)) ? Number(profileId) : 0;
-
-        // Si la imagen está en Base64, remueve el prefijo MIME
+        // Remover prefijo MIME de la imagen si está en base64
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
-        // Construye el objeto final con todos los campos requeridos
+        console.log("Base64 enviado al backend:", cleanProfilePicture);
+
         const finalData = {
             firstName,
             lastName,
             email,
             password,
             phoneNumber: phoneNumber || null,
-            countryId: Number(countryId),
-            profilePicture: cleanProfilePicture, // Enviar solo la parte de datos de la cadena Base64
-            profileId: validProfileId, // Usa el valor válido o un valor por defecto
+            countryId: countryId ? Number(countryId) : null,
+            profilePicture: cleanProfilePicture,
+            profileId: validProfileId,
         };
 
-        // Imprime en consola lo que se va a enviar
         console.log("Datos enviados al backend:", finalData);
 
         try {
             await createUser(finalData);
             setProblemMessage('Usuario creado con éxito');
-            reset(); // Reseteamos el formulario
-            setImagePreview(null); // Limpiamos la imagen previsualizada
-            setCroppedImage(null); // Limpiamos la imagen recortada
-            setFileName(''); // Reiniciamos el nombre del archivo
-            setOpen(false); // Cerramos el modal o ventana si está abierta
-            setIsUserCreatedModalOpen(true); // Abrir modal de usuario creado
+            reset();
+            setImagePreview(null);
+            setCroppedImage(null);
+            setFileName('');
+            setOpen(false);
+            setIsUserCreatedModalOpen(true);
         } catch (error: any) {
             let errorMessage = 'Ocurrió un error inesperado';
             if (error.response && error.response.data) {
@@ -137,7 +141,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             } else if (error.message) {
                 errorMessage = error.message;
             }
-
             setProblemMessage(errorMessage);
         }
     };
@@ -145,7 +148,14 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
     const handleCroppedImage = (croppedImage: string) => {
-        setCroppedImage(croppedImage);
+        // Imprimir en consola la imagen recortada recibida (con prefijo MIME)
+        console.log("Imagen recortada recibida (con prefijo MIME):", croppedImage);
+
+        const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
+
+        setCroppedImage(`data:image/png;base64,${cleanCroppedImage}`);
+        setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
+        console.log("Imagen previsualizada (sin prefijo MIME para la vista):", cleanCroppedImage);
         setIsCropModalOpen(false);
     };
 
@@ -187,7 +197,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.target === e.currentTarget) {
-            setOpen(false);
+            //setOpen(false);
         }
     };
 
@@ -199,7 +209,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                 </button>
 
                 <h2 className={`auth-modal-header ${theme}-text`}>{t('auth_userCreation')}</h2>
-                <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+                <form onSubmit={handleSubmit(onSubmit)} className="form-container" autoComplete="on">
                     <div className="form-columns">
                         <div className="left-column">
                             <div className="first-last-name-group">

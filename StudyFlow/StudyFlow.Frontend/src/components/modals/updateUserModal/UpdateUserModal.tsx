@@ -128,19 +128,19 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
     const onSubmit = async (data: any) => {
         if (data.password !== data.repeatPassword) {
-            setProblemMessage('Las contraseñas no coinciden');
+            console.error('Las contraseñas no coinciden');
             return;
         }
 
-        // Obtén el ID desde AuthContext, si es necesario convertirlo, lo hacemos aquí
-        const { userName } = state; // Asegúrate de que estás obteniendo el `id` correctamente del contexto de autenticación
+        const { userName } = state;
 
-        // Si la imagen está en Base64, remueve el prefijo MIME
-        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
+        // Usa la imagen recortada limpia sin el prefijo "Modal"
+        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^Modal/, '');
 
-        // Construye el objeto final con todos los campos requeridos, incluyendo el `profileId`
+        console.log("Imagen en Base64 enviada al backend (sin 'Modal'):", cleanProfilePicture);
+
         const finalData = {
-            id: userName, // Aquí usamos el `id` ya convertido
+            id: userName,
             firstName: data.firstName,
             lastName: data.lastName,
             email: data.email,
@@ -148,39 +148,35 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             phoneNumber: data.phoneNumber || null,
             countryId: Number(data.countryId),
             profilePicture: cleanProfilePicture,
-            profileId: parseInt(data.profileId || '2') // Asegúrate de que profileId se maneje correctamente
+            profileId: parseInt(data.profileId || '2')
         };
 
-        // Imprime en consola lo que se va a enviar
-        console.log("Datos enviados al backend:", finalData);
-
         try {
-            await updateUser(finalData); // Se asegura de que el ID es el tipo correcto aquí
-            setProblemMessage('Usuario actualizado con éxito');
+            await updateUser(finalData);
             reset();
             setImagePreview(null);
-            setCroppedImage(null); // Limpiamos la imagen recortada
-            setFileName(''); // Reiniciamos el nombre del archivo
-            setOpen(false); // Cerramos el modal o ventana si está abierta
-            setIsUserCreatedModalOpen(true); // Abrir modal de usuario creado
+            setCroppedImage(null);
+            setFileName('');
+            setOpen(false);
         } catch (error: any) {
-            let errorMessage = 'Ocurrió un error inesperado';
-            if (error.response && error.response.data) {
-                errorMessage = typeof error.response.data === 'string'
-                    ? error.response.data
-                    : JSON.stringify(error.response.data);
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-
-            setProblemMessage(errorMessage);
+            console.error('Ocurrió un error inesperado:', error);
         }
     };
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+    //const handleCroppedImage = (croppedImage: string) => {
+    //    setCroppedImage(croppedImage);
+    //    console.log("cropped image in update User Modal" + croppedImage);
+    //    setIsCropModalOpen(false);
+    //};
+
     const handleCroppedImage = (croppedImage: string) => {
-        setCroppedImage(croppedImage);
+        // Remueve "Modal" al inicio de la cadena si está presente y actualiza la vista previa con la imagen recortada
+        const cleanCroppedImage = croppedImage.replace(/^Modal/, '');
+        setCroppedImage(cleanCroppedImage);
+        setImagePreview(`data:image/png;base64,${cleanCroppedImage}`); // Actualiza la vista previa con la imagen recortada
+        console.log("Imagen recortada recibida en UpdateUserModal (sin 'Modal'):", cleanCroppedImage);
         setIsCropModalOpen(false);
     };
 
@@ -222,7 +218,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.target === e.currentTarget) {
-            setOpen(false);
+            /*setOpen(false);*/
         }
     };
 
