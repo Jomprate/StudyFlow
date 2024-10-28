@@ -128,54 +128,61 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
     const onSubmit = async (data: any) => {
         if (data.password !== data.repeatPassword) {
-            console.error('Las contraseñas no coinciden');
+            setProblemMessage('Las contraseñas no coinciden');
             return;
         }
 
-        const { userName } = state;
+        const { firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
-        // Usa la imagen recortada limpia sin el prefijo "Modal"
-        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^Modal/, '');
+        // Validar profileId y asignar un valor predeterminado si está vacío
+        const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
-        console.log("Imagen en Base64 enviada al backend (sin 'Modal'):", cleanProfilePicture);
+        console.log(state.userName);
+        // Remover prefijo MIME de la imagen si está en base64
+        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
+        // Construir el objeto de datos para enviarlo al backend
         const finalData = {
-            id: userName,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
-            password: data.password,
-            phoneNumber: data.phoneNumber || null,
-            countryId: Number(data.countryId),
+            id: state.userName,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            phoneNumber: phoneNumber,
+            countryId: countryId ? Number(countryId) : null,
             profilePicture: cleanProfilePicture,
-            profileId: parseInt(data.profileId || '2')
+            profileId: validProfileId,
         };
+
+        //console.log("Datos completos enviados al backend:", finalData);
 
         try {
             await updateUser(finalData);
+            setProblemMessage('Usuario actualizado con éxito');
             reset();
             setImagePreview(null);
             setCroppedImage(null);
             setFileName('');
             setOpen(false);
         } catch (error: any) {
-            console.error('Ocurrió un error inesperado:', error);
+            let errorMessage = 'Ocurrió un error inesperado';
+            if (error.response && error.response.data) {
+                errorMessage = typeof error.response.data === 'string'
+                    ? error.response.data
+                    : JSON.stringify(error.response.data);
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            setProblemMessage(errorMessage);
         }
     };
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
-    //const handleCroppedImage = (croppedImage: string) => {
-    //    setCroppedImage(croppedImage);
-    //    console.log("cropped image in update User Modal" + croppedImage);
-    //    setIsCropModalOpen(false);
-    //};
-
     const handleCroppedImage = (croppedImage: string) => {
-        // Remueve "Modal" al inicio de la cadena si está presente y actualiza la vista previa con la imagen recortada
         const cleanCroppedImage = croppedImage.replace(/^Modal/, '');
         setCroppedImage(cleanCroppedImage);
-        setImagePreview(`data:image/png;base64,${cleanCroppedImage}`); // Actualiza la vista previa con la imagen recortada
+        setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
         console.log("Imagen recortada recibida en UpdateUserModal (sin 'Modal'):", cleanCroppedImage);
         setIsCropModalOpen(false);
     };
@@ -289,7 +296,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                             className={`${theme}-input`}
                                             {...field}
                                             placeholder={t('global_emailPlaceholder')}
-                                            readOnly // Aquí se añade el atributo readOnly
+                                            readOnly
                                         />
                                     )}
                                 />
@@ -410,9 +417,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
                         <div className="right-column">
                             <div className="form-group user-image">
-                                {/* Mostrar la imagen seleccionada o la imagen por defecto (placeholder) */}
                                 <img
-                                    src={imagePreview || userPlaceholder}  // Si existe imagePreview, se muestra; si no, el placeholder
+                                    src={imagePreview || userPlaceholder}
                                     alt="User"
                                     className="user-placeholder"
                                     style={{ objectFit: 'cover', width: '205px', height: '205px' }}
@@ -429,15 +435,15 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                         ref={fileInputRef}
                                         accept="image/png, image/jpeg, image/jpg"
                                         onChange={handleFileChange}
-                                        style={{ display: 'none' }}  // Se oculta el input de archivo
+                                        style={{ display: 'none' }}
                                     />
 
                                     <input
                                         type="text"
-                                        value={fileName}  // Mostrar el nombre del archivo seleccionado
+                                        value={fileName}
                                         readOnly
                                         className="file-name-input"
-                                        placeholder={t('global_noFileSelected')}  // Placeholder si no hay archivo seleccionado
+                                        placeholder={t('global_noFileSelected')}
                                     />
 
                                     {/* Botón para abrir el explorador de archivos */}

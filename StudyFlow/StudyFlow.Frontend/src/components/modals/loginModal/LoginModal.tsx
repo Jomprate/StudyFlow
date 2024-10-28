@@ -60,7 +60,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
             const token = await loginUser(loginDTO); // Obtén el token desde el loginUser
 
             console.log('Received token:', token); // Verificar que el token es correcto
-
+            localStorage.setItem('token', token);
             const decodedToken: DecodedToken = jwtDecode(token); // Decodifica el token si necesitas extraer la información
             console.log('Decoded JWT:', decodedToken); // Verificar que el token contiene los valores esperados
 
@@ -82,7 +82,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
             console.error('Login error:', error.message);
         }
     };
-
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

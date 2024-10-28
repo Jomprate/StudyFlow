@@ -42,8 +42,10 @@ interface userdata {
 export const setAuthToken = (token: string | null) => {
     if (token) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`; // Configurar el encabezado Authorization
+        console.log("Authorization header set:", api.defaults.headers.common['Authorization']);
     } else {
         delete api.defaults.headers.common['Authorization']; // Eliminar el encabezado si no hay token
+        console.log("Authorization header removed");
     }
 };
 
@@ -71,6 +73,7 @@ export const loginUser = async (loginDTO: { email: string; password: string }): 
 
         // Configurar el token en los encabezados de axios
         setAuthToken(token);
+        console.log(api.defaults.headers.common['Authorization'])
 
         // Retornamos el token
         return token;
@@ -142,7 +145,7 @@ export const createUser = async (userDTO: {
 };
 
 export const updateUser = async (userDTO: {
-    id: number;
+    id: string;
     firstName?: string;
     lastName?: string;
     email?: string;
@@ -154,7 +157,8 @@ export const updateUser = async (userDTO: {
 }): Promise<void> => {
     try {
         console.log("the updated dto is :" + userDTO); // Imprimir el objeto en co
-        setAuthToken(localStorage.getItem('token') || null); // Cargar el token de localStorage en el encabezado de aut
+        setAuthToken(localStorage.getItem('token'));
+        console.log("the send token is " + localStorage.getItem('token'))// Cargar el token de localStorage en el encabezado de aut
         const response = await api.put('/user/updateuser/', userDTO);
         return response.data;
     } catch (error: any) {

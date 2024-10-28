@@ -38,11 +38,10 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
         try {
             const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
 
-            // Quita el prefijo "data:image/png;base64," para obtener solo los datos en base64
             const base64Data = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
 
-            console.log("Imagen recortada (base64 sin prefijo):", base64Data); // Imprime la imagen recortada sin el prefijo
-            onCropComplete(base64Data); // Llama a onCropComplete con solo el base64 sin el prefijo
+            console.log("Imagen recortada (base64 sin prefijo):", base64Data);
+            onCropComplete(base64Data);
             onClose();
         } catch (error) {
             console.error('Error al recortar la imagen:', error);
