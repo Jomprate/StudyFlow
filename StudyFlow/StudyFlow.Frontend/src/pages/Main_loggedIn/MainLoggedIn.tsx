@@ -51,8 +51,8 @@ const MainLoggedIn: React.FC = () => {
                     // Cargar todos los cursos sin paginación desde el backend
                     const courses = await getCoursesByTeacherIdAsync(teacherId);
 
-                    setAllCourses(courses); // Guardar todos los cursos
-                    setTotalPages(Math.ceil(courses.length / recordsPerPage)); // Calcular el total de páginas
+                    setAllCourses(courses);
+                    setTotalPages(Math.ceil(courses.length / recordsPerPage));
                 }
             } catch (error) {
                 console.error('Error fetching all courses:', error);
@@ -71,7 +71,7 @@ const MainLoggedIn: React.FC = () => {
 
     const handleCourseCreated = () => {
         setRefreshCourses(prev => !prev);
-        setCurrentPage(1); // Volver a la primera página después de crear un curso
+        setCurrentPage(1);
     };
 
     const handlePopupOpen = () => {
@@ -81,7 +81,7 @@ const MainLoggedIn: React.FC = () => {
 
     const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
         setRecordsPerPage(newRecordsPerPage);
-        setCurrentPage(1); // Reiniciar a la primera página cuando cambie el número de registros por página
+        setCurrentPage(1);
     };
 
     return (

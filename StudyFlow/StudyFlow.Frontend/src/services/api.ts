@@ -706,3 +706,21 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<Cou
         throw new Error(errorMessage);
     }
 };
+
+export const getCourseByIdAsync = async (courseId: string, teacherId: string): Promise<CourseDTO> => {
+    try {
+        const response = await api.get(`/OnBoardingTeacher/GetCourseById/${courseId}`, {
+            params: { teacherId },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? `Error en la respuesta de la API: ${JSON.stringify(error.response.data)}`
+            : error.request
+                ? 'No response received from API'
+                : `Error setting up request: ${error.message}`;
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};

@@ -19,16 +19,28 @@ namespace StudyFlow.Backend.Controllers
 
         #region Courses
 
-        [HttpGet("GetCourseById")]
+        [HttpGet("GetCourseById/{courseId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCourseById(GetCourseTeacherDTORequest getCourseTeacherDTORequest)
+        public async Task<IActionResult> GetCourseById(Guid courseId, [FromQuery] Guid? teacherId)
         {
             try
             {
-                var result = await _onBoardingTeacherService.GetCourseByIdAsync(getCourseTeacherDTORequest);
+                // Verificar si falta teacherId
+                if (!teacherId.HasValue)
+                {
+                    return BadRequest(new { Error = "TeacherId is required." });
+                }
 
+                // Crear el DTO de solicitud con ambos IDs
+                var getCourseTeacherDTORequest = new GetCourseTeacherDTORequest
+                {
+                    CourseId = courseId,
+                    TeacherId = teacherId.Value
+                };
+
+                var result = await _onBoardingTeacherService.GetCourseByIdAsync(getCourseTeacherDTORequest);
                 return result;
             }
             catch (Exception ex)
@@ -37,6 +49,7 @@ namespace StudyFlow.Backend.Controllers
                     new { Error = "An unexpected error occurred.", Details = ex.Message });
             }
         }
+
 
         [HttpGet("GetCourses")]
         [ProducesResponseType(StatusCodes.Status200OK)]

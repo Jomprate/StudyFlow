@@ -71,23 +71,21 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         if (open) {
             const fetchUserData = async () => {
                 try {
-                    const response = await getuserbyid(userId); // Llamada a la API
-                    const userData = response.data; // Accede a los datos dentro de 'data'
+                    const response = await getuserbyid(userId);
+                    const userData = response.data;
 
-                    console.log("Datos del usuario:", userData); // Verifica que `profileId` y `userType` estén presentes
+                    console.log("Datos del usuario:", userData);
 
-                    // Utiliza reset para cargar los datos en el formulario
                     reset({
                         firstName: userData.firstName || '',
                         lastName: userData.lastName || '',
                         email: userData.email || '',
                         phoneNumber: userData.phoneNumber || '',
                         countryId: userData.country ? userData.country.toString() : '',
-                        profileId: userData.profileId || '', // Asegúrate de que se configure correctamente
+                        profileId: userData.profileId || '',
                         image: userData.profilePicture || null,
                     });
 
-                    // Añade el prefijo MIME adecuado a la imagen si está en Base64
                     if (userData.profilePicture) {
                         setImagePreview(`data:image/png;base64,${userData.profilePicture}`);
                     } else {
@@ -138,10 +136,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
         console.log(state.userName);
-        // Remover prefijo MIME de la imagen si está en base64
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
-        // Construir el objeto de datos para enviarlo al backend
         const finalData = {
             id: state.userName,
             firstName: firstName,
@@ -153,8 +149,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             profilePicture: cleanProfilePicture,
             profileId: validProfileId,
         };
-
-        //console.log("Datos completos enviados al backend:", finalData);
 
         try {
             await updateUser(finalData);
