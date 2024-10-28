@@ -101,7 +101,6 @@ const AnnouncementBox_Create: React.FC = () => {
         if (editorRef.current) {
             const content = editorRef.current.innerHTML;
 
-            //const defaultUserId = "6ec6a992-11de-469b-823e-08dcf1287ffe"; // UserId quemado
             const defaultCourseId = "e4dc593d-ab03-4dfe-a26c-08dcf144334f"; // CourseId quemado
             const userID = state.userName?.toString();
             console.log('Usuario:', userID);

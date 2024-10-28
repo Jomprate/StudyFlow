@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import { logoutUser } from '../services/api';
+import { logoutUser, getuserbyid } from '../services/api'; // Importar getuserbyid
 
 // Definir el tipo de roles permitidos
 type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
@@ -11,12 +11,14 @@ interface AuthState {
     role: UserRole;
     userName: string | null;
     token: string | null;
+    fullName: string | null; // Nuevo estado para el nombre completo del usuario
 }
 
 interface AuthContextProps {
     state: AuthState;
     login: (role: UserRole, userName: string, token: string) => void;
     logout: () => Promise<void>;
+    fullName: string | null; // Exponer fullName en el contexto
 }
 
 // Estado inicial de la aplicación
@@ -25,6 +27,7 @@ const initialState: AuthState = {
     role: null,
     userName: null,
     token: null, // Token inicial es null
+    fullName: null, // Inicializamos fullName como null
 };
 
 // Crear el contexto de autenticación
@@ -41,6 +44,11 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
                 userName: action.payload.userName,
                 token: action.payload.token, // Guardar el token en el estado
             };
+        case 'SET_FULL_NAME':
+            return {
+                ...state,
+                fullName: action.payload.fullName,
+            };
         case 'LOGOUT':
             return {
                 ...state,
@@ -48,6 +56,7 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
                 role: null,
                 userName: null,
                 token: null, // Limpiar el token en el logout
+                fullName: null, // Limpiar fullName en el logout
             };
         default:
             return state;
@@ -68,6 +77,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Despachar la acción LOGIN para actualizar el estado
         dispatch({ type: 'LOGIN', payload: { role, userName, token } });
+
+        // Llamar a getuserbyid para obtener el nombre completo
+        fetchUserFullName(userName);
+    };
+
+    // Función para obtener el nombre completo del usuario y almacenarlo en el estado global
+    const fetchUserFullName = async (userId: string) => {
+        try {
+            const user = await getuserbyid(userId);
+            const fullName = `${user.data.firstName} ${user.data.lastName}`;
+            console.log('Fetched fullName:', fullName);
+
+            // Guardar fullName en el estado
+            dispatch({ type: 'SET_FULL_NAME', payload: { fullName } });
+        } catch (error) {
+            console.error('Error fetching user fullName:', error);
+        }
     };
 
     // Función logout que realiza la llamada a la API, limpia el estado y LocalStorage
@@ -98,11 +124,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const { role, userName } = JSON.parse(storedAuthData);
             console.log('Restoring auth data from LocalStorage:', { role, userName, token: storedToken });
             dispatch({ type: 'LOGIN', payload: { role, userName, token: storedToken } });
+
+            // Llamar a getuserbyid para restaurar el nombre completo
+            fetchUserFullName(userName);
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ state, login, logout }}>
+        <AuthContext.Provider value={{ state, login, logout, fullName: state.fullName }}>
             {children}
         </AuthContext.Provider>
     );

@@ -88,6 +88,24 @@
         background-color: #FF6140;
     }
 
+/* Botón de usuario */
+.sf__navbar_logged_in-user button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px; /* Espacio entre el botón de usuario y el botón de logout */
+}
+
+    .sf__navbar_logged_in-user button:hover {
+        background-color: #0056b3;
+    }
+
 /* Ocultar el botón del menú desplegable en pantallas grandes */
 .sf__navbar_logged_in-menu {
     display: none; /* Oculto en pantallas grandes por defecto */
@@ -154,6 +172,17 @@
     border-radius: 8px;
     margin-bottom: 10px;
 }
+
+.sf__navbar_logged_in-menu-icon {
+    display: flex;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+    .sf__navbar_logged_in-menu-icon:hover {
+        transform: rotate(90deg);
+    }
+
 
 .sf__navbar_logged_in-menu_container-logout button {
     background-color: #FF4820;
