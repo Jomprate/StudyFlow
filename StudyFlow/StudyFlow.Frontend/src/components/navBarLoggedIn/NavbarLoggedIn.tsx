@@ -75,7 +75,8 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
                 </div>
                 <div className="sf__navbar_logged_in-links_container">
                     <p><Link to="/home_logged_in">{i18n.t('Home')}</Link></p>
-                    <p><a href="#about">About Us</a></p>
+                    <p><Link to="/About_Us">{i18n.t('About_Us')}</Link></p>
+                    {/*<p><a href="#about">About Us</a></p>*/}
                 </div>
             </div>
 
