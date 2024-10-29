@@ -16,7 +16,11 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
 
-const AnnouncementBox_Create: React.FC = () => {
+interface AnnouncementBoxCreateProps {
+    onAnnounceCreated: (announcement: any) => void;
+}
+
+const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnounceCreated }) => {
     const { t } = useTranslation();
     const editorRef = useRef<HTMLDivElement>(null);
     const { state } = useAuth();
@@ -100,7 +104,7 @@ const AnnouncementBox_Create: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        if (editorRef.current && courseId) { // Verifica que courseId esté presente
+        if (editorRef.current && courseId) {
             const content = editorRef.current.innerHTML;
             const userID = state.userName?.toString();
 
@@ -113,17 +117,30 @@ const AnnouncementBox_Create: React.FC = () => {
                 title: title,
                 htmlContent: content,
                 userId: userID,
-                courseId: courseId, // Utilizamos el courseId de la URL
+                courseId: courseId,
                 youTubeVideos: youtubeLinks,
                 googleDriveLinks: googleDriveLinks,
                 alternateLinks: otherLinks,
             };
 
-            console.log('Anuncio a crear:', addAnnounceDTO);
-
             try {
                 const response = await createAnnounce(addAnnounceDTO);
-                console.log('Anuncio creado con éxito:', response);
+
+                // Usa una afirmación de tipo para indicarle a TypeScript que `response.data` existe
+                const announcementData = response.data as any; // Afirmación de tipo
+
+                if (announcementData) {
+                    onAnnounceCreated({
+                        ...announcementData,
+                        description: content,
+                        creationDate: new Date().toISOString(),
+                        userName: state.fullName || "Unknown User",
+                        youTubeVideos: youtubeLinks,
+                        googleDriveLinks: googleDriveLinks,
+                        alternateLinks: otherLinks,
+                    });
+                    console.log('Anuncio creado con éxito:', announcementData);
+                }
             } catch (error: any) {
                 console.error('Error creando el anuncio:', error);
             }

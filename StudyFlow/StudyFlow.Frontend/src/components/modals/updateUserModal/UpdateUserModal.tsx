@@ -132,20 +132,19 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
         const { firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
-        // Validar profileId y asignar un valor predeterminado si está vacío
         const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
         console.log(state.userName);
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
         const finalData = {
-            id: state.userName,
+            id: state.userName ?? "",
             firstName: firstName,
             lastName: lastName,
             email: email,
             password: password,
             phoneNumber: phoneNumber,
-            countryId: countryId ? Number(countryId) : null,
+            countryId: countryId ? Number(countryId) : undefined,
             profilePicture: cleanProfilePicture,
             profileId: validProfileId,
         };

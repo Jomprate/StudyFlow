@@ -26,8 +26,6 @@ const Announces: React.FC = () => {
                 return;
             }
 
-            setAnnouncements([]); // Reinicia los anuncios al cambiar de curso para evitar datos incorrectos
-
             try {
                 const data = await getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
                 setAnnouncements(data.data);
@@ -51,6 +49,16 @@ const Announces: React.FC = () => {
         setCurrentPage(newPage);
     };
 
+    const handleNewAnnouncement = (newAnnouncement: any) => {
+        const safeAnnouncement = {
+            ...newAnnouncement,
+            youTubeVideos: newAnnouncement.youTubeVideos || [],
+            googleDriveLinks: newAnnouncement.googleDriveLinks || [],
+            alternateLinks: newAnnouncement.alternateLinks || [],
+        };
+        setAnnouncements((prevAnnouncements) => [safeAnnouncement, ...prevAnnouncements]);
+    };
+
     return (
         <div className={`announces-page ${theme}`}>
             <div className="announces-container">
@@ -61,7 +69,7 @@ const Announces: React.FC = () => {
                             <span className="announcement-create-text">{t('announce_announceSomething')}</span>
                         </div>
 
-                        {showAnnouncementBox && <AnnouncementBox_Create />}
+                        {showAnnouncementBox && <AnnouncementBox_Create onAnnounceCreated={handleNewAnnouncement} />}
 
                         <div className="announcement-list">
                             <h3>{t('announce_Announces')}</h3>
@@ -73,9 +81,9 @@ const Announces: React.FC = () => {
                                                 description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}
-                                                videos={announcement.youTubeVideos.map((url: string) => ({ url }))}
-                                                googleDriveLinks={announcement.googleDriveLinks.map((url: string) => ({ url }))}
-                                                otherLinks={announcement.alternateLinks.map((url: string) => ({ url }))}
+                                                videos={(announcement.youTubeVideos || []).map((url: string) => ({ url }))}
+                                                googleDriveLinks={(announcement.googleDriveLinks || []).map((url: string) => ({ url }))}
+                                                otherLinks={(announcement.alternateLinks || []).map((url: string) => ({ url }))}
                                             />
                                         </li>
                                     ))
