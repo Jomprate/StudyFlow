@@ -14,12 +14,14 @@ import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOth
 import { createAnnounce } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useParams } from 'react-router-dom';
 
 const AnnouncementBox_Create: React.FC = () => {
     const { t } = useTranslation();
     const editorRef = useRef<HTMLDivElement>(null);
     const { state } = useAuth();
     const { theme } = useTheme();
+    const { courseId } = useParams<{ courseId: string }>();
     const [title, setTitle] = useState<string>('');
     const [isPublishDisabled, setIsPublishDisabled] = useState(true);
     const [activeFormats, setActiveFormats] = useState({
@@ -98,22 +100,26 @@ const AnnouncementBox_Create: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        if (editorRef.current) {
+        if (editorRef.current && courseId) { // Verifica que courseId esté presente
             const content = editorRef.current.innerHTML;
-
-            const defaultCourseId = "e4dc593d-ab03-4dfe-a26c-08dcf144334f"; // CourseId quemado
             const userID = state.userName?.toString();
-            console.log('Usuario:', userID);
-            // Crear objeto DTO con valores quemados
+
+            if (!userID) {
+                console.error("UserID is missing. Cannot create announce.");
+                return;
+            }
+
             const addAnnounceDTO = {
                 title: title,
                 htmlContent: content,
                 userId: userID,
-                courseId: defaultCourseId,
+                courseId: courseId, // Utilizamos el courseId de la URL
                 youTubeVideos: youtubeLinks,
                 googleDriveLinks: googleDriveLinks,
                 alternateLinks: otherLinks,
             };
+
+            console.log('Anuncio a crear:', addAnnounceDTO);
 
             try {
                 const response = await createAnnounce(addAnnounceDTO);

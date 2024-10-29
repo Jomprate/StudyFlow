@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.Announce;
 using StudyFlow.BLL.DTOS.ApiResponse;
@@ -340,28 +341,38 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.BadRequest("Course Id is required.");
             }
 
-            if (pagination == null)
+            try
             {
-                return ApiResponseHelper.BadRequest("Pagination data is required.");
+                // Obtener los anuncios desde el repositorio
+                var announcesResult = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId, pagination);
+
+                // Filtrar y mapear los resultados a DTOs
+                var mappedList = announcesResult.ListResult
+                    .Where(a => !a.IsDeleted)
+                    .Select(a => MapToDTO(a))
+                    .ToList();
+
+                // Verifica si la lista de anuncios está vacía
+                if (!mappedList.Any())
+                {
+                    return ApiResponseHelper.NotFound("No announces found for the specified course.");
+                }
+
+                // Empaquetar el resultado paginado y devolver como IActionResult
+                var paginatedResult = new PaginationResult<GetAnnounceDTO>
+                {
+                    ListResult = mappedList,
+                    TotalRecords = announcesResult.TotalRecords,
+                    TotalPages = announcesResult.TotalPages,
+                    Pagination = pagination
+                };
+
+                return ApiResponseHelper.Success(paginatedResult);
             }
-
-            var announcesResult = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId, pagination);
-            announcesResult.ListResult = announcesResult.ListResult
-                .Where(a => !a.IsDeleted)
-                .ToList();
-
-            if (!announcesResult.ListResult.Any())
+            catch (Exception ex)
             {
-                return ApiResponseHelper.NotFound("No announces found for the specified course.");
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
-
-            return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
-            {
-                ListResult = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList(),
-                TotalRecords = announcesResult.TotalRecords,
-                TotalPages = announcesResult.TotalPages,
-                Pagination = announcesResult.Pagination
-            });
         }
 
         private GetAnnounceDTO MapToDTO(Announce announce)

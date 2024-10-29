@@ -1,31 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import './course_announces.css';
 import { useTheme } from '../../../ThemeContext';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
-import { getAnnouncesByCourseIdPaginated } from '../../../services/api';
+import { getCourseAnnouncesPaginated } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
-import { useAuth } from "../../../contexts/AuthContext";
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
+    const { courseId } = useParams<{ courseId: string }>();
     const [currentPage, setCurrentPage] = useState(1);
     const [announcements, setAnnouncements] = useState<any[]>([]);
     const [totalPages, setTotalPages] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(10); // Inicializamos con 10 registros por página
+    const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
-
-    const courseId = 'e4dc593d-ab03-4dfe-a26c-08dcf144334f';
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
+            if (!courseId) {
+                console.error("courseId is missing from the URL.");
+                return;
+            }
+
+            setAnnouncements([]); // Reinicia los anuncios al cambiar de curso para evitar datos incorrectos
+
             try {
-                const data = await getAnnouncesByCourseIdPaginated(courseId, currentPage, recordsPerPage);
-                setAnnouncements(data.data); // Mantenemos la lista de anuncios
-                setTotalPages(data.totalPages); // Total de páginas para la paginación
+                const data = await getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
+                setAnnouncements(data.data);
+                setTotalPages(data.totalPages);
             } catch (error) {
                 console.error('Error fetching paginated announcements:', error);
             }
@@ -38,12 +44,11 @@ const Announces: React.FC = () => {
         setShowAnnouncementBox(!showAnnouncementBox);
     };
 
-    // Lógica para actualizar la cantidad de registros por página y recalcular la página correcta
     const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
         const firstItemIndex = (currentPage - 1) * recordsPerPage;
         const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
         setRecordsPerPage(newRecordsPerPage);
-        setCurrentPage(newPage); // Ajusta la página actual según el nuevo número de registros
+        setCurrentPage(newPage);
     };
 
     return (
@@ -64,9 +69,8 @@ const Announces: React.FC = () => {
                                 {announcements.length > 0 ? (
                                     announcements.map((announcement) => (
                                         <li key={announcement.id}>
-                                            {/* Renderizamos cada anuncio dentro de un AnnouncementBox */}
                                             <AnnouncementBox
-                                                description={announcement.description} // HTML del anuncio
+                                                description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}
                                                 videos={announcement.youTubeVideos.map((url: string) => ({ url }))}
@@ -81,13 +85,12 @@ const Announces: React.FC = () => {
                             </ul>
                         </div>
 
-                        {/* Mantiene la paginación dentro de announces-main */}
                         <Pagination
                             totalPages={totalPages}
                             currentPage={currentPage}
                             onPageChange={setCurrentPage}
                             recordsPerPage={recordsPerPage}
-                            onRecordsPerPageChange={handleRecordsPerPageChange} // Actualiza los registros por página
+                            onRecordsPerPageChange={handleRecordsPerPageChange}
                         />
                     </div>
 
