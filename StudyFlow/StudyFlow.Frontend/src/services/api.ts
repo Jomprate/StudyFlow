@@ -348,7 +348,9 @@ export const createAnnounce = async (announceDTO: {
     youTubeVideos?: string[];
     googleDriveLinks?: string[];
     alternateLinks?: string[];
-}): Promise<{ id: string }> => {
+}): Promise<{
+    [x: string]: any; id: string
+}> => {
     try {
         // Verifica que el objeto announceDTO contenga userId y courseId
         if (!announceDTO.userId) {
@@ -727,4 +729,3 @@ export const getCourseAnnouncesPaginated = async (
         throw new Error(errorMessage);
     }
 };
-

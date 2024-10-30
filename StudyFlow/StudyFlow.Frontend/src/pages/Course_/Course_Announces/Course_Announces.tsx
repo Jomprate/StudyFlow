@@ -57,6 +57,8 @@ const Announces: React.FC = () => {
             alternateLinks: newAnnouncement.alternateLinks || [],
         };
         setAnnouncements((prevAnnouncements) => [safeAnnouncement, ...prevAnnouncements]);
+
+        setShowAnnouncementBox(false);
     };
 
     return (

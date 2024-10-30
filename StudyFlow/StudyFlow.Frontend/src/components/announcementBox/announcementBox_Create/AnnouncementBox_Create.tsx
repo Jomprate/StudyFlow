@@ -38,13 +38,11 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
     const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
     const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
 
-    // Lists to store links temporarily
     const [youtubeLinks, setYouTubeLinks] = useState<string[]>([]);
     const [googleDriveLinks, setGoogleDriveLinks] = useState<string[]>([]);
     const [otherLinks, setOtherLinks] = useState<string[]>([]);
 
     useEffect(() => {
-        // Load links from session storage on component mount
         const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
         const storedGoogleDriveLinks = sessionStorage.getItem('googleDriveLinks');
         const storedOtherLinks = sessionStorage.getItem('otherLinks');
@@ -126,12 +124,9 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
             try {
                 const response = await createAnnounce(addAnnounceDTO);
 
-                // Usa una afirmación de tipo para indicarle a TypeScript que `response.data` existe
-                const announcementData = response.data as any; // Afirmación de tipo
-
-                if (announcementData) {
+                if (response.data) {
                     onAnnounceCreated({
-                        ...announcementData,
+                        ...response.data,
                         description: content,
                         creationDate: new Date().toISOString(),
                         userName: state.fullName || "Unknown User",
@@ -139,9 +134,21 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                         googleDriveLinks: googleDriveLinks,
                         alternateLinks: otherLinks,
                     });
-                    console.log('Anuncio creado con éxito:', announcementData);
+
+                    console.log('Anuncio creado con éxito:', response.data);
+
+                    setTitle('');
+                    setYouTubeLinks([]);
+                    setGoogleDriveLinks([]);
+                    setOtherLinks([]);
+                    if (editorRef.current) editorRef.current.innerHTML = '';
+                    setIsPublishDisabled(true);
+
+                    sessionStorage.removeItem('youtubeLinks');
+                    sessionStorage.removeItem('googleDriveLinks');
+                    sessionStorage.removeItem('otherLinks');
                 }
-            } catch (error: any) {
+            } catch (error) {
                 console.error('Error creando el anuncio:', error);
             }
         }

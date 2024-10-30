@@ -188,9 +188,9 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"User with Id {announceDTO.UserId} not found.");
             }
 
-            announceDTO.YouTubeVideos ??= new List<string>();
-            announceDTO.GoogleDriveLinks ??= new List<string>();
-            announceDTO.AlternateLinks ??= new List<string>();
+            announceDTO.YouTubeVideos ??= [];
+            announceDTO.GoogleDriveLinks ??= [];
+            announceDTO.AlternateLinks ??= [];
 
             var announce = new Announce
             {
@@ -263,9 +263,9 @@ namespace StudyFlow.BLL.Services
             // Actualizar los datos del anuncio
             existingAnnounce.Title = announceDTO.Title;
             existingAnnounce.HtmlContent = announceDTO.HtmlContent;
-            existingAnnounce.YouTubeVideos = announceDTO.YouTubeVideos ?? new List<string>();
-            existingAnnounce.GoogleDriveLinks = announceDTO.GoogleDriveLinks ?? new List<string>();
-            existingAnnounce.AlternateLinks = announceDTO.AlternateLinks ?? new List<string>();
+            existingAnnounce.YouTubeVideos = announceDTO.YouTubeVideos ?? [];
+            existingAnnounce.GoogleDriveLinks = announceDTO.GoogleDriveLinks ?? [];
+            existingAnnounce.AlternateLinks = announceDTO.AlternateLinks ?? [];
             existingAnnounce.UserId = announceDTO.UserId;
             existingAnnounce.CourseId = announceDTO.CourseId;
 
@@ -353,7 +353,7 @@ namespace StudyFlow.BLL.Services
                     .ToList();
 
                 // Verifica si la lista de anuncios está vacía
-                if (!mappedList.Any())
+                if (mappedList.Count == 0)
                 {
                     return ApiResponseHelper.NotFound("No announces found for the specified course.");
                 }
@@ -375,7 +375,7 @@ namespace StudyFlow.BLL.Services
             }
         }
 
-        private GetAnnounceDTO MapToDTO(Announce announce)
+        private static GetAnnounceDTO MapToDTO(Announce announce)
         {
             return new GetAnnounceDTO
             {
