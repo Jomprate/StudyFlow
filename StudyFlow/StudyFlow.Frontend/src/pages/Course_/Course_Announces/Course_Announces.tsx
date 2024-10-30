@@ -18,6 +18,7 @@ const Announces: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
+    const [noAnnouncements, setNoAnnouncements] = useState(false); // Estado para manejar cursos sin anuncios
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
@@ -28,10 +29,22 @@ const Announces: React.FC = () => {
 
             try {
                 const data = await getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
-                setAnnouncements(data.data);
-                setTotalPages(data.totalPages);
-            } catch (error) {
-                console.error('Error fetching paginated announcements:', error);
+
+                if (data && data.data.length === 0) {
+                    setNoAnnouncements(true); // Marca que no hay anuncios
+                } else {
+                    setAnnouncements(data.data);
+                    setTotalPages(data.totalPages);
+                    setNoAnnouncements(false);
+                }
+            } catch (error: any) {
+                if (error.response && error.response.status === 404) {
+                    // Maneja la ausencia de anuncios sin mostrar error
+                    console.log("No announcements found for this course.");
+                    setNoAnnouncements(true);
+                } else {
+                    console.error('Error fetching paginated announcements:', error);
+                }
             }
         };
 
@@ -39,7 +52,6 @@ const Announces: React.FC = () => {
         setAnnouncements([]);
         fetchAnnouncements();
     }, [courseId, currentPage, recordsPerPage]);
-
 
     const handleAnnouncementClick = () => {
         setShowAnnouncementBox(!showAnnouncementBox);
@@ -60,8 +72,8 @@ const Announces: React.FC = () => {
             alternateLinks: newAnnouncement.alternateLinks || [],
         };
         setAnnouncements((prevAnnouncements) => [safeAnnouncement, ...prevAnnouncements]);
-
         setShowAnnouncementBox(false);
+        setNoAnnouncements(false); // Marca que ahora hay anuncios
     };
 
     return (
@@ -78,11 +90,14 @@ const Announces: React.FC = () => {
 
                         <div className="announcement-list">
                             <h3>{t('announce_Announces')}</h3>
-                            {announcements.length > 0 ? (
+                            {noAnnouncements ? (
+                                <p>{t('announce_thereIsNotAnnounces')}</p>
+                            ) : (
                                 <ul>
                                     {announcements.map((announcement) => (
                                         <li key={announcement.id}>
                                             <AnnouncementBox
+                                                announceId={announcement.id} // Añadir el ID del anuncio aquí
                                                 description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}
@@ -93,8 +108,6 @@ const Announces: React.FC = () => {
                                         </li>
                                     ))}
                                 </ul>
-                            ) : (
-                                <p>{t('announce_thereIsNotAnnounces')}</p>
                             )}
                         </div>
 

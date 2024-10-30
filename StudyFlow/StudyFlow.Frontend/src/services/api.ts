@@ -438,6 +438,22 @@ export const getAnnouncesByCourseId = async (courseId: string): Promise<any[]> =
     }
 };
 
+export const deleteAnnounce = async (announceId: string): Promise<void> => {
+    try {
+        const response = await api.delete(`/Announce/DeleteAnnounce/${announceId}`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error("Error deleting announcement:", errorMessage);
+        throw new Error(errorMessage);
+    }
+};
+
 interface PaginatedResponse<T> {
     data: T[];
     totalPages: number;
@@ -719,13 +735,19 @@ export const getCourseAnnouncesPaginated = async (
             totalPages: response.data.value?.data?.totalPages || response.data.value?.totalPages || 0
         };
     } catch (error: any) {
-        const errorMessage = error.response
-            ? i18n.t('global_error_apiResponse', { message: error.response.data })
-            : error.request
-                ? i18n.t('global_error_noResponse')
-                : i18n.t('global_error_requestSetup', { message: error.message });
+        if (error.response && error.response.status === 404) {
+            console.log("No announcements found for this course. Returning empty result.");
+            // Si el servidor responde con 404, asumimos que no hay anuncios para el curso y devolvemos una respuesta vacía
+            return { data: [], totalPages: 0 };
+        } else {
+            const errorMessage = error.response
+                ? i18n.t('global_error_apiResponse', { message: error.response.data })
+                : error.request
+                    ? i18n.t('global_error_noResponse')
+                    : i18n.t('global_error_requestSetup', { message: error.message });
 
-        console.error("Error configuring the request:", errorMessage);
-        throw new Error(errorMessage);
+            console.error("Error configuring the request:", errorMessage);
+            throw new Error(errorMessage);
+        }
     }
 };

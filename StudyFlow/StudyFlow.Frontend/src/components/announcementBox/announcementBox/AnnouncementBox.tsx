@@ -6,6 +6,7 @@ import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVid
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
+import { deleteAnnounce } from '../../../services/api';
 
 interface VideoProps {
     url: string;
@@ -20,6 +21,7 @@ interface OtherLinkProps {
 }
 
 interface AnnouncementBoxProps {
+    announceId: string; // Añade el ID del anuncio
     description: string;
     date: string;
     user: string;
@@ -29,6 +31,7 @@ interface AnnouncementBoxProps {
 }
 
 const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
+    announceId, // Recibimos el ID del anuncio
     description,
     date,
     user,
@@ -40,20 +43,30 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
+    // Abre el modal de confirmación de borrado
     const handleDeleteClick = () => {
         setDeleteModalOpen(true);
     };
 
-    const handleConfirmDelete = () => {
-        console.log('Announcement deleted');
-        setIsDeleted(true);
-        setDeleteModalOpen(false);
+    // Función para confirmar el borrado y llamar a la API
+    const handleConfirmDelete = async () => {
+        console.log('Deleting announcement with ID:', announceId); // Verifica el ID antes de llamar a la API
+        try {
+            await deleteAnnounce(announceId);
+            console.log('Announcement deleted');
+            setIsDeleted(true);
+            setDeleteModalOpen(false);
+        } catch (error) {
+            console.error('Failed to delete announcement:', error);
+        }
     };
 
+    // Cierra el modal de confirmación sin borrar
     const handleCloseModal = () => {
         setDeleteModalOpen(false);
     };
 
+    // Si el anuncio ha sido eliminado, no se renderiza nada
     if (isDeleted) {
         return null;
     }
