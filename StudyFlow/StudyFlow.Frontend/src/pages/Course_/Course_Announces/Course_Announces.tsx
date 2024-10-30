@@ -35,8 +35,11 @@ const Announces: React.FC = () => {
             }
         };
 
+        // Limpiar el estado de anuncios al cambiar de curso
+        setAnnouncements([]);
         fetchAnnouncements();
     }, [courseId, currentPage, recordsPerPage]);
+
 
     const handleAnnouncementClick = () => {
         setShowAnnouncementBox(!showAnnouncementBox);
@@ -75,9 +78,9 @@ const Announces: React.FC = () => {
 
                         <div className="announcement-list">
                             <h3>{t('announce_Announces')}</h3>
-                            <ul>
-                                {announcements.length > 0 ? (
-                                    announcements.map((announcement) => (
+                            {announcements.length > 0 ? (
+                                <ul>
+                                    {announcements.map((announcement) => (
                                         <li key={announcement.id}>
                                             <AnnouncementBox
                                                 description={announcement.description}
@@ -88,11 +91,11 @@ const Announces: React.FC = () => {
                                                 otherLinks={(announcement.alternateLinks || []).map((url: string) => ({ url }))}
                                             />
                                         </li>
-                                    ))
-                                ) : (
-                                    <p>{t('announce_thereIsNotAnnounces')}</p>
-                                )}
-                            </ul>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>{t('announce_thereIsNotAnnounces')}</p>
+                            )}
                         </div>
 
                         <Pagination
