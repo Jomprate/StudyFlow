@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import Popup from '../PopUp/PopUp'; // Importar el Popup
 import './resendActivationEmailModal.css';
-import { ResendEmailConfirm } from '../../../services/api';
+import { authApi } from '../../../services/api';
 
 interface resendActivationEmailModalProps {
     open: boolean;
@@ -20,7 +20,7 @@ const ResendActivationEmail: React.FC<resendActivationEmailModalProps> = ({ open
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const popupMessage: string = await ResendEmailConfirm(email);
+        const popupMessage: string = await authApi.ResendEmailConfirm(email);
         setPopupMessage(popupMessage); // Establecer el mensaje del Popup
         setShowPopup(true); // Mostrar el Popup
         //setOpen(false); // Cerrar el modal de recuperación

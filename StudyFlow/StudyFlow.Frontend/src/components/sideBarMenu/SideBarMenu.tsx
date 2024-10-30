@@ -7,7 +7,7 @@ import { BiCalendar } from 'react-icons/bi';
 import { HiOutlineBookOpen } from 'react-icons/hi';
 import './sidebarMenu.css';
 import { useAuth } from '../../contexts/AuthContext';
-import { getCoursesByTeacherIdAsync } from '../../services/api';
+import { courseApi } from '../../services/api';
 
 interface SidebarMenuProps {
     visible: boolean;
@@ -31,7 +31,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
                 const teacherId = state.userName;
 
                 if (userRole === 'Teacher' && teacherId) {
-                    const courses = await getCoursesByTeacherIdAsync(teacherId);
+                    const courses = await courseApi.getCoursesByTeacherIdAsync(teacherId);
                     setAllCourses(courses);
                 }
             } catch (error) {

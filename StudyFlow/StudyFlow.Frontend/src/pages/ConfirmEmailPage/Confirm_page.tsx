@@ -5,7 +5,7 @@ import { Navbar } from '../../components';
 import { Footer } from '../../containers';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../ThemeContext';
-import { confirmEmail } from '../../services/api';
+import { authApi } from '../../services/api';
 
 const ConfirmPage: React.FC = () => {
     const { t } = useTranslation();
@@ -22,7 +22,7 @@ const ConfirmPage: React.FC = () => {
     useEffect(() => {
         if (userId && token && !hasConfirmedRef.current) {
             hasConfirmedRef.current = true;
-            confirmEmail(userId, token)
+            authApi.confirmEmail(userId, token)
                 .then(() => {
                     setMessage(t('confirm_page_success_message'));
                 })

@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import './createCourseModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { createCourse } from '../../../services/api';
+import { courseApi } from '../../../services/api';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -79,7 +79,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
         };
 
         try {
-            await createCourse(courseData);
+            await courseApi.createCourse(courseData);
             setProblemMessage(t('course_created_successfully'));
             reset();
             setOpen(false);

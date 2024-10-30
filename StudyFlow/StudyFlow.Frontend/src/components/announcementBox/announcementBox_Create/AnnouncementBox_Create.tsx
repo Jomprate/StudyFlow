@@ -11,7 +11,7 @@ import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import AnnouncementsYouTubeModal from './AnnouncementsModals/AnnouncementsYouTubeModal';
 import AnnouncementsGoogleDriveModal from './AnnouncementsModals/AnnouncementsGoogleDriveModal';
 import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOtherLinksModal';
-import { createAnnounce } from '../../../services/api';
+import { announceApi } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
@@ -122,7 +122,7 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
             };
 
             try {
-                const response = await createAnnounce(addAnnounceDTO);
+                const response = await announceApi.createAnnounce(addAnnounceDTO);
 
                 if (response.data) {
                     onAnnounceCreated({

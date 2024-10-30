@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { createUser, getCountriesWithLanguage } from '../../../services/api';
+import { userApi, countryApi } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
@@ -51,7 +51,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
     const fetchCountries = async () => {
         try {
-            const countriesList = await getCountriesWithLanguage();
+            const countriesList = await countryApi.getCountriesWithLanguage();
             const sortedCountries = countriesList.map((country, index) => ({
                 id: index + 1,  // Temp Id for TS
                 name: country.name,
@@ -124,7 +124,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         console.log("Datos enviados al backend:", finalData);
 
         try {
-            await createUser(finalData);
+            await userApi.createUser(finalData);
             setProblemMessage('Usuario creado con éxito');
             reset();
             setImagePreview(null);

@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import './navbarLoggedIn.css';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
-import { getuserbyid } from '../../services/api'; // Importar getuserbyid para obtener el nombre completo del usuario
+import { userApi } from '../../services/api'; // Importar getuserbyid para obtener el nombre completo del usuario
 import { useAuth } from '../../contexts/AuthContext'; // Importar el contexto de autenticación
 import logo from '../../assets/logo_t.svg';
-import { logoutUser } from '../../services/api'; // Importar la función logoutUser
+//import { logoutUser } from '../../services/api'; // Importar la función logoutUser
 
 interface NavbarProps {
     sidebarVisible: boolean;
@@ -46,7 +46,7 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
         const fetchUserFullName = async () => {
             if (userName) {
                 try {
-                    const user = await getuserbyid(userName);
+                    const user = await userApi.getuserbyid(userName);
                     console.log('User data:', user); // Muestra la data del usuario en consola
                     setFullName(`${user.data.firstName} ${user.data.lastName}`);
                 } catch (error) {

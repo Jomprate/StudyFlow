@@ -6,7 +6,7 @@ import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVid
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
-import { deleteAnnounce } from '../../../services/api';
+import { announceApi } from '../../../services/api';
 
 interface VideoProps {
     url: string;
@@ -52,7 +52,7 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     const handleConfirmDelete = async () => {
         console.log('Deleting announcement with ID:', announceId); // Verifica el ID antes de llamar a la API
         try {
-            await deleteAnnounce(announceId);
+            await announceApi.deleteAnnounce(announceId);
             console.log('Announcement deleted');
             setIsDeleted(true);
             setDeleteModalOpen(false);

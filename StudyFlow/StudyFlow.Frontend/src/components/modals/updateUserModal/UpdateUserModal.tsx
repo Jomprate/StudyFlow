@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import './updateUserModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { updateUser, getCountriesWithLanguage, getuserbyid } from '../../../services/api'; // Importar getuserbyid
+import { userApi, countryApi } from '../../../services/api'; // Importar getuserbyid
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
@@ -54,7 +54,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
     const fetchCountries = async () => {
         try {
-            const countriesList = await getCountriesWithLanguage();
+            const countriesList = await countryApi.getCountriesWithLanguage();
             const sortedCountries = countriesList.map((country, index) => ({
                 id: index + 1,  // Temp Id for TS
                 name: country.name,
@@ -71,7 +71,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         if (open) {
             const fetchUserData = async () => {
                 try {
-                    const response = await getuserbyid(userId);
+                    const response = await userApi.getuserbyid(userId);
                     const userData = response.data;
 
                     console.log("Datos del usuario:", userData);
@@ -150,7 +150,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         };
 
         try {
-            await updateUser(finalData);
+            await userApi.updateUser(finalData);
             setProblemMessage('Usuario actualizado con éxito');
             reset();
             setImagePreview(null);

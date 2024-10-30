@@ -8,7 +8,7 @@ import { handleEmailValidation } from '../../../helpers/validationHelpers';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import RecoverPasswordModal from '../recoverPasswordModal/RecoverPasswordModal';
 import ResendActivationEmailModal from '../resendActivationEmailModal/ResendActivationEmailModal';
-import { loginUser } from '../../../services/api'; // Importamos loginUser
+import { authApi } from '../../../services/api'; // Importamos loginUser
 import { useAuth } from '../../../contexts/AuthContext'; // Importamos el contexto de Auth
 import { jwtDecode } from 'jwt-decode';
 
@@ -57,7 +57,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                 password: data.password.trim(),
             };
 
-            const token = await loginUser(loginDTO); // Obtén el token desde el loginUser
+            const token = await authApi.loginUser(loginDTO); // Obtén el token desde el loginUser
 
             console.log('Received token:', token); // Verificar que el token es correcto
             localStorage.setItem('token', token);

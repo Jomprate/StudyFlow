@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Popup from '../../components/modals/PopUp/PopUp'; // Importar el Popup
 import './RecoveryPassword.css';
-import { ResetPassword } from '../../services/api'; // Asegúrate de importar tu función de API
+import { authApi } from '../../services/api'; // Asegúrate de importar tu función de API
 
 const ResetPasswordPage: React.FC = () => {
     const location = useLocation();
@@ -41,7 +41,7 @@ const ResetPasswordPage: React.FC = () => {
             ResetPasswordRequestDTO.NewPassword = newPassword;
             ResetPasswordRequestDTO.UserId = userid || '';
             ResetPasswordRequestDTO.Token = token || '';
-            let result = await ResetPassword(ResetPasswordRequestDTO); // Asumiendo que tu función de API acepta el token y la nueva contraseña
+            let result = await authApi.ResetPassword(ResetPasswordRequestDTO); // Asumiendo que tu función de API acepta el token y la nueva contraseña
             setSuccessMessage("Contraseña restablecida con éxito.");
             setPopupMessage(result); // Establecer el mensaje del Popup
             setShowPopup(true);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import './recoverPasswordModal.css';
-import { RecoveryPassword } from '../../../services/api';
+import { authApi } from '../../../services/api';
 import Popup from '../PopUp/PopUp'; // Importar el Popup
 
 interface RecoverPasswordModalProps {
@@ -20,7 +20,7 @@ const RecoverPasswordModal: React.FC<RecoverPasswordModalProps> = ({ open, setOp
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const popupMessage: string = await RecoveryPassword(email);
+        const popupMessage: string = await authApi.RecoveryPassword(email);
         setPopupMessage(popupMessage); // Establecer el mensaje del Popup
         setShowPopup(true); // Mostrar el Popup
     };

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import { logoutUser, getuserbyid } from '../services/api'; // Importar getuserbyid
+import { authApi, userApi } from '../services/api'; // Importar getuserbyid
 
 // Definir el tipo de roles permitidos
 type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Función para obtener el nombre completo del usuario y almacenarlo en el estado global
     const fetchUserFullName = async (userId: string) => {
         try {
-            const user = await getuserbyid(userId);
+            const user = await userApi.getuserbyid(userId);
             const fullName = `${user.data.firstName} ${user.data.lastName}`;
             console.log('Fetched fullName:', fullName);
 
@@ -101,7 +101,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             console.log('Calling logout API...');
             // Llamar a la API para hacer logout
-            await logoutUser();
+            await authApi.logoutUser();
 
             console.log('Logout successful, clearing auth data...');
             // Limpiar los datos locales

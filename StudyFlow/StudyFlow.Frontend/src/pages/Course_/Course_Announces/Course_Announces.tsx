@@ -6,7 +6,7 @@ import { useTheme } from '../../../ThemeContext';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
-import { getCourseAnnouncesPaginated } from '../../../services/api';
+import { courseApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
 
 const Announces: React.FC = () => {
@@ -18,28 +18,34 @@ const Announces: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
-    const [noAnnouncements, setNoAnnouncements] = useState(false); // Estado para manejar cursos sin anuncios
+    const [noAnnouncements, setNoAnnouncements] = useState(false);
+    const [announcementsFetched, setAnnouncementsFetched] = useState(false);
 
     useEffect(() => {
         const fetchAnnouncements = async () => {
-            if (!courseId) {
-                console.error("courseId is missing from the URL.");
+            if (!courseId || announcementsFetched) {
                 return;
             }
 
             try {
-                const data = await getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
+                const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
+                console.log("Full response from API:", data);
 
                 if (data && data.data.length === 0) {
-                    setNoAnnouncements(true); // Marca que no hay anuncios
+                    setNoAnnouncements(true);
                 } else {
-                    setAnnouncements(data.data);
+                    const sortedAnnouncements = data.data
+                        .filter((announcement) => !announcement.isDeleted)
+                        .sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
+
+                    console.log("Mapped announcementsArray:", sortedAnnouncements);
+                    setAnnouncements(sortedAnnouncements);
                     setTotalPages(data.totalPages);
                     setNoAnnouncements(false);
                 }
+                setAnnouncementsFetched(true);
             } catch (error: any) {
                 if (error.response && error.response.status === 404) {
-                    // Maneja la ausencia de anuncios sin mostrar error
                     console.log("No announcements found for this course.");
                     setNoAnnouncements(true);
                 } else {
@@ -48,8 +54,8 @@ const Announces: React.FC = () => {
             }
         };
 
-        // Limpiar el estado de anuncios al cambiar de curso
         setAnnouncements([]);
+        setAnnouncementsFetched(false);
         fetchAnnouncements();
     }, [courseId, currentPage, recordsPerPage]);
 
@@ -71,9 +77,14 @@ const Announces: React.FC = () => {
             googleDriveLinks: newAnnouncement.googleDriveLinks || [],
             alternateLinks: newAnnouncement.alternateLinks || [],
         };
-        setAnnouncements((prevAnnouncements) => [safeAnnouncement, ...prevAnnouncements]);
+
+        setAnnouncements((prevAnnouncements) =>
+            [safeAnnouncement, ...prevAnnouncements].sort(
+                (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+            )
+        );
         setShowAnnouncementBox(false);
-        setNoAnnouncements(false); // Marca que ahora hay anuncios
+        setNoAnnouncements(false);
     };
 
     return (
@@ -94,10 +105,10 @@ const Announces: React.FC = () => {
                                 <p>{t('announce_thereIsNotAnnounces')}</p>
                             ) : (
                                 <ul>
-                                    {announcements.map((announcement) => (
-                                        <li key={announcement.id}>
+                                    {announcements.map((announcement, index) => (
+                                        <li key={`${announcement.id}-${index}`}>
                                             <AnnouncementBox
-                                                announceId={announcement.id} // Añadir el ID del anuncio aquí
+                                                announceId={announcement.id}
                                                 description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}

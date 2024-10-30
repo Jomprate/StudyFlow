@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getCourseByIdAsync, CourseDTO } from '../../services/api';
+import { courseApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../ThemeContext';
 import NavBarCourse from '@components/navBarCourse/NavBarCourse';
@@ -13,7 +13,7 @@ const Course_: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>(); // Ajuste aquí para usar `courseId`
     const { state } = useAuth();
     const { theme } = useTheme();
-    const [course, setCourse] = useState<CourseDTO | null>(null);
+    const [course, setCourse] = useState<courseApi.CourseDTO | null>(null);
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const Course_: React.FC = () => {
                 }
 
                 // Llamada a la API
-                const courseData = await getCourseByIdAsync(courseId, teacherId);
+                const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
 
                 // Mostrar en consola la respuesta recibida
                 console.log("API Response:", courseData);

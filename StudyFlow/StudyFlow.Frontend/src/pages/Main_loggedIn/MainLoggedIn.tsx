@@ -7,7 +7,7 @@ import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
 import CourseCard from '../../components/cards/courseCard/CourseCard';
 import Pagination from '@components/pagination/Pagination';
-import { getCoursesByTeacherIdAsync } from '../../services/api';
+import { courseApi } from '../../services/api';
 
 interface Course {
     id: string;
@@ -49,13 +49,21 @@ const MainLoggedIn: React.FC = () => {
 
                 if (userRole === 'Teacher' && teacherId) {
                     // Cargar todos los cursos sin paginación desde el backend
-                    const courses = await getCoursesByTeacherIdAsync(teacherId);
+                    const response = await courseApi.getCoursesByTeacherIdAsync(teacherId);
 
-                    setAllCourses(courses);
-                    setTotalPages(Math.ceil(courses.length / recordsPerPage));
+                    if (response.statusCode === 404) {
+                        console.warn('No courses found for this teacher.');
+                        setAllCourses([]);
+                        setTotalPages(1);
+                    } else {
+                        setAllCourses(response);
+                        setTotalPages(Math.ceil(response.length / recordsPerPage));
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching all courses:', error);
+                setAllCourses([]); // Establecer la lista vacía en caso de error
+                setTotalPages(1); // Establecer solo una página cuando no hay cursos
             }
         };
 
