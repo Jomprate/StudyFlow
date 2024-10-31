@@ -245,7 +245,7 @@ namespace StudyFlow.BLL.Services
         {
             if (user.Id != Guid.Parse(userId))
             {
-                return ApiResponseHelper.BadRequest("the user to modify must be the same in the token.");
+                return ApiResponseHelper.BadRequest("The user to modify must be the same in the token.");
             }
 
             bool exist = await _unitOfWork.UserRepository.AnyAsync(w => w.Id == user.Id);
@@ -256,23 +256,26 @@ namespace StudyFlow.BLL.Services
 
             User userEntity = await _unitOfWork.UserRepository.GetByIdAsync(user.Id);
 
+            // Actualizar campos del usuario
             userEntity.FirstName = user.FirstName;
             userEntity.LastName = user.LastName;
             userEntity.PhoneNumber = user.PhoneNumber;
-            //userEntity.Email = user.Email;
             userEntity.CountryId = user.CountryId;
             userEntity.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
             userEntity.UserType = Enum.Parse<UserTypeEnum>(user.ProfileId.ToString());
 
+            // Guardar cambios en el repositorio
             await _unitOfWork.UserRepository.UpdateAsync(userEntity);
             var result = await _unitOfWork.SaveChangesAsync();
 
-            if (string.IsNullOrWhiteSpace(user.ProfilePicture))
+            // Subir la imagen solo si `ProfilePicture` tiene contenido
+            if (!string.IsNullOrWhiteSpace(user.ProfilePicture))
             {
-                _storageService.UploadAsync(user.ProfilePicture, user.Id.ToString());
+                await _storageService.UploadAsync(user.ProfilePicture, user.Id.ToString());
             }
 
-            if (result != null)
+            // Confirmar la actualización exitosa
+            if (result > 0)
             {
                 return ApiResponseHelper.Success("User updated successfully.");
             }

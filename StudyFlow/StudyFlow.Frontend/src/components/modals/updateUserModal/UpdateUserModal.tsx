@@ -195,11 +195,18 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
+    //const handleCroppedImage = (croppedImage: string) => {
+    //    const cleanCroppedImage = croppedImage.replace(/^Modal/, '');
+    //    setCroppedImage(cleanCroppedImage);
+    //    setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
+    //    console.log("Imagen recortada recibida en UpdateUserModal (sin 'Modal'):", cleanCroppedImage);
+    //    setIsCropModalOpen(false);
+    //};
+
     const handleCroppedImage = (croppedImage: string) => {
-        const cleanCroppedImage = croppedImage.replace(/^Modal/, '');
+        const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
         setCroppedImage(cleanCroppedImage);
         setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
-        console.log("Imagen recortada recibida en UpdateUserModal (sin 'Modal'):", cleanCroppedImage);
         setIsCropModalOpen(false);
     };
 
@@ -443,9 +450,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('global_image')}</label>
-
                                 <div className="image-field">
-                                    {/* Input de archivo, solo permite imágenes PNG y JPEG */}
                                     <input
                                         type="file"
                                         ref={fileInputRef}
@@ -453,7 +458,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                         onChange={handleFileChange}
                                         style={{ display: 'none' }}
                                     />
-
                                     <input
                                         type="text"
                                         value={fileName}
@@ -461,8 +465,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                         className="file-name-input"
                                         placeholder={t('global_noFileSelected')}
                                     />
-
-                                    {/* Botón para abrir el explorador de archivos */}
                                     <button type="button" className="select-button" onClick={handleSelectClick}>
                                         {t('Seleccionar')}
                                     </button>
@@ -497,7 +499,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
                     <div className="button-container">
                         <button type="submit" className={`submit-button ${theme}-button`}>
-                            {t('auth_createUser')}
+                            {t('update_user')}
                         </button>
                     </div>
                 </form>
@@ -508,7 +510,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                         onClose={() => setIsCropModalOpen(false)}
                         onCropComplete={handleCroppedImage}
                         imageSrc={imagePreview!}
-                        fileName={''} />
+                        fileName={''}
+                    />
                 )}
 
                 {/* Modal para indicar que el usuario fue creado */}
