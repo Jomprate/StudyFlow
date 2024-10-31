@@ -15,6 +15,19 @@
         display: flex;
     }
 
+.disabled-dropdown {
+    color: inherit; /* Mantiene el color del texto */
+    background-color: inherit; /* Mantiene el color de fondo */
+    pointer-events: none; /* Evita interacción sin cambiar el color */
+    opacity: 1; /* Anula el cambio de opacidad */
+    -webkit-appearance: none; /* Oculta la flecha en Safari y Chrome */
+    -moz-appearance: none; /* Oculta la flecha en Firefox */
+    appearance: none; /* Oculta la flecha en navegadores modernos */
+    background-image: none; /* Asegura que no haya ícono de flecha */
+}
+
+
+
 .update-user-modal {
     padding: 30px;
     background-color: var(--color-background-light);

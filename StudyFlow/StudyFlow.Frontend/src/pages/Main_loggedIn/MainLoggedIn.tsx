@@ -48,7 +48,6 @@ const MainLoggedIn: React.FC = () => {
                 const teacherId = state.userName;
 
                 if (userRole === 'Teacher' && teacherId) {
-                    // Cargar todos los cursos sin paginación desde el backend
                     const response = await courseApi.getCoursesByTeacherIdAsync(teacherId);
 
                     if (response.statusCode === 404) {

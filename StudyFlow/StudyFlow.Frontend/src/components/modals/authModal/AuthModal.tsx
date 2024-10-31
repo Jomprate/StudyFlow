@@ -440,12 +440,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     control={control}
                                     rules={{ required: t('User type is required') }}
                                     render={({ field }) => (
-                                        <input
-                                            type="text"
+                                        <select
                                             className={`${theme}-input`}
-                                            placeholder={t('Enter user type')}
                                             {...field}
-                                        />
+                                            defaultValue=""
+                                        >
+                                            <option value="" disabled>{t('auth_selectUserType')}</option>
+                                            <option value="1">{t('global_teacher')}</option>
+                                            <option value="2">{t('global_student')}</option>
+                                        </select>
                                     )}
                                 />
                                 {errors.profileId && <p className="auth-modal-error">{errors.profileId.message}</p>}

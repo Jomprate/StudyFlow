@@ -462,4 +462,13 @@
   <data name="update_userUpdate" xml:space="preserve">
     <value>Actualizar Usuario</value>
   </data>
+  <data name="auth_selectUserType" xml:space="preserve">
+    <value>---Selecciona tipo de usuario---</value>
+  </data>
+  <data name="global_teacher" xml:space="preserve">
+    <value>Profesor</value>
+  </data>
+  <data name="global_student" xml:space="preserve">
+    <value>Estudiante</value>
+  </data>
 </root>

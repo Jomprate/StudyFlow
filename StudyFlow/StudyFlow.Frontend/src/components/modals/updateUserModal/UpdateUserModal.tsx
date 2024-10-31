@@ -51,6 +51,13 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const { state } = useAuth();
+    const [isEditable, setIsEditable] = useState(false);
+    const [translatedUserType, setTranslatedUserType] = useState(''); // Valor inicial vacío
+
+    // Utiliza useEffect para ajustar el profileId inicial de acuerdo con el userType
+    const userType = state.role === 'Teacher' ? 'Teacher' :
+        state.role === 'Student' ? 'Student' :
+            ''; // Maneja cualquier caso inesperado
 
     const fetchCountries = async () => {
         try {
@@ -71,10 +78,11 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         if (open) {
             const fetchUserData = async () => {
                 try {
+                    console.log("Fetching user data for ID:", userId);
                     const response = await userApi.getuserbyid(userId);
                     const userData = response.data;
 
-                    console.log("Datos del usuario:", userData);
+                    console.log("User data retrieved:", userData);
 
                     reset({
                         firstName: userData.firstName || '',
@@ -91,14 +99,29 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                     } else {
                         setImagePreview(null);
                     }
+
+                    // Traducción del tipo de usuario basado en profileId
+                    switch (userData.profileId) {
+                        case 1:
+                            setTranslatedUserType(t('global_teacher'));
+                            break;
+                        case 2:
+                            setTranslatedUserType(t('global_student'));
+                            break;
+                        default:
+                            setTranslatedUserType(t('global_unknown'));
+                            break;
+                    }
                 } catch (error) {
+                    console.error("Error loading user data:", error);
                     setProblemMessage('Error al cargar los datos del usuario');
                 }
             };
+            setIsEditable(false);
 
             fetchUserData();
         }
-    }, [open, userId, reset, setImagePreview]);
+    }, [open, userId, reset, setImagePreview, t]);
 
     useEffect(() => {
         fetchCountries();
@@ -448,20 +471,14 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
                             <div className={`form-group ${theme}-text`}>
                                 <label>{t('auth_userType')}</label>
-                                <Controller
-                                    name="profileId"
-                                    control={control}
-                                    rules={{ required: t('User type is required') }}
-                                    render={({ field }) => (
-                                        <input
-                                            type="text"
-                                            className={`${theme}-input`}
-                                            placeholder={t('Enter user type')}
-                                            {...field}
-                                        />
-                                    )}
-                                />
-                                {errors.profileId && <p className="update-user-modal-error">{errors.profileId.message}</p>}
+                                <select
+                                    className={`${theme}-input disabled-dropdown`}
+                                    value={userType}
+                                    disabled={isEditable}
+                                >
+                                    <option value="Teacher">{t('global_teacher')}</option>
+                                    <option value="Student">{t('global_student')}</option>
+                                </select>
                             </div>
 
                             {problemMessage && (
