@@ -89,7 +89,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
 
     const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (e.target === e.currentTarget) {
-            setOpen(false);
+            /*setOpen(false);*/
         }
     };
 

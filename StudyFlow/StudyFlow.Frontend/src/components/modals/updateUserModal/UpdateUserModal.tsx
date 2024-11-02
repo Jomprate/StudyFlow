@@ -475,7 +475,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
                                 <label>{t('auth_userType')}</label>
                                 <select
                                     className={`${theme}-input disabled-dropdown`}
-                                    value={userType}
+                                    defaultValue={userType}
                                     disabled={isEditable}
                                 >
                                     <option value="Teacher">{t('global_teacher')}</option>

@@ -34,8 +34,8 @@ const LoggedInMainLayout: React.FC = () => {
         <div className="main-layout">
             <NavbarLoggedIn sidebarVisible={sidebarVisible} toggleSidebar={toggleSidebar} />
             <div className="layout-container">
-                <SidebarMenu visible={sidebarVisible} toggleSidebar={toggleSidebar} />
-
+                {/*<SidebarMenu visible={sidebarVisible} toggleSidebar={toggleSidebar} />*/}
+                <SidebarMenu visible={sidebarVisible} />
                 <div className={`main-content ${sidebarVisible ? '' : 'hidden'}`}>
                     <Outlet />
                 </div>

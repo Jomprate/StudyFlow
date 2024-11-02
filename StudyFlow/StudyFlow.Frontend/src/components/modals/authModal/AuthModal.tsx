@@ -102,6 +102,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
         const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
 
+        console.log("print only in development" + repeatPassword);
+
         // Validar profileId y convertirlo a número
         const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
 
@@ -116,7 +118,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             email,
             password,
             phoneNumber: phoneNumber || null,
-            countryId: countryId ? Number(countryId) : null,
+            countryId: countryId ? Number(countryId) : 1,
             profilePicture: cleanProfilePicture,
             profileId: validProfileId,
         };
@@ -280,6 +282,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     name="phoneNumber"
                                     control={control}
                                     rules={{
+                                        required: t('auth_error_phoneNumberRequired'), // Agrega esta línea para hacer obligatorio el campo
                                         pattern: {
                                             value: phoneRegex,
                                             message: t('auth_invalidPhoneNumber')
@@ -295,6 +298,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                         />
                                     )}
                                 />
+
                                 {errors.phoneNumber && <p className="auth-modal-error">{errors.phoneNumber.message}</p>}
                             </div>
 
@@ -352,7 +356,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 <Controller
                                     name="countryId"
                                     control={control}
-                                    rules={{ required: t('Country is required') }}
+                                    rules={{ required: t('auth_error_countryIsRequired') }}
                                     render={({ field }) => (
                                         <select
                                             className={`${theme}-input`}
@@ -438,12 +442,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                 <Controller
                                     name="profileId"
                                     control={control}
-                                    rules={{ required: t('User type is required') }}
+                                    rules={{ required: t('auth_error_userTypeRequired') }}
                                     render={({ field }) => (
                                         <select
                                             className={`${theme}-input`}
                                             {...field}
-                                            defaultValue=""
                                         >
                                             <option value="" disabled>{t('auth_selectUserType')}</option>
                                             <option value="1">{t('global_teacher')}</option>

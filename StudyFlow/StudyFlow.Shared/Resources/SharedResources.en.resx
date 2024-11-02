@@ -471,4 +471,10 @@
   <data name="global_student" xml:space="preserve">
     <value>Student</value>
   </data>
+  <data name="auth_error_countryIsRequired" xml:space="preserve">
+    <value>Country is required</value>
+  </data>
+  <data name="auth_error_userTypeRequired" xml:space="preserve">
+    <value>User Type Required</value>
+  </data>
 </root>
