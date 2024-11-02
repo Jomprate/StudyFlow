@@ -60,7 +60,7 @@ namespace StudyFlow.BLL.Services
                 return string.Empty;
             }
 
-            _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             var userDto = user.ToGetDTO();
             return _jwtService.GenerateToken(new Infrastructure.Entities.ClaimEntity() { Id = user.Id, Rol = user.UserType.ToString(), ExpirationDuration = "ExpiryDurationLogin" });
         }
@@ -78,7 +78,7 @@ namespace StudyFlow.BLL.Services
 
             user.IsOnline = false;
             var result = await _unitOfWork.UserRepository.UpdateAsync(user);
-            _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
             return result;
         }
 
