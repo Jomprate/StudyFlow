@@ -6,6 +6,7 @@ import CreateCourseModal from '../../components/modals/createCourseModal/CreateC
 import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
 import CourseCard from '../../components/cards/courseCard/CourseCard';
+import MainCourseCard from '../../components/cards/mainCourseCard/MainCourseCard';
 import Pagination from '@components/pagination/Pagination';
 import { courseApi } from '../../services/api';
 
@@ -121,7 +122,7 @@ const MainLoggedIn: React.FC = () => {
                                 <div className="course-list">
                                     {paginatedCourses.length > 0 ? (
                                         paginatedCourses.map(course => (
-                                            <CourseCard
+                                            <MainCourseCard
                                                 key={course.id}
                                                 name={course.name}
                                                 description={course.description}

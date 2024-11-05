@@ -1,0 +1,108 @@
+.main_course-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px; /* Margen restaurado */
+    width: 100%; /* Ajuste para que se adapte al grid */
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: inherit;
+}
+
+    .main_course-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+/* Ajuste de imagen */
+.main_course-image {
+    width: 90px; /* Tamaño ajustado para el diseño en dos columnas */
+    height: 90px;
+    border-radius: 8px;
+    margin-right: 15px;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.3s ease;
+}
+
+.main_course-card:hover .main_course-image {
+    opacity: 0.9;
+}
+
+.main_course-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.main_course-title-container {
+    padding: 5px;
+    margin: 0;
+    text-align: left;
+    border-radius: 8px;
+    color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
+}
+
+.main_course-title {
+    font-size: 1.0rem;
+    margin: 0;
+    font-weight: 600;
+    color: #ffffff !important;
+}
+
+.main_course-professor {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #ffffff !important;
+    border-radius: 8px;
+}
+
+.main_course-description {
+    font-size: 0.95rem;
+    line-height: 1.3;
+    color: #ffffff !important;
+}
+
+/* Tema oscuro */
+.main_course-card.dark {
+    background-color: var(--color-card-background-dark);
+    color: #ffffff !important;
+    border: 1px solid #80b3ff;
+}
+
+    .main_course-card.dark .main_course-title-container {
+        background-color: #555;
+        color: #ffffff !important;
+    }
+
+    .main_course-card.dark .main_course-professor,
+    .main_course-card.dark .main_course-description,
+    .main_course-card.dark .main_course-title {
+        color: #ffffff !important;
+    }
+
+/* Tema claro */
+.main_course-card.light {
+    background-color: var(--color-card-background-light);
+    color: var(--color-dark-text-1);
+    border: 1px solid #4169e1;
+}
+
+    .main_course-card.light .main_course-title-container {
+        background-color: #4169e1;
+        color: white;
+    }
+
+    .main_course-card.light .main_course-professor,
+    .main_course-card.light .main_course-description,
+    .main_course-card.light .main_course-title {
+        color: var(--color-dark-text-1);
+    }
