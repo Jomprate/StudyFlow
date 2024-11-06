@@ -8,6 +8,7 @@ import AnnouncementBox from '@components/announcementBox/announcementBox/Announc
 import user_p from '../../../assets/user_p.svg';
 import { courseApi, userApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
+import { useAuth } from "../../../contexts/AuthContext";
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
@@ -20,25 +21,41 @@ const Announces: React.FC = () => {
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
     const [noAnnouncements, setNoAnnouncements] = useState(false);
     const [announcementsFetched, setAnnouncementsFetched] = useState(false);
+    const { state } = useAuth();
+    const [userProfileImage, setUserProfileImage] = useState<string>(user_p);
 
-    // Función para obtener la imagen de perfil de un usuario dado su userId en formato base64
+    // Obtener la imagen de perfil del usuario autenticado
+    useEffect(() => {
+        const fetchAuthenticatedUserProfileImage = async () => {
+            try {
+                const userId = state.userName; // Obtiene el ID del usuario autenticado
+                const response = await userApi.getuserbyid(userId);
+                const userData = response.data;
+
+                if (userData.profilePicture) {
+                    const imageBase64 = `data:image/png;base64,${userData.profilePicture}`;
+                    setUserProfileImage(imageBase64);
+                }
+            } catch (error) {
+                console.error("Error fetching authenticated user profile image:", error);
+                setUserProfileImage(user_p);
+            }
+        };
+
+        fetchAuthenticatedUserProfileImage();
+    }, [state.userName]);
+
+    // Función para obtener la imagen de perfil del creador de cada anuncio
     const fetchUserProfileImage = async (userId: string) => {
         try {
             const response = await userApi.getuserbyid(userId);
             const userData = response.data;
-
-            console.log(`User data for ${userId}:`, userData); // Verifica el contenido de userData
-
-            // Agregar el prefijo de base64 a la imagen si está disponible
-            if (userData.profilePicture) {
-                const imageBase64 = `data:image/png;base64,${userData.profilePicture}`;
-                console.log(`Image in base64 for user ${userId}:`, imageBase64);
-                return imageBase64;
-            }
-            return user_p; // Devuelve la imagen genérica si no hay imagen
+            return userData.profilePicture
+                ? `data:image/png;base64,${userData.profilePicture}`
+                : user_p;
         } catch (error) {
             console.error(`Error fetching profile image for user ${userId}:`, error);
-            return user_p; // Si hay un error, usa la imagen genérica
+            return user_p;
         }
     };
 
@@ -48,7 +65,6 @@ const Announces: React.FC = () => {
 
             try {
                 const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
-                console.log("Full response from API:", data);
 
                 if (data && data.data.length === 0) {
                     setNoAnnouncements(true);
@@ -58,20 +74,14 @@ const Announces: React.FC = () => {
                             .filter((announcement) => !announcement.isDeleted)
                             .sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime())
                             .map(async (announcement) => {
-                                // Obtén la imagen de perfil del usuario creador
                                 const creatorProfileImageUrl = await fetchUserProfileImage(announcement.userId);
-
-                                // Imprime la URL de la imagen obtenida para cada usuario
-                                console.log(`Profile image for user ${announcement.userId}: ${creatorProfileImageUrl}`);
-
                                 return {
                                     ...announcement,
-                                    creatorProfileImageUrl, // Añade la URL de la imagen de perfil
+                                    creatorProfileImageUrl,
                                 };
                             })
                     );
 
-                    console.log("Mapped announcementsArray with profile images:", sortedAnnouncements);
                     setAnnouncements(sortedAnnouncements);
                     setTotalPages(data.totalPages);
                     setNoAnnouncements(false);
@@ -79,7 +89,6 @@ const Announces: React.FC = () => {
                 setAnnouncementsFetched(true);
             } catch (error: any) {
                 if (error.response && error.response.status === 404) {
-                    console.log("No announcements found for this course.");
                     setNoAnnouncements(true);
                 } else {
                     console.error('Error fetching paginated announcements:', error);
@@ -126,7 +135,7 @@ const Announces: React.FC = () => {
                 <div className="announces-layout">
                     <div className="announces-main">
                         <div className="announcement-create-container" onClick={handleAnnouncementClick}>
-                            <img src={user_p} alt="User Icon" className="announcement-icon" />
+                            <img src={userProfileImage} alt="User Icon" className="announcement-icon" />
                             <span className="announcement-create-text">{t('announce_announceSomething')}</span>
                         </div>
 
