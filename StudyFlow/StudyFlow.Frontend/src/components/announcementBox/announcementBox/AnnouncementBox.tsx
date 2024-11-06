@@ -26,7 +26,7 @@ interface AnnouncementBoxProps {
     description: string;
     date: string;
     user: string;
-    creatorProfileImageUrl?: string; // Añadimos la URL de la imagen de perfil del creador
+    creatorProfileImageUrl?: string;
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
