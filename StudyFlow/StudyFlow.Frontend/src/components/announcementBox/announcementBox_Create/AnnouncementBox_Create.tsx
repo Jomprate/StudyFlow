@@ -127,6 +127,7 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 if (response.data) {
                     onAnnounceCreated({
                         ...response.data,
+                        title: title,
                         description: content,
                         creationDate: new Date().toISOString(),
                         userName: state.fullName || "Unknown User",

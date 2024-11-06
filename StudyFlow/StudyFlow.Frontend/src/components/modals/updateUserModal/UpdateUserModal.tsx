@@ -152,11 +152,11 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
             return;
         }
 
-        const { firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
+        // Define el profileId según el tipo de usuario seleccionado
+        const validProfileId = userType === 'Teacher' ? 1 : userType === 'Student' ? 2 : 0;
 
-        const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
+        const { firstName, lastName, email, password, phoneNumber, countryId } = data;
 
-        console.log(state.userName);
         const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
         const finalData = {

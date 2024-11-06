@@ -22,6 +22,7 @@ interface OtherLinkProps {
 
 interface AnnouncementBoxProps {
     announceId: string;
+    title: string;
     description: string;
     date: string;
     user: string;
@@ -33,6 +34,7 @@ interface AnnouncementBoxProps {
 
 const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     announceId,
+    title,
     description,
     date,
     user,
@@ -86,6 +88,7 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
                     <small>{date || t('no_date_available')}</small>
                 </div>
             </div>
+            <h2 className="announcement-title">{title}</h2>
 
             <div className="announcement-description" dangerouslySetInnerHTML={{ __html: description }} />
 

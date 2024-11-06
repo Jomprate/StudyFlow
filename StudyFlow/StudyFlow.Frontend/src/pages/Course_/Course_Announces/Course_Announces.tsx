@@ -118,6 +118,7 @@ const Announces: React.FC = () => {
     const handleNewAnnouncement = (newAnnouncement: any) => {
         const safeAnnouncement = {
             ...newAnnouncement,
+            title: newAnnouncement.title || t('announce_defaultTitle'), // Agrega el título con un valor predeterminado
             youTubeVideos: newAnnouncement.youTubeVideos || [],
             googleDriveLinks: newAnnouncement.googleDriveLinks || [],
             alternateLinks: newAnnouncement.alternateLinks || [],
@@ -131,6 +132,23 @@ const Announces: React.FC = () => {
         setShowAnnouncementBox(false);
         setNoAnnouncements(false);
     };
+
+    //const handleNewAnnouncement = (newAnnouncement: any) => {
+    //    const safeAnnouncement = {
+    //        ...newAnnouncement,
+    //        youTubeVideos: newAnnouncement.youTubeVideos || [],
+    //        googleDriveLinks: newAnnouncement.googleDriveLinks || [],
+    //        alternateLinks: newAnnouncement.alternateLinks || [],
+    //    };
+
+    //    setAnnouncements((prevAnnouncements) =>
+    //        [safeAnnouncement, ...prevAnnouncements].sort(
+    //            (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+    //        )
+    //    );
+    //    setShowAnnouncementBox(false);
+    //    setNoAnnouncements(false);
+    //};
 
     return (
         <div className={`announces-page ${theme}`}>
@@ -154,6 +172,7 @@ const Announces: React.FC = () => {
                                         <li key={`${announcement.id}-${index}`}>
                                             <AnnouncementBox
                                                 announceId={announcement.id}
+                                                title={announcement.title} // Agregar el título aquí
                                                 description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}
