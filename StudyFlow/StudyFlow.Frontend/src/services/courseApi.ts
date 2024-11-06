@@ -76,6 +76,7 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
                 description: course.description,
                 teacher: course.teacherDTO?.fullName || "Unknown",
                 logo: course.logo || "",
+                userId: course.userId,
                 isEnabled: course.isEnabled,
             }));
 
@@ -121,6 +122,7 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<Cou
                 description: course.description,
                 teacher: course.teacherDTO?.fullName || "Unknown",
                 logo: course.logo || "",
+                userId: course.userId,
                 isEnabled: course.isEnabled,
             }));
 
@@ -199,6 +201,7 @@ export const getCourseAnnouncesPaginated = async (
             title: announcement.title,
             description: announcement.htmlContent,
             userName: announcement.userName,
+            userId: announcement.userId,
             creationDate: announcement.creationDate,
             youTubeVideos: announcement.youTubeVideos,
             googleDriveLinks: announcement.googleDriveLinks,

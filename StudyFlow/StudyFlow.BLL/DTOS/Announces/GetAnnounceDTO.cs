@@ -12,6 +12,7 @@ namespace StudyFlow.BLL.DTOS.Announce
         public string HtmlContent { get; set; } = null!;
 
         public string? ProfilePicture { get; set; }
+        public Guid UserId { get; set; }
 
         public List<string> YouTubeVideos { get; set; } = new List<string>();
 

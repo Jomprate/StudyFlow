@@ -65,6 +65,7 @@ export const getAnnouncesByCourseId = async (courseId: string): Promise<any[]> =
                     title: announcement.title,
                     description: announcement.htmlContent,
                     userName: announcement.userName,
+                    userId: announcement.userId,
                     creationDate: announcement.creationDate,
                     youTubeVideos: announcement.youTubeVideos,
                     googleDriveLinks: announcement.googleDriveLinks,

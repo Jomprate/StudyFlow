@@ -21,20 +21,22 @@ interface OtherLinkProps {
 }
 
 interface AnnouncementBoxProps {
-    announceId: string; // Añade el ID del anuncio
+    announceId: string;
     description: string;
     date: string;
     user: string;
+    creatorProfileImageUrl?: string; // Añadimos la URL de la imagen de perfil del creador
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
 }
 
 const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
-    announceId, // Recibimos el ID del anuncio
+    announceId,
     description,
     date,
     user,
+    creatorProfileImageUrl,
     videos = [],
     googleDriveLinks = [],
     otherLinks = []
@@ -43,14 +45,15 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
-    // Abre el modal de confirmación de borrado
+    // Depuración: Imprimir la URL de la imagen que se usará
+    console.log(`Profile image used for announcement ${announceId}: ${creatorProfileImageUrl}`);
+
     const handleDeleteClick = () => {
         setDeleteModalOpen(true);
     };
 
-    // Función para confirmar el borrado y llamar a la API
     const handleConfirmDelete = async () => {
-        console.log('Deleting announcement with ID:', announceId); // Verifica el ID antes de llamar a la API
+        console.log('Deleting announcement with ID:', announceId);
         try {
             await announceApi.deleteAnnounce(announceId);
             console.log('Announcement deleted');
@@ -61,12 +64,10 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
         }
     };
 
-    // Cierra el modal de confirmación sin borrar
     const handleCloseModal = () => {
         setDeleteModalOpen(false);
     };
 
-    // Si el anuncio ha sido eliminado, no se renderiza nada
     if (isDeleted) {
         return null;
     }
@@ -76,17 +77,19 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
             <button className="announcement-delete-button" onClick={handleDeleteClick}>x</button>
 
             <div className="announcement-header">
-                <img src={userImage} alt={t('user_image_alt')} className="announcement-user-image" />
+                <img
+                    src={creatorProfileImageUrl ? creatorProfileImageUrl : userImage}
+                    alt={t('user_image_alt')}
+                    className="announcement-user-image"
+                />
                 <div>
                     <p className="announcement-user-name">{user || t('unknown_user')}</p>
                     <small>{date || t('no_date_available')}</small>
                 </div>
             </div>
 
-            {/* Renderización del contenido HTML de description */}
             <div className="announcement-description" dangerouslySetInnerHTML={{ __html: description }} />
 
-            {/* Grid para videos de YouTube */}
             {videos.length > 0 && (
                 <div className="video-grid">
                     {videos.map((video, index) => (
@@ -95,7 +98,6 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
                 </div>
             )}
 
-            {/* Grid para enlaces de Google Drive */}
             {googleDriveLinks.length > 0 && (
                 <div className="googledrive-grid">
                     {googleDriveLinks.map((link, index) => (
@@ -104,7 +106,6 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
                 </div>
             )}
 
-            {/* Grid para otros enlaces */}
             {otherLinks.length > 0 && (
                 <div className="other-links-grid">
                     {otherLinks.map((link, index) => (

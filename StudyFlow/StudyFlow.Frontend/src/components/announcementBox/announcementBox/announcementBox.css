@@ -18,14 +18,24 @@
     margin-bottom: 10px;
 }
 
-.announcement-user-image {
+/*.announcement-user-image {
     width: 50px;
     height: 50px;
     border-radius: 8px;
     filter: invert(42%) sepia(93%) saturate(4507%) hue-rotate(199deg) brightness(96%) contrast(107%);
     margin-right: 10px;
     object-fit: cover;
+}*/
+.announcement-user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    /* filter: invert(42%) sepia(93%) saturate(4507%) hue-rotate(199deg) brightness(96%) contrast(107%); */
+    margin-right: 10px;
+    object-fit: cover;
 }
+
+
 
 .announcement-user-name {
     font-size: 18px;

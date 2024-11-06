@@ -386,6 +386,7 @@ namespace StudyFlow.BLL.Services
                 GoogleDriveLinks = announce.GoogleDriveLinks,
                 AlternateLinks = announce.AlternateLinks,
                 UserName = announce.User != null ? $"{announce.User.FirstName} {announce.User.LastName}" : "Unknown User",
+                UserId = announce.User != null ? announce.User.Id : Guid.Empty,
                 CreationDate = announce.CreatedAt,
                 LastModificationDate = announce.UpdatedAt
             };
