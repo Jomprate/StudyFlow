@@ -7,6 +7,7 @@ import NavBarCourse from '@components/navBarCourse/NavBarCourse';
 import Course_Announces from './Course_Announces/Course_Announces';
 import Course_Classwork from './Course_ClassWork_/Course_Classwork';
 import Course_People from './Course_People/Course_People';
+import user_p from '../../assets/user_p.svg';
 import './course.css';
 
 const Course_: React.FC = () => {
@@ -76,10 +77,12 @@ const Course_: React.FC = () => {
             <NavBarCourse setActiveSection={setActiveSection} />
             <div className="course-container">
                 <div className="course-header">
-                    <h1>{course.data.name}</h1>
-                    <h2>{course.data.description}</h2>
+                    <div className="course-header-text">
+                        <h1>{course.data.name}</h1>
+                        <h2>{course.data.description}</h2>
+                    </div>
+                    <img src={user_p} alt="Course" className="course-image" />
                 </div>
-
                 <div className="course-layout">
                     {renderSection()}
                 </div>

@@ -60,8 +60,13 @@ const Announces: React.FC = () => {
     };
 
     useEffect(() => {
+        // Resetear el estado antes de cargar anuncios del nuevo curso
+        setAnnouncements([]);
+        setNoAnnouncements(false);
+        setAnnouncementsFetched(false);
+
         const fetchAnnouncements = async () => {
-            if (!courseId || announcementsFetched) return;
+            if (!courseId) return; // Asegurarse de que haya un ID de curso
 
             try {
                 const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
@@ -96,8 +101,6 @@ const Announces: React.FC = () => {
             }
         };
 
-        setAnnouncements([]);
-        setAnnouncementsFetched(false);
         fetchAnnouncements();
     }, [courseId, currentPage, recordsPerPage]);
 
