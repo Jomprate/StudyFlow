@@ -45,8 +45,7 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
-    // Depuración: Imprimir la URL de la imagen que se usará
-    console.log(`Profile image used for announcement ${announceId}: ${creatorProfileImageUrl}`);
+    /*console.log(`Profile image used for announcement ${announceId}: ${creatorProfileImageUrl}`);*/
 
     const handleDeleteClick = () => {
         setDeleteModalOpen(true);

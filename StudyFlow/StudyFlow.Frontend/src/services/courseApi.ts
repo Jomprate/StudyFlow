@@ -187,10 +187,8 @@ export const getCourseAnnouncesPaginated = async (
 
         console.log("Full response from API:", response.data);
 
-        // Asumimos que el array de anuncios se encuentra en response.data.value.listResult
         const listResult = response.data.value?.data?.listResult || response.data.value?.listResult;
 
-        // Verificación segura de la estructura de `listResult`
         if (!Array.isArray(listResult)) {
             console.warn("Unexpected response format", response.data);
             return { data: [], totalPages: 0 };

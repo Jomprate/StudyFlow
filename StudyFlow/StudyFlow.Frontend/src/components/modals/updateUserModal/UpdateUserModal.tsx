@@ -19,7 +19,7 @@ interface Country {
 interface AuthModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    userId: string; // Añadimos userId como propiedad
+    userId: string;
 }
 
 const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) => {
@@ -52,9 +52,8 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const { state } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
-    const [translatedUserType, setTranslatedUserType] = useState(''); // Valor inicial vacío
+    const [translatedUserType, setTranslatedUserType] = useState('');
 
-    // Utiliza useEffect para ajustar el profileId inicial de acuerdo con el userType
     const userType = state.role === 'Teacher' ? 'Teacher' :
         state.role === 'Student' ? 'Student' :
             ''; // Maneja cualquier caso inesperado
@@ -194,14 +193,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     };
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
-    //const handleCroppedImage = (croppedImage: string) => {
-    //    const cleanCroppedImage = croppedImage.replace(/^Modal/, '');
-    //    setCroppedImage(cleanCroppedImage);
-    //    setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
-    //    console.log("Imagen recortada recibida en UpdateUserModal (sin 'Modal'):", cleanCroppedImage);
-    //    setIsCropModalOpen(false);
-    //};
 
     const handleCroppedImage = (croppedImage: string) => {
         const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
