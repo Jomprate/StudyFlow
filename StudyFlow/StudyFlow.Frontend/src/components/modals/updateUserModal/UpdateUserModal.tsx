@@ -20,9 +20,10 @@ interface AuthModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
     userId: string;
+    targetUserId?: string;
 }
 
-const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) => {
+const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId, targetUserId }) => {
     const { t, i18n } = useTranslation();
     const { theme } = useTheme();
     const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
@@ -54,6 +55,10 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     const [isEditable, setIsEditable] = useState(false);
     const [translatedUserType, setTranslatedUserType] = useState('');
 
+    const isSelfUpdate = !targetUserId; // Si no hay targetUserId, es una auto-actualización
+
+    const effectiveUserId = targetUserId || state.userName; // Usa targetUserId si está presente, sino el del contexto
+
     const userType = state.role === 'Teacher' ? 'Teacher' :
         state.role === 'Student' ? 'Student' :
             ''; // Maneja cualquier caso inesperado
@@ -74,14 +79,12 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
     };
 
     useEffect(() => {
-        if (open) {
+        if (open && effectiveUserId != null) {
             const fetchUserData = async () => {
                 try {
-                    console.log("Fetching user data for ID:", userId);
-                    const response = await userApi.getuserbyid(userId);
+                    console.log("Fetching user data for ID:", effectiveUserId);
+                    const response = await userApi.getuserbyid(effectiveUserId);
                     const userData = response.data;
-
-                    console.log("User data retrieved:", userData);
 
                     reset({
                         firstName: userData.firstName || '',
@@ -120,7 +123,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
 
             fetchUserData();
         }
-    }, [open, userId, reset, setImagePreview, t]);
+    }, [open, effectiveUserId, reset, setImagePreview, t]);
 
     useEffect(() => {
         fetchCountries();
@@ -153,7 +156,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId }) =>
         }
 
         // Define el profileId según el tipo de usuario seleccionado
-        const validProfileId = userType === 'Teacher' ? 1 : userType === 'Student' ? 2 : 0;
+        const validProfileId = isSelfUpdate && state.role === 'Admin' ? 0 : userType === 'Teacher' ? 1 : userType === 'Student' ? 2 : 0;
 
         const { firstName, lastName, email, password, phoneNumber, countryId } = data;
 

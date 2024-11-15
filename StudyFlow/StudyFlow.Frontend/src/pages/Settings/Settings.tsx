@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const Settings: React.FC = () => {
     const { theme } = useTheme();
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // Estado para controlar el modal
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const { state } = useAuth(); // Obtener el estado de autenticación desde el contexto
     const { userName } = state; // Suponiendo que el userId está en el estado de autenticación
 
@@ -31,7 +31,12 @@ const Settings: React.FC = () => {
 
                 {/* Mostrar el modal solo cuando el estado isUpdateModalOpen sea true */}
                 {isUpdateModalOpen && (
-                    <UpdateUserModal open={isUpdateModalOpen} setOpen={setIsUpdateModalOpen} userId={userName ?? ''} />
+                    <UpdateUserModal
+                        open={isUpdateModalOpen}
+                        setOpen={setIsUpdateModalOpen}
+                        userId={userName ?? ''} // Pasar el userId del usuario autenticado
+                        targetUserId={userName ?? undefined}  // Pasar también el userId como targetUserId para auto-actualización
+                    />
                 )}
             </div>
         </div>

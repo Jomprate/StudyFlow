@@ -229,3 +229,26 @@ export const getCourseAnnouncesPaginated = async (
         }
     }
 };
+
+export const addEnrollmentByStudent = async (enrollmentDTO: {
+    courseId: string;
+    emailStudent: string;
+}): Promise<void> => {
+    try {
+        const response = await api.post('/OnBoardingTeacher/AddEnrollmentByStudent', {
+            courseId: enrollmentDTO.courseId,
+            emailStudent: enrollmentDTO.emailStudent,
+        });
+
+        console.log('Student enrolled successfully:', response.data);
+    } catch (error: any) {
+        const errorMessage = error.response
+            ? i18n.t('global_error_apiResponse', { message: error.response.data })
+            : error.request
+                ? i18n.t('global_error_noResponse')
+                : i18n.t('global_error_requestSetup', { message: error.message });
+
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+};
