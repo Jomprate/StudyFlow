@@ -23,9 +23,9 @@ const AddStudentToCourseModal: React.FC<AddStudentToCourseModalProps> = ({ open,
 
     const validateEmails = (emails: string): string[] => {
         return emails
-            .split(/[, ]+/) // Separar por comas o espacios
+            .split(/[, ]+/)
             .map((email) => email.trim())
-            .filter((email) => /\S+@\S+\.\S+/.test(email)); // Validar formato de email
+            .filter((email) => /\S+@\S+\.\S+/.test(email));
     };
 
     const handleAddStudent = () => {
@@ -101,7 +101,6 @@ const AddStudentToCourseModal: React.FC<AddStudentToCourseModalProps> = ({ open,
                 <h2 className={`modal-header ${theme}-text`}>{t('add_students_to_course')}</h2>
 
                 <div className="form-container">
-                    {/* Campo para agregar un estudiante */}
                     <div className="form-group">
                         <label>{t('student_email')}</label>
                         <div className="image-field">
@@ -118,7 +117,6 @@ const AddStudentToCourseModal: React.FC<AddStudentToCourseModalProps> = ({ open,
                         </div>
                     </div>
 
-                    {/* Campo para agregar una lista de estudiantes */}
                     <div className="form-group">
                         <label>{t('bulk_student_emails')}</label>
                         <textarea
@@ -132,7 +130,6 @@ const AddStudentToCourseModal: React.FC<AddStudentToCourseModalProps> = ({ open,
                         </button>
                     </div>
 
-                    {/* Lista de estudiantes agregados */}
                     <div className="form-group">
                         <label>{t('students_list')}</label>
                         <ul className="students-list">

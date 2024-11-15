@@ -37,13 +37,10 @@ const Course_: React.FC = () => {
                     return;
                 }
 
-                // Llamada a la API
                 const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
 
-                // Mostrar en consola la respuesta recibida
                 console.log("API Response:", courseData);
 
-                // Guardar el resultado en el estado
                 setCourse(courseData);
 
                 console.log("Course fetched:", courseData);

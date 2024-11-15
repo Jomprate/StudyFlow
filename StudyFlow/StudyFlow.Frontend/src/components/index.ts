@@ -14,6 +14,7 @@ export { default as UpdateUserModal } from "./modals/updateUserModal/UpdateUserM
 
 export { default as CreateCourseModal } from "./modals/createCourseModal/CreateCourseModal";
 export { default as AddStudentToCourseModal } from "./modals/addStudentToCourseModal/AddStudentToCourseModal";
+export { default as ClassworkBox } from './classworkBox/classworkBox/ClassworkBox';
 
 export { default as Card } from "./card/Card";
 export { default as Slider } from "./slider/Slider";

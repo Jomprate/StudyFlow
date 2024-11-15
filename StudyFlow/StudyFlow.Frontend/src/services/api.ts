@@ -5,6 +5,7 @@ import * as countryApi from './countryApi';
 import * as announceApi from './announceApi';
 import * as courseApi from './courseApi';
 import * as enrollApi from './enrollmentsApi';
+import * as subjectApi from './subjectApi';
 
 export {
     checkBackendStatus,
@@ -13,5 +14,6 @@ export {
     countryApi,
     announceApi,
     courseApi,
-    enrollApi
+    enrollApi,
+    subjectApi
 };

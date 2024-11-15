@@ -4,7 +4,7 @@ import { useTheme } from '../../../ThemeContext';
 import { useParams } from 'react-router-dom';
 import AddStudentToCourseModal from '@components/modals/addStudentToCourseModal/AddStudentToCourseModal';
 import PersonCard from '@components/cards/personCard/PersonCard';
-import { enrollApi, userApi } from '../../../services/api'; // Ajusta la ruta según sea necesario
+import { enrollApi, userApi } from '../../../services/api';
 import userPlaceholder from '../../../assets/user_p.svg';
 import './course_people.css';
 
@@ -14,7 +14,7 @@ interface Enrollment {
     email: string;
     enrollmentDate: string;
     isEnabled: boolean;
-    isCompleted: boolean;  // Asegúrate de incluir esta propiedad
+    isCompleted: boolean;
     profileImageUrl?: string;
 }
 
@@ -52,7 +52,6 @@ const Course_People: React.FC = () => {
                 setLoading(true);
                 const response = await enrollApi.getEnrollmentsByCourseId(courseId, 1, 10);
 
-                // Verifica la respuesta de la API
                 console.log("Students fetched:", response.data);
 
                 const studentsWithImages = await Promise.all(
@@ -106,7 +105,7 @@ const Course_People: React.FC = () => {
                                         email={student.email}
                                         enrollmentDate={student.enrollmentDate}
                                         isEnabled={student.isEnabled}
-                                        isCompleted={student.isCompleted} // Pasa el valor isCompleted
+                                        isCompleted={student.isCompleted}
                                     />
                                 ))
                             )}
