@@ -2,10 +2,10 @@
 .classworkBox_Create_box {
     margin: 20px auto;
     width: 100%;
-    max-width: 700px; /* Match the max-width from Announce */
+    max-width: 700px;
     border: 1px solid #e0e0e0;
     border-radius: 12px;
-    background-color: #fff; /* Match Announce background color */
+    background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
@@ -26,7 +26,7 @@
 }
 
     .classworkBox_Create_title-input:focus {
-        border-color: #4285f4; /* Same blue color when focused as Announce */
+        border-color: #4285f4;
     }
 
 .classworkBox_Create_editor {
@@ -44,7 +44,7 @@
 }
 
     .classworkBox_Create_editor:focus {
-        background-color: #f0f0f0; /* Slightly darker background when focused */
+        background-color: #f0f0f0;
     }
 
     .classworkBox_Create_editor:empty::before {
@@ -78,10 +78,9 @@
 }
 
     .classworkBox_Create_control-button:hover {
-        background-color: #d1d1d1; /* Darker shade on hover */
+        background-color: #d1d1d1;
     }
 
-/* Subject Type Selector */
 .classworkBox_Create_type-selector {
     margin-top: 15px;
 }
@@ -97,10 +96,9 @@
 
     .classworkBox_Create_select:focus {
         outline: none;
-        border-color: #4285f4; /* Border color when focused */
+        border-color: #4285f4;
     }
 
-/* Footer buttons */
 .classworkBox_Create_footer {
     display: flex;
     justify-content: space-between;
@@ -135,7 +133,6 @@
         background-color: #357ae8;
     }
 
-/* Create button */
 .classworkBox_Create_create-container {
     display: flex;
     align-items: center;
@@ -170,15 +167,15 @@
 }
 
 .light .classworkBox_Create_main {
-    background-color: #f9f9f9; /* Matching Announcement Light Theme */
+    background-color: #f9f9f9;
 }
 
 .light .classworkBox_Create_title-input {
-    color: #000; /* Title text color */
+    color: #000;
 }
 
 .light .classworkBox_Create_editor {
-    color: #000; /* Content text color */
+    color: #000;
 }
 
 /* Dark Theme */
@@ -189,12 +186,12 @@
 
 .dark .classworkBox_Create_title-input {
     background-color: #444444;
-    color: #fff; /* Title text color */
+    color: #fff;
 }
 
 .dark .classworkBox_Create_editor {
     background-color: #444444;
-    color: #fff; /* Content text color */
+    color: #fff;
 }
 
 .dark .classworkBox_Create_create-text {
@@ -204,5 +201,5 @@
 }
 
 .dark .classworkBox_Create_main {
-    background-color: #444444; /* Dark background to match Announcement Dark Theme */
+    background-color: #444444;
 }
