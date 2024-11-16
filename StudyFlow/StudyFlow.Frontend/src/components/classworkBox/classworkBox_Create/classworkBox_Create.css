@@ -1,56 +1,76 @@
+/* Classwork Box */
 .classworkBox_Create_box {
-    padding: 20px;
-    background-color: var(--color-background);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    margin: 20px auto;
     width: 100%;
-    max-width: 800px; /* Set the maximum width similar to the 'announces' component */
-    box-sizing: border-box;
+    max-width: 700px; /* Match the max-width from Announce */
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    background-color: #fff; /* Match Announce background color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
 }
 
 .classworkBox_Create_title-input {
     width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ddd;
+    padding: 12px;
+    font-size: 18px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    outline: none;
+    font-weight: bold;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
 }
+
+    .classworkBox_Create_title-input:focus {
+        border-color: #4285f4; /* Same blue color when focused as Announce */
+    }
 
 .classworkBox_Create_editor {
     width: 100%;
-    min-height: 150px;
-    padding: 10px;
-    border: 1px solid #ddd;
+    min-height: 180px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    background-color: var(--color-editor-background);
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    color: #333; /* Text color */
+    transition: background-color 0.3s ease;
+    resize: none;
 }
+
+    .classworkBox_Create_editor:focus {
+        background-color: #f0f0f0; /* Slightly darker background when focused */
+    }
+
+    .classworkBox_Create_editor:empty::before {
+        content: attr(placeholder);
+        color: #999;
+        pointer-events: none;
+    }
+
+    .classworkBox_Create_editor ul,
+    .classworkBox_Create_editor ol {
+        margin: 8px 0;
+        padding-left: 30px;
+        list-style-position: outside;
+    }
 
 .classworkBox_Create_controls {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
-}
-
-.classworkBox_Create_type-selector {
-    margin-top: 15px;
-}
-
-.classworkBox_Create_select {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    font-size: 1rem;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
 }
 
 .classworkBox_Create_control-button {
-    padding: 10px;
-    background-color: var(--color-button-background);
+    padding: 12px;
+    background-color: #e0e0e0;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -58,29 +78,52 @@
 }
 
     .classworkBox_Create_control-button:hover {
-        background-color: var(--color-button-hover);
+        background-color: #d1d1d1; /* Darker shade on hover */
     }
 
+/* Subject Type Selector */
+.classworkBox_Create_type-selector {
+    margin-top: 15px;
+}
+
+.classworkBox_Create_select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 16px;
+}
+
+    .classworkBox_Create_select:focus {
+        outline: none;
+        border-color: #4285f4; /* Border color when focused */
+    }
+
+/* Footer buttons */
 .classworkBox_Create_footer {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .classworkBox_Create_footer-button {
-    padding: 10px;
-    font-size: 1rem;
-    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
     border-radius: 8px;
     cursor: pointer;
+    border: none;
 }
 
     .classworkBox_Create_footer-button[class*='cancel'] {
-        background-color: var(--color-cancel-button);
+        background-color: #f5f5f5;
+        color: #888;
     }
 
     .classworkBox_Create_footer-button[class*='publish'] {
-        background-color: var(--color-publish-button);
+        background-color: #4285f4;
+        color: #fff;
     }
 
     .classworkBox_Create_footer-button:disabled {
@@ -88,47 +131,78 @@
         cursor: not-allowed;
     }
 
+    .classworkBox_Create_footer-button:not(:disabled):hover {
+        background-color: #357ae8;
+    }
+
+/* Create button */
 .classworkBox_Create_create-container {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     background-color: #f5f5f5;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     cursor: pointer;
     transition: box-shadow 0.3s ease;
     margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
 }
 
     .classworkBox_Create_create-container:hover {
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
 .classworkBox_Create_create-text {
-    font-size: 16px;
+    font-size: 18px;
     color: #666;
     flex-grow: 1;
 }
 
-.classworkBox_Create_box.light {
-    background-color: var(--color-background-light);
-    color: var(--color-light-text-1);
+/* Light Theme */
+.light .classworkBox_Create_box {
+    background-color: #ffffff;
+    color: #000000;
 }
 
-    .classworkBox_Create_box.light .classworkBox_Create_main {
-        background-color: var(--color-light-container-1);
-        color: var(--color_text-dark);
-    }
-
-.classworkBox_Create_box.dark {
-    background-color: var(--color-background-dark);
-    color: var(--color-dark-text-1);
+.light .classworkBox_Create_editor {
+    background-color: #f9f9f9;
 }
 
-    .classworkBox_Create_box.dark .classworkBox_Create_main {
-        background-color: var(--color-dark-container-1);
-        color: var(--color_text-light);
-    }
+.light .classworkBox_Create_main {
+    background-color: #f9f9f9; /* Matching Announcement Light Theme */
+}
+
+.light .classworkBox_Create_title-input {
+    color: #000; /* Title text color */
+}
+
+.light .classworkBox_Create_editor {
+    color: #000; /* Content text color */
+}
+
+/* Dark Theme */
+.dark .classworkBox_Create_box {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.dark .classworkBox_Create_title-input {
+    background-color: #444444;
+    color: #fff; /* Title text color */
+}
+
+.dark .classworkBox_Create_editor {
+    background-color: #444444;
+    color: #fff; /* Content text color */
+}
+
+.dark .classworkBox_Create_create-text {
+    font-size: 18px;
+    color: #f9f9f9;
+    flex-grow: 1;
+}
+
+.dark .classworkBox_Create_main {
+    background-color: #444444; /* Dark background to match Announcement Dark Theme */
+}
