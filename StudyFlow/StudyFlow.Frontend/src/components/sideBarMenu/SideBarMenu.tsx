@@ -7,7 +7,7 @@ import { BiCalendar } from 'react-icons/bi';
 import { HiOutlineBookOpen } from 'react-icons/hi';
 import './sidebarMenu.css';
 import { useAuth } from '../../contexts/AuthContext';
-import { courseApi } from '../../services/api';
+import { courseApi, enrollStudentApi } from '../../services/api';
 
 interface SidebarMenuProps {
     visible: boolean;
@@ -28,11 +28,15 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         const fetchCourses = async () => {
             try {
                 const userRole = state.role;
-                const teacherId = state.userName;
+                const userId = state.userName;
 
-                if (userRole === 'Teacher' && teacherId) {
-                    const courses = await courseApi.getCoursesByTeacherIdAsync(teacherId);
+                if (userRole === 'Teacher' && userId !== null) {
+                    const courses = await courseApi.getCoursesByTeacherIdAsync(userId);
                     setAllCourses(courses);
+                }
+                else if (userRole === 'Student' && userId !== null) {
+                    const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
+                    setAllCourses(response.data);
                 }
             } catch (error) {
                 console.error('Error fetching courses:', error);
@@ -46,6 +50,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         <div className={`custom-sidebar ${visible ? '' : 'collapsed'}`}>
             <nav>
                 <ul>
+                    {/* Enlace a la página de inicio */}
                     <li className={`item ${location.pathname === '/mainloggedin' ? 'active' : ''}`}>
                         <Link to="mainloggedin">
                             <AiOutlineHome className="icon" />
@@ -53,7 +58,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
                         </Link>
                     </li>
 
-                    {/* Icono alternativo para Courses */}
+                    {/* Enlace a los cursos */}
                     <li className={`item ${location.pathname === '/courses' ? 'active' : ''}`}>
                         <Link to="courses">
                             <HiOutlineBookOpen className="icon" />
@@ -69,7 +74,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
                         </Link>
                     </li>
 
-                    {/* Enlaces dinámicos de los cursos si existen */}
                     {allCourses.length > 0 ? (
                         allCourses.map((course) => (
                             <li key={course.id} className={`sub-item ${location.pathname === `/course/${course.id}` ? 'active' : ''}`}>
