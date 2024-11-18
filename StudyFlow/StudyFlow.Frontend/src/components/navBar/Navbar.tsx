@@ -7,7 +7,6 @@ import logo from '../../assets/logo_t.svg';
 import { AuthModal, LoginModal } from '../../components';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
-import { useAuth } from '../../contexts/AuthContext';
 
 const Menu: React.FC = () => (
     <>
@@ -17,15 +16,11 @@ const Menu: React.FC = () => (
         <p>
             <Link to="/countries">{useTranslation().t('Countries')}</Link>
         </p>
-        <p>
-            <Link to="/subject">{useTranslation().t('Subject')}</Link>
-        </p>
+
         <p>
             <Link to="/notification">{useTranslation().t('Notification')}</Link>
         </p>
-        <p>
-            <Link to="/course">{useTranslation().t('Course')}</Link>
-        </p>
+
         <p>
             <Link to="/home_logged_in">test a</Link>
         </p>
