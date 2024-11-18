@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './course_classwork.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import ClassworkBox from '@components/classworkBox/classworkBox/ClassworkBox'; // Similar a AnnouncementBox
-import ClassworkBox_Create from '@components/classworkBox/classworkBox_Create/ClassworkBox_Create'; // Asegúrate de importar correctamente
-import './course_classwork.css';
+import ClassworkBox from '@components/classworkBox/classworkBox/ClassworkBox';
+import ClassworkBox_Create from '@components/classworkBox/classworkBox_Create/ClassworkBox_Create';
+import { useAuth } from '../../../contexts/AuthContext'; // Asegúrate de importar correctamente
 
 const Course_Classwork: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
-    const [isModalOpen, setModalOpen] = useState(false);  // Control para mostrar/ocultar el formulario de creación
+    const { state } = useAuth(); // Obtener información del usuario autenticado
+    const [isModalOpen, setModalOpen] = useState(false); // Control para mostrar/ocultar el formulario de creación
     const [classworks, setClassworks] = useState<any[]>([]); // Asegúrate de ajustarlo al tipo adecuado
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,7 @@ const Course_Classwork: React.FC = () => {
     const handleAddClasswork = (classwork: any) => {
         console.log('Classwork added:', classwork);
         setClassworks([...classworks, classwork]);
-        setModalOpen(false);  // Cerrar el formulario después de añadir el classwork
+        setModalOpen(false);
     };
 
     return (
@@ -44,12 +45,18 @@ const Course_Classwork: React.FC = () => {
             <div className="course-classwork-container">
                 <div className="course-classwork-layout">
                     <div className="course-classwork-main">
-                        {/* Botón para mostrar/ocultar el formulario de creación */}
-                        <div className="course-classwork-create-container" onClick={() => setModalOpen(!isModalOpen)}>
-                            <span className="course-classwork-create-text">{t('add_classwork')}</span>
-                        </div>
+                        {state.role === 'Teacher' && (
+                            <div
+                                className="course-classwork-create-container"
+                                onClick={() => setModalOpen(!isModalOpen)}
+                            >
+                                <span className="course-classwork-create-text">
+                                    {t('add_classwork')}
+                                </span>
+                            </div>
+                        )}
 
-                        {/* Si el formulario de creación está abierto, mostrarlo */}
+
                         {isModalOpen && (
                             <ClassworkBox_Create onClassworkCreated={handleAddClasswork} />
                         )}

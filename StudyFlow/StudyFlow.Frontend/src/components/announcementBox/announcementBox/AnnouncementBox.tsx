@@ -30,7 +30,7 @@ interface AnnouncementBoxProps {
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
-    isCreator: boolean; // Nueva propiedad para verificar si es el creador
+    isCreator: boolean;
 }
 
 const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({

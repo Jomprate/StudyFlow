@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBold, faItalic, faUnderline, faListUl, faListOl, faIndent } from '@fortawesome/free-solid-svg-icons';
-import { subjectApi } from '../../../services/api';  // Adjust according to your actual path
+import { subjectApi } from '../../../services/api';
 import { useParams } from 'react-router-dom';
 
 interface ClassworkBoxCreateProps {
@@ -16,7 +16,7 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const { theme } = useTheme();
     const { courseId } = useParams<{ courseId: string }>();
     const [title, setTitle] = useState<string>('');
-    const [classworkType, setClassworkType] = useState<string>('Homework');  // Default type is 'Homework'
+    const [classworkType, setClassworkType] = useState<string>('Homework');
     const [isPublishDisabled, setIsPublishDisabled] = useState(true);
     const [activeFormats, setActiveFormats] = useState({
         bold: false,
@@ -62,10 +62,10 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 name: title,
                 content: content,
                 courseId: courseId,
-                type: classworkType,  // Pass the selected subject type
+                type: classworkType,
             };
 
-            console.log('Classwork DTO being sent:', addClassworkDTO); // Log the data being sent to the API
+            console.log('Classwork DTO being sent:', addClassworkDTO);
 
             try {
                 const response = await subjectApi.addSubjectByCourse(addClassworkDTO);

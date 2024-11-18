@@ -23,7 +23,7 @@ const AnnouncementsModalBase: React.FC<AnnouncementsModalBaseProps> = ({ title, 
                 <div className="announcements-modal-header">
                     {title}
                 </div>
-                {descriptionText && <div className="announcements-modal-description">{descriptionText}</div>} {/* Usando descriptionText */}
+                {descriptionText && <div className="announcements-modal-description">{descriptionText}</div>}
                 <div className="announcements-modal-body">
                     {children}
                 </div>
