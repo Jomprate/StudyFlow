@@ -5,10 +5,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import CreateCourseModal from '../../components/modals/createCourseModal/CreateCourseModal';
 import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
-import CourseCard from '../../components/cards/courseCard/CourseCard';
 import MainCourseCard from '../../components/cards/mainCourseCard/MainCourseCard';
 import Pagination from '@components/pagination/Pagination';
-import { courseApi } from '../../services/api';
+import { courseApi, enrollStudentApi } from '../../services/api';
 
 interface Course {
     id: string;
@@ -30,9 +29,9 @@ const MainLoggedIn: React.FC = () => {
     const { state } = useAuth();
     const { t } = useTranslation();
 
-    const [allCourses, setAllCourses] = useState<Course[]>([]); // Contiene todos los cursos cargados
+    const [allCourses, setAllCourses] = useState<Course[]>([]); // Cursos cargados
     const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]); // Cursos para la página actual
-    const [students, setStudents] = useState<Student[]>([]);
+    const [students, setStudents] = useState<Student[]>([]); // Estudiantes (si eres profesor)
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
@@ -41,15 +40,17 @@ const MainLoggedIn: React.FC = () => {
     const [recordsPerPage, setRecordsPerPage] = useState(5);
     const [refreshCourses, setRefreshCourses] = useState(false);
 
-    // Cargar todos los cursos una sola vez
+    // Cargar los cursos para el rol correspondiente
     useEffect(() => {
         const fetchCourses = async () => {
             try {
                 const userRole = state.role;
-                const teacherId = state.userName;
+                const userId = state.userName;
 
-                if (userRole === 'Teacher' && teacherId) {
-                    const response = await courseApi.getCoursesByTeacherIdAsync(teacherId);
+                console.log("User role: " + userRole);
+
+                if (userRole === 'Teacher') {
+                    const response = await courseApi.getCoursesByTeacherIdAsync(userId);
 
                     if (response.statusCode === 404) {
                         console.warn('No courses found for this teacher.');
@@ -60,17 +61,28 @@ const MainLoggedIn: React.FC = () => {
                         setTotalPages(Math.ceil(response.length / recordsPerPage));
                     }
                 }
+                else if (userRole === 'Student') {
+                    const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, currentPage, recordsPerPage);
+
+                    if (response.statusCode === 404) {
+                        console.warn('No courses found for this student.');
+                        setAllCourses([]);
+                        setTotalPages(1);
+                    } else {
+                        setAllCourses(response.data);
+                        setTotalPages(Math.ceil(response.totalRecords / recordsPerPage));
+                    }
+                }
             } catch (error) {
-                console.error('Error fetching all courses:', error);
-                setAllCourses([]); // Establecer la lista vacía en caso de error
-                setTotalPages(1); // Establecer solo una página cuando no hay cursos
+                console.error('Error fetching courses:', error);
+                setAllCourses([]);
+                setTotalPages(1);
             }
         };
 
         fetchCourses();
-    }, [state.role, state.userName, refreshCourses]);
+    }, [state.role, state.userName, refreshCourses, currentPage, recordsPerPage]);
 
-    // Aplicar la paginación en el frontend
     useEffect(() => {
         const startIndex = (currentPage - 1) * recordsPerPage;
         const endIndex = startIndex + recordsPerPage;
@@ -135,7 +147,35 @@ const MainLoggedIn: React.FC = () => {
                                     )}
                                 </div>
 
-                                {/* Componente de paginación */}
+                                <Pagination
+                                    totalPages={totalPages}
+                                    currentPage={currentPage}
+                                    onPageChange={setCurrentPage}
+                                    recordsPerPage={recordsPerPage}
+                                    onRecordsPerPageChange={handleRecordsPerPageChange}
+                                />
+                            </>
+                        )}
+
+                        {state.role === 'Student' && (
+                            <>
+                                <h2>{t('enrolled_courses_title')}</h2>
+                                <div className="course-list">
+                                    {paginatedCourses.length > 0 ? (
+                                        paginatedCourses.map(course => (
+                                            <MainCourseCard
+                                                key={course.id}
+                                                name={course.name}
+                                                description={course.description}
+                                                teacher={course.teacher}
+                                                image={course.logo || ""}
+                                            />
+                                        ))
+                                    ) : (
+                                        <p>{t('no_enrolled_courses_message')}</p>
+                                    )}
+                                </div>
+
                                 <Pagination
                                     totalPages={totalPages}
                                     currentPage={currentPage}

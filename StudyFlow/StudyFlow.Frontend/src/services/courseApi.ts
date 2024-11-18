@@ -35,12 +35,6 @@ export const createCourse = async (courseDTO: {
     }
 };
 
-//interface PaginatedCourseResponse<T> {
-//    data: T[];
-//    totalPages: number;
-//    totalRecords: number;
-//}
-
 export interface CourseDTO {
     id: string;
     name: string;
@@ -107,12 +101,10 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<Cou
             params: { TeacherId: teacherId }
         });
 
-        console.log("Full response data:", response.data); // Verificar el contenido completo de la respuesta
+        console.log("Full response data:", response.data);
 
-        // Manejo de respuesta con posibles estructuras
-        const { value } = response.data || {}; // `value` puede estar en data o directamente como data
+        const { value } = response.data || {};
 
-        // Asegurarse de que `coursesData` sea un array
         const coursesData = Array.isArray(value) ? value : (value?.data || response.data);
 
         if (coursesData && Array.isArray(coursesData)) {
@@ -215,7 +207,6 @@ export const getCourseAnnouncesPaginated = async (
     } catch (error: any) {
         if (error.response && error.response.status === 404) {
             console.log("No announcements found for this course. Returning empty result.");
-            // Si el servidor responde con 404, asumimos que no hay anuncios para el curso y devolvemos una respuesta vacía
             return { data: [], totalPages: 0 };
         } else {
             const errorMessage = error.response
