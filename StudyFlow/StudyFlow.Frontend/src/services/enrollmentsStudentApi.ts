@@ -14,7 +14,7 @@ export const getCoursesByStudentIdAsync = async (
     studentId: string,
     page: number,
     recordsNumber: number
-): Promise<{ data: CourseDTO[], totalPages: number, totalRecords: number }> => {
+): Promise<{ statusCode: number, data: CourseDTO[], totalPages: number, totalRecords: number }> => {
     try {
         const response = await api.get('/OnBoardingStudent/GetCoursesByStudent', {
             params: {
@@ -38,6 +38,7 @@ export const getCoursesByStudentIdAsync = async (
             }));
 
             return {
+                statusCode: response.status,
                 data: coursesArray,
                 totalPages: totalPages || 0,
                 totalRecords: totalRecords || 0,

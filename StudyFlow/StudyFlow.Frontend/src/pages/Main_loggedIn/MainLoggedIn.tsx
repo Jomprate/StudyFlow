@@ -29,9 +29,9 @@ const MainLoggedIn: React.FC = () => {
     const { state } = useAuth();
     const { t } = useTranslation();
 
-    const [allCourses, setAllCourses] = useState<Course[]>([]); // Cursos cargados
-    const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]); // Cursos para la página actual
-    const [students, setStudents] = useState<Student[]>([]); // Estudiantes (si eres profesor)
+    const [allCourses, setAllCourses] = useState<Course[]>([]);
+    const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]);
+    const [students, _setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
@@ -40,7 +40,6 @@ const MainLoggedIn: React.FC = () => {
     const [recordsPerPage, setRecordsPerPage] = useState(5);
     const [refreshCourses, setRefreshCourses] = useState(false);
 
-    // Cargar los cursos para el rol correspondiente
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -49,7 +48,7 @@ const MainLoggedIn: React.FC = () => {
 
                 console.log("User role: " + userRole);
 
-                if (userRole === 'Teacher') {
+                if (userRole === 'Teacher' && userId !== null) {
                     const response = await courseApi.getCoursesByTeacherIdAsync(userId);
 
                     if (response.statusCode === 404) {
@@ -57,11 +56,11 @@ const MainLoggedIn: React.FC = () => {
                         setAllCourses([]);
                         setTotalPages(1);
                     } else {
-                        setAllCourses(response);
-                        setTotalPages(Math.ceil(response.length / recordsPerPage));
+                        setAllCourses(response.data);
+                        setTotalPages(Math.ceil(response.data.length / recordsPerPage));
                     }
                 }
-                else if (userRole === 'Student') {
+                else if (userRole === 'Student' && userId !== null) {
                     const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, currentPage, recordsPerPage);
 
                     if (response.statusCode === 404) {

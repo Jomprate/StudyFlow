@@ -32,7 +32,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
 
                 if (userRole === 'Teacher' && userId !== null) {
                     const courses = await courseApi.getCoursesByTeacherIdAsync(userId);
-                    setAllCourses(courses);
+                    setAllCourses(courses.data);
                 }
                 else if (userRole === 'Student' && userId !== null) {
                     const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);

@@ -95,7 +95,7 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
     }
 };
 
-export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<CourseDTO[]> => {
+export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ statusCode: number, data: CourseDTO[] }> => {
     try {
         const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
             params: { TeacherId: teacherId }
@@ -118,7 +118,10 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<Cou
                 isEnabled: course.isEnabled,
             }));
 
-            return coursesArray;
+            return {
+                statusCode: response.status,
+                data: coursesArray
+            };
         } else {
             console.error("Unexpected response format:", response.data);
             throw new Error('Unexpected response format');
@@ -134,6 +137,46 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<Cou
         throw new Error(errorMessage);
     }
 };
+
+//export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<CourseDTO[]> => {
+//    try {
+//        const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
+//            params: { TeacherId: teacherId }
+//        });
+
+//        console.log("Full response data:", response.data);
+
+//        const { value } = response.data || {};
+
+//        const coursesData = Array.isArray(value) ? value : (value?.data || response.data);
+
+//        if (coursesData && Array.isArray(coursesData)) {
+//            const coursesArray: CourseDTO[] = coursesData.map((course: any) => ({
+//                id: course.id,
+//                name: course.name,
+//                description: course.description,
+//                teacher: course.teacherDTO?.fullName || "Unknown",
+//                logo: course.logo || "",
+//                userId: course.userId,
+//                isEnabled: course.isEnabled,
+//            }));
+
+//            return coursesArray;
+//        } else {
+//            console.error("Unexpected response format:", response.data);
+//            throw new Error('Unexpected response format');
+//        }
+//    } catch (error: any) {
+//        const errorMessage = error.response
+//            ? `API response error: ${error.response.data}`
+//            : error.request
+//                ? 'No response received from API'
+//                : `Request setup error: ${error.message}`;
+
+//        console.error(errorMessage);
+//        throw new Error(errorMessage);
+//    }
+//};
 
 export const getCourseByIdAsync = async (courseId: string, teacherId: string): Promise<CourseDTO> => {
     try {
