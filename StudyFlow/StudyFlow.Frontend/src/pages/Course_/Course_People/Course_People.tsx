@@ -4,7 +4,7 @@ import { useTheme } from '../../../ThemeContext';
 import { useParams } from 'react-router-dom';
 import AddStudentToCourseModal from '@components/modals/addStudentToCourseModal/AddStudentToCourseModal';
 import PersonCard from '@components/cards/personCard/PersonCard';
-import { enrollApi, userApi } from '../../../services/api';
+import { enrollTeacherApi, userApi } from '../../../services/api';
 import userPlaceholder from '../../../assets/user_p.svg';
 import './course_people.css';
 
@@ -50,7 +50,7 @@ const Course_People: React.FC = () => {
 
             try {
                 setLoading(true);
-                const response = await enrollApi.getEnrollmentsByCourseId(courseId, 1, 10);
+                const response = await enrollTeacherApi.getEnrollmentsByCourseId(courseId, 1, 10);
 
                 console.log("Students fetched:", response.data);
 

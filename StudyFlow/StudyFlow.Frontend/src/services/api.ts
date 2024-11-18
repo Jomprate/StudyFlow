@@ -4,7 +4,8 @@ import * as userApi from './userApi';
 import * as countryApi from './countryApi';
 import * as announceApi from './announceApi';
 import * as courseApi from './courseApi';
-import * as enrollApi from './enrollmentsApi';
+import * as enrollTeacherApi from './enrollmentsTeacherApi';
+import * as enrollStudentApi from './enrollmentsStudentApi';
 import * as subjectApi from './subjectApi';
 
 export {
@@ -14,6 +15,7 @@ export {
     countryApi,
     announceApi,
     courseApi,
-    enrollApi,
+    enrollTeacherApi,
+    enrollStudentApi,
     subjectApi
 };

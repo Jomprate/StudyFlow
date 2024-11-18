@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { enrollApi } from '../../../services/api';
+import { enrollTeacherApi } from '../../../services/api';
 import { useParams } from 'react-router-dom';
 import './addStudentToCourseModal.css';
 
@@ -70,7 +70,7 @@ const AddStudentToCourseModal: React.FC<AddStudentToCourseModalProps> = ({ open,
         setIsLoading(true);
         try {
             for (const student of students) {
-                await enrollApi.addEnrollmentByStudent({
+                await enrollTeacherApi.addEnrollmentByStudent({
                     courseId,
                     emailStudent: student.email,
                 });
