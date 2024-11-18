@@ -20,15 +20,15 @@ const Announces: React.FC = () => {
     const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
     const [noAnnouncements, setNoAnnouncements] = useState(false);
-    const [announcementsFetched, setAnnouncementsFetched] = useState(false);
+    const [_announcementsFetched, setAnnouncementsFetched] = useState(false);
     const { state } = useAuth();
     const [userProfileImage, setUserProfileImage] = useState<string>(user_p);
 
-    // Obtener la imagen de perfil del usuario autenticado
     useEffect(() => {
         const fetchAuthenticatedUserProfileImage = async () => {
             try {
-                const userId = state.userName; // Obtiene el ID del usuario autenticado
+                const userId = state.userName;
+                if (!userId) return;
                 const response = await userApi.getuserbyid(userId);
                 const userData = response.data;
 
@@ -45,7 +45,6 @@ const Announces: React.FC = () => {
         fetchAuthenticatedUserProfileImage();
     }, [state.userName]);
 
-    // Función para obtener la imagen de perfil del creador de cada anuncio
     const fetchUserProfileImage = async (userId: string) => {
         try {
             const response = await userApi.getuserbyid(userId);
@@ -60,13 +59,12 @@ const Announces: React.FC = () => {
     };
 
     useEffect(() => {
-        // Resetear el estado antes de cargar anuncios del nuevo curso
         setAnnouncements([]);
         setNoAnnouncements(false);
         setAnnouncementsFetched(false);
 
         const fetchAnnouncements = async () => {
-            if (!courseId) return; // Asegurarse de que haya un ID de curso
+            if (!courseId) return;
 
             try {
                 const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
@@ -118,7 +116,7 @@ const Announces: React.FC = () => {
     const handleNewAnnouncement = (newAnnouncement: any) => {
         const safeAnnouncement = {
             ...newAnnouncement,
-            title: newAnnouncement.title || t('announce_defaultTitle'), // Agrega el título con un valor predeterminado
+            title: newAnnouncement.title || t('announce_defaultTitle'),
             youTubeVideos: newAnnouncement.youTubeVideos || [],
             googleDriveLinks: newAnnouncement.googleDriveLinks || [],
             alternateLinks: newAnnouncement.alternateLinks || [],
@@ -132,23 +130,6 @@ const Announces: React.FC = () => {
         setShowAnnouncementBox(false);
         setNoAnnouncements(false);
     };
-
-    //const handleNewAnnouncement = (newAnnouncement: any) => {
-    //    const safeAnnouncement = {
-    //        ...newAnnouncement,
-    //        youTubeVideos: newAnnouncement.youTubeVideos || [],
-    //        googleDriveLinks: newAnnouncement.googleDriveLinks || [],
-    //        alternateLinks: newAnnouncement.alternateLinks || [],
-    //    };
-
-    //    setAnnouncements((prevAnnouncements) =>
-    //        [safeAnnouncement, ...prevAnnouncements].sort(
-    //            (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
-    //        )
-    //    );
-    //    setShowAnnouncementBox(false);
-    //    setNoAnnouncements(false);
-    //};
 
     return (
         <div className={`announces-page ${theme}`}>
@@ -172,7 +153,7 @@ const Announces: React.FC = () => {
                                         <li key={`${announcement.id}-${index}`}>
                                             <AnnouncementBox
                                                 announceId={announcement.id}
-                                                title={announcement.title} // Agregar el título aquí
+                                                title={announcement.title}
                                                 description={announcement.description}
                                                 date={announcement.creationDate}
                                                 user={announcement.userName}
@@ -180,6 +161,10 @@ const Announces: React.FC = () => {
                                                 videos={(announcement.youTubeVideos || []).map((url: string) => ({ url }))}
                                                 googleDriveLinks={(announcement.googleDriveLinks || []).map((url: string) => ({ url }))}
                                                 otherLinks={(announcement.alternateLinks || []).map((url: string) => ({ url }))}
+                                                isCreator={(() => {
+                                                    console.log('state.userName:', state.userName, 'announcement.userId:', announcement.userId);
+                                                    return state.userName === announcement.userId;
+                                                })()}
                                             />
                                         </li>
                                     ))}

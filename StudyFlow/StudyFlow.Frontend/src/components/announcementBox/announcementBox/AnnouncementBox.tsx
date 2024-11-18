@@ -30,6 +30,7 @@ interface AnnouncementBoxProps {
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
+    isCreator: boolean; // Nueva propiedad para verificar si es el creador
 }
 
 const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
@@ -41,13 +42,12 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
     creatorProfileImageUrl,
     videos = [],
     googleDriveLinks = [],
-    otherLinks = []
+    otherLinks = [],
+    isCreator,
 }) => {
     const { t } = useTranslation();
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
-
-    /*console.log(`Profile image used for announcement ${announceId}: ${creatorProfileImageUrl}`);*/
 
     const handleDeleteClick = () => {
         setDeleteModalOpen(true);
@@ -75,7 +75,11 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
 
     return (
         <div className="announcement-box">
-            <button className="announcement-delete-button" onClick={handleDeleteClick}>x</button>
+            {isCreator && (
+                <button className="announcement-delete-button" onClick={handleDeleteClick}>
+                    x
+                </button>
+            )}
 
             <div className="announcement-header">
                 <img
@@ -90,7 +94,10 @@ const AnnouncementBox: React.FC<AnnouncementBoxProps> = ({
             </div>
             <h2 className="announcement-title">{title}</h2>
 
-            <div className="announcement-description" dangerouslySetInnerHTML={{ __html: description }} />
+            <div
+                className="announcement-description"
+                dangerouslySetInnerHTML={{ __html: description }}
+            />
 
             {videos.length > 0 && (
                 <div className="video-grid">
