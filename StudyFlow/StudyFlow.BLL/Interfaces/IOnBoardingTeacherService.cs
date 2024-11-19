@@ -37,6 +37,8 @@ namespace StudyFlow.BLL.Interfaces
 
         Task<IActionResult> AddSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest);
 
+        Task<IActionResult> UpdateSubjectSchedulesAsync(UpdateSubjectSchedulesDTORequest updateSubjectSchedulesDTORequest);
+
         Task<IActionResult> SetSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest);
 
         Task<IActionResult> DeleteSubjectById(Guid subjectId);

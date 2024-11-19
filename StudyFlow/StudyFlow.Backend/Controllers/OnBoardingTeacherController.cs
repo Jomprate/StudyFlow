@@ -50,7 +50,6 @@ namespace StudyFlow.Backend.Controllers
             }
         }
 
-
         [HttpGet("GetCourses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -325,6 +324,35 @@ namespace StudyFlow.Backend.Controllers
             try
             {
                 var result = await _onBoardingTeacherService.AddSubjectByCourseAsync(setSubjectByCourseStudentDTORequest);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [HttpPut("UpdateSubjectSchedules")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateSubjectSchedules([FromBody] UpdateSubjectSchedulesDTORequest updateSubjectSchedulesDTORequest)
+        {
+            try
+            {
+                if (updateSubjectSchedulesDTORequest.SubjectId == null || updateSubjectSchedulesDTORequest.SubjectId == Guid.Empty)
+                {
+                    return BadRequest(new { Error = "SubjectId is required." });
+                }
+
+                if (updateSubjectSchedulesDTORequest.ListScheduleds == null || !updateSubjectSchedulesDTORequest.ListScheduleds.Any())
+                {
+                    return BadRequest(new { Error = "ListScheduleds is required." });
+                }
+
+                var result = await _onBoardingTeacherService.UpdateSubjectSchedulesAsync(updateSubjectSchedulesDTORequest);
 
                 return result;
             }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StudyFlow.DAL.Data;
 
@@ -11,9 +12,11 @@ using StudyFlow.DAL.Data;
 namespace StudyFlow.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20241119124744_AddHtmlContentToSubject")]
+    partial class AddHtmlContentToSubject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -203,7 +206,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Announces", (string)null);
+                    b.ToTable("Announces");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Country", b =>
@@ -224,7 +227,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Course", b =>
@@ -262,7 +265,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Enrollment", b =>
@@ -289,7 +292,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Notification", b =>
@@ -323,7 +326,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Scheduled", b =>
@@ -351,7 +354,7 @@ namespace StudyFlow.DAL.Migrations
 
                     b.HasAlternateKey("SubjectId", "ScheduledDate");
 
-                    b.ToTable("Scheduleds", (string)null);
+                    b.ToTable("Scheduleds");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.Subject", b =>
@@ -360,19 +363,11 @@ namespace StudyFlow.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AlternateLinks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("GoogleDriveLinks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HtmlContent")
                         .IsRequired()
@@ -391,15 +386,11 @@ namespace StudyFlow.DAL.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("YouTubeVideos")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Subjects", (string)null);
+                    b.ToTable("Subjects");
                 });
 
             modelBuilder.Entity("StudyFlow.DAL.Entities.User", b =>

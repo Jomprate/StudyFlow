@@ -288,26 +288,27 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
             </div>
 
             <div className="announcementBox_Create_footer-container">
-                <div className="announcementBox_Create_external-data-links">
+                <div className="classworkBox_Create_external-data-links">
                     <button
-                        className="announcementBox_Create_external-data-link-button"
+                        className="classworkBox_Create_control-button youtube"
                         onClick={() => setIsYouTubeModalOpen(true)}
                     >
-                        <FontAwesomeIcon icon={faYoutube} className="icon-large" />
+                        <FontAwesomeIcon icon={faYoutube} />
                     </button>
                     <button
-                        className="announcementBox_Create_external-data-link-button"
+                        className="classworkBox_Create_control-button google-drive"
                         onClick={() => setIsGoogleDriveModalOpen(true)}
                     >
-                        <FontAwesomeIcon icon={faGoogleDrive} className="icon-large" />
+                        <FontAwesomeIcon icon={faGoogleDrive} />
                     </button>
                     <button
-                        className="announcementBox_Create_external-data-link-button"
+                        className="classworkBox_Create_control-button links"
                         onClick={() => setIsOtherLinksModalOpen(true)}
                     >
-                        <FontAwesomeIcon icon={faLink} className="icon-large" />
+                        <FontAwesomeIcon icon={faLink} />
                     </button>
                 </div>
+
 
                 <div className="announcementBox_Create_action-buttons">
                     <button className="announcementBox_Create_footer-button announcementBox_Create_cancel-button">

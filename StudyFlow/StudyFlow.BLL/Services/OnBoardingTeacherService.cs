@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.DTOS.Entities;
 using StudyFlow.BLL.DTOS.OnBoardingTeacher;
@@ -516,35 +517,87 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> GetSubjectByCourseIdAsync(GetSubjectsByCourseDTORequest getSubjectsByCourseDTORequest)
         {
-            var course = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == getSubjectsByCourseDTORequest.CourseId);
-
-            if (!course)
+            // Validar si el curso existe
+            var courseExists = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == getSubjectsByCourseDTORequest.CourseId);
+            if (!courseExists)
             {
                 return ApiResponseHelper.NotFound($"Course with Id {getSubjectsByCourseDTORequest.CourseId} not found.");
             }
 
-            var paginationResult = await _unitOfWork.SubjectRepository.GetSubjectsByCourseIdAsync(getSubjectsByCourseDTORequest.CourseId, getSubjectsByCourseDTORequest.Pagination);
+            // Obtener los Subjects con paginación
+            var paginationResult = await _unitOfWork.SubjectRepository.GetSubjectsByCourseIdAsync(
+                getSubjectsByCourseDTORequest.CourseId,
+                getSubjectsByCourseDTORequest.Pagination
+            );
 
+            // Si no hay resultados, devolver error
             if (!paginationResult.ListResult.Any())
             {
-                return ApiResponseHelper.NotFound($"Don´t exists subjects for this courseId.");
+                return ApiResponseHelper.NotFound($"No subjects found for courseId {getSubjectsByCourseDTORequest.CourseId}.");
             }
 
-            IList<SubjectDTO> listSubjectDto = new List<SubjectDTO>();
-            listSubjectDto = paginationResult.ListResult.Select(s => s.ToDTO()).ToList();
-
-            return ApiResponseHelper.Success(
-                new OnBoardingTeacherSubjectDTOResponse()
+            // Mapear entidades a DTOs, incluyendo los Scheduleds
+            var listSubjectDto = paginationResult.ListResult.Select(subject => new SubjectDTO
+            {
+                Id = subject.Id,
+                Name = subject.Name,
+                Link = subject.Link,
+                Type = subject.Type.ToString(),
+                ListScheduleds = subject.ListScheduled?.Select(scheduled => new ScheduledDTO
                 {
-                    PaginationResult = new PaginationResult<SubjectDTO>()
-                    {
-                        ListResult = listSubjectDto,
-                        TotalRecords = paginationResult.TotalRecords,
-                        TotalPages = paginationResult.TotalPages,
-                        Pagination = paginationResult.Pagination
-                    }
-                });
+                    Id = scheduled.Id,
+                    ScheduledDate = scheduled.ScheduledDate,
+                    Link = scheduled.Link
+                }).ToList()
+            }).ToList();
+
+            // Crear la respuesta con la estructura de paginación
+            var response = new OnBoardingTeacherSubjectDTOResponse
+            {
+                PaginationResult = new PaginationResult<SubjectDTO>
+                {
+                    ListResult = listSubjectDto,
+                    TotalRecords = paginationResult.TotalRecords,
+                    TotalPages = paginationResult.TotalPages,
+                    Pagination = paginationResult.Pagination
+                }
+            };
+
+            // Devolver la respuesta con éxito
+            return ApiResponseHelper.Success(response);
         }
+
+        //public async Task<IActionResult> GetSubjectByCourseIdAsync(GetSubjectsByCourseDTORequest getSubjectsByCourseDTORequest)
+        //{
+        //    var course = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == getSubjectsByCourseDTORequest.CourseId);
+
+        //    if (!course)
+        //    {
+        //        return ApiResponseHelper.NotFound($"Course with Id {getSubjectsByCourseDTORequest.CourseId} not found.");
+        //    }
+
+        //    var paginationResult = await _unitOfWork.SubjectRepository.GetSubjectsByCourseIdAsync(getSubjectsByCourseDTORequest.CourseId, getSubjectsByCourseDTORequest.Pagination);
+
+        //    if (!paginationResult.ListResult.Any())
+        //    {
+        //        return ApiResponseHelper.NotFound($"Don´t exists subjects for this courseId.");
+        //    }
+
+        //    IList<SubjectDTO> listSubjectDto = new List<SubjectDTO>();
+        //    listSubjectDto = paginationResult.ListResult.Select(s => s.ToDTO()).ToList();
+
+        //    return ApiResponseHelper.Success(
+        //        new OnBoardingTeacherSubjectDTOResponse()
+        //        {
+        //            PaginationResult = new PaginationResult<SubjectDTO>()
+        //            {
+        //                ListResult = listSubjectDto,
+        //                TotalRecords = paginationResult.TotalRecords,
+        //                TotalPages = paginationResult.TotalPages,
+        //                Pagination = paginationResult.Pagination
+        //            }
+        //        });
+        //}
 
         public async Task<IActionResult> AddSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest)
         {
@@ -574,16 +627,18 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> SetSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest)
         {
-            if (setSubjectByCourseStudentDTORequest.SubjectDTO.Id is null)
+            if (setSubjectByCourseStudentDTORequest.SubjectDTO?.Id is null)
             {
                 return ApiResponseHelper.BadRequest("SubjectId is required.");
             }
 
-            if (setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds?.ScheduledDate is null)
+            if (setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds == null ||
+                !setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds.Any())
             {
                 return ApiResponseHelper.BadRequest("ListScheduleds is required.");
             }
 
+            // Obtener el Subject desde la base de datos
             var subject = await _unitOfWork.SubjectRepository.GetByIdAsync(setSubjectByCourseStudentDTORequest.SubjectDTO.Id.Value);
 
             if (subject is null)
@@ -591,30 +646,44 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Subject with Id {setSubjectByCourseStudentDTORequest.SubjectDTO.Id} not found.");
             }
 
+            // Actualizar propiedades del Subject
             subject.Link = setSubjectByCourseStudentDTORequest.SubjectDTO.Link ?? subject.Link;
             if (Enum.TryParse<SubjectTypeEnum>(setSubjectByCourseStudentDTORequest.SubjectDTO.Type, out var parsedType))
             {
                 subject.Type = parsedType;
             }
             subject.Name = setSubjectByCourseStudentDTORequest.SubjectDTO.Name ?? subject.Name;
-            subject.ListScheduled.Add(new Scheduled()
-            {
-                SubjectId = subject.Id,
-                ScheduledDate = setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds.ScheduledDate.Value,
-                Link = setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds.Link ?? string.Empty
-            });
 
-            bool result = await _unitOfWork.SubjectRepository.UpdateAsync(subject);
+            // Añadir nuevos horarios
+            foreach (var scheduledDto in setSubjectByCourseStudentDTORequest.SubjectDTO.ListScheduleds)
+            {
+                // Verifica si ya existe un horario con la misma fecha para evitar duplicados
+                if (!subject.ListScheduled.Any(s => s.ScheduledDate == scheduledDto.ScheduledDate))
+                {
+                    subject.ListScheduled.Add(new Scheduled
+                    {
+                        SubjectId = subject.Id,
+                        ScheduledDate = scheduledDto.ScheduledDate.Value,
+                        Link = scheduledDto.Link ?? string.Empty
+                    });
+                }
+            }
 
             try
             {
+                // Actualizar el Subject
+                await _unitOfWork.SubjectRepository.UpdateAsync(subject);
+
+                // Guardar cambios
                 await _unitOfWork.SaveChangesAsync();
+
                 return ApiResponseHelper.NoContent();
             }
             catch (Exception ex)
             {
+                // Rollback en caso de error
                 _unitOfWork.Rollback();
-                throw new Exception("Failed to update subject", ex);
+                return ApiResponseHelper.BadRequest($"Failed to update subject: {ex.Message}");
             }
         }
 
@@ -643,6 +712,55 @@ namespace StudyFlow.BLL.Services
             {
                 _unitOfWork.Rollback();
                 throw new Exception("Failed to delete subject", ex);
+            }
+        }
+
+        public async Task<IActionResult> UpdateSubjectSchedulesAsync(UpdateSubjectSchedulesDTORequest updateSubjectSchedulesDTORequest)
+        {
+            if (updateSubjectSchedulesDTORequest.SubjectId == null)
+            {
+                return ApiResponseHelper.BadRequest("SubjectId is required.");
+            }
+
+            if (updateSubjectSchedulesDTORequest.ListScheduleds == null || !updateSubjectSchedulesDTORequest.ListScheduleds.Any())
+            {
+                return ApiResponseHelper.BadRequest("ListScheduleds is required.");
+            }
+
+            try
+            {
+                // Obtener el Subject por su ID
+                var subject = await _unitOfWork.SubjectRepository.GetByIdAsync(updateSubjectSchedulesDTORequest.SubjectId.Value);
+                if (subject == null)
+                {
+                    return ApiResponseHelper.NotFound($"Subject with Id {updateSubjectSchedulesDTORequest.SubjectId} not found.");
+                }
+
+                // Iterar sobre la lista de `ScheduledDTO` para agregar cada registro
+                foreach (var scheduledDto in updateSubjectSchedulesDTORequest.ListScheduleds)
+                {
+                    subject.ListScheduled.Add(new Scheduled
+                    {
+                        SubjectId = subject.Id,
+                        ScheduledDate = scheduledDto.ScheduledDate ?? DateTime.UtcNow,
+                        Link = scheduledDto.Link ?? string.Empty,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    });
+                }
+
+                // Actualizar el Subject
+                bool result = await _unitOfWork.SubjectRepository.UpdateAsync(subject);
+
+                // Guardar los cambios
+                await _unitOfWork.SaveChangesAsync();
+
+                return ApiResponseHelper.NoContent();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return ApiResponseHelper.BadRequest($"Failed to update subject schedules: {ex.Message}");
             }
         }
 

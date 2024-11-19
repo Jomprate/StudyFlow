@@ -60,6 +60,44 @@
         list-style-position: outside;
     }
 
+.classworkBox_Create_external-data-links {
+    display: flex;
+    gap: 15px; /* Espacio entre botones */
+    justify-content: flex-start; /* Alineación hacia la izquierda */
+    margin-top: 15px; /* Espacio superior */
+}
+
+.classworkBox_Create_control-button {
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    border: none;
+}
+
+    /* Colores específicos para cada botón */
+    .classworkBox_Create_control-button.youtube {
+        background-color: #FF0000; /* Rojo de YouTube */
+        color: white;
+    }
+
+    .classworkBox_Create_control-button.google-drive {
+        background-color: #34A853; /* Verde de Google Drive */
+        color: white;
+    }
+
+    .classworkBox_Create_control-button.links {
+        background-color: #4285F4; /* Azul para Links */
+        color: white;
+    }
+
+    /* Hover y efecto */
+    .classworkBox_Create_control-button:hover {
+        transform: scale(1.1); /* Aumenta ligeramente el tamaño al pasar el cursor */
+        opacity: 0.9; /* Reduce la opacidad para un efecto visual */
+    }
+
 .classworkBox_Create_controls {
     display: flex;
     gap: 10px;
@@ -156,6 +194,105 @@
     flex-grow: 1;
 }
 
+/* Contenedor para fecha */
+.classworkBox_Create_date-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* Etiqueta */
+.classworkBox_Create_date-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Wrapper para input y decoraciones */
+.classworkBox_Create_date-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Input para fecha y hora */
+.classworkBox_Create_date-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .classworkBox_Create_date-input:focus {
+        outline: none;
+        border-color: #4285f4;
+        background-color: #fff;
+    }
+
+/* Contenedor para fecha */
+.classworkBox_Create_date-container {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+/* Etiqueta */
+.classworkBox_Create_date-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Wrapper para input y decoraciones */
+.classworkBox_Create_date-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Input para fecha y hora */
+.classworkBox_Create_date-input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .classworkBox_Create_date-input:focus {
+        outline: none;
+        border-color: #4285f4;
+        background-color: #fff;
+    }
+
+/* Icono decorativo (opcional) */
+.classworkBox_Create_date-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+}
+
+.classworkBox_Create_date-label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    transition: color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
 /* Light Theme */
 .light .classworkBox_Create_box {
     background-color: #ffffff;
@@ -177,6 +314,20 @@
 .light .classworkBox_Create_editor {
     color: #000;
 }
+
+.light .classworkBox_Create_date-input {
+    background-color: #fff;
+    color: #333;
+}
+
+.light .classworkBox_Create_date-label {
+    color: #333; /* Color oscuro para texto en tema claro */
+}
+
+
+
+
+
 
 /* Dark Theme */
 .dark .classworkBox_Create_box {
@@ -202,4 +353,13 @@
 
 .dark .classworkBox_Create_main {
     background-color: #444444;
+}
+
+.dark .classworkBox_Create_date-input {
+    background-color: #444;
+    color: #fff;
+}
+
+.dark .classworkBox_Create_date-label {
+    color: #f9f9f9; /* Color claro para texto en tema oscuro */
 }

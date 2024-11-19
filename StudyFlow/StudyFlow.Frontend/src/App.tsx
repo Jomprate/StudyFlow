@@ -10,7 +10,7 @@ import { checkBackendStatus } from '../src/services/api';
 function App() {
     const [i18nReady, setI18nReady] = useState(false);
     const [backendReady, setBackendReady] = useState(false);
-    const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false);
     const { theme } = useTheme();
     const [lastActivityTime, setLastActivityTime] = useState(Date.now());
     const [isMobile, setIsMobile] = useState(false);
