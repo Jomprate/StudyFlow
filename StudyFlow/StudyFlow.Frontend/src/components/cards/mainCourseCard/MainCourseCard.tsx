@@ -2,14 +2,14 @@ import React from 'react';
 import './mainCourseCard.css';
 import { useTheme } from '../../../ThemeContext';
 import { useTranslation } from 'react-i18next';
-import CurseImage from '../../../assets/user_p.svg'; // Imagen predeterminada
+import CurseImage from '../../../assets/user_p.svg';
 
 interface CourseCardProps {
     key: string;
     name: string;
     description: string;
     teacher: string;
-    image: string; // Base64 string or default image
+    image: string;
 }
 
 const MainCourseCard: React.FC<CourseCardProps> = ({ name, description, teacher, image }) => {
@@ -18,7 +18,6 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ name, description, teacher,
 
     return (
         <div className={`main_course-card ${theme}`}>
-            {/* Comprueba si hay una imagen en Base64; si no, usa la predeterminada */}
             <img
                 src={image ? `data:image/png;base64,${image}` : CurseImage}
                 alt={name}

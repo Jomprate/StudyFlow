@@ -8,6 +8,7 @@ import { HiOutlineBookOpen } from 'react-icons/hi';
 import './sidebarMenu.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { courseApi, enrollStudentApi } from '../../services/api';
+import defaultCourseImage from '../../assets/user_p.svg';
 
 interface SidebarMenuProps {
     visible: boolean;
@@ -16,6 +17,7 @@ interface SidebarMenuProps {
 interface Course {
     id: string;
     name: string;
+    logo?: string;
 }
 
 const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
@@ -50,7 +52,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         <div className={`custom-sidebar ${visible ? '' : 'collapsed'}`}>
             <nav>
                 <ul>
-                    {/* Enlace a la página de inicio */}
+
                     <li className={`item ${location.pathname === '/mainloggedin' ? 'active' : ''}`}>
                         <Link to="mainloggedin">
                             <AiOutlineHome className="icon" />
@@ -58,7 +60,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
                         </Link>
                     </li>
 
-                    {/* Enlace a los cursos */}
+
                     <li className={`item ${location.pathname === '/courses' ? 'active' : ''}`}>
                         <Link to="courses">
                             <HiOutlineBookOpen className="icon" />
@@ -66,19 +68,15 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
                         </Link>
                     </li>
 
-                    {/* Enlace fijo a Course */}
-                    <li className={`sub-item ${location.pathname === '/course' ? 'active' : ''}`}>
-                        <Link to="course">
-                            <HiOutlineBookOpen className="icon" />
-                            {visible && <span>{t('Course')}</span>}
-                        </Link>
-                    </li>
-
                     {allCourses.length > 0 ? (
                         allCourses.map((course) => (
                             <li key={course.id} className={`sub-item ${location.pathname === `/course/${course.id}` ? 'active' : ''}`}>
-                                <Link to={`/home_logged_in/course/${course.id}`}>
-                                    <HiOutlineBookOpen className="icon" />
+                                <Link to={`/home_logged_in/course/${course.id}`} className="course-link">
+                                    <img
+                                        src={course.logo ? `data:image/png;base64,${course.logo}` : defaultCourseImage}
+                                        alt={course.name}
+                                        className="course-logo"
+                                    />
                                     {visible && <span>{course.name}</span>}
                                 </Link>
                             </li>

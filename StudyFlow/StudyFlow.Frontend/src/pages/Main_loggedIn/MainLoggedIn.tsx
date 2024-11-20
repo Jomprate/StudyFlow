@@ -138,7 +138,7 @@ const MainLoggedIn: React.FC = () => {
                                                 name={course.name}
                                                 description={course.description}
                                                 teacher={course.teacher}
-                                                image={course.logo || ""} // Se pasa correctamente el logo
+                                                image={course.logo || ""}
                                             />
                                         ))
                                     ) : (
@@ -167,7 +167,7 @@ const MainLoggedIn: React.FC = () => {
                                                 name={course.name}
                                                 description={course.description}
                                                 teacher={course.teacher}
-                                                image={course.logo || ""} // Se pasa correctamente el logo
+                                                image={course.logo || ""}
                                             />
                                         ))
                                     ) : (

@@ -11,6 +11,7 @@
     transition: transform 0.3s ease, width 0.3s ease;
 }
 
+
     .custom-sidebar.collapsed {
         width: 80px;
     }
@@ -149,6 +150,18 @@
         opacity: 0;
         max-width: 0;
     }
+
+
+
+.course-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    margin: 0;
+    margin-right: 5px;
+    object-fit: cover;
+    padding: -2px;
+}
 
 .toggle-sidebar-btn {
     position: fixed;
