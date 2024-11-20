@@ -174,7 +174,7 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> CreateCourseAsync(CourseDTO courseDTO)
         {
-            if (courseDTO.TeacherDTO.Id is null)
+            if (courseDTO.TeacherDTO?.Id is null)
             {
                 return ApiResponseHelper.BadRequest("TeacherId is required.");
             }
@@ -187,28 +187,35 @@ namespace StudyFlow.BLL.Services
             }
 
             var course = courseDTO.ToEntity();
-            course.TeacherId = courseDTO.TeacherDTO.Id.Value;
-            Course newCourse = null;
 
             try
             {
-                newCourse = await _unitOfWork.CourseRepository.CreateAsync(course);
+                var newCourse = await _unitOfWork.CourseRepository.CreateAsync(course);
+
+                var result = await _unitOfWork.SaveChangesAsync();
+                if (result <= 0)
+                {
+                    return new BadRequestObjectResult("Failed to save course after creation.");
+                }
 
                 if (!string.IsNullOrEmpty(courseDTO.Logo))
                 {
-                    _storageService.UploadAsync(courseDTO.Logo, course.Id.ToString());
+                    await _storageService.UploadAsync(courseDTO.Logo, newCourse.Id.ToString());
+                    await _unitOfWork.CourseRepository.UpdateCourseLogoAsync(newCourse.Id, courseDTO.Logo);
                 }
 
-                _unitOfWork.SaveChangesAsync();
+                var savedCourse = await _unitOfWork.CourseRepository.GetByIdAsync(newCourse.Id);
+
+                newCourse.Teacher = teacher;
+
+                return ApiResponseHelper.Create(newCourse.ToDTO());
             }
             catch (Exception ex)
             {
                 _unitOfWork.Rollback();
+                Console.WriteLine($"Error creating course: {ex.Message}");
                 throw new Exception("Failed to create course", ex);
             }
-
-            newCourse.Teacher = teacher;
-            return ApiResponseHelper.Create(newCourse.ToDTO());
         }
 
         public async Task<IActionResult> UpdateCourseAsync(CourseDTO courseDTO)

@@ -10,23 +10,23 @@ import Course_People from './Course_People/Course_People';
 import user_p from '../../assets/user_p.svg';
 import './course.css';
 
+interface CourseResponse {
+    data: courseApi.CourseDTO; // Ajustamos para que acepte la estructura de respuesta
+}
+
 const Course_: React.FC = () => {
-    const { courseId } = useParams<{ courseId: string }>(); // Ajuste aquí para usar `courseId`
+    const { courseId } = useParams<{ courseId: string }>();
     const { state } = useAuth();
     const { theme } = useTheme();
-    const [course, setCourse] = useState<courseApi.CourseDTO | null>(null);
+
+    // Ajustamos el estado para incluir la estructura de datos esperada
+    const [course, setCourse] = useState<CourseResponse | null>(null);
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
     useEffect(() => {
         const fetchCourse = async () => {
             try {
                 const teacherId = state.userName;
-
-                console.log("Params from useParams:", { courseId });
-                console.log("Sending request with:", {
-                    courseId,
-                    teacherId,
-                });
 
                 if (!courseId) {
                     console.error("CourseId is missing.");
@@ -37,13 +37,17 @@ const Course_: React.FC = () => {
                     return;
                 }
 
+                // Llamada a la API
                 const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
 
-                console.log("API Response:", courseData);
-
-                setCourse(courseData);
-
                 console.log("Course fetched:", courseData);
+
+                // Aseguramos que courseData tiene la estructura esperada
+                if (courseData && courseData.data) {
+                    setCourse(courseData);
+                } else {
+                    console.error("Unexpected response structure:", courseData);
+                }
             } catch (error) {
                 console.error("Error fetching course:", error);
             }
@@ -78,7 +82,12 @@ const Course_: React.FC = () => {
                         <h1>{course.data.name}</h1>
                         <h2>{course.data.description}</h2>
                     </div>
-                    <img src={user_p} alt="Course" className="course-image" />
+                    {/* Mostramos la imagen en Base64 si está disponible */}
+                    <img
+                        src={course.data.logo ? `data:image/png;base64,${course.data.logo}` : user_p}
+                        alt="Course Logo"
+                        className="course-image"
+                    />
                 </div>
                 <div className="course-layout">
                     {renderSection()}

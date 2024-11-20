@@ -6,6 +6,7 @@
         public Guid TeacherId { get; set; }
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
+        public string? Logo { get; set; }
         public bool HaveLogo { get; set; }
         public bool IsEnabled { get; set; }
         public User Teacher { get; set; } = null!;

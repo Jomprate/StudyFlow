@@ -16,5 +16,7 @@ namespace StudyFlow.DAL.Interfaces
         Task<PaginationResult<Course>> GetAllCourseByTeacherIdAsync(Guid teacherId, Pagination pagination);
 
         Task<PaginationResult<Course>> GetAllCourseByStudentIdAsync(Guid studentId, Pagination pagination);
+
+        Task<bool> UpdateCourseLogoAsync(Guid courseId, string base64Logo);
     }
 }

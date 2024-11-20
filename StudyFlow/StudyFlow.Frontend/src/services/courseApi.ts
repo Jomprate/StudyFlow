@@ -10,16 +10,28 @@ export const createCourse = async (courseDTO: {
     isEnabled?: boolean;
 }): Promise<void> => {
     try {
-        const response = await api.post('/OnBoardingTeacher/CreateCourse', {
+        console.log("Payload enviado al backend:", {
             id: courseDTO.id,
             teacherDTO: {
                 id: courseDTO.teacherId,
-                fullName: "string" // Puedes obtener este dato si es necesario
+                fullName: "string",
             },
             name: courseDTO.name,
             description: courseDTO.description,
             logo: courseDTO.logo,
-            isEnabled: courseDTO.isEnabled ?? true
+            isEnabled: courseDTO.isEnabled ?? true,
+        });
+
+        const response = await api.post('/OnBoardingTeacher/CreateCourse', {
+            id: courseDTO.id,
+            teacherDTO: {
+                id: courseDTO.teacherId,
+                fullName: "string",
+            },
+            name: courseDTO.name,
+            description: courseDTO.description,
+            logo: courseDTO.logo,
+            isEnabled: courseDTO.isEnabled ?? true,
         });
 
         console.log('Course created successfully:', response.data);
@@ -137,46 +149,6 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
         throw new Error(errorMessage);
     }
 };
-
-//export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<CourseDTO[]> => {
-//    try {
-//        const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
-//            params: { TeacherId: teacherId }
-//        });
-
-//        console.log("Full response data:", response.data);
-
-//        const { value } = response.data || {};
-
-//        const coursesData = Array.isArray(value) ? value : (value?.data || response.data);
-
-//        if (coursesData && Array.isArray(coursesData)) {
-//            const coursesArray: CourseDTO[] = coursesData.map((course: any) => ({
-//                id: course.id,
-//                name: course.name,
-//                description: course.description,
-//                teacher: course.teacherDTO?.fullName || "Unknown",
-//                logo: course.logo || "",
-//                userId: course.userId,
-//                isEnabled: course.isEnabled,
-//            }));
-
-//            return coursesArray;
-//        } else {
-//            console.error("Unexpected response format:", response.data);
-//            throw new Error('Unexpected response format');
-//        }
-//    } catch (error: any) {
-//        const errorMessage = error.response
-//            ? `API response error: ${error.response.data}`
-//            : error.request
-//                ? 'No response received from API'
-//                : `Request setup error: ${error.message}`;
-
-//        console.error(errorMessage);
-//        throw new Error(errorMessage);
-//    }
-//};
 
 export const getCourseByIdAsync = async (courseId: string, teacherId: string): Promise<CourseDTO> => {
     try {

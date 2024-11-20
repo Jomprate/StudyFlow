@@ -162,7 +162,6 @@ const Announces: React.FC = () => {
                                                 googleDriveLinks={(announcement.googleDriveLinks || []).map((url: string) => ({ url }))}
                                                 otherLinks={(announcement.alternateLinks || []).map((url: string) => ({ url }))}
                                                 isCreator={(() => {
-                                                    console.log('state.userName:', state.userName, 'announcement.userId:', announcement.userId);
                                                     return state.userName === announcement.userId;
                                                 })()}
                                             />

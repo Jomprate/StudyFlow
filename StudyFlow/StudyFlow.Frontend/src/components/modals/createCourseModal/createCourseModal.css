@@ -156,9 +156,12 @@
 }
 
 .uploaded-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    display: block;
+    max-width: 100%; /* Escala correctamente la imagen */
+    max-height: 100%; /* Evita que se desborde */
+    object-fit: contain; /* Mantiene las proporciones */
+    border-radius: 15px; /* Opcional: estiliza los bordes */
+    border: 1px solid #ccc;
 }
 
 .image-field {

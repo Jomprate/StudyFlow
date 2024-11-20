@@ -10,9 +10,10 @@ namespace StudyFlow.BLL.Mapping
             {
                 Name = dto.Name,
                 Description = dto.Description,
+                Logo = dto.Logo,
                 HaveLogo = !string.IsNullOrEmpty(dto.Logo),
                 IsEnabled = dto.IsEnabled ?? false,
-                TeacherId = dto.TeacherDTO.Id ?? Guid.Empty
+                TeacherId = dto.TeacherDTO?.Id ?? Guid.Empty
             };
         }
 
@@ -23,6 +24,7 @@ namespace StudyFlow.BLL.Mapping
                 Id = entity.Id,
                 Name = entity.Name,
                 Description = entity.Description,
+                Logo = entity.Logo,
                 IsEnabled = entity.IsEnabled,
                 TeacherDTO = new TeacherDTO
                 {

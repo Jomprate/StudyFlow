@@ -125,5 +125,28 @@ namespace StudyFlow.DAL.Services
             _context.Courses.Update(course);
             return true;
         }
+
+        public async Task<bool> UpdateCourseLogoAsync(Guid courseId, string base64Logo)
+        {
+            if (string.IsNullOrEmpty(base64Logo))
+            {
+                throw new ArgumentException("Logo cannot be null or empty", nameof(base64Logo));
+            }
+
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+            if (course == null)
+            {
+                throw new Exception("Course not found.");
+            }
+
+            course.Logo = base64Logo;
+            course.HaveLogo = true;
+
+            _context.Entry(course).Property(c => c.Logo).IsModified = true;
+            _context.Entry(course).Property(c => c.HaveLogo).IsModified = true;
+
+            var result = await _context.SaveChangesAsync();
+            return result > 0;
+        }
     }
 }

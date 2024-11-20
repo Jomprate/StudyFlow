@@ -45,9 +45,10 @@
 }
 
 .course-image {
-    width: 150px; /* Ajusta el tamaño según sea necesario */
+    width: 150px;
     height: 150px;
-    object-fit: cover;
+    object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
+    border-radius: 8px; /* Opcional: esquinas redondeadas */
     margin-left: 20px;
 }
 

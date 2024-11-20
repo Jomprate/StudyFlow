@@ -37,7 +37,9 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
     const handleCroppedImage = (croppedImage: string) => {
-        setCroppedImage(croppedImage);
+        const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
+        setCroppedImage(`data:image/png;base64,${cleanCroppedImage}`);
+        setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
         setIsCropModalOpen(false);
     };
 
@@ -46,11 +48,11 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
         if (!file) return;
 
         const reader = new FileReader();
-        reader.addEventListener("load", () => {
+        reader.onload = () => {
             const imageURL = reader.result?.toString() || "";
             setImagePreview(imageURL);
             setIsCropModalOpen(true);
-        });
+        };
         reader.readAsDataURL(file);
         setFileName(file.name);
     };
@@ -70,20 +72,26 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
     };
 
     const onSubmit = async (data: any) => {
+        const cleanLogo = croppedImage ? croppedImage.replace(/^data:image\/[a-z]+;base64,/, '') : '';
+        //
         const courseData = {
             teacherId: state.userName?.toString() ?? '',
             name: data.name,
             description: data.description,
-            logo: croppedImage || '',
+            logo: cleanLogo || '',
             isEnabled: data.isEnabled,
         };
 
         try {
             await courseApi.createCourse(courseData);
+
             setProblemMessage(t('course_created_successfully'));
+
             reset();
+
             setOpen(false);
-            if (onCourseCreated) onCourseCreated(); // Llama al callback para actualizar
+
+            if (onCourseCreated) onCourseCreated();
         } catch (error: any) {
             setProblemMessage(t('error_creating_course'));
         }
@@ -142,16 +150,26 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
                                 {croppedImage ? (
                                     <img
                                         src={croppedImage}
-                                        alt="Course"
-                                        className="user-placeholder uploaded-image"
-                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                        alt="Course Logo"
+                                        className="uploaded-image"
+                                        style={{
+                                            objectFit: 'contain',
+                                            maxWidth: '205px',
+                                            maxHeight: '205px',
+                                            borderRadius: '15px',
+                                            border: '1px solid #ccc',
+                                        }}
                                     />
                                 ) : (
                                     <img
                                         src={userPlaceholder}
                                         alt="Placeholder"
                                         className="user-placeholder"
-                                        style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                        style={{
+                                            objectFit: 'cover',
+                                            width: '205px',
+                                            height: '205px',
+                                        }}
                                     />
                                 )}
                             </div>
