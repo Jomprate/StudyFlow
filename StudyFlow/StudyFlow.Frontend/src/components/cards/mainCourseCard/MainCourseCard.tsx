@@ -1,24 +1,29 @@
 import React from 'react';
 import './mainCourseCard.css';
 import { useTheme } from '../../../ThemeContext';
-import CurseImage from '../../../assets/user_p.svg';
 import { useTranslation } from 'react-i18next';
+import CurseImage from '../../../assets/user_p.svg'; // Imagen predeterminada
 
 interface CourseCardProps {
     key: string;
     name: string;
     description: string;
     teacher: string;
-    image: string;
+    image: string; // Base64 string or default image
 }
 
-const MainCourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) => {
+const MainCourseCard: React.FC<CourseCardProps> = ({ name, description, teacher, image }) => {
     const { theme } = useTheme();
     const { t } = useTranslation();
 
     return (
         <div className={`main_course-card ${theme}`}>
-            <img src={CurseImage} alt={name} className="main_course-image" />
+            {/* Comprueba si hay una imagen en Base64; si no, usa la predeterminada */}
+            <img
+                src={image ? `data:image/png;base64,${image}` : CurseImage}
+                alt={name}
+                className="main_course-image"
+            />
             <div className="main_course-details">
                 <div className="main_course-title-container">
                     <h2 className="main_course-title">{name}</h2>
