@@ -71,10 +71,10 @@ const Course_Classwork: React.FC = () => {
             const userData = response.data;
             return userData.profilePicture
                 ? `data:image/png;base64,${userData.profilePicture}`
-                : user_p; // Placeholder si no hay imagen
+                : user_p;
         } catch (error) {
             console.error(`Error fetching profile image for user ${userId}:`, error);
-            return user_p; // Usa un placeholder si ocurre un error
+            return user_p;
         }
     };
 
@@ -130,8 +130,12 @@ const Course_Classwork: React.FC = () => {
                                         date={classwork.listScheduleds?.[0]?.scheduledDate || t('no_date')}
                                         creator={classwork.course?.teacherDTO?.fullName || t('unknown_creator')}
                                         creatorProfileImageUrl={classwork.creatorProfileImageUrl}
+                                        videos={classwork.youTubeVideos || []} // Aquí asignamos los videos
+                                        googleDriveLinks={classwork.googleDriveLinks || []} // Aquí los enlaces de Google Drive
+                                        otherLinks={classwork.alternateLinks || []} // Aquí los otros enlaces
                                     />
                                 ))
+
                             )}
                         </div>
                     </div>

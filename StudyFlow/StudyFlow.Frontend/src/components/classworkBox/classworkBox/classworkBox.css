@@ -18,12 +18,24 @@
     margin-bottom: 10px;
 }
 
-.classwork-title {
+/*.classwork-title {
     font-size: 18px;
     font-weight: bold;
     color: #333;
     text-align: center;
     margin: 10px 0;
+}*/
+
+.classwork-title {
+    background-color: #f0f0f0; /* Fondo para destacar el título */
+    padding: 8px 12px; /* Padding para darle espacio interno */
+    border-radius: 12px; /* Bordes redondeados */
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0; /* Separación del resto del contenido */
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
 }
 
 .classwork-html-content {
@@ -32,7 +44,80 @@
     line-height: 1.5;
     color: #666;
     overflow-wrap: break-word;
+    padding: 10px; /* Añadir espaciado interno */
+    background-color: #f9f9f9; /* Fondo claro */
+    border: 1px solid #ddd; /* Borde ligero */
+    border-radius: 8px; /* Bordes redondeados */
 }
+
+    /* Estilos para listas */
+    .classwork-html-content ul {
+        list-style-type: disc; /* Puntos como viñetas */
+        margin-left: 20px;
+        list-style-position: inside;
+    }
+
+        .classwork-html-content ul ul {
+            list-style-type: circle; /* Círculos para listas anidadas */
+            margin-left: 20px;
+        }
+
+    .classwork-html-content ol {
+        list-style-type: decimal; /* Números para listas ordenadas */
+        margin-left: 20px;
+    }
+
+    .classwork-html-content li {
+        margin-bottom: 5px; /* Separación entre elementos de lista */
+    }
+
+    /* Estilos para tablas */
+    .classwork-html-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .classwork-html-content th,
+    .classwork-html-content td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .classwork-html-content th {
+        background-color: #f0f0f0; /* Fondo para encabezados */
+        font-weight: bold;
+    }
+
+    /* Estilos para encabezados */
+    .classwork-html-content h1,
+    .classwork-html-content h2,
+    .classwork-html-content h3,
+    .classwork-html-content h4,
+    .classwork-html-content h5,
+    .classwork-html-content h6 {
+        margin: 10px 0;
+        color: #333;
+    }
+
+    /* Estilos para enlaces */
+    .classwork-html-content a {
+        color: #4caf50; /* Color verde para enlaces */
+        text-decoration: none;
+    }
+
+        .classwork-html-content a:hover {
+            text-decoration: underline;
+        }
+
+    /* Estilos para imágenes */
+    .classwork-html-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px; /* Bordes redondeados para imágenes */
+        margin-top: 10px;
+    }
 
 .classwork-user-image {
     width: 50px;
@@ -90,5 +175,57 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: 15px;
 }
+
+.video-card,
+.googledrive-card,
+.other-link-card {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.video-thumbnail,
+.googledrive-thumbnail,
+.other-link-thumbnail {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.video-details,
+.googledrive-details,
+.other-link-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .video-details h3,
+    .googledrive-details h3,
+    .other-link-details h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0;
+        color: #333;
+    }
+
+    .video-details p,
+    .googledrive-details p,
+    .other-link-details p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #666;
+    }

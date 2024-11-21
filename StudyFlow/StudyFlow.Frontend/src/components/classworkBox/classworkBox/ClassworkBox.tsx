@@ -5,7 +5,7 @@ import userImage from '../../../assets/user_p.svg';
 import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
-
+import DeleteModal from '../../modals/deleteModal/DeleteModal';
 interface VideoProps {
     url: string;
 }
@@ -42,12 +42,29 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     otherLinks = [],
 }) => {
     const { t } = useTranslation();
+    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
     const handleDelete = () => {
         // Implementa la lógica para eliminar el trabajo si es necesario
+        setDeleteModalOpen(true);
         console.log(`Deleting classwork with ID: ${classworkId}`);
-        setIsDeleted(true);
+        //setIsDeleted(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        console.log('Deleting announcement with ID:', classworkId);
+        try {
+            //await announceApi.deleteAnnounce(announceId);
+            console.log('Announcement deleted');
+            setIsDeleted(true);
+            setDeleteModalOpen(false);
+        } catch (error) {
+            console.error('Failed to delete announcement:', error);
+        }
+    };
+    const handleCloseModal = () => {
+        setDeleteModalOpen(false);
     };
 
     if (isDeleted) {
@@ -81,27 +98,47 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
 
             {videos.length > 0 && (
                 <div className="video-grid">
-                    {videos.map((video, index) => (
-                        <YTVideoAnnounceCard key={index} url={video.url} />
-                    ))}
+                    {videos
+                        .filter(video => video && video !== 'string') // Filtra valores inválidos y "string"
+                        .map((video, index) => (
+                            <YTVideoAnnounceCard
+                                key={index}
+                                url={typeof video === 'string' ? video : video.url} // Maneja tanto strings como objetos
+                            />
+                        ))}
                 </div>
             )}
 
-            {googleDriveLinks.length > 0 && (
+            {googleDriveLinks.length > 0 && googleDriveLinks.some(link => link.url !== 'string') && (
                 <div className="googledrive-grid">
-                    {googleDriveLinks.map((link, index) => (
-                        <GoogleDriveAnnounceCard key={index} url={link.url} />
-                    ))}
+                    {googleDriveLinks
+                        .filter(link => link.url && link.url !== 'string') // Filtra los valores inválidos
+                        .map((link, index) => (
+                            <GoogleDriveAnnounceCard key={index} url={link.url} />
+                        ))}
                 </div>
             )}
 
-            {otherLinks.length > 0 && (
+            {otherLinks.length > 0 && otherLinks.some(link => link.url !== 'string') && (
                 <div className="other-links-grid">
-                    {otherLinks.map((link, index) => (
-                        <OtherLinksAnnounceCard key={index} url={link.url} />
-                    ))}
+                    {otherLinks
+                        .filter(link => link.url && link.url !== 'string') // Filtra los valores inválidos
+                        .map((link, index) => (
+                            <OtherLinksAnnounceCard key={index} url={link.url} />
+                        ))}
                 </div>
             )}
+
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={handleCloseModal}
+                onDelete={handleConfirmDelete}
+                itemToDelete={t('this_announcement')}
+                deleteTitle={t('announce_delete_title')}
+                deleteMessage={t('announce_delete_message')}
+                deleteButtonText={t('delModal_delete_button')}
+                cancelButtonText={t('delModal_cancel_button')}
+            />
 
             <div className="classwork-footer">
                 <button className="classwork-view-button">{t('view_classwork')}</button>

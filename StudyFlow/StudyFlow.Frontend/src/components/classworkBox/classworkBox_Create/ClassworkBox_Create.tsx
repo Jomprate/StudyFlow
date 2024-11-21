@@ -41,6 +41,16 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
     const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
 
+    useEffect(() => {
+        const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
+        const storedGoogleDriveLinks = sessionStorage.getItem('googleDriveLinks');
+        const storedOtherLinks = sessionStorage.getItem('otherLinks');
+
+        if (storedYouTubeLinks) setYouTubeLinks(JSON.parse(storedYouTubeLinks));
+        if (storedGoogleDriveLinks) setGoogleDriveLinks(JSON.parse(storedGoogleDriveLinks));
+        if (storedOtherLinks) setOtherLinks(JSON.parse(storedOtherLinks));
+    }, []);
+
     const editorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -107,9 +117,9 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 htmlContent: content, // Contenido HTML
                 type: classworkType, // Tipo de trabajo
                 link: 'string', // Ajusta este valor si es necesario
-                youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : ['string'],
-                googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : ['string'],
-                alternateLinks: otherLinks.length > 0 ? otherLinks : ['string'],
+                youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : [],
+                googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : [],
+                alternateLinks: otherLinks.length > 0 ? otherLinks : [],
                 listScheduleds: [
                     {
                         id: crypto.randomUUID(), // Genera un ID único para el schedule
@@ -148,15 +158,21 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     };
 
     const addYouTubeLink = (link: string) => {
-        setYouTubeLinks([...youtubeLinks, link]);
+        const updatedLinks = [...youtubeLinks, link];
+        setYouTubeLinks(updatedLinks);
+        sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
     };
 
     const addGoogleDriveLink = (link: string) => {
-        setGoogleDriveLinks([...googleDriveLinks, link]);
+        const updatedLinks = [...googleDriveLinks, link];
+        setGoogleDriveLinks(updatedLinks);
+        sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
     };
 
     const addOtherLink = (link: string) => {
-        setOtherLinks([...otherLinks, link]);
+        const updatedLinks = [...otherLinks, link];
+        setOtherLinks(updatedLinks);
+        sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
     };
 
     return (
