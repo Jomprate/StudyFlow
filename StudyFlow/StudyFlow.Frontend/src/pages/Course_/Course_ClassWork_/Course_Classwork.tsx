@@ -9,6 +9,7 @@ import user_p from '../../../assets/user_p.svg';
 import { getSubjectsByCourseId } from '../../../services/subjectApi'; // Asegúrate de que el path sea correcto
 import { userApi } from '../../../services/api'; // Asegúrate de que el path sea correcto
 import { useParams } from 'react-router-dom'; // Para obtener el CourseId desde la URL
+import Pagination from '@components/pagination/Pagination';
 
 const Course_Classwork: React.FC = () => {
     const { t } = useTranslation();
@@ -20,6 +21,11 @@ const Course_Classwork: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    // Estados para la paginación
+    const [currentPage, setCurrentPage] = useState(1);
+    const [recordsPerPage, setRecordsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
+
     useEffect(() => {
         const fetchClassworks = async () => {
             try {
@@ -30,10 +36,10 @@ const Course_Classwork: React.FC = () => {
 
                 setLoading(true);
 
-                // Llamar a la API para obtener los subjects del curso
+                // Llamar a la API para obtener los subjects del curso con paginación
                 const response = await getSubjectsByCourseId(courseId, {
-                    page: 1,
-                    recordsNumber: 10, // Ajusta el número de registros por página si es necesario
+                    page: currentPage,
+                    recordsNumber: recordsPerPage,
                     filter: '',
                 });
 
@@ -53,6 +59,7 @@ const Course_Classwork: React.FC = () => {
 
                 // Actualizar el estado con los datos obtenidos
                 setClassworks(classworksWithCreators);
+                setTotalPages(response.data.paginationResult.totalPages); // Establecer total de páginas
                 setError(null);
             } catch (error: any) {
                 setError(t('error_loading_classworks'));
@@ -63,7 +70,52 @@ const Course_Classwork: React.FC = () => {
         };
 
         fetchClassworks();
-    }, [courseId, t]);
+    }, [courseId, currentPage, recordsPerPage, t]);
+
+    //useEffect(() => {
+    //    const fetchClassworks = async () => {
+    //        try {
+    //            if (!courseId) {
+    //                setError(t('error_course_id_required'));
+    //                return;
+    //            }
+
+    //            setLoading(true);
+
+    //            // Llamar a la API para obtener los subjects del curso
+    //            const response = await getSubjectsByCourseId(courseId, {
+    //                page: 1,
+    //                recordsNumber: 10, // Ajusta el número de registros por página si es necesario
+    //                filter: '',
+    //            });
+
+    //            // Obtener las imágenes de los creadores
+    //            const classworksWithCreators = await Promise.all(
+    //                response.data.paginationResult.listResult.map(async (classwork: any) => {
+    //                    const creatorProfileImageUrl = classwork.course?.teacherDTO?.id
+    //                        ? await fetchUserProfileImage(classwork.course.teacherDTO.id)
+    //                        : user_p; // Usa un placeholder si no hay imagen
+
+    //                    return {
+    //                        ...classwork,
+    //                        creatorProfileImageUrl,
+    //                    };
+    //                })
+    //            );
+
+    //            // Actualizar el estado con los datos obtenidos
+    //            setClassworks(classworksWithCreators);
+    //            setError(null);
+    //        } catch (error: any) {
+    //            setError(t('error_loading_classworks'));
+    //            console.error('Error fetching classworks:', error);
+    //        } finally {
+    //            setLoading(false);
+    //        }
+    //    };
+
+    //    fetchClassworks();
+    //}, [courseId, t]);
 
     const fetchUserProfileImage = async (userId: string) => {
         try {
@@ -90,6 +142,13 @@ const Course_Classwork: React.FC = () => {
 
         setClassworks((prevClassworks) => [safeClasswork, ...prevClassworks]);
         setModalOpen(false);
+    };
+
+    const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
+        const firstItemIndex = (currentPage - 1) * recordsPerPage;
+        const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
+        setRecordsPerPage(newRecordsPerPage);
+        setCurrentPage(newPage);
     };
 
     return (
@@ -138,6 +197,14 @@ const Course_Classwork: React.FC = () => {
 
                             )}
                         </div>
+
+                        <Pagination
+                            totalPages={totalPages}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                            recordsPerPage={recordsPerPage}
+                            onRecordsPerPageChange={handleRecordsPerPageChange}
+                        />
                     </div>
 
                     <div className="course-classwork-empty"></div>

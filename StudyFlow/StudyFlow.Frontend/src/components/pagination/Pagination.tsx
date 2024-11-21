@@ -26,7 +26,7 @@ const Pagination: React.FC<PaginationProps> = ({
         Ten = 10,
         Twenty = 20,
         Fifty = 50,
-        All = -1,
+        All = 1000, // Usa un número dinámico seguro
     }
 
     const handlePrev = () => {
@@ -40,7 +40,6 @@ const Pagination: React.FC<PaginationProps> = ({
     const handleRecordsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newRecordsPerPage = parseInt(event.target.value, 10);
 
-        // Calcula la nueva página actual basada en la posición del primer elemento y el nuevo límite de registros
         const firstItemIndex = (currentPage - 1) * recordsPerPage;
         const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
 
