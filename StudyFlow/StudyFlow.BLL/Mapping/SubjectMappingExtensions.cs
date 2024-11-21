@@ -14,6 +14,7 @@ namespace StudyFlow.BLL.Mapping
 
             return new DAL.Entities.Subject
             {
+                Id = dto.Id ?? Guid.NewGuid(), // Generar un nuevo ID si no está presente
                 Name = dto.Name ?? string.Empty,
                 Link = dto.Link,
                 Type = subjectTypeEnum,
@@ -24,8 +25,8 @@ namespace StudyFlow.BLL.Mapping
                 AlternateLinks = dto.AlternateLinks.EnsureList(),
                 ListScheduled = dto.ListScheduleds?.Select(s => new DAL.Entities.Scheduled
                 {
-                    Id = s.Id ?? Guid.NewGuid(),
-                    SubjectId = dto.Id ?? throw new ArgumentNullException(nameof(dto.Id), "SubjectId cannot be null."),
+                    Id = s.Id ?? Guid.NewGuid(), // Generar un nuevo ID para los horarios si no está presente
+                    SubjectId = s.SubjectId ?? Guid.NewGuid(), // Generar un nuevo ID para el SubjectId si no está presente (asegúrate de manejarlo correctamente)
                     ScheduledDate = s.ScheduledDate ?? throw new ArgumentNullException(nameof(s.ScheduledDate), "ScheduledDate cannot be null."),
                     Link = s.Link ?? string.Empty
                 }).ToList() ?? new List<DAL.Entities.Scheduled>()

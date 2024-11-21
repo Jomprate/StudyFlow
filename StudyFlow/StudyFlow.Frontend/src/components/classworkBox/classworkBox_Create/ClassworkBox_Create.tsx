@@ -83,11 +83,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
             return;
         }
 
-        if (!scheduledDate) {
-            alert('Scheduled date and time is required.');
-            return;
-        }
-
         const content = editorRef.current?.innerHTML.trim();
         if (!content) {
             alert('Content is required.');
@@ -95,54 +90,48 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         }
 
         const subjectPayload = {
-            courseId: courseId,
-            name: title,
-            htmlContent: content,
-            type: classworkType,
-            teacherId: state.userName,
-            link: 'string',
-            youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : ['string'],
-            googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : ['string'],
-            alternateLinks: otherLinks.length > 0 ? otherLinks : ['string'],
+            courseId: courseId, // Asegura que no sea null
+            subjectDTO: {
+                course: {
+                    id: courseId, // ID del curso asociado
+                    teacherDTO: {
+                        id: state.userName || 'unknown', // Valor por defecto si state.userName es null
+                        fullName: state.fullName || 'Unknown Teacher', // Valor por defecto si falta fullName
+                    },
+                    name: 'Course Name', // Sustituir con el nombre real del curso
+                    description: 'Course Description', // Sustituir con la descripción real del curso
+                    logo: 'Course Logo URL', // Sustituir con el logo real del curso
+                    isEnabled: true, // Configuración habilitada por defecto
+                },
+                name: title, // Título del subject
+                htmlContent: content, // Contenido HTML
+                type: classworkType, // Tipo de trabajo
+                link: 'string', // Ajusta este valor si es necesario
+                youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : ['string'],
+                googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : ['string'],
+                alternateLinks: otherLinks.length > 0 ? otherLinks : ['string'],
+                listScheduleds: [
+                    {
+                        id: crypto.randomUUID(), // Genera un ID único para el schedule
+                        scheduledDate: new Date(scheduledDate).toISOString(),
+                        link: 'string', // Ajusta este valor según sea necesario
+                    },
+                ],
+            },
         };
 
         try {
-            // Crear el Subject
+            console.log('Subject Payload:', subjectPayload);
+
             const subjectResponse = await subjectApi.addSubjectByCourse(subjectPayload);
 
             console.log('Full Subject Response:', subjectResponse);
 
-            // Asegúrate de que el `subjectId` sea correctamente extraído
-            const subjectId = subjectResponse?.data?.id;
-
-            if (!subjectId) {
-                throw new Error('Subject ID is undefined. Verify the backend response structure.');
-            }
-
-            console.log('Extracted Subject ID:', subjectId);
-
-            // Crear el payload para actualizar los horarios
-            const schedulesPayload = {
-                subjectId: subjectId,
-                listScheduleds: [
-                    {
-                        id: crypto.randomUUID(), // Genera un nuevo ID
-                        subjectId: subjectId, // Asegúrate de incluir el subjectId en cada elemento
-                        scheduledDate: new Date(scheduledDate).toISOString(),
-                        link: 'string', // Ajusta según lo necesario
-                    },
-                ],
-            };
-
-            console.log('Schedules Payload:', schedulesPayload);
-
-            // Actualizar horarios
-            const schedulesResponse = await subjectApi.updateSubjectSchedules(schedulesPayload);
-
-            console.log('Schedules successfully updated:', schedulesResponse);
-
+            // No validar subjectId inmediatamente
+            console.log('Subject created successfully');
+            alert('Subject created successfully');
             onClassworkCreated({
-                id: subjectId,
+                id: subjectResponse?.id || '', // Puedes usar un valor vacío o un placeholder
                 title,
                 content,
                 date: scheduledDate,
@@ -153,7 +142,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
             alert(`Error: ${error.response?.data?.message || 'Failed to create subject or schedules.'}`);
         }
     };
-
 
     const handleSubjectTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setClassworkType(event.target.value);

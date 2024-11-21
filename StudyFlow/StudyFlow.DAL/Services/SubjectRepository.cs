@@ -133,7 +133,10 @@ namespace StudyFlow.DAL.Services
 
             return new PaginationResult<Subject>
             {
-                ListResult = await query.Paginate(pagination).ToArrayAsync(),
+                ListResult = await query
+                    .Skip((pagination.Page - 1) * pagination.RecordsNumber)
+                    .Take(pagination.RecordsNumber)
+                    .ToListAsync(),
                 TotalRecords = totalRecords,
                 TotalPages = (int)Math.Ceiling(totalRecords / (double)pagination.RecordsNumber),
                 Pagination = pagination

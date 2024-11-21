@@ -543,19 +543,40 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"No subjects found for courseId {getSubjectsByCourseDTORequest.CourseId}.");
             }
 
-            // Mapear entidades a DTOs, incluyendo los Scheduleds
+            // Mapear entidades a DTOs
             var listSubjectDto = paginationResult.ListResult.Select(subject => new SubjectDTO
             {
                 Id = subject.Id,
                 Name = subject.Name,
-                Link = subject.Link,
+                HtmlContent = subject.HtmlContent,
                 Type = subject.Type.ToString(),
+                Link = subject.Link,
+                Course = subject.Course != null
+                    ? new CourseDTO
+                    {
+                        Id = subject.Course.Id,
+                        Name = subject.Course.Name,
+                        Description = subject.Course.Description,
+                        Logo = subject.Course.Logo,
+                        IsEnabled = subject.Course.IsEnabled,
+                        TeacherDTO = subject.Course.Teacher != null
+                            ? new TeacherDTO
+                            {
+                                Id = subject.Course.Teacher.Id,
+                                FullName = $"{subject.Course.Teacher.FirstName} {subject.Course.Teacher.LastName}"
+                            }
+                            : null
+                    }
+                    : null,
                 ListScheduleds = subject.ListScheduled?.Select(scheduled => new ScheduledDTO
                 {
                     Id = scheduled.Id,
                     ScheduledDate = scheduled.ScheduledDate,
                     Link = scheduled.Link
-                }).ToList()
+                }).ToList(),
+                YouTubeVideos = subject.YouTubeVideos,
+                GoogleDriveLinks = subject.GoogleDriveLinks,
+                AlternateLinks = subject.AlternateLinks
             }).ToList();
 
             // Crear la respuesta con la estructura de paginación
@@ -570,7 +591,6 @@ namespace StudyFlow.BLL.Services
                 }
             };
 
-            // Devolver la respuesta con éxito
             return ApiResponseHelper.Success(response);
         }
 
@@ -608,19 +628,19 @@ namespace StudyFlow.BLL.Services
 
         public async Task<IActionResult> AddSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest)
         {
-            var course = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == setSubjectByCourseStudentDTORequest.CourseId);
+            var courseExists = await _unitOfWork.CourseRepository.AnyAsync(w => w.Id == setSubjectByCourseStudentDTORequest.CourseId);
 
-            if (!course)
+            if (!courseExists)
             {
                 return ApiResponseHelper.NotFound($"Course with Id {setSubjectByCourseStudentDTORequest.CourseId} not found.");
             }
 
-            Subject subject = setSubjectByCourseStudentDTORequest.SubjectDTO.ToEntity();
+            // Mapear el DTO a la entidad
+            var subject = setSubjectByCourseStudentDTORequest.SubjectDTO.ToEntity();
 
             try
             {
                 await _unitOfWork.SubjectRepository.CreateAsync(subject);
-
                 await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -629,7 +649,7 @@ namespace StudyFlow.BLL.Services
                 throw new Exception("Failed to add subject to course", ex);
             }
 
-            return ApiResponseHelper.Create(true);
+            return ApiResponseHelper.Create(new { id = subject.Id });
         }
 
         public async Task<IActionResult> SetSubjectByCourseAsync(SetSubjectByCourseStudentDTORequest setSubjectByCourseStudentDTORequest)
