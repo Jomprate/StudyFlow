@@ -6,6 +6,7 @@ import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVid
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
+
 interface VideoProps {
     url: string;
 }
@@ -25,6 +26,8 @@ interface ClassworkBoxProps {
     date: string;
     creator: string;
     creatorProfileImageUrl?: string;
+    creationDate?: string; // Nueva prop para fecha de creación
+    modifiedDate?: string; // Nueva prop para fecha de modificación
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
@@ -37,6 +40,8 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     date,
     creator,
     creatorProfileImageUrl,
+    creationDate,
+    modifiedDate,
     videos = [],
     googleDriveLinks = [],
     otherLinks = [],
@@ -46,23 +51,19 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     const [isDeleted, setIsDeleted] = useState(false);
 
     const handleDelete = () => {
-        // Implementa la lógica para eliminar el trabajo si es necesario
         setDeleteModalOpen(true);
-        console.log(`Deleting classwork with ID: ${classworkId}`);
-        //setIsDeleted(true);
     };
 
     const handleConfirmDelete = async () => {
-        console.log('Deleting announcement with ID:', classworkId);
         try {
-            //await announceApi.deleteAnnounce(announceId);
-            console.log('Announcement deleted');
+            console.log('Deleting classwork with ID:', classworkId);
             setIsDeleted(true);
             setDeleteModalOpen(false);
         } catch (error) {
-            console.error('Failed to delete announcement:', error);
+            console.error('Failed to delete classwork:', error);
         }
     };
+
     const handleCloseModal = () => {
         setDeleteModalOpen(false);
     };
@@ -83,9 +84,11 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
                     alt={t('user_image_alt')}
                     className="classwork-user-image"
                 />
-                <div>
+                <div className="classwork-header-details">
                     <p className="classwork-user-name">{creator || t('unknown_user')}</p>
-                    <small>{date || t('no_date_available')}</small>
+                    <small className="classwork-dates">
+                        {t('created_on')}: {creationDate || t('unknown_creation_date')} | {t('last_modified')}: {modifiedDate || t('unknown_modified_date')}
+                    </small>
                 </div>
             </div>
 
@@ -99,11 +102,11 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
             {videos.length > 0 && (
                 <div className="video-grid">
                     {videos
-                        .filter(video => video && video !== 'string') // Filtra valores inválidos y "string"
+                        .filter(video => video && typeof video.url === 'string') // Filtra valores inválidos y objetos sin url
                         .map((video, index) => (
                             <YTVideoAnnounceCard
                                 key={index}
-                                url={typeof video === 'string' ? video : video.url} // Maneja tanto strings como objetos
+                                url={video.url}
                             />
                         ))}
                 </div>

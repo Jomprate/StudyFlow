@@ -53,6 +53,8 @@ const Course_Classwork: React.FC = () => {
                         return {
                             ...classwork,
                             creatorProfileImageUrl,
+                            creationDate: classwork.creationDate || t('unknown_creation_date'), // Agregar fecha de creación
+                            modifiedDate: classwork.modifiedDate || t('unknown_modified_date'), // Agregar fecha de modificación
                         };
                     })
                 );
@@ -189,9 +191,11 @@ const Course_Classwork: React.FC = () => {
                                         date={classwork.listScheduleds?.[0]?.scheduledDate || t('no_date')}
                                         creator={classwork.course?.teacherDTO?.fullName || t('unknown_creator')}
                                         creatorProfileImageUrl={classwork.creatorProfileImageUrl}
-                                        videos={classwork.youTubeVideos || []} // Aquí asignamos los videos
-                                        googleDriveLinks={classwork.googleDriveLinks || []} // Aquí los enlaces de Google Drive
-                                        otherLinks={classwork.alternateLinks || []} // Aquí los otros enlaces
+                                        creationDate={classwork.creationDate} // Pasar fecha de creación
+                                        modifiedDate={classwork.modifiedDate} // Pasar fecha de modificación
+                                        videos={classwork.youTubeVideos || []}
+                                        googleDriveLinks={classwork.googleDriveLinks || []}
+                                        otherLinks={classwork.alternateLinks || []}
                                     />
                                 ))
 

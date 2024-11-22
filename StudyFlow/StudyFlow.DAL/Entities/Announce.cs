@@ -21,7 +21,6 @@ namespace StudyFlow.DAL.Entities
 
         public List<string> AlternateLinks { get; set; } = new List<string>();
 
-        // Agregar la propiedad CourseId para tener una referencia al curso
         public Guid CourseId { get; set; }
 
         public Course Course { get; set; } = null!;

@@ -14,17 +14,28 @@
 
 .classwork-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Asegura la alineación superior dentro del contenedor */
+    justify-content: flex-start; /* Asegura la alineación izquierda de los elementos */
     margin-bottom: 10px;
+    text-align: left; /* Sobrescribe cualquier texto centrado heredado */
 }
 
-/*.classwork-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    text-align: center;
-    margin: 10px 0;
-}*/
+.classwork-header-details {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    text-align: left; /* Asegura que todo el texto esté alineado a la izquierda */
+    width: 100%; /* Asegura que ocupe todo el espacio disponible */
+}
+
+.classwork-dates {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 5px;
+    text-align: left; /* Alineación izquierda explícita */
+    white-space: nowrap; /* Mantiene todo el texto en una sola línea */
+    display: inline-block; /* Evita el apilamiento en líneas separadas */
+}
 
 .classwork-title {
     background-color: #f0f0f0; /* Fondo para destacar el título */
@@ -33,9 +44,33 @@
     font-size: 18px;
     font-weight: bold;
     color: #333;
-    margin: 10px 0; /* Separación del resto del contenido */
+    margin: 10px 0;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.classwork-user-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.classwork-user-name {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    color: #000;
+    margin: 0;
+}
+
+.classwork-header small {
+    display: block;
+    color: #999;
+    font-size: 12px;
+    margin-top: 5px;
 }
 
 .classwork-html-content {
@@ -44,34 +79,32 @@
     line-height: 1.5;
     color: #666;
     overflow-wrap: break-word;
-    padding: 10px; /* Añadir espaciado interno */
-    background-color: #f9f9f9; /* Fondo claro */
-    border: 1px solid #ddd; /* Borde ligero */
-    border-radius: 8px; /* Bordes redondeados */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
 }
 
-    /* Estilos para listas */
     .classwork-html-content ul {
-        list-style-type: disc; /* Puntos como viñetas */
+        list-style-type: disc;
         margin-left: 20px;
         list-style-position: inside;
     }
 
         .classwork-html-content ul ul {
-            list-style-type: circle; /* Círculos para listas anidadas */
+            list-style-type: circle;
             margin-left: 20px;
         }
 
     .classwork-html-content ol {
-        list-style-type: decimal; /* Números para listas ordenadas */
+        list-style-type: decimal;
         margin-left: 20px;
     }
 
     .classwork-html-content li {
-        margin-bottom: 5px; /* Separación entre elementos de lista */
+        margin-bottom: 5px;
     }
 
-    /* Estilos para tablas */
     .classwork-html-content table {
         width: 100%;
         border-collapse: collapse;
@@ -86,11 +119,10 @@
     }
 
     .classwork-html-content th {
-        background-color: #f0f0f0; /* Fondo para encabezados */
+        background-color: #f0f0f0;
         font-weight: bold;
     }
 
-    /* Estilos para encabezados */
     .classwork-html-content h1,
     .classwork-html-content h2,
     .classwork-html-content h3,
@@ -101,9 +133,8 @@
         color: #333;
     }
 
-    /* Estilos para enlaces */
     .classwork-html-content a {
-        color: #4caf50; /* Color verde para enlaces */
+        color: #4caf50;
         text-decoration: none;
     }
 
@@ -111,28 +142,12 @@
             text-decoration: underline;
         }
 
-    /* Estilos para imágenes */
     .classwork-html-content img {
         max-width: 100%;
         height: auto;
-        border-radius: 8px; /* Bordes redondeados para imágenes */
+        border-radius: 8px;
         margin-top: 10px;
     }
-
-.classwork-user-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    margin-right: 10px;
-    object-fit: cover;
-}
-
-.classwork-user-name {
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
-    margin: 0;
-}
 
 .classwork-footer {
     margin-top: 15px;

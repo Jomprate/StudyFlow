@@ -14,5 +14,7 @@
         public List<string> YouTubeVideos { get; set; } = new List<string>();
         public List<string> GoogleDriveLinks { get; set; } = new List<string>();
         public List<string> AlternateLinks { get; set; } = new List<string>();
+        public DateTime CreationDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 }

@@ -2,35 +2,37 @@ import api from './apiConfig';
 import i18n from '../i18n';
 
 // Define la interfaz completa para SubjectDTO y su estructura
+// Define la interfaz completa para SubjectDTO
 export interface SubjectDTO {
-    id?: string; // ID del subject, puede ser opcional para nuevos registros
-    name: string; // Nombre del subject
-    htmlContent: string; // Contenido HTML
-    type: string; // Tipo de trabajo (Homework, Quiz, etc.)
-    link?: string; // Link asociado (opcional)
-    youTubeVideos?: string[]; // Lista de videos de YouTube
-    googleDriveLinks?: string[]; // Lista de enlaces de Google Drive
-    alternateLinks?: string[]; // Lista de enlaces alternativos
+    id?: string;
+    name: string;
+    htmlContent: string;
+    type: string;
+    link?: string;
+    youTubeVideos?: string[];
+    googleDriveLinks?: string[];
+    alternateLinks?: string[];
     listScheduleds?: Array<{
-        id?: string; // ID del horario
-        subjectId?: string; // ID del subject relacionado
-        scheduledDate: string; // Fecha programada
-        link?: string; // Link asociado al horario (opcional)
+        id?: string;
+        subjectId?: string;
+        scheduledDate: string;
+        link?: string;
     }>;
-    course: { // Información del curso
-        id: string; // ID del curso
-        teacherDTO: { // Información del profesor
-            id: string; // ID del profesor
-            fullName: string; // Nombre completo del profesor
+    course: {
+        id: string;
+        teacherDTO: {
+            id: string;
+            fullName: string;
         };
-        name: string; // Nombre del curso
-        description: string; // Descripción del curso
-        logo: string; // URL del logo del curso
-        isEnabled: boolean; // Estado del curso
+        name: string;
+        description: string;
+        logo: string;
+        isEnabled: boolean;
     };
+    creationDate: string; // Fecha de creación
+    modifiedDate?: string; // Fecha de última modificación (opcional)
 }
 
-// Función para agregar un Subject por curso
 export const addSubjectByCourse = async (payload: {
     courseId: string; // Course ID
     subjectDTO: {
@@ -58,6 +60,8 @@ export const addSubjectByCourse = async (payload: {
             scheduledDate: string;
             link: string;
         }>;
+        creationDate?: string; // Fecha de creación (opcional)
+        modifiedDate?: string; // Fecha de modificación (opcional)
     };
 }): Promise<{ id: string }> => {
     try {
@@ -78,6 +82,55 @@ export const addSubjectByCourse = async (payload: {
         throw new Error(errorMessage);
     }
 };
+
+// Función para agregar un Subject por curso
+//export const addSubjectByCourse = async (payload: {
+//    courseId: string; // Course ID
+//    subjectDTO: {
+//        course: {
+//            id: string; // Course ID
+//            teacherDTO: {
+//                id: string; // Teacher ID
+//                fullName: string; // Teacher name
+//            };
+//            name: string; // Course name
+//            description: string; // Course description
+//            logo: string; // Course logo
+//            isEnabled: boolean; // Is course enabled
+//        };
+//        name: string;
+//        htmlContent: string;
+//        type: string;
+//        link?: string;
+//        youTubeVideos?: string[];
+//        googleDriveLinks?: string[];
+//        alternateLinks?: string[];
+//        listScheduleds?: Array<{
+//            id: string;
+//            subjectId: string;
+//            scheduledDate: string;
+//            link: string;
+//        }>;
+//    };
+//}): Promise<{ id: string }> => {
+//    try {
+//        // Enviar el payload ajustado al backend
+//        const response = await api.post('/OnBoardingTeacher/AddSubjectByCourse/', {
+//            courseId: payload.courseId,
+//            subjectDTO: payload.subjectDTO,
+//        });
+
+//        return response.data; // Suponiendo que devuelve { id: string }
+//    } catch (error: any) {
+//        console.error('API Error:', error);
+
+//        const errorMessage = error.response?.data?.message
+//            ? error.response.data.message
+//            : error.message || 'An unexpected error occurred';
+
+//        throw new Error(errorMessage);
+//    }
+//};
 
 // Nuevo método para agregar horarios al Subject
 export const setSubjectSchedules = async (scheduleDTO: {
@@ -143,7 +196,6 @@ export const setSubjectSchedules = async (scheduleDTO: {
     }
 };
 
-// Nuevo método para obtener todos los Subjects por CourseId
 export const getSubjectsByCourseId = async (
     courseId: string,
     pagination: { page?: number; recordsNumber?: number; filter?: string }
@@ -179,16 +231,18 @@ export const getSubjectsByCourseId = async (
                     listResult: response.data.data.paginationResult.listResult.map(
                         (subject: SubjectDTO) => ({
                             ...subject,
+                            creationDate: subject.creationDate || 'Unknown',
+                            modifiedDate: subject.modifiedDate || null,
                             course: {
-                                id: courseId, // Course ID desde los parámetros
+                                id: courseId,
                                 teacherDTO: {
-                                    id: subject.course?.teacherDTO?.id || '', // Asignar ID del profesor o vacío
-                                    fullName: subject.course?.teacherDTO?.fullName || 'Unknown Teacher', // Asignar nombre del profesor
+                                    id: subject.course?.teacherDTO?.id || '',
+                                    fullName: subject.course?.teacherDTO?.fullName || 'Unknown Teacher',
                                 },
-                                name: subject.course?.name || 'Unknown Course', // Nombre del curso
-                                description: subject.course?.description || 'No Description', // Descripción del curso
-                                logo: subject.course?.logo || '', // URL del logo o vacío
-                                isEnabled: subject.course?.isEnabled ?? true, // Estado habilitado o por defecto true
+                                name: subject.course?.name || 'Unknown Course',
+                                description: subject.course?.description || 'No Description',
+                                logo: subject.course?.logo || '',
+                                isEnabled: subject.course?.isEnabled ?? true,
                             },
                         })
                     ),

@@ -552,22 +552,22 @@ namespace StudyFlow.BLL.Services
                 Type = subject.Type.ToString(),
                 Link = subject.Link,
                 Course = subject.Course != null
-                    ? new CourseDTO
-                    {
-                        Id = subject.Course.Id,
-                        Name = subject.Course.Name,
-                        Description = subject.Course.Description,
-                        Logo = subject.Course.Logo,
-                        IsEnabled = subject.Course.IsEnabled,
-                        TeacherDTO = subject.Course.Teacher != null
-                            ? new TeacherDTO
-                            {
-                                Id = subject.Course.Teacher.Id,
-                                FullName = $"{subject.Course.Teacher.FirstName} {subject.Course.Teacher.LastName}"
-                            }
-                            : null
-                    }
-                    : null,
+        ? new CourseDTO
+        {
+            Id = subject.Course.Id,
+            Name = subject.Course.Name,
+            Description = subject.Course.Description,
+            Logo = subject.Course.Logo,
+            IsEnabled = subject.Course.IsEnabled,
+            TeacherDTO = subject.Course.Teacher != null
+                ? new TeacherDTO
+                {
+                    Id = subject.Course.Teacher.Id,
+                    FullName = $"{subject.Course.Teacher.FirstName} {subject.Course.Teacher.LastName}"
+                }
+                : null
+        }
+        : null,
                 ListScheduleds = subject.ListScheduled?.Select(scheduled => new ScheduledDTO
                 {
                     Id = scheduled.Id,
@@ -576,7 +576,9 @@ namespace StudyFlow.BLL.Services
                 }).ToList(),
                 YouTubeVideos = subject.YouTubeVideos,
                 GoogleDriveLinks = subject.GoogleDriveLinks,
-                AlternateLinks = subject.AlternateLinks
+                AlternateLinks = subject.AlternateLinks,
+                CreationDate = subject.CreatedAt, // Mapear CreationDate
+                ModifiedDate = subject.UpdatedAt  // Mapear ModifiedDate
             }).ToList();
 
             // Crear la respuesta con la estructura de paginación

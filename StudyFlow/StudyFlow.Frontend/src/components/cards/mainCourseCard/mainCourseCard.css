@@ -91,7 +91,7 @@
 
 /* Tema claro */
 .main_course-card.light {
-    background-color: var(--color-card-background-light);
+    background-color: #135f78;
     color: var(--color-dark-text-1);
     border: 1px solid #4169e1;
 }
