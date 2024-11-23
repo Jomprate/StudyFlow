@@ -46,6 +46,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
         }
     });
 
+    console.log(problemMessage);
+
     const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data: LoginFormData) => {

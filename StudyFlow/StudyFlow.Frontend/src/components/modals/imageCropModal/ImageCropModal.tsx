@@ -25,7 +25,7 @@ const ImageCropModal: React.FC<ImageCropModalProps> = ({ open, imageSrc, fileNam
         }
     }, [imageSrc]);
 
-    const onCropCompleteHandler = useCallback((_, croppedPixels: { x: number; y: number; width: number; height: number }) => {
+    const onCropCompleteHandler = useCallback((_: unknown, croppedPixels: { x: number; y: number; width: number; height: number }) => {
         setCroppedAreaPixels(croppedPixels);
     }, []);
 

@@ -100,31 +100,31 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         }
 
         const subjectPayload = {
-            courseId: courseId, // Asegura que no sea null
+            courseId: courseId,
             subjectDTO: {
                 course: {
-                    id: courseId, // ID del curso asociado
+                    id: courseId,
                     teacherDTO: {
-                        id: state.userName || 'unknown', // Valor por defecto si state.userName es null
-                        fullName: state.fullName || 'Unknown Teacher', // Valor por defecto si falta fullName
+                        id: state.userName || 'unknown',
+                        fullName: state.fullName || 'Unknown Teacher',
                     },
-                    name: 'Course Name', // Sustituir con el nombre real del curso
-                    description: 'Course Description', // Sustituir con la descripción real del curso
-                    logo: 'Course Logo URL', // Sustituir con el logo real del curso
-                    isEnabled: true, // Configuración habilitada por defecto
+                    name: 'Course Name',
+                    description: 'Course Description',
+                    logo: 'Course Logo URL',
+                    isEnabled: true,
                 },
-                name: title, // Título del subject
-                htmlContent: content, // Contenido HTML
-                type: classworkType, // Tipo de trabajo
-                link: 'string', // Ajusta este valor si es necesario
+                name: title,
+                htmlContent: content,
+                type: classworkType,
+                link: 'string',
                 youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : [],
                 googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : [],
                 alternateLinks: otherLinks.length > 0 ? otherLinks : [],
                 listScheduleds: [
                     {
-                        id: crypto.randomUUID(), // Genera un ID único para el schedule
+                        id: crypto.randomUUID(),
                         scheduledDate: new Date(scheduledDate).toISOString(),
-                        link: 'string', // Ajusta este valor según sea necesario
+                        link: 'string',
                     },
                 ],
             },

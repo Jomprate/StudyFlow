@@ -1,5 +1,5 @@
 import api from './apiConfig';
-import i18n from '../i18n';
+//import i18n from '../i18n';
 
 // Define la interfaz completa para SubjectDTO y su estructura
 // Define la interfaz completa para SubjectDTO
@@ -14,7 +14,6 @@ export interface SubjectDTO {
     alternateLinks?: string[];
     listScheduleds?: Array<{
         id?: string;
-        subjectId?: string;
         scheduledDate: string;
         link?: string;
     }>;
@@ -56,7 +55,6 @@ export const addSubjectByCourse = async (payload: {
         alternateLinks?: string[];
         listScheduleds?: Array<{
             id: string;
-            subjectId: string;
             scheduledDate: string;
             link: string;
         }>;

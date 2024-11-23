@@ -6,6 +6,7 @@ import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVid
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
+import { formatDate } from '../../../utils/date/dateUtils';
 
 interface VideoProps {
     url: string;
@@ -26,8 +27,8 @@ interface ClassworkBoxProps {
     date: string;
     creator: string;
     creatorProfileImageUrl?: string;
-    creationDate?: string; // Nueva prop para fecha de creación
-    modifiedDate?: string; // Nueva prop para fecha de modificación
+    creationDate?: string;
+    modifiedDate?: string;
     videos?: VideoProps[];
     googleDriveLinks?: GoogleDriveLinkProps[];
     otherLinks?: OtherLinkProps[];
@@ -49,6 +50,16 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     const { t } = useTranslation();
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
+
+    const formattedCreationDate = creationDate ? formatDate(creationDate, true) : t('unknown_creation_date');
+    const formattedModifiedDate = modifiedDate ? formatDate(modifiedDate, true) : t('unknown_modified_date');
+
+    console.log(date);
+
+    const truncateDate = (date: string): string => {
+        const parsedDate = new Date(date);
+        return parsedDate.toISOString().slice(0, 16);
+    };
 
     const handleDelete = () => {
         setDeleteModalOpen(true);
@@ -87,8 +98,15 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
                 <div className="classwork-header-details">
                     <p className="classwork-user-name">{creator || t('unknown_user')}</p>
                     <small className="classwork-dates">
-                        {t('created_on')}: {creationDate || t('unknown_creation_date')} | {t('last_modified')}: {modifiedDate || t('unknown_modified_date')}
+                        {t('created_on')}: {formattedCreationDate}
+                        {creationDate && modifiedDate && truncateDate(creationDate) !== truncateDate(modifiedDate) && (
+                            <span>
+                                {' | '}
+                                {t('last_modified')}: {formattedModifiedDate}
+                            </span>
+                        )}
                     </small>
+
                 </div>
             </div>
 
@@ -102,11 +120,11 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
             {videos.length > 0 && (
                 <div className="video-grid">
                     {videos
-                        .filter(video => video && typeof video.url === 'string') // Filtra valores inválidos y objetos sin url
+                        .filter(video => video && video.toString() !== 'string')
                         .map((video, index) => (
                             <YTVideoAnnounceCard
                                 key={index}
-                                url={video.url}
+                                url={typeof video === 'string' ? video : video.url}
                             />
                         ))}
                 </div>

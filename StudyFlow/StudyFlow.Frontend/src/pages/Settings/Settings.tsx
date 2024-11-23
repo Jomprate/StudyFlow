@@ -16,9 +16,9 @@ const Settings: React.FC = () => {
     };
 
     // Función para cerrar el modal
-    const handleCloseModal = () => {
-        setIsUpdateModalOpen(false);
-    };
+    //const handleCloseModal = () => {
+    //    setIsUpdateModalOpen(false);
+    //};
 
     return (
         <div className={`settings_page ${theme}`}>

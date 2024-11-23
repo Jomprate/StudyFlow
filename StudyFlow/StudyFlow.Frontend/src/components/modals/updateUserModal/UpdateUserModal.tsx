@@ -23,7 +23,7 @@ interface AuthModalProps {
     targetUserId?: string;
 }
 
-const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId, targetUserId }) => {
+const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId }) => {
     const { t, i18n } = useTranslation();
     const { theme } = useTheme();
     const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
@@ -53,7 +53,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId, targ
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const { state } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
-    const [translatedUserType, setTranslatedUserType] = useState('');
+    //const [translatedUserType, setTranslatedUserType] = useState('');
 
     const isSelfUpdate = !targetUserId; // Si no hay targetUserId, es una auto-actualización
 
@@ -105,13 +105,13 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, userId, targ
                     // Traducción del tipo de usuario basado en profileId
                     switch (userData.profileId) {
                         case 1:
-                            setTranslatedUserType(t('global_teacher'));
+                            (t('global_teacher'));
                             break;
                         case 2:
-                            setTranslatedUserType(t('global_student'));
+                            (t('global_student'));
                             break;
                         default:
-                            setTranslatedUserType(t('global_unknown'));
+                            (t('global_unknown'));
                             break;
                     }
                 } catch (error) {

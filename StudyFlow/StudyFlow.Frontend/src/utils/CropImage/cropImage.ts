@@ -7,7 +7,7 @@ export default async function getCroppedImg(
 
     // Espera a que la imagen se cargue completamente
     await new Promise<void>((resolve, reject) => {
-        image.onload = resolve;
+        image.onload = () => resolve();
         image.onerror = reject;
     });
 

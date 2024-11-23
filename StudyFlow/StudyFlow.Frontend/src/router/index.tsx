@@ -7,9 +7,7 @@ import Notifications from '../pages/Notifications/Notifications.tsx';
 import Requests from '../pages/Requests/Requests.tsx';
 import Settings from '../pages/Settings/Settings.tsx';
 import Course from '../pages/Course_/Course_.tsx';
-import Subject from '../pages/Subjects/Subject.tsx';
 import Notification from '../pages/Notification/Notification.tsx';
-import CourseCrud from '../pages/Course_/CourseCrud.tsx';
 import Calendar from '../pages/Calendar_/Calendar.tsx';
 import ConfirmPage from '../pages/ConfirmEmailPage/Confirm_page.tsx';
 import RecoveryPassword from '../pages/RecoveryPassword/RecoveryPassword.tsx'

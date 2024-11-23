@@ -14,33 +14,33 @@
 
 .classwork-header {
     display: flex;
-    align-items: flex-start; /* Asegura la alineación superior dentro del contenedor */
-    justify-content: flex-start; /* Asegura la alineación izquierda de los elementos */
+    align-items: flex-start;
+    justify-content: flex-start;
     margin-bottom: 10px;
-    text-align: left; /* Sobrescribe cualquier texto centrado heredado */
+    text-align: left;
 }
 
 .classwork-header-details {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    text-align: left; /* Asegura que todo el texto esté alineado a la izquierda */
-    width: 100%; /* Asegura que ocupe todo el espacio disponible */
+    text-align: left;
+    width: 100%;
 }
 
 .classwork-dates {
     font-size: 0.85rem;
     color: #666;
     margin-top: 5px;
-    text-align: left; /* Alineación izquierda explícita */
-    white-space: nowrap; /* Mantiene todo el texto en una sola línea */
-    display: inline-block; /* Evita el apilamiento en líneas separadas */
+    text-align: left;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .classwork-title {
-    background-color: #f0f0f0; /* Fondo para destacar el título */
-    padding: 8px 12px; /* Padding para darle espacio interno */
-    border-radius: 12px; /* Bordes redondeados */
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 12px;
     font-size: 18px;
     font-weight: bold;
     color: #333;

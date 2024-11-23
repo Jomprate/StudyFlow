@@ -12,14 +12,15 @@ interface PersonCardProps {
     profileImageUrl?: string;
     email: string;
     enrollmentDate: string;
-    isEnabled?: boolean;  // Mostrar si está habilitado
-    isCompleted?: boolean; // Mostrar si está completado
+    isEnabled?: boolean;
+    isCompleted?: boolean;
 }
 
 const PersonCard: React.FC<PersonCardProps> = ({ id, name, role, profileImageUrl, email, enrollmentDate, isEnabled, isCompleted }) => {
     const { t } = useTranslation();
     const { theme } = useTheme();
 
+    console.log("role" + role);
     useEffect(() => {
         //console.log("Profile Image for ID:", id, profileImageUrl || "Using placeholder");
     }, [id, profileImageUrl]);

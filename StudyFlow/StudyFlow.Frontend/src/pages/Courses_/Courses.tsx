@@ -19,7 +19,7 @@ const Courses: React.FC = () => {
                 <div className="course-list">
                     {coursesData.map((course) => (
                         <CourseCard
-                            key={course.id}
+                            key={course.id.toString()}
                             name={course.name}
                             description={course.description}
                             teacher={course.professor}

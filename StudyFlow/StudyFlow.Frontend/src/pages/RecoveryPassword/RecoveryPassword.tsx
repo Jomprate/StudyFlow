@@ -19,8 +19,7 @@ const ResetPasswordPage: React.FC = () => {
         NewPassword: '',
         Token: '',
     };
-    // Obtener el token de los parámetros de la URL
-    const query = new URLSearchParams(useLocation().search);
+    /*const query = new URLSearchParams(useLocation().search);*/
     const token = decodeURIComponent(new URLSearchParams(location.search).get('token') || '');
     const userid = new URLSearchParams(location.search).get('user');
 
@@ -41,14 +40,14 @@ const ResetPasswordPage: React.FC = () => {
             ResetPasswordRequestDTO.NewPassword = newPassword;
             ResetPasswordRequestDTO.UserId = userid || '';
             ResetPasswordRequestDTO.Token = token || '';
-            let result = await authApi.ResetPassword(ResetPasswordRequestDTO); // Asumiendo que tu función de API acepta el token y la nueva contraseña
+            let result = await authApi.ResetPassword(ResetPasswordRequestDTO);
             setSuccessMessage("Contraseña restablecida con éxito.");
-            setPopupMessage(result); // Establecer el mensaje del Popup
+            setPopupMessage(result);
             setShowPopup(true);
-            setErrorMessage(''); // Limpiar el mensaje de error si fue exitoso
+            setErrorMessage('');
         } catch (error) {
             setErrorMessage("Error al restablecer la contraseña. Inténtalo de nuevo.");
-            setSuccessMessage(''); // Limpiar el mensaje de éxito si ocurrió un error
+            setSuccessMessage('');
         }
     };
 
