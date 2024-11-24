@@ -54,6 +54,7 @@ export interface CourseDTO {
     teacher: string;
     logo?: string;
     isEnabled: boolean;
+    data: any;
 }
 
 export const getCoursesByTeacherIdPaginatedAsync = async (
@@ -128,6 +129,7 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
                 logo: course.logo || "",
                 userId: course.userId,
                 isEnabled: course.isEnabled,
+                data: ""
             }));
 
             return {
