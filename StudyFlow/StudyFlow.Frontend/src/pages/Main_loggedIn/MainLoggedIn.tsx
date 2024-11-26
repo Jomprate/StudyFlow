@@ -17,7 +17,7 @@ interface Course {
     enrolled?: boolean;
     teacher: string;
     logo?: string;
-    isDeleted?: boolean; // Asegúrate de incluir esta propiedad
+    isDeleted?: boolean;
 }
 
 interface Student {
@@ -32,7 +32,7 @@ const MainLoggedIn: React.FC = () => {
 
     const [allCourses, setAllCourses] = useState<Course[]>([]);
     const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]);
-    const [students, setStudents] = useState<Student[]>([]);
+    const [students, _setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
