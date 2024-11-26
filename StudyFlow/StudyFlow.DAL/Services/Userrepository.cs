@@ -5,6 +5,7 @@ using StudyFlow.DAL.Data;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
+using System.Security.Cryptography;
 using System.Security.Policy;
 
 namespace StudyFlow.DAL.Services
@@ -93,5 +94,50 @@ namespace StudyFlow.DAL.Services
         public async Task<string> GeneratePasswordResetTokenAsync(User user) => await _userManager.GeneratePasswordResetTokenAsync(user);
 
         public async Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword) => await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+        public async Task<bool> ValidatePasswordAsync(User user, string password)
+        {
+            if (string.IsNullOrEmpty(user.PasswordHash))
+                return false;
+
+            var hashBytes = Convert.FromBase64String(user.PasswordHash);
+
+            const int SaltSize = 16;
+            const int KeySize = 32;
+            const int Iterations = 10000;
+
+            var salt = new byte[SaltSize];
+            Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+
+            var key = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
+
+            for (int i = 0; i < KeySize; i++)
+            {
+                if (hashBytes[i + SaltSize] != key[i])
+                    return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> UpdatePasswordAsync(User user, string newPassword)
+        {
+            const int SaltSize = 16;
+            const int KeySize = 32;
+            const int Iterations = 10000;
+
+            byte[] salt = new byte[SaltSize];
+            RandomNumberGenerator.Fill(salt);
+
+            var key = new Rfc2898DeriveBytes(newPassword, salt, Iterations, HashAlgorithmName.SHA256).GetBytes(KeySize);
+
+            var hash = new byte[SaltSize + KeySize];
+            Array.Copy(salt, 0, hash, 0, SaltSize);
+            Array.Copy(key, 0, hash, SaltSize, KeySize);
+
+            user.PasswordHash = Convert.ToBase64String(hash);
+            _context.Users.Update(user);
+            return true;
+        }
     }
 }

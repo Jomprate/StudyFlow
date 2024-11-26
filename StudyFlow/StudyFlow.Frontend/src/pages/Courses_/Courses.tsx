@@ -1,11 +1,11 @@
 import React from 'react';
 import './courses.css';
-import { useTheme } from '../../ThemeContext'; // Mantener el tema
+import { useTheme } from '../../ThemeContext';
 import { coursesData } from './coursesData';
-import { CourseCard } from '../../components'; // Importamos el componente CourseCard
+import { CourseCard } from '../../components';
 
 const Courses: React.FC = () => {
-    const { theme } = useTheme(); // Usamos el tema de la aplicación
+    const { theme } = useTheme();
 
     const handleBecomeInstructor = () => {
         alert("Formulario para convertirse en profesor pronto estará disponible.");

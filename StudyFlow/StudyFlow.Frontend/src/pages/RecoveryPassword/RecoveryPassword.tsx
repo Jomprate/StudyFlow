@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Popup from '../../components/modals/PopUp/PopUp'; // Importar el Popup
+import Popup from '../../components/modals/PopUp/PopUp';
 import './RecoveryPassword.css';
-import { authApi } from '../../services/api'; // Asegúrate de importar tu función de API
+import { authApi } from '../../services/api';
 
 const ResetPasswordPage: React.FC = () => {
     const location = useLocation();
-    const navigate = useNavigate(); // Para redireccionar
+    const navigate = useNavigate();
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [successMessage, setSuccessMessage] = useState<string>('');
-    const [showPopup, setShowPopup] = useState(false); // Estado para mostrar el popup
-    const [popupMessage, setPopupMessage] = useState(''); // Estado para el mensaje del Popup
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState('');
 
     const ResetPasswordRequestDTO: { UserId: string; NewPassword: string; Token: string; } = {
         UserId: '',

@@ -78,7 +78,7 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
             const { listResult, pagination } = value.data;
 
             const coursesArray: CourseDTO[] = listResult
-                .filter((course: any) => !course.isDeleted) // Filtrar cursos no eliminados
+                .filter((course: any) => !course.isDeleted)
                 .map((course: any) => ({
                     id: course.id,
                     name: course.name,
@@ -124,7 +124,7 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
 
         if (coursesData && Array.isArray(coursesData)) {
             const coursesArray: CourseDTO[] = coursesData
-                .filter((course: any) => !course.isDeleted) // Filtrar cursos no eliminados
+                .filter((course: any) => !course.isDeleted)
                 .map((course: any) => ({
                     id: course.id,
                     name: course.name,

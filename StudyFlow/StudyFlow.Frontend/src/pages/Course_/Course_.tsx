@@ -11,7 +11,7 @@ import user_p from '../../assets/user_p.svg';
 import './course.css';
 
 interface CourseResponse {
-    data: courseApi.CourseDTO; // Ajustamos para que acepte la estructura de respuesta
+    data: courseApi.CourseDTO;
 }
 
 const Course_: React.FC = () => {
@@ -19,7 +19,6 @@ const Course_: React.FC = () => {
     const { state } = useAuth();
     const { theme } = useTheme();
 
-    // Ajustamos el estado para incluir la estructura de datos esperada
     const [course, setCourse] = useState<CourseResponse | null>(null);
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
@@ -37,12 +36,10 @@ const Course_: React.FC = () => {
                     return;
                 }
 
-                // Llamada a la API
                 const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
 
                 console.log("Course fetched:", courseData);
 
-                // Aseguramos que courseData tiene la estructura esperada
                 if (courseData && courseData.data) {
                     setCourse(courseData);
                 } else {
@@ -82,7 +79,6 @@ const Course_: React.FC = () => {
                         <h1>{course.data.name}</h1>
                         <h2>{course.data.description}</h2>
                     </div>
-                    {/* Mostramos la imagen en Base64 si está disponible */}
                     <img
                         src={course.data.logo ? `data:image/png;base64,${course.data.logo}` : user_p}
                         alt="Course Logo"

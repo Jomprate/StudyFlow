@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { createContext, useContext, useReducer, ReactNode } from 'react';
-import { authApi, userApi } from '../services/api'; // Importar getuserbyid
+import { authApi, userApi } from '../services/api';
 
 // Definir el tipo de roles permitidos
 type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
@@ -11,29 +11,26 @@ interface AuthState {
     role: UserRole;
     userName: string | null;
     token: string | null;
-    fullName: string | null; // Nuevo estado para el nombre completo del usuario
+    fullName: string | null;
 }
 
 interface AuthContextProps {
     state: AuthState;
     login: (role: UserRole, userName: string, token: string) => void;
     logout: () => Promise<void>;
-    fullName: string | null; // Exponer fullName en el contexto
+    fullName: string | null;
 }
 
-// Estado inicial de la aplicación
 const initialState: AuthState = {
     isAuthenticated: false,
     role: null,
     userName: null,
-    token: null, // Token inicial es null
-    fullName: null, // Inicializamos fullName como null
+    token: null,
+    fullName: null,
 };
 
-// Crear el contexto de autenticación
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-// Reducer para manejar las acciones de autenticación
 const authReducer = (state: AuthState, action: { type: string; payload?: any }): AuthState => {
     switch (action.type) {
         case 'LOGIN':
@@ -42,7 +39,7 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
                 isAuthenticated: true,
                 role: action.payload.role,
                 userName: action.payload.userName,
-                token: action.payload.token, // Guardar el token en el estado
+                token: action.payload.token,
             };
         case 'SET_FULL_NAME':
             return {
@@ -55,8 +52,8 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
                 isAuthenticated: false,
                 role: null,
                 userName: null,
-                token: null, // Limpiar el token en el logout
-                fullName: null, // Limpiar fullName en el logout
+                token: null,
+                fullName: null,
             };
         default:
             return state;
@@ -67,65 +64,53 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
-    // Función login que actualiza el estado, guarda el token y otros datos en LocalStorage
     const login = (role: UserRole, userName: string, token: string) => {
         console.log('Dispatching login with role:', role, 'and userName:', userName);
 
-        // Guardar los datos de autenticación en LocalStorage
         localStorage.setItem('authData', JSON.stringify({ role, userName }));
-        localStorage.setItem('authToken', token); // Guardar el token por separado
+        localStorage.setItem('authToken', token);
 
-        // Despachar la acción LOGIN para actualizar el estado
         dispatch({ type: 'LOGIN', payload: { role, userName, token } });
 
-        // Llamar a getuserbyid para obtener el nombre completo
         fetchUserFullName(userName);
     };
 
-    // Función para obtener el nombre completo del usuario y almacenarlo en el estado global
     const fetchUserFullName = async (userId: string) => {
         try {
             const user = await userApi.getuserbyid(userId);
             const fullName = `${user.data.firstName} ${user.data.lastName}`;
             console.log('Fetched fullName:', fullName);
 
-            // Guardar fullName en el estado
             dispatch({ type: 'SET_FULL_NAME', payload: { fullName } });
         } catch (error) {
             console.error('Error fetching user fullName:', error);
         }
     };
 
-    // Función logout que realiza la llamada a la API, limpia el estado y LocalStorage
     const logout = async () => {
         try {
             console.log('Calling logout API...');
-            // Llamar a la API para hacer logout
             await authApi.logoutUser();
 
             console.log('Logout successful, clearing auth data...');
-            // Limpiar los datos locales
             localStorage.removeItem('authData');
-            localStorage.removeItem('authToken'); // Limpiar también el token
+            localStorage.removeItem('authToken');
 
-            // Despachar la acción LOGOUT para actualizar el estado global
             dispatch({ type: 'LOGOUT' });
         } catch (error) {
             console.error('Error during logout:', error);
-            throw error; // Lanzar el error para manejarlo en componentes como Navbar
+            throw error;
         }
     };
 
-    // Restaurar los datos de autenticación desde LocalStorage al cargar la aplicación
     useEffect(() => {
         const storedAuthData = localStorage.getItem('authData');
-        const storedToken = localStorage.getItem('authToken'); // Restaurar el token
+        const storedToken = localStorage.getItem('authToken');
         if (storedAuthData && storedToken) {
             const { role, userName } = JSON.parse(storedAuthData);
             console.log('Restoring auth data from LocalStorage:', { role, userName, token: storedToken });
             dispatch({ type: 'LOGIN', payload: { role, userName, token: storedToken } });
 
-            // Llamar a getuserbyid para restaurar el nombre completo
             fetchUserFullName(userName);
         }
     }, []);

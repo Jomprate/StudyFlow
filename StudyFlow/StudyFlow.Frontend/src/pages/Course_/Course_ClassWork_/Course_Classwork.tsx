@@ -6,9 +6,9 @@ import ClassworkBox from '@components/classworkBox/classworkBox/ClassworkBox';
 import ClassworkBox_Create from '@components/classworkBox/classworkBox_Create/ClassworkBox_Create';
 import { useAuth } from '../../../contexts/AuthContext';
 import user_p from '../../../assets/user_p.svg';
-import { getSubjectsByCourseId } from '../../../services/subjectApi'; // Asegúrate de que el path sea correcto
-import { userApi } from '../../../services/api'; // Asegúrate de que el path sea correcto
-import { useParams } from 'react-router-dom'; // Para obtener el CourseId desde la URL
+import { getSubjectsByCourseId } from '../../../services/subjectApi';
+import { userApi } from '../../../services/api';
+import { useParams } from 'react-router-dom';
 import Pagination from '@components/pagination/Pagination';
 import { useConvertUtcToLocal } from "../../../utils/date/dateUtils.ts";
 

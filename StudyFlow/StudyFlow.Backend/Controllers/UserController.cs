@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyFlow.Backend.Authorize;
+using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.DTOS.Authenticate.Request;
 using StudyFlow.BLL.DTOS.User;
 using StudyFlow.BLL.Interfaces;
@@ -142,6 +143,34 @@ namespace StudyFlow.Backend.Controllers
             }
             catch (Exception ex)
             {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPut("UpdatePassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdatePasswordAsync([FromBody] UpdatePasswordDTO updatePasswordDTO)
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimsIdentity.DefaultNameClaimType)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return StatusCode(StatusCodes.Status401Unauthorized,
+                        new { Error = "User is not authenticated or missing unique_name claim." });
+                }
+
+                return await _userService.UpdatePasswordAsync(updatePasswordDTO, userId);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de errores y log
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { Error = "An unexpected error occurred.", Details = ex.Message });
             }

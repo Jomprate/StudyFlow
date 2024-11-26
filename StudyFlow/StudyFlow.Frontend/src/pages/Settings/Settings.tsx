@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import './settings.css';
 import { useTheme } from '../../ThemeContext';
 import UpdateUserModal from '../../components/modals/updateUserModal/UpdateUserModal';
+import UpdatePasswordModal from '../../components/modals/updatePasswordModal/UpdatePasswordModal';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Settings: React.FC = () => {
     const { theme } = useTheme();
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-    const { state } = useAuth(); // Obtener el estado de autenticación desde el contexto
-    const { userName } = state; // Suponiendo que el userId está en el estado de autenticación
+    const [isUpdatePasswordModalOpen, setIsUpdatePasswordModalOpen] = useState(false);
+    const { state } = useAuth();
+    const { userName } = state;
 
     // Función para abrir el modal
     const handleOpenModal = () => {
         setIsUpdateModalOpen(true);
     };
-
-    // Función para cerrar el modal
-    //const handleCloseModal = () => {
-    //    setIsUpdateModalOpen(false);
-    //};
+    const handleOpenUpdatePasswordModal = () => {
+        setIsUpdatePasswordModalOpen(true); //
+    };
 
     return (
         <div className={`settings_page ${theme}`}>
@@ -26,16 +26,24 @@ const Settings: React.FC = () => {
                 <h1>Settings</h1>
                 <p>Here are your settings.</p>
 
-                {/* Botón para abrir el modal */}
                 <button onClick={handleOpenModal}>Update</button>
+                <h1>a</h1>
+                <button onClick={handleOpenUpdatePasswordModal}>UpdatePassword</button>
 
-                {/* Mostrar el modal solo cuando el estado isUpdateModalOpen sea true */}
                 {isUpdateModalOpen && (
                     <UpdateUserModal
                         open={isUpdateModalOpen}
                         setOpen={setIsUpdateModalOpen}
-                        userId={userName ?? ''} // Pasar el userId del usuario autenticado
-                        targetUserId={userName ?? undefined}  // Pasar también el userId como targetUserId para auto-actualización
+                        userId={userName ?? ''}
+                        targetUserId={userName ?? undefined}
+                    />
+                )}
+
+                {isUpdatePasswordModalOpen && (
+                    <UpdatePasswordModal
+                        open={isUpdatePasswordModalOpen}
+                        setOpen={setIsUpdatePasswordModalOpen}
+                        userId={userName ?? ''}
                     />
                 )}
             </div>

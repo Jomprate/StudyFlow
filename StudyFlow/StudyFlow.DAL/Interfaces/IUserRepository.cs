@@ -21,5 +21,9 @@ namespace StudyFlow.DAL.Interfaces
         Task<string> GeneratePasswordResetTokenAsync(User user);
 
         Task<IdentityResult> ResetPasswordAsync(User user, string token, string newPassword);
+
+        Task<bool> ValidatePasswordAsync(User user, string password);
+
+        Task<bool> UpdatePasswordAsync(User user, string newPassword);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudyFlow.BLL.DTOS.ApiResponse;
@@ -9,6 +10,7 @@ using StudyFlow.BLL.Mapping;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Enumeration;
 using StudyFlow.DAL.Interfaces;
+using StudyFlow.DAL.Services;
 using StudyFlow.Infrastructure.Interfaces;
 
 namespace StudyFlow.BLL.Services
@@ -18,38 +20,36 @@ namespace StudyFlow.BLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStorageService _storageService;
         private readonly IMailService _mailService;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(IUnitOfWork unitOfWork, IStorageService blobStorage, IMailService mailService)
+        public UserService(IUnitOfWork unitOfWork, IStorageService blobStorage, IMailService mailService, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _storageService = blobStorage;
             _mailService = mailService;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> CreateUserAsync(AddUserDTO user)
         {
             try
             {
-                // Verificar si el país existe
                 var countryExists = await _unitOfWork.CountryRepository.AnyAsync(w => w.Id == user.CountryId);
                 if (!countryExists)
                 {
                     return ApiResponseHelper.NotFound($"Not found country with the Id {user.CountryId}.");
                 }
 
-                // Verificar si el email ya está registrado
                 var emailExists = await _unitOfWork.UserRepository.AnyAsync(w => w.Email == user.Email);
                 if (emailExists)
                 {
                     return new BadRequestObjectResult("User with this email already exists.");
                 }
 
-                // Crear el usuario
                 User userToCreate = user.ToEntity();
                 userToCreate.HaveProfilePicture = !string.IsNullOrEmpty(user.ProfilePicture);
                 User newUser = await _unitOfWork.UserRepository.RegisterAsync(userToCreate, user.Password);
 
-                // Si el usuario no fue creado, devolver error
                 if (newUser == null)
                 {
                     return new BadRequestObjectResult("Failed to create user.");
@@ -60,10 +60,8 @@ namespace StudyFlow.BLL.Services
                     await _storageService.UploadAsync(user.ProfilePicture, newUser.Id.ToString());
                 }
 
-                // Guardar cambios en la base de datos
                 var result = await _unitOfWork.SaveChangesAsync();
 
-                // Verificar si los cambios fueron guardados correctamente
                 if (result <= 0)
                 {
                     var checkUser = await _unitOfWork.UserRepository.GetByIdAsync(newUser.Id);
@@ -73,32 +71,24 @@ namespace StudyFlow.BLL.Services
                     }
                 }
 
-                // Generar el token de confirmación de email
                 string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(newUser);
 
-                // Codificar el token y el userId para que no tengan problemas en la URL
                 string encodedToken = Uri.EscapeDataString(token);
                 string encodedUserId = Uri.EscapeDataString(newUser.Id.ToString());
 
-                // Crear el enlace de confirmación - Aquí aseguramos que apunte a 'confirmpage'
                 string confirmationLink = $"http://localhost:5173/confirmpage?userId={encodedUserId}&token={encodedToken}";
 
-                // Crear el cuerpo del correo en formato HTML
                 try
                 {
-                    // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink
                     string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink);
 
-                    // Enviar el correo usando el servicio de correo
                     await _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", emailBody);
                 }
                 catch (Exception ex)
                 {
-                    // Loguear el error pero continuar con el flujo
                     Console.WriteLine($"Error sending email: {ex.Message}");
                 }
 
-                // Devolver respuesta de éxito con el ID del usuario
                 return ApiResponseHelper.Create(new { Message = "User created successfully.", UserId = newUser.Id });
             }
             catch (DbUpdateException ex)
@@ -347,23 +337,17 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.BadRequest("Email already confirmed.");
             }
 
-            // Generar el token de confirmación de email
             string token = await _unitOfWork.UserRepository.GenerateEmailConfirmationTokenAsync(user);
 
-            // Codificar el token y el userId para que no tengan problemas en la URL
             string encodedToken = Uri.EscapeDataString(token);
             string encodedUserId = Uri.EscapeDataString(user.Id.ToString());
 
-            // Crear el enlace de confirmación - Aquí aseguramos que apunte a 'confirmpage'
             string confirmationLink = $"http://localhost:5173/confirmpage?userId={encodedUserId}&token={encodedToken}";
 
-            // Crear el cuerpo del correo en formato HTML
             try
             {
-                // Formatear el cuerpo del correo utilizando los valores correctos para confirmationLink
                 string emailBody = string.Format(Message_Constants.EmailBodyConfirmation, confirmationLink);
 
-                // Enviar el correo usando el servicio de correo
                 await _mailService.SendMailAsync(user.Email, "Welcome to StudyFlow", emailBody);
 
                 return ApiResponseHelper.Success("Confirmation email sent successfully.");
@@ -371,6 +355,46 @@ namespace StudyFlow.BLL.Services
             catch (Exception ex)
             {
                 return ApiResponseHelper.BadRequest("Failed to send confirmation email.");
+            }
+        }
+
+        public async Task<IActionResult> UpdatePasswordAsync(UpdatePasswordDTO request, string userId)
+        {
+            try
+            {
+                if (request.UserId != Guid.Parse(userId))
+                {
+                    return ApiResponseHelper.BadRequest("The user to modify must be the same as in the token.");
+                }
+
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return ApiResponseHelper.NotFound($"User with ID {request.UserId} not found.");
+                }
+
+                var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
+                if (!isPasswordValid)
+                {
+                    return ApiResponseHelper.BadRequest("Current password is incorrect.");
+                }
+
+                if (request.NewPassword != request.ConfirmNewPassword)
+                {
+                    return ApiResponseHelper.BadRequest("New passwords do not match.");
+                }
+
+                var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+                if (!result.Succeeded)
+                {
+                    return ApiResponseHelper.InternalServerError("Failed to update password. Please try again.");
+                }
+
+                return ApiResponseHelper.Success("Password updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.InternalServerError("An unexpected error occurred while updating the password.", ex.Message);
             }
         }
     }
