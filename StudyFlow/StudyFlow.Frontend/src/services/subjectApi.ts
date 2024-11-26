@@ -81,6 +81,55 @@ export const addSubjectByCourse = async (payload: {
     }
 };
 
+//export const addSubjectByCourse = async (payload: {
+//    courseId: string; // Course ID
+//    subjectDTO: {
+//        course: {
+//            id: string; // Course ID
+//            teacherDTO: {
+//                id: string; // Teacher ID
+//                fullName: string; // Teacher name
+//            };
+//            name: string; // Course name
+//            description: string; // Course description
+//            logo: string; // Course logo
+//            isEnabled: boolean; // Is course enabled
+//        };
+//        name: string;
+//        htmlContent: string;
+//        type: string;
+//        link?: string;
+//        youTubeVideos?: string[];
+//        googleDriveLinks?: string[];
+//        alternateLinks?: string[];
+//        listScheduleds?: Array<{
+//            id: string;
+//            scheduledDate: string;
+//            link: string;
+//        }>;
+//        creationDate?: string; // Fecha de creación (opcional)
+//        modifiedDate?: string; // Fecha de modificación (opcional)
+//    };
+//}): Promise<{ id: string }> => {
+//    try {
+//        // Enviar el payload ajustado al backend
+//        const response = await api.post('/OnBoardingTeacher/AddSubjectByCourse/', {
+//            courseId: payload.courseId,
+//            subjectDTO: payload.subjectDTO,
+//        });
+
+//        return response.data; // Suponiendo que devuelve { id: string }
+//    } catch (error: any) {
+//        console.error('API Error:', error);
+
+//        const errorMessage = error.response?.data?.message
+//            ? error.response.data.message
+//            : error.message || 'An unexpected error occurred';
+
+//        throw new Error(errorMessage);
+//    }
+//};
+
 // Función para agregar un Subject por curso
 //export const addSubjectByCourse = async (payload: {
 //    courseId: string; // Course ID

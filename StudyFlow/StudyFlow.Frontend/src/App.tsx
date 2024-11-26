@@ -4,6 +4,7 @@ import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { UtcProvider } from './contexts/UtcContext';
 import LoadingScreen from '@components/loadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
 
@@ -102,7 +103,9 @@ function App() {
 const WrappedApp: React.FC = () => (
     <AuthProvider>
         <ThemeProvider>
-            <App />
+            <UtcProvider>
+                <App />
+            </UtcProvider>
         </ThemeProvider>
     </AuthProvider>
 );

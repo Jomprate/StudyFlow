@@ -10,6 +10,7 @@ import { getSubjectsByCourseId } from '../../../services/subjectApi'; // Asegúra
 import { userApi } from '../../../services/api'; // Asegúrate de que el path sea correcto
 import { useParams } from 'react-router-dom'; // Para obtener el CourseId desde la URL
 import Pagination from '@components/pagination/Pagination';
+import { useConvertUtcToLocal } from "../../../utils/date/dateUtils.ts";
 
 const Course_Classwork: React.FC = () => {
     const { t } = useTranslation();
@@ -20,8 +21,8 @@ const Course_Classwork: React.FC = () => {
     const [classworks, setClassworks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const convertUtcToLocal = useConvertUtcToLocal();
 
-    // Estados para la paginación
     const [currentPage, setCurrentPage] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
@@ -36,32 +37,35 @@ const Course_Classwork: React.FC = () => {
 
                 setLoading(true);
 
-                // Llamar a la API para obtener los subjects del curso con paginación
                 const response = await getSubjectsByCourseId(courseId, {
                     page: currentPage,
                     recordsNumber: recordsPerPage,
                     filter: '',
                 });
 
-                // Obtener las imágenes de los creadores
                 const classworksWithCreators = await Promise.all(
                     response.data.paginationResult.listResult.map(async (classwork: any) => {
                         const creatorProfileImageUrl = classwork.course?.teacherDTO?.id
                             ? await fetchUserProfileImage(classwork.course.teacherDTO.id)
-                            : user_p; // Usa un placeholder si no hay imagen
+                            : user_p;
 
                         return {
                             ...classwork,
                             creatorProfileImageUrl,
-                            creationDate: classwork.creationDate || t('unknown_creation_date'), // Agregar fecha de creación
-                            modifiedDate: classwork.modifiedDate || t('unknown_modified_date'), // Agregar fecha de modificación
+                            creationDate: classwork.creationDate || t('unknown_creation_date'),
+                            modifiedDate: classwork.modifiedDate || t('unknown_modified_date'),
                         };
                     })
                 );
 
-                // Actualizar el estado con los datos obtenidos
+                classworksWithCreators.sort((a, b) => {
+                    const dateA = new Date(a.creationDate).getTime();
+                    const dateB = new Date(b.creationDate).getTime();
+                    return dateB - dateA;
+                });
+
                 setClassworks(classworksWithCreators);
-                setTotalPages(response.data.paginationResult.totalPages); // Establecer total de páginas
+                setTotalPages(response.data.paginationResult.totalPages);
                 setError(null);
             } catch (error: any) {
                 setError(t('error_loading_classworks'));
@@ -73,51 +77,6 @@ const Course_Classwork: React.FC = () => {
 
         fetchClassworks();
     }, [courseId, currentPage, recordsPerPage, t]);
-
-    //useEffect(() => {
-    //    const fetchClassworks = async () => {
-    //        try {
-    //            if (!courseId) {
-    //                setError(t('error_course_id_required'));
-    //                return;
-    //            }
-
-    //            setLoading(true);
-
-    //            // Llamar a la API para obtener los subjects del curso
-    //            const response = await getSubjectsByCourseId(courseId, {
-    //                page: 1,
-    //                recordsNumber: 10, // Ajusta el número de registros por página si es necesario
-    //                filter: '',
-    //            });
-
-    //            // Obtener las imágenes de los creadores
-    //            const classworksWithCreators = await Promise.all(
-    //                response.data.paginationResult.listResult.map(async (classwork: any) => {
-    //                    const creatorProfileImageUrl = classwork.course?.teacherDTO?.id
-    //                        ? await fetchUserProfileImage(classwork.course.teacherDTO.id)
-    //                        : user_p; // Usa un placeholder si no hay imagen
-
-    //                    return {
-    //                        ...classwork,
-    //                        creatorProfileImageUrl,
-    //                    };
-    //                })
-    //            );
-
-    //            // Actualizar el estado con los datos obtenidos
-    //            setClassworks(classworksWithCreators);
-    //            setError(null);
-    //        } catch (error: any) {
-    //            setError(t('error_loading_classworks'));
-    //            console.error('Error fetching classworks:', error);
-    //        } finally {
-    //            setLoading(false);
-    //        }
-    //    };
-
-    //    fetchClassworks();
-    //}, [courseId, t]);
 
     const fetchUserProfileImage = async (userId: string) => {
         try {
@@ -139,7 +98,7 @@ const Course_Classwork: React.FC = () => {
             youTubeVideos: newClasswork.youTubeVideos || [],
             googleDriveLinks: newClasswork.googleDriveLinks || [],
             alternateLinks: newClasswork.alternateLinks || [],
-            creatorProfileImageUrl: newClasswork.creatorProfileImageUrl || user_p, // Imagen por defecto
+            creatorProfileImageUrl: newClasswork.creatorProfileImageUrl || user_p,
         };
 
         setClassworks((prevClassworks) => [safeClasswork, ...prevClassworks]);
@@ -190,9 +149,13 @@ const Course_Classwork: React.FC = () => {
                                         htmlContent={classwork.htmlContent || ''}
                                         date={classwork.listScheduleds?.[0]?.scheduledDate || t('no_date')}
                                         creator={classwork.course?.teacherDTO?.fullName || t('unknown_creator')}
+                                        creatorId={classwork.course?.teacherDTO?.id || ''} // Agregar ID del creador
                                         creatorProfileImageUrl={classwork.creatorProfileImageUrl}
-                                        creationDate={classwork.creationDate} // Pasar fecha de creación
-                                        modifiedDate={classwork.modifiedDate} // Pasar fecha de modificación
+                                        creationDate={
+                                            classwork.creationDate && !isNaN(new Date(classwork.creationDate).getTime())
+                                                ? convertUtcToLocal(classwork.creationDate)
+                                                : t('unknown_creation_date') // Valor por defecto
+                                        }
                                         videos={classwork.youTubeVideos || []}
                                         googleDriveLinks={classwork.googleDriveLinks || []}
                                         otherLinks={classwork.alternateLinks || []}

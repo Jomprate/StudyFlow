@@ -27,7 +27,7 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const { courseId } = useParams<{ courseId: string }>();
     const [title, setTitle] = useState<string>('');
     const [classworkType, setClassworkType] = useState<string>('Homework');
-    const [scheduledDate, setScheduledDate] = useState<string>(''); // Nuevo estado para la fecha y hora
+    const [scheduledDate, setScheduledDate] = useState<string>('');
     const [isPublishDisabled, setIsPublishDisabled] = useState(true);
     const [activeFormats, setActiveFormats] = useState({
         bold: false,
@@ -40,6 +40,71 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const [isYouTubeModalOpen, setIsYouTubeModalOpen] = useState(false);
     const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
     const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
+
+    const [scheduledDates, setScheduledDates] = useState<string[]>([]);
+    const [repeatFrequency, setRepeatFrequency] = useState<number>(1);
+    const [selectedDays, setSelectedDays] = useState<string[]>(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+    const [generatedDates, setGeneratedDates] = useState<string[]>([]);
+
+    const multiDateTypes = ['Classroom', 'Exam', 'Project'];
+
+    const daysOfWeek = [
+        { label: 'Monday', value: 'Monday' },
+        { label: 'Tuesday', value: 'Tuesday' },
+        { label: 'Wednesday', value: 'Wednesday' },
+        { label: 'Thursday', value: 'Thursday' },
+        { label: 'Friday', value: 'Friday' },
+        { label: 'Saturday', value: 'Saturday' },
+    ];
+
+    const isValidDate = (date: string) => {
+        const parsedDate = new Date(date);
+        return !isNaN(parsedDate.getTime());
+    };
+
+    const generateRepeatedDates = (startDate: string) => {
+        if (!isValidDate(startDate)) {
+            alert(t('error_invalid_start_date'));
+            return;
+        }
+
+        if (selectedDays.length === 0) {
+            alert(t('error_no_days_selected'));
+            return;
+        }
+
+        if (repeatFrequency <= 0) {
+            alert(t('error_invalid_frequency'));
+            return;
+        }
+
+        const start = new Date(startDate);
+        const dates: string[] = [];
+        const maxOccurrences = 10;
+
+        for (let i = 0; dates.length < maxOccurrences; i++) {
+            const nextDate = new Date(start);
+            nextDate.setDate(start.getDate() + i * repeatFrequency);
+
+            const dayName = nextDate.toLocaleDateString('en-US', { weekday: 'long' });
+            if (selectedDays.includes(dayName) && isValidDate(nextDate.toISOString())) {
+                dates.push(nextDate.toISOString());
+            }
+        }
+
+        if (dates.length === 0) {
+            alert(t('error_no_dates_generated'));
+        } else {
+            setGeneratedDates(dates);
+            setScheduledDates(dates);
+        }
+    };
+
+    const toggleDaySelection = (day: string) => {
+        setSelectedDays((prev) =>
+            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+        );
+    };
 
     useEffect(() => {
         const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
@@ -75,81 +140,73 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         });
     };
 
-    const applyFormatting = (command: string) => {
-        if (editorRef.current) {
-            document.execCommand(command, false);
-            handleInput();
-        }
-    };
-
     const handleSubmit = async () => {
-        if (!courseId) {
-            alert('Course ID is required.');
-            return;
-        }
+        const isMultiDateType = multiDateTypes.includes(classworkType);
 
-        if (!title.trim()) {
-            alert('Title is required.');
-            return;
-        }
+        const finalDates = isMultiDateType
+            ? scheduledDates.filter(isValidDate)
+            : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
 
-        const content = editorRef.current?.innerHTML.trim();
-        if (!content) {
-            alert('Content is required.');
+        if (isMultiDateType && finalDates.length === 0) {
+            alert(t('error_generate_dates'));
+            return;
+        } else if (!isMultiDateType && finalDates.length !== 1) {
+            alert(t('error_single_date_required'));
             return;
         }
 
         const subjectPayload = {
-            courseId: courseId,
+            courseId: courseId || 'default_course_id',
             subjectDTO: {
                 course: {
-                    id: courseId,
+                    id: courseId || 'default_course_id',
                     teacherDTO: {
                         id: state.userName || 'unknown',
-                        fullName: state.fullName || 'Unknown Teacher',
+                        fullName: state.fullName || t('unknown_teacher'),
                     },
-                    name: 'Course Name',
-                    description: 'Course Description',
-                    logo: 'Course Logo URL',
+                    name: t('default_course_name'),
+                    description: t('default_course_description'),
+                    logo: t('default_course_logo'),
                     isEnabled: true,
                 },
                 name: title,
-                htmlContent: content,
+                htmlContent: editorRef.current?.innerHTML.trim() || '',
                 type: classworkType,
-                link: 'string',
-                youTubeVideos: youtubeLinks.length > 0 ? youtubeLinks : [],
-                googleDriveLinks: googleDriveLinks.length > 0 ? googleDriveLinks : [],
-                alternateLinks: otherLinks.length > 0 ? otherLinks : [],
-                listScheduleds: [
-                    {
-                        id: crypto.randomUUID(),
-                        scheduledDate: new Date(scheduledDate).toISOString(),
-                        link: 'string',
-                    },
-                ],
+                youTubeVideos: youtubeLinks || [],
+                googleDriveLinks: googleDriveLinks || [],
+                alternateLinks: otherLinks || [],
+                listScheduleds: finalDates.map((date) => ({
+                    id: crypto.randomUUID(),
+                    scheduledDate: date,
+                    link: 'string',
+                })),
+                creationDate: new Date().toISOString(),
+                modifiedDate: new Date().toISOString(),
             },
         };
 
         try {
-            console.log('Subject Payload:', subjectPayload);
+            console.log('Submitting:', JSON.stringify(subjectPayload, null, 2));
+            const response = await subjectApi.addSubjectByCourse(subjectPayload);
 
-            const subjectResponse = await subjectApi.addSubjectByCourse(subjectPayload);
-
-            console.log('Full Subject Response:', subjectResponse);
-
-            // No validar subjectId inmediatamente
-            console.log('Subject created successfully');
-            alert('Subject created successfully');
             onClassworkCreated({
-                id: subjectResponse?.id || '', // Puedes usar un valor vacío o un placeholder
+                id: response.id || '',
                 title,
-                content,
-                date: scheduledDate,
+                content: editorRef.current?.innerHTML.trim(),
+                date: finalDates,
                 creator: state.userName,
             });
+            alert(t('success_subject_created'));
         } catch (error: any) {
-            console.error('Error during submission:', error.response?.data || error.message || 'No response data available');
-            alert(`Error: ${error.response?.data?.message || 'Failed to create subject or schedules.'}`);
+            console.error(t('error_submission'), error.response?.data || error.message);
+            alert(t('error_submission_message'));
+        }
+    };
+
+    const applyFormatting = (command: string) => {
+        if (editorRef.current) {
+            document.execCommand(command, false);
+            handleInput();
         }
     };
 
@@ -215,7 +272,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
 
             <hr className="classworkBox_Create_separator" />
 
-            {/* Campo para seleccionar fecha y hora */}
             <div className="classworkBox_Create_date-container">
                 <label htmlFor="scheduledDate" className="classworkBox_Create_date-label">
                     {t('scheduled_date')}
@@ -228,13 +284,10 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                         onChange={(e) => setScheduledDate(e.target.value)}
                         className="classworkBox_Create_date-input"
                     />
-                    <span className="classworkBox_Create_date-icon">
-                        {/*<FontAwesomeIcon icon={faListOl} />*/}
-                    </span>
+                    <span className="classworkBox_Create_date-icon"></span>
                 </div>
             </div>
 
-            {/* Selector de tipo de trabajo */}
             <div className="classworkBox_Create_type-selector">
                 <select value={classworkType} onChange={handleSubjectTypeChange} className="classworkBox_Create_select">
                     <option value="Homework">{t('subject_homework')}</option>
@@ -245,6 +298,48 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                     <option value="Other">{t('subject_other')}</option>
                 </select>
             </div>
+
+            {classworkType === 'Classroom' && (
+                <div className="classworkBox_Create_repeat-container">
+                    <label htmlFor="repeatFrequency" className="classworkBox_Create_repeat-label">
+                        {t('repeat_every')}:
+                    </label>
+                    <input
+                        id="repeatFrequency"
+                        type="number"
+                        min={1}
+                        value={repeatFrequency}
+                        onChange={(e) => setRepeatFrequency(Number(e.target.value))}
+                        className="classworkBox_Create_repeat-input"
+                    />
+
+                    <div className="classworkBox_Create_days-container">
+                        {daysOfWeek.map((day) => (
+                            <label key={day.value} className="classworkBox_Create_day">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedDays.includes(day.value)}
+                                    onChange={() => toggleDaySelection(day.value)}
+                                />
+                                {t(day.label)}
+                            </label>
+                        ))}
+                    </div>
+
+                    <button
+                        className="classworkBox_Create_generate-dates-button"
+                        onClick={() => generateRepeatedDates(scheduledDate)}
+                    >
+                        {t('generate_dates')}
+                    </button>
+
+                    <ul className="classworkBox_Create_generated-dates">
+                        {generatedDates.map((date, index) => (
+                            <li key={index}>{new Date(date).toLocaleString()}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             <div className="classworkBox_Create_external-data-links">
                 <button className="classworkBox_Create_control-button" onClick={() => setIsYouTubeModalOpen(true)}>
@@ -258,7 +353,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 </button>
             </div>
 
-            {/* Lista de videos de YouTube */}
             <div className="youtube-video-list">
                 {youtubeLinks.map((link, index) => (
                     <div key={index} className="youtube-video-item">
@@ -276,7 +370,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 ))}
             </div>
 
-            {/* Lista de enlaces de Google Drive */}
             <div className="googledrive-links-list">
                 {googleDriveLinks.map((link, index) => (
                     <div key={index} className="googledrive-link-item">
@@ -294,7 +387,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 ))}
             </div>
 
-            {/* Lista de otros enlaces */}
             <div className="other-links-list">
                 {otherLinks.map((link, index) => (
                     <div key={index} className="other-link-item">
@@ -325,7 +417,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 </button>
             </div>
 
-            {/* Modales */}
             <AnnouncementsYouTubeModal isOpen={isYouTubeModalOpen} onClose={() => setIsYouTubeModalOpen(false)} onSave={addYouTubeLink} />
             <AnnouncementsGoogleDriveModal isOpen={isGoogleDriveModalOpen} onClose={() => setIsGoogleDriveModalOpen(false)} onSave={addGoogleDriveLink} />
             <AnnouncementsOtherLinksModal isOpen={isOtherLinksModalOpen} onClose={() => setIsOtherLinksModalOpen(false)} onSave={addOtherLink} />

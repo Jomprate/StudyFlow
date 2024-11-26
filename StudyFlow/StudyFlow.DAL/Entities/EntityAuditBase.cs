@@ -7,12 +7,19 @@
 
         public virtual void OnAuditEntity()
         {
+            //if (CreatedAt == DateTime.MinValue)
+            //{
+            //    CreatedAt = DateTime.Now;
+            //}
+
+            //UpdatedAt = DateTime.Now;
+
             if (CreatedAt == DateTime.MinValue)
             {
-                CreatedAt = DateTime.Now;
+                CreatedAt = DateTime.UtcNow;
             }
 
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

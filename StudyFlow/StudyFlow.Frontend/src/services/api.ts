@@ -7,6 +7,7 @@ import * as courseApi from './courseApi';
 import * as enrollTeacherApi from './enrollmentsTeacherApi';
 import * as enrollStudentApi from './enrollmentsStudentApi';
 import * as subjectApi from './subjectApi';
+import * as utcOffset from './utcOffset';
 
 export {
     checkBackendStatus,
@@ -17,5 +18,6 @@ export {
     courseApi,
     enrollTeacherApi,
     enrollStudentApi,
-    subjectApi
+    subjectApi,
+    utcOffset
 };

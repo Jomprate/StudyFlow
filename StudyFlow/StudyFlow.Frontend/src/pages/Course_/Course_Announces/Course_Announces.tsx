@@ -9,6 +9,7 @@ import user_p from '../../../assets/user_p.svg';
 import { courseApi, userApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
 import { useAuth } from "../../../contexts/AuthContext";
+import { useConvertUtcToLocal } from "../../../utils/date/dateUtils.ts";
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
@@ -23,6 +24,7 @@ const Announces: React.FC = () => {
     const [_announcementsFetched, setAnnouncementsFetched] = useState(false);
     const { state } = useAuth();
     const [userProfileImage, setUserProfileImage] = useState<string>(user_p);
+    const convertUtcToLocal = useConvertUtcToLocal(); // Obtener la función para convertir
 
     useEffect(() => {
         const fetchAuthenticatedUserProfileImage = async () => {
@@ -155,7 +157,7 @@ const Announces: React.FC = () => {
                                                 announceId={announcement.id}
                                                 title={announcement.title}
                                                 description={announcement.description}
-                                                date={announcement.creationDate}
+                                                date={convertUtcToLocal(announcement.creationDate)} // Conversión aquí
                                                 user={announcement.userName}
                                                 creatorProfileImageUrl={announcement.creatorProfileImageUrl || user_p}
                                                 videos={(announcement.youTubeVideos || []).map((url: string) => ({ url }))}

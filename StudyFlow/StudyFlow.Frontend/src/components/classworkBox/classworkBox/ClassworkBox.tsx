@@ -7,6 +7,7 @@ import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCa
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
 import { formatDate } from '../../../utils/date/dateUtils';
+import { useAuth } from '../../../contexts/AuthContext';
 
 interface VideoProps {
     url: string;
@@ -23,9 +24,10 @@ interface OtherLinkProps {
 interface ClassworkBoxProps {
     classworkId: string;
     title: string;
-    htmlContent: string; // Contenido HTML para mostrar en el cuerpo del componente
+    htmlContent: string;
     date: string;
     creator: string;
+    creatorId: string;
     creatorProfileImageUrl?: string;
     creationDate?: string;
     modifiedDate?: string;
@@ -38,8 +40,8 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     classworkId,
     title,
     htmlContent,
-    date,
     creator,
+    creatorId,
     creatorProfileImageUrl,
     creationDate,
     modifiedDate,
@@ -48,13 +50,11 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     otherLinks = [],
 }) => {
     const { t } = useTranslation();
+    const { state } = useAuth();
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
     const formattedCreationDate = creationDate ? formatDate(creationDate, true) : t('unknown_creation_date');
-    const formattedModifiedDate = modifiedDate ? formatDate(modifiedDate, true) : t('unknown_modified_date');
-
-    console.log(date);
 
     const truncateDate = (date: string): string => {
         const parsedDate = new Date(date);
@@ -85,9 +85,11 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
 
     return (
         <div className="classwork-box">
-            <button className="classwork-delete-button" onClick={handleDelete}>
-                x
-            </button>
+            {state.userName === creatorId && (
+                <button className="classwork-delete-button" onClick={handleDelete}>
+                    x
+                </button>
+            )}
 
             <div className="classwork-header">
                 <img
@@ -102,11 +104,10 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
                         {creationDate && modifiedDate && truncateDate(creationDate) !== truncateDate(modifiedDate) && (
                             <span>
                                 {' | '}
-                                {t('last_modified')}: {formattedModifiedDate}
+                                {/* {t('last_modified')}: {formattedModifiedDate} */}
                             </span>
                         )}
                     </small>
-
                 </div>
             </div>
 
@@ -133,7 +134,7 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
             {googleDriveLinks.length > 0 && googleDriveLinks.some(link => link.url !== 'string') && (
                 <div className="googledrive-grid">
                     {googleDriveLinks
-                        .filter(link => link.url && link.url !== 'string') // Filtra los valores inválidos
+                        .filter(link => link.url && link.url !== 'string')
                         .map((link, index) => (
                             <GoogleDriveAnnounceCard key={index} url={link.url} />
                         ))}
@@ -143,7 +144,7 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
             {otherLinks.length > 0 && otherLinks.some(link => link.url !== 'string') && (
                 <div className="other-links-grid">
                     {otherLinks
-                        .filter(link => link.url && link.url !== 'string') // Filtra los valores inválidos
+                        .filter(link => link.url && link.url !== 'string')
                         .map((link, index) => (
                             <OtherLinksAnnounceCard key={index} url={link.url} />
                         ))}
