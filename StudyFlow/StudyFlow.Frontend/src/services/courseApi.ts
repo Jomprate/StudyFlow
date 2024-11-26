@@ -77,15 +77,17 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
         if (value && value.data?.listResult) {
             const { listResult, pagination } = value.data;
 
-            const coursesArray: CourseDTO[] = listResult.map((course: any) => ({
-                id: course.id,
-                name: course.name,
-                description: course.description,
-                teacher: course.teacherDTO?.fullName || "Unknown",
-                logo: course.logo || "",
-                userId: course.userId,
-                isEnabled: course.isEnabled,
-            }));
+            const coursesArray: CourseDTO[] = listResult
+                .filter((course: any) => !course.isDeleted) // Filtrar cursos no eliminados
+                .map((course: any) => ({
+                    id: course.id,
+                    name: course.name,
+                    description: course.description,
+                    teacher: course.teacherDTO?.fullName || "Unknown",
+                    logo: course.logo || "",
+                    userId: course.userId,
+                    isEnabled: course.isEnabled,
+                }));
 
             return {
                 data: coursesArray,
@@ -121,16 +123,18 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
         const coursesData = Array.isArray(value) ? value : (value?.data || response.data);
 
         if (coursesData && Array.isArray(coursesData)) {
-            const coursesArray: CourseDTO[] = coursesData.map((course: any) => ({
-                id: course.id,
-                name: course.name,
-                description: course.description,
-                teacher: course.teacherDTO?.fullName || "Unknown",
-                logo: course.logo || "",
-                userId: course.userId,
-                isEnabled: course.isEnabled,
-                data: ""
-            }));
+            const coursesArray: CourseDTO[] = coursesData
+                .filter((course: any) => !course.isDeleted) // Filtrar cursos no eliminados
+                .map((course: any) => ({
+                    id: course.id,
+                    name: course.name,
+                    description: course.description,
+                    teacher: course.teacherDTO?.fullName || "Unknown",
+                    logo: course.logo || "",
+                    userId: course.userId,
+                    isEnabled: course.isEnabled,
+                    data: ""
+                }));
 
             return {
                 statusCode: response.status,

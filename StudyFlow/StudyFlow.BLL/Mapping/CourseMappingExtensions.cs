@@ -26,6 +26,7 @@ namespace StudyFlow.BLL.Mapping
                 Description = entity.Description,
                 Logo = entity.Logo,
                 IsEnabled = entity.IsEnabled,
+                IsDeleted = entity.IsDeleted,
                 TeacherDTO = new TeacherDTO
                 {
                     Id = entity.Teacher.Id,

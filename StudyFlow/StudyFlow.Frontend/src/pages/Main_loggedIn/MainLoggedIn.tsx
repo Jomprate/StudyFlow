@@ -17,6 +17,7 @@ interface Course {
     enrolled?: boolean;
     teacher: string;
     logo?: string;
+    isDeleted?: boolean; // Asegúrate de incluir esta propiedad
 }
 
 interface Student {
@@ -31,7 +32,7 @@ const MainLoggedIn: React.FC = () => {
 
     const [allCourses, setAllCourses] = useState<Course[]>([]);
     const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]);
-    const [students, _setStudents] = useState<Student[]>([]);
+    const [students, setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
@@ -48,7 +49,7 @@ const MainLoggedIn: React.FC = () => {
 
                 console.log("User role: " + userRole);
 
-                if (userRole === 'Teacher' && userId !== null) {
+                if (userRole === 'Teacher' && userId) {
                     const response = await courseApi.getCoursesByTeacherIdAsync(userId);
 
                     if (response.statusCode === 404) {
@@ -56,11 +57,11 @@ const MainLoggedIn: React.FC = () => {
                         setAllCourses([]);
                         setTotalPages(1);
                     } else {
-                        setAllCourses(response.data);
-                        setTotalPages(Math.ceil(response.data.length / recordsPerPage));
+                        const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
+                        setAllCourses(filteredCourses);
+                        setTotalPages(Math.ceil(filteredCourses.length / recordsPerPage));
                     }
-                }
-                else if (userRole === 'Student' && userId !== null) {
+                } else if (userRole === 'Student' && userId) {
                     const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, currentPage, recordsPerPage);
 
                     if (response.statusCode === 404) {
@@ -68,7 +69,8 @@ const MainLoggedIn: React.FC = () => {
                         setAllCourses([]);
                         setTotalPages(1);
                     } else {
-                        setAllCourses(response.data);
+                        const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
+                        setAllCourses(filteredCourses);
                         setTotalPages(Math.ceil(response.totalRecords / recordsPerPage));
                     }
                 }
