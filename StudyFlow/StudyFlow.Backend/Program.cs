@@ -20,10 +20,11 @@ using StudyFlow.Backend;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var keyVaultUri = builder.Configuration["AzureKeyVault:VaultUri"];
+var keyVaultUri = builder.Configuration["AzureKeyVault:KeyVaultUri"];
 var imageContainer = builder.Configuration["AzureContainerName:ImageContainer"];
 var jwtService = new JwtService(builder.Configuration);
 // Configuración de servicios
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["ApplicationInsights:InstrumentationKey"]);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
