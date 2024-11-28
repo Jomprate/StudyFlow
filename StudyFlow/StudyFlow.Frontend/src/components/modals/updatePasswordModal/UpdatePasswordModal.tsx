@@ -16,7 +16,11 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [repeatNewPassword, setRepeatNewPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errors, setErrors] = useState({
+        currentPassword: '',
+        newPassword: '',
+        repeatNewPassword: ''
+    });
     const [successMessage, setSuccessMessage] = useState('');
 
     if (!userId) {
@@ -27,23 +31,54 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Initialize errors with the correct shape
+        const newErrors: { currentPassword: string; newPassword: string; repeatNewPassword: string } = {
+            currentPassword: '',
+            newPassword: '',
+            repeatNewPassword: ''
+        };
+
+        let isValid = true;
+
+        if (!currentPassword) {
+            newErrors.currentPassword = t('update_pass_error_current_required');
+            isValid = false;
+        }
+        if (!newPassword) {
+            newErrors.newPassword = t('update_pass_error_new_required');
+            isValid = false;
+        }
         if (newPassword !== repeatNewPassword) {
-            setErrorMessage(t('passwords_do_not_match'));
-            return;
+            newErrors.repeatNewPassword = t('passwords_do_not_match');
+            isValid = false;
         }
 
+        // Update state with the complete object
+        setErrors(newErrors);
+
+        if (!isValid) return;
+
         try {
-            const message = await authApi.updatePassword({
+            const response = await authApi.updatePassword({
                 currentPassword,
                 newPassword,
                 confirmNewPassword: repeatNewPassword,
             });
-            setSuccessMessage(message);
-            setErrorMessage('');
+            setSuccessMessage(response || t('update_pass_success'));
             setTimeout(() => setOpen(false), 2000);
         } catch (error: any) {
-            setErrorMessage(error.message || t('unexpected_error'));
-            setSuccessMessage('');
+            const serverErrors = error.response?.data?.errors || {};
+            const updatedErrors = { ...newErrors };
+
+            if (serverErrors.currentPassword) {
+                updatedErrors.currentPassword = t('update_pass_error_incorrect_current');
+            } else if (serverErrors.newPassword) {
+                updatedErrors.newPassword = t('update_pass_error_invalid_new');
+            } else {
+                updatedErrors.currentPassword = error.response?.data?.message || t('unexpected_error');
+            }
+
+            setErrors(updatedErrors);
         }
     };
 
@@ -55,10 +90,12 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
                 <button className="close-button" onClick={() => setOpen(false)}>
                     &times;
                 </button>
-                <h2 className={`update-password-header ${theme}-text`}>{t('update_password')}</h2>
+                <h2 className={`update-password-header ${theme}-text`}>{t('update_pass_Title')}</h2>
                 <form onSubmit={handleSubmit} className="update-password-form">
                     <div className="form-group">
-                        <label htmlFor="current-password" className={`${theme}-text`}>{t('current_password')}</label>
+                        <label htmlFor="current-password" className={`${theme}-text`}>
+                            {t('update_pass_current_pass')}
+                        </label>
                         <input
                             id="current-password"
                             type="password"
@@ -67,9 +104,14 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
                             className={`update-password-input ${theme}-input`}
                             required
                         />
+                        {errors.currentPassword && (
+                            <p className="update-password-error">{errors.currentPassword}</p>
+                        )}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="new-password" className={`${theme}-text`}>{t('new_password')}</label>
+                        <label htmlFor="new-password" className={`${theme}-text`}>
+                            {t('update_pass_new_pass')}
+                        </label>
                         <input
                             id="new-password"
                             type="password"
@@ -78,9 +120,14 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
                             className={`update-password-input ${theme}-input`}
                             required
                         />
+                        {errors.newPassword && (
+                            <p className="update-password-error">{errors.newPassword}</p>
+                        )}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="repeat-new-password" className={`${theme}-text`}>{t('repeat_new_password')}</label>
+                        <label htmlFor="repeat-new-password" className={`${theme}-text`}>
+                            {t('update_pass_repeat_new_pass')}
+                        </label>
                         <input
                             id="repeat-new-password"
                             type="password"
@@ -89,11 +136,17 @@ const UpdatePasswordModal: React.FC<UpdatePasswordModalProps> = ({ open, setOpen
                             className={`update-password-input ${theme}-input`}
                             required
                         />
+                        {errors.repeatNewPassword && (
+                            <p className="update-password-error">{errors.repeatNewPassword}</p>
+                        )}
                     </div>
-                    {errorMessage && <p className={`update-password-error ${theme}-text`}>{errorMessage}</p>}
-                    {successMessage && <p className={`update-password-success ${theme}-text`}>{successMessage}</p>}
+                    {successMessage && (
+                        <p className={`update-password-success ${theme}-text`}>{successMessage}</p>
+                    )}
                     <div className="button-container">
-                        <button type="submit" className={`submit-button ${theme}-button`}>{t('update')}</button>
+                        <button type="submit" className={`submit-button ${theme}-button`}>
+                            {t('update')}
+                        </button>
                     </div>
                 </form>
             </div>

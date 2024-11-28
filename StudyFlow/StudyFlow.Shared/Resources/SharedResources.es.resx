@@ -477,4 +477,34 @@
   <data name="auth_error_userTypeRequired" xml:space="preserve">
     <value>Tipo de Usuario Requerido</value>
   </data>
+  <data name="update_pass_Title" xml:space="preserve">
+    <value>Actualizar Contraseña</value>
+  </data>
+  <data name="update_pass_current_pass" xml:space="preserve">
+    <value>Contraseña Actual</value>
+  </data>
+  <data name="update_pass_new_pass" xml:space="preserve">
+    <value>Nueva contraseña</value>
+  </data>
+  <data name="update_pass_repeat_new_pass" xml:space="preserve">
+    <value>Repetir nueva contraseña</value>
+  </data>
+  <data name="update_pass_error_current_required" xml:space="preserve">
+    <value>La contraseña actual es obligatoria.</value>
+  </data>
+  <data name="update_pass_error_new_required" xml:space="preserve">
+    <value>La nueva contraseña es obligatoria.</value>
+  </data>
+  <data name="passwords_do_not_match" xml:space="preserve">
+    <value>Las contraseñas no coinciden.</value>
+  </data>
+  <data name="update_pass_error_invalid_new" xml:space="preserve">
+    <value>La nueva contraseña no cumple con los requisitos.</value>
+  </data>
+  <data name="update_pass_error_incorrect_current" xml:space="preserve">
+    <value>La contraseña actual no es correcta.</value>
+  </data>
+  <data name="unexpected_error" xml:space="preserve">
+    <value>Ocurrió un error inesperado.</value>
+  </data>
 </root>

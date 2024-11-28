@@ -8,11 +8,9 @@ import { handleEmailValidation } from '../../../helpers/validationHelpers';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import RecoverPasswordModal from '../recoverPasswordModal/RecoverPasswordModal';
 import ResendActivationEmailModal from '../resendActivationEmailModal/ResendActivationEmailModal';
-import { authApi } from '../../../services/api'; // Importamos loginUser
-import { useAuth } from '../../../contexts/AuthContext'; // Importamos el contexto de Auth
+import { authApi } from '../../../services/api';
+import { useAuth } from '../../../contexts/AuthContext';
 import { jwtDecode } from 'jwt-decode';
-
-// Definir los tipos de datos
 
 interface LoginFormData {
     email: string;
@@ -34,7 +32,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
     const { theme } = useTheme();
     const [openRecoverPasswordModal, setOpenRecoverPasswordModal] = useState(false);
     const [openResendActivationEmailModal, setOpenResendActivationEmailModal] = useState(false);
-    const [problemMessage, setProblemMessage] = useState('');
     const navigate = useNavigate();
     const { login } = useAuth();
 
@@ -45,8 +42,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
             password: ''
         }
     });
-
-    console.log(problemMessage);
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -59,16 +54,16 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                 password: data.password.trim(),
             };
 
-            const token = await authApi.loginUser(loginDTO); // Obtén el token desde el loginUser
+            const token = await authApi.loginUser(loginDTO);
 
-            console.log('Received token:', token); // Verificar que el token es correcto
+            console.log('Received token:', token);
             localStorage.setItem('token', token);
-            const decodedToken: DecodedToken = jwtDecode(token); // Decodifica el token si necesitas extraer la información
-            console.log('Decoded JWT:', decodedToken); // Verificar que el token contiene los valores esperados
+            const decodedToken: DecodedToken = jwtDecode(token);
+            console.log('Decoded JWT:', decodedToken);
 
             const userRole = decodedToken.role;
 
-            login(decodedToken.role, decodedToken.unique_name, token); // Actualizar el estado global con el token
+            login(decodedToken.role, decodedToken.unique_name, token);
 
             setOpen(false);
 
@@ -80,7 +75,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                 navigate('/home_logged_in');
             }
         } catch (error: any) {
-            setProblemMessage(error.message || 'Error during login');
             console.error('Login error:', error.message);
         }
     };
@@ -143,8 +137,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ open, setOpen }) => {
                                                 placeholder={t('global_emailPlaceholder')}
                                                 className="login-modal-input"
                                                 onChange={(e) => {
-                                                    field.onChange(e); // Mantiene el control de react-hook-form
-                                                    handleEmailValidation(e, t); // Agrega la validación personalizada del email
+                                                    field.onChange(e);
+                                                    handleEmailValidation(e, t);
                                                 }}
                                             />
                                         )}

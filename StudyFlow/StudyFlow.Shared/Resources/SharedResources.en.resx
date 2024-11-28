@@ -477,4 +477,28 @@
   <data name="auth_error_userTypeRequired" xml:space="preserve">
     <value>User Type Required</value>
   </data>
+  <data name="update_pass_Title" xml:space="preserve">
+    <value>Update Password</value>
+  </data>
+  <data name="update_pass_current_pass" xml:space="preserve">
+    <value>Current Password</value>
+  </data>
+  <data name="update_pass_new_pass" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="update_pass_repeat_new_pass" xml:space="preserve">
+    <value>Repeat New Password</value>
+  </data>
+  <data name="passwords_do_not_match" xml:space="preserve">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="update_pass_error_new_required" xml:space="preserve">
+    <value>The new password is required.</value>
+  </data>
+  <data name="update_pass_error_current_required" xml:space="preserve">
+    <value>The current password is required.</value>
+  </data>
+  <data name="unexpected_error" xml:space="preserve">
+    <value>An unexpected error occurred.</value>
+  </data>
 </root>
