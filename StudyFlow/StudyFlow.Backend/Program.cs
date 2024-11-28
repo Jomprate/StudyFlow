@@ -135,19 +135,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Configuración de CORS
+//app.UseCors(x => x
+//    .AllowAnyMethod()
+//    .AllowAnyHeader()
+//    .WithOrigins("http://localhost:5173")
+//    .SetIsOriginAllowed(origin => true)
+//    .AllowCredentials());
+
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithOrigins("http://localhost:5173")
+    .AllowCredentials());
+
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
 // Mapeo de los controladores
 app.MapControllers();
-
-// Configuración de CORS
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .WithOrigins("http://localhost:5173")
-    .SetIsOriginAllowed(origin => true)
-    .AllowCredentials());
 
 app.Run();

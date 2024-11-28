@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://localhost:7033/api',
+    /*baseURL: 'https://localhost:7033/api',*/
+    baseURL: 'https://studyflowbackend.azurewebsites.net/api',
     headers: {
         'content-type': 'application/json',
     },
