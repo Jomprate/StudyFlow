@@ -1,4 +1,3 @@
-import React from 'react';
 import './courses.css';
 import { useTheme } from '../../ThemeContext';
 import { coursesData } from './coursesData';
@@ -17,15 +16,21 @@ const Courses: React.FC = () => {
                 <h1>Tus Cursos</h1>
                 <p>A continuación se muestran los cursos en los que estás inscrito:</p>
                 <div className="course-list">
-                    {coursesData.map((course) => (
-                        <CourseCard
-                            key={course.id.toString()}
-                            name={course.name}
-                            description={course.description}
-                            teacher={course.professor}
-                            image={course.image}
-                        />
-                    ))}
+                    {coursesData && coursesData.length > 0 ? (
+                        coursesData.map((course) => (
+                            course && (
+                                <CourseCard
+                                    key={course.id.toString()}
+                                    name={course.name || "Curso sin nombre"}
+                                    description={course.description || "Descripción no disponible"}
+                                    teacher={course.professor || "Profesor no asignado"}
+                                    image={course.image || ""}
+                                />
+                            )
+                        ))
+                    ) : (
+                        <p>No hay cursos disponibles.</p>
+                    )}
                 </div>
 
                 <button className="become-instructor-btn" onClick={handleBecomeInstructor}>

@@ -33,10 +33,12 @@ const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
 
             if (userRole === 'Teacher' && userId !== null) {
                 const courses = await courseApi.getCoursesByTeacherIdAsync(userId);
-                setAllCourses(courses.data);
+                const filteredCourses = courses.data.filter((course: any) => !course.isDeleted);
+                setAllCourses(filteredCourses);
             } else if (userRole === 'Student' && userId !== null) {
                 const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
-                setAllCourses(response.data);
+                const filteredCourses = response.data.filter((course: any) => !course.isDeleted);
+                setAllCourses(filteredCourses);
             }
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -44,10 +46,9 @@ const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
     };
 
     useEffect(() => {
-        fetchCourses(); // Carga inicial
+        fetchCourses();
     }, [state.role, state.userName]);
 
-    // Exponer el método `fetchCourses` para que pueda ser llamado desde afuera
     useImperativeHandle(ref, () => ({
         fetchCourses,
     }));
@@ -56,15 +57,15 @@ const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
         <div className={`custom-sidebar ${visible ? '' : 'collapsed'}`}>
             <nav>
                 <ul>
-                    <li className={`item ${location.pathname === '/mainloggedin' ? 'active' : ''}`}>
-                        <Link to="mainloggedin">
+                    <li className={`item ${location.pathname === '/home_logged_in/mainloggedin' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/mainloggedin">
                             <AiOutlineHome className="icon" />
                             {visible && <span>{t('Main')}</span>}
                         </Link>
                     </li>
 
-                    <li className={`item ${location.pathname === '/courses' ? 'active' : ''}`}>
-                        <Link to="courses">
+                    <li className={`item ${location.pathname === '/home_logged_in/courses' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/courses">
                             <HiOutlineBookOpen className="icon" />
                             {visible && <span>{t('sideBar_loggedIn_Courses')}</span>}
                         </Link>
@@ -72,7 +73,7 @@ const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
 
                     {allCourses.length > 0 ? (
                         allCourses.map((course) => (
-                            <li key={course.id} className={`sub-item ${location.pathname === `/course/${course.id}` ? 'active' : ''}`}>
+                            <li key={course.id} className={`sub-item ${location.pathname === `/home_logged_in/course/${course.id}` ? 'active' : ''}`}>
                                 <Link to={`/home_logged_in/course/${course.id}`} className="course-link">
                                     <img
                                         src={course.logo ? `data:image/png;base64,${course.logo}` : defaultCourseImage}
@@ -87,29 +88,29 @@ const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
                         visible && <li className="no-courses">{t('No courses available')}</li>
                     )}
 
-                    <li className={`item ${location.pathname === '/calendar' ? 'active' : ''}`}>
-                        <Link to="calendar">
+                    <li className={`item ${location.pathname === '/home_logged_in/calendar' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/calendar">
                             <BiCalendar className="icon" />
                             {visible && <span>{t('Calendar')}</span>}
                         </Link>
                     </li>
 
-                    <li className={`item ${location.pathname === '/notifications' ? 'active' : ''}`}>
-                        <Link to="notifications">
+                    <li className={`item ${location.pathname === '/home_logged_in/notifications' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/notifications">
                             <AiOutlineBell className="icon" />
                             {visible && <span>{t('Notifications')}</span>}
                         </Link>
                     </li>
 
-                    <li className={`item ${location.pathname === '/requests' ? 'active' : ''}`}>
-                        <Link to="requests">
+                    <li className={`item ${location.pathname === '/home_logged_in/requests' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/requests">
                             <MdOutlineRequestPage className="icon" />
                             {visible && <span>{t('Requests')}</span>}
                         </Link>
                     </li>
 
-                    <li className={`item ${location.pathname === '/settings' ? 'active' : ''}`}>
-                        <Link to="settings">
+                    <li className={`item ${location.pathname === '/home_logged_in/settings' ? 'active' : ''}`}>
+                        <Link to="/home_logged_in/settings">
                             <AiOutlineSetting className="icon" />
                             {visible && <span>{t('Settings')}</span>}
                         </Link>

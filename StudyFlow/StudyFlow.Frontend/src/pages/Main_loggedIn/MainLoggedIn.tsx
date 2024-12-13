@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './main_loggedIn.css';
 import { useTheme } from '../../ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import MainCourseCard from '../../components/cards/mainCourseCard/MainCourseCard';
 import Pagination from '@components/pagination/Pagination';
 import { courseApi, enrollStudentApi } from '../../services/api';
+import SidebarMenu from '../../components/sideBarMenu/SideBarMenu';
 
 interface Course {
     id: string;
@@ -18,6 +19,7 @@ interface Course {
     teacher: string;
     logo?: string;
     isDeleted?: boolean;
+    userId?: string;
 }
 
 interface Student {
@@ -40,6 +42,7 @@ const MainLoggedIn: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(5);
     const [refreshCourses, setRefreshCourses] = useState(false);
+    const sidebarMenuRef = useRef<any>(null);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -90,9 +93,16 @@ const MainLoggedIn: React.FC = () => {
         setPaginatedCourses(allCourses.slice(startIndex, endIndex));
     }, [allCourses, currentPage, recordsPerPage]);
 
+    const handleRefreshCourses = () => {
+        if (sidebarMenuRef.current) {
+            sidebarMenuRef.current.fetchCourses();
+        }
+    };
+
     const handleCourseCreated = () => {
-        setRefreshCourses(prev => !prev);
+        setRefreshCourses((prev) => !prev);
         setCurrentPage(1);
+        handleRefreshCourses();
     };
 
     const handlePopupOpen = () => {
@@ -107,6 +117,7 @@ const MainLoggedIn: React.FC = () => {
 
     return (
         <div className={`main_loggedIn_page ${theme}`}>
+            <SidebarMenu ref={sidebarMenuRef} visible={true} />
             <div className="main_loggedIn-header">
                 <h1>{t('main_title')}</h1>
                 <p>{t('main_subtitle')}</p>
@@ -137,11 +148,16 @@ const MainLoggedIn: React.FC = () => {
                                         paginatedCourses.map(course => (
                                             <MainCourseCard
                                                 key={course.id}
+                                                id={course.id}
                                                 name={course.name}
                                                 description={course.description}
                                                 teacher={course.teacher}
                                                 image={course.logo || ""}
-                                            />
+                                                onCourseDeleted={(deletedCourseId) => {
+                                                    setAllCourses(prevCourses => prevCourses.filter(c => c.id !== deletedCourseId));
+                                                    handleRefreshCourses();
+                                                }}
+                                                userId={course.userId ?? ""} />
                                         ))
                                     ) : (
                                         <p>{t('no_courses_message')}</p>
@@ -166,11 +182,16 @@ const MainLoggedIn: React.FC = () => {
                                         paginatedCourses.map(course => (
                                             <MainCourseCard
                                                 key={course.id}
+                                                id={course.id}
                                                 name={course.name}
                                                 description={course.description}
                                                 teacher={course.teacher}
                                                 image={course.logo || ""}
-                                            />
+                                                onCourseDeleted={(deletedCourseId) => {
+                                                    setAllCourses(prevCourses => prevCourses.filter(c => c.id !== deletedCourseId));
+                                                    handleRefreshCourses();
+                                                }}
+                                                userId={course.userId ?? ""} />
                                         ))
                                     ) : (
                                         <p>{t('no_enrolled_courses_message')}</p>

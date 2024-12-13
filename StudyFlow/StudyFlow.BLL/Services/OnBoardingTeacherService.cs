@@ -267,23 +267,32 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Not found course with the Id {courseId}.");
             }
 
-            bool result;
-
             try
             {
-                result = await _unitOfWork.CourseRepository.DeleteAsync(course);
+                // Marcar el curso como eliminado
+                course.IsDeleted = true;
 
-                if (result)
+                if (course.HaveLogo)
                 {
-                    var isDeleted = course.HaveLogo ? _storageService.DeleteAsync(course.Id.ToString()).Result : false;
-                    _unitOfWork.SaveChangesAsync();
-                    return ApiResponseHelper.NoContent();
+                    // Intentar eliminar el logo si existe
+                    try
+                    {
+                        await _storageService.DeleteAsync(course.Id.ToString());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to delete logo: {ex.Message}");
+                    }
                 }
 
-                throw new ArgumentException("Failed to delete course");
+                // Guardar cambios en la base de datos
+                await _unitOfWork.SaveChangesAsync();
+
+                return ApiResponseHelper.NoContent();
             }
             catch (Exception ex)
             {
+                // Revertir cambios si ocurre un error
                 _unitOfWork.Rollback();
                 throw new Exception("Failed to delete course", ex);
             }
