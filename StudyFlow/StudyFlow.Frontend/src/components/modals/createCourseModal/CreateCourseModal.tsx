@@ -8,12 +8,13 @@ import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import { useAuth } from '../../../contexts/AuthContext';
 import Toggle from 'react-toggle';
+import { useOutletContext } from 'react-router-dom';
 import 'react-toggle/style.css';
 
 interface CreateCourseModalProps {
     open: boolean;
     setOpen: (open: boolean) => void;
-    onCourseCreated?: () => void; // Callback para notificar la creación
+    onCourseCreated?: () => void;
 }
 
 const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, onCourseCreated }) => {
@@ -35,6 +36,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
+    const { refreshCourses } = useOutletContext<{ refreshCourses: () => void }>();
 
     const handleCroppedImage = (croppedImage: string) => {
         const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
@@ -88,7 +90,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
             setProblemMessage(t('course_created_successfully'));
 
             reset();
-
+            if (refreshCourses) refreshCourses();
             setOpen(false);
 
             if (onCourseCreated) onCourseCreated();

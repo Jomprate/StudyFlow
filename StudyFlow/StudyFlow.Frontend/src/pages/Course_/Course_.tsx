@@ -76,8 +76,16 @@ const Course_: React.FC = () => {
             <div className="course-container">
                 <div className="course-header">
                     <div className="course-header-text">
-                        <h1>{course.data.name}</h1>
-                        <h2>{course.data.description}</h2>
+                        <div className="course-title-container">
+                            <h1>{course.data.name}</h1>
+                        </div>
+
+                        <div className="course-description-container">
+                            <p>{course.data.description}</p>
+                        </div>
+
+                        {/*<h1>{course.data.name}</h1>*/}
+                        {/*<h2>{course.data.description}</h2>*/}
                     </div>
                     <img
                         src={course.data.logo ? `data:image/png;base64,${course.data.logo}` : user_p}

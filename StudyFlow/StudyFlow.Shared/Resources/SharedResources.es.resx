@@ -507,4 +507,7 @@
   <data name="unexpected_error" xml:space="preserve">
     <value>Ocurrió un error inesperado.</value>
   </data>
+  <data name="main_loggedIn_created_courses_title" xml:space="preserve">
+    <value>Cursos Creados</value>
+  </data>
 </root>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { AiOutlineHome, AiOutlineBell, AiOutlineSetting } from 'react-icons/ai';
@@ -20,46 +20,48 @@ interface Course {
     logo?: string;
 }
 
-const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
+const SidebarMenu = forwardRef(({ visible }: SidebarMenuProps, ref) => {
     const location = useLocation();
     const { t } = useTranslation();
     const { state } = useAuth();
     const [allCourses, setAllCourses] = useState<Course[]>([]);
 
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const userRole = state.role;
-                const userId = state.userName;
+    const fetchCourses = async () => {
+        try {
+            const userRole = state.role;
+            const userId = state.userName;
 
-                if (userRole === 'Teacher' && userId !== null) {
-                    const courses = await courseApi.getCoursesByTeacherIdAsync(userId);
-                    setAllCourses(courses.data);
-                }
-                else if (userRole === 'Student' && userId !== null) {
-                    const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
-                    setAllCourses(response.data);
-                }
-            } catch (error) {
-                console.error('Error fetching courses:', error);
+            if (userRole === 'Teacher' && userId !== null) {
+                const courses = await courseApi.getCoursesByTeacherIdAsync(userId);
+                setAllCourses(courses.data);
+            } else if (userRole === 'Student' && userId !== null) {
+                const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
+                setAllCourses(response.data);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        }
+    };
 
-        fetchCourses();
+    useEffect(() => {
+        fetchCourses(); // Carga inicial
     }, [state.role, state.userName]);
+
+    // Exponer el método `fetchCourses` para que pueda ser llamado desde afuera
+    useImperativeHandle(ref, () => ({
+        fetchCourses,
+    }));
 
     return (
         <div className={`custom-sidebar ${visible ? '' : 'collapsed'}`}>
             <nav>
                 <ul>
-
                     <li className={`item ${location.pathname === '/mainloggedin' ? 'active' : ''}`}>
                         <Link to="mainloggedin">
                             <AiOutlineHome className="icon" />
                             {visible && <span>{t('Main')}</span>}
                         </Link>
                     </li>
-
 
                     <li className={`item ${location.pathname === '/courses' ? 'active' : ''}`}>
                         <Link to="courses">
@@ -116,6 +118,6 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
             </nav>
         </div>
     );
-};
+});
 
 export default SidebarMenu;

@@ -20,6 +20,20 @@
 
 .course-header {
     display: flex;
+    align-items: flex-start; /* Ajusta los elementos en la parte superior */
+    justify-content: space-between;
+    background-color: #135f78;
+    padding: 20px;
+    color: white;
+    text-align: left;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid #4a90e2;
+    flex-wrap: wrap; /* Permite que los elementos ocupen varias líneas si es necesario */
+}
+
+/*.course-header {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #135f78;
@@ -31,7 +45,7 @@
     border-radius: 8px;
     margin-bottom: 20px;
     border: 2px solid #4a90e2;
-}
+}*/
 
 .course-header-content {
     display: flex;
@@ -40,13 +54,86 @@
     margin-bottom: 20px;
 }
 
-.course-header-text {
-    flex: 1;
+/*.course-title-container {
+    background-color: rgba(255, 255, 255, 0.2);*/ /* Fondo semitransparente */
+/*padding: 10px 20px;*/ /* Espaciado interno */
+/*border-radius: 8px;*/ /* Bordes redondeados */
+/*display: inline-block;*/ /* Ajusta el ancho al contenido */
+/*color: white;*/ /* Texto blanco */
+/*font-size: 1.5rem;*/ /* Ajusta el tamaño del texto si es necesario */
+/*font-weight: bold;*/ /* Asegura un texto en negrita */
+/*text-align: center;*/ /* Centra el texto dentro del contenedor */
+/*}*/
+
+.course-title-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 12px;
+    display: inline-block;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
+.course-description-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block;
+    color: white;
+    font-size: 1.3rem;
+    font-weight: normal;
+    line-height: 1.4;
+    max-width: 100%;
+    margin-bottom: 10px;
+    text-align: justify;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/*.course-header-text {
+    flex: 1;
+}*/
+
+/*.course-header-text {
+    flex: 1;
+    word-wrap: break-word;*/ /* Asegura que el texto largo se ajuste */
+/*word-break: break-word;
+    overflow: visible;*/ /* Permite que el texto se expanda dentro del contenedor */
+/*white-space: normal;*/ /* Permite que el texto se ajuste en varias líneas */
+/*padding-right: 20px;*/ /* Asegura espacio entre el texto y la imagen */
+/*}*/
+
+.course-header-text {
+    flex: 1;
+    display: flex; /* Aplica flexbox */
+    flex-direction: column; /* Apila elementos verticalmente */
+    align-items: flex-start; /* Alinea el contenido a la izquierda */
+    gap: 10px; /* Espaciado entre el título y la descripción */
+    word-wrap: break-word; /* Asegura que el texto largo se ajuste */
+    word-break: break-word; /* Divide palabras largas si es necesario */
+    overflow: visible; /* Permite que el texto se expanda dentro del contenedor */
+    white-space: normal; /* Permite el ajuste de texto en varias líneas */
+    padding-right: 20px; /* Asegura espacio entre el texto y la imagen */
+}
+
+/*.course-header-text {
+    flex: 1;
+    word-wrap: break-word;*/ /* Permite dividir palabras largas */
+/*word-break: break-word;*/ /* Divide palabras largas si es necesario */
+/*overflow: hidden;*/ /* Oculta cualquier contenido que desborde */
+/*text-overflow: ellipsis;*/ /* Muestra puntos suspensivos si el texto se recorta (opcional) */
+/*display: -webkit-box;*/ /* Usado con line-clamp para limitar líneas */
+/*-webkit-line-clamp: 3;*/ /* Número máximo de líneas visibles */
+/*-webkit-box-orient: vertical;*/ /* Orientación de las líneas */
+/*white-space: normal;*/ /* Permite el ajuste de texto en múltiples líneas */
+/*}*/
+
 .course-image {
-    width: 150px;
-    height: 150px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     border-radius: 8px;
     margin-left: 20px;

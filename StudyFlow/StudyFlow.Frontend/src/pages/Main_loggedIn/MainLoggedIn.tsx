@@ -131,7 +131,7 @@ const MainLoggedIn: React.FC = () => {
                                     {t('open_popup_button')}
                                 </button>
 
-                                <h2>{t('created_courses_title')}</h2>
+                                <h2>{t('main_loggedIn_created_courses_title')}</h2>
                                 <div className="course-list">
                                     {paginatedCourses.length > 0 ? (
                                         paginatedCourses.map(course => (
