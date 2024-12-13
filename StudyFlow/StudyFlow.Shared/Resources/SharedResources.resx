@@ -531,4 +531,22 @@
   <data name="delete_course_message" xml:space="preserve">
     <value>Are you sure you want to delete the course: &lt;strong&gt;{{item}}&lt;/strong&gt;? This action cannot be undone.</value>
   </data>
+  <data name="course_Create_Title" xml:space="preserve">
+    <value>Create New Course</value>
+  </data>
+  <data name="course_name" xml:space="preserve">
+    <value>Course name</value>
+  </data>
+  <data name="course_error_name_required" xml:space="preserve">
+    <value>Course name is required</value>
+  </data>
+  <data name="course_description" xml:space="preserve">
+    <value>Course description</value>
+  </data>
+  <data name="course_error_description_required" xml:space="preserve">
+    <value>Course description is required</value>
+  </data>
+  <data name="select" xml:space="preserve">
+    <value>Select</value>
+  </data>
 </root>

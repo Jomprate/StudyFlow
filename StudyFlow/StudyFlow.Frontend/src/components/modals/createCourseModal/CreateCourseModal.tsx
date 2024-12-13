@@ -7,7 +7,7 @@ import { courseApi } from '../../../services/api';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import { useAuth } from '../../../contexts/AuthContext';
-import Toggle from 'react-toggle';
+//import Toggle from 'react-toggle';
 import { useOutletContext } from 'react-router-dom';
 import 'react-toggle/style.css';
 
@@ -81,7 +81,8 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
             name: data.name,
             description: data.description,
             logo: cleanLogo || '',
-            isEnabled: data.isEnabled,
+            isEnabled: true,
+            /*isEnabled: data.isEnabled*/
         };
 
         try {
@@ -103,7 +104,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
         <div className={`modal-overlay ${open ? 'show' : ''}`} onClick={handleOverlayClick}>
             <div className={`create-course-modal ${theme}`}>
                 <button className="close-button" onClick={() => setOpen(false)}>&times;</button>
-                <h2 className={`modal-header ${theme}-text`}>{t('create_course')}</h2>
+                <h2 className={`modal-header ${theme}-text`}>{t('course_Create_Title')}</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container">
                     <div className="form-columns">
@@ -113,7 +114,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
                                 <Controller
                                     name="name"
                                     control={control}
-                                    rules={{ required: t('course_name_required') }}
+                                    rules={{ required: t('course_error_name_required') }}
                                     render={({ field }) => (
                                         <input type="text" className={`${theme}-input`} {...field} />
                                     )}
@@ -126,25 +127,28 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
                                 <Controller
                                     name="description"
                                     control={control}
+                                    rules={{ required: t('course_error_description_required') }}
                                     render={({ field }) => (
                                         <textarea className={`${theme}-input`} {...field} />
                                     )}
                                 />
+                                {errors.description && <p className="modal-error">{errors.description.message}</p>}
+
                             </div>
 
-                            <div className="form-group toggle-group">
-                                <label className="toggle-label-text">{t('is_enabled')}</label>
-                                <Controller
-                                    name="isEnabled"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Toggle
-                                            checked={field.value}
-                                            onChange={(e) => field.onChange(e.target.checked)}
-                                        />
-                                    )}
-                                />
-                            </div>
+                            {/*<div className="form-group toggle-group">*/}
+                            {/*    <label className="toggle-label-text">{t('is_enabled')}</label>*/}
+                            {/*    <Controller*/}
+                            {/*        name="isEnabled"*/}
+                            {/*        control={control}*/}
+                            {/*        render={({ field }) => (*/}
+                            {/*            <Toggle*/}
+                            {/*                checked={field.value}*/}
+                            {/*                onChange={(e) => field.onChange(e.target.checked)}*/}
+                            {/*            />*/}
+                            {/*        )}*/}
+                            {/*    />*/}
+                            {/*</div>*/}
                         </div>
 
                         <div className="right-column">
@@ -193,7 +197,7 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
                                         className="file-name-input"
                                     />
                                     <button type="button" className="select-button" onClick={handleSelectClick}>
-                                        {t('select_image')}
+                                        {t('select')}
                                     </button>
                                 </div>
                             </div>

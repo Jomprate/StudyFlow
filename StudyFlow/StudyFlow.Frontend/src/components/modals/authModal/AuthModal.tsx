@@ -432,7 +432,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
                                     {/* Botón para abrir el explorador de archivos */}
                                     <button type="button" className="select-button" onClick={handleSelectClick}>
-                                        {t('Seleccionar')}
+                                        {t('select')}
                                     </button>
                                 </div>
                             </div>

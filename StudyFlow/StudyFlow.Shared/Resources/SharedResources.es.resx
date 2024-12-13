@@ -531,4 +531,22 @@
   <data name="delete_course_message" xml:space="preserve">
     <value>¿Estás seguro de que quieres eliminar el curso: &lt;strong&gt;{{item}}&lt;/strong&gt;? Esta acción no se puede deshacer.</value>
   </data>
+  <data name="course_Create_Title" xml:space="preserve">
+    <value>Crear nuevo Curso</value>
+  </data>
+  <data name="course_name" xml:space="preserve">
+    <value>Nombre del curso</value>
+  </data>
+  <data name="course_error_name_required" xml:space="preserve">
+    <value>Nombre del curso es requerido</value>
+  </data>
+  <data name="course_description" xml:space="preserve">
+    <value>Descripción del curso</value>
+  </data>
+  <data name="course_error_description_required" xml:space="preserve">
+    <value>Descripción del curso es requerido</value>
+  </data>
+  <data name="select" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
 </root>

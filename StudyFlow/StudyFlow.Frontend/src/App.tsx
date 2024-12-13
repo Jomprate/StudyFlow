@@ -3,9 +3,9 @@ import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
-import { AuthProvider } from './contexts/AuthContext';
-import { UtcProvider } from './contexts/UtcContext';
-import LoadingScreen from '@components/loadingScreen/LoadingScreen';
+import { AuthProvider } from '../src/contexts/AuthContext';
+import { UtcProvider } from '../src/contexts/UtcContext';
+import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
 
 function App() {
