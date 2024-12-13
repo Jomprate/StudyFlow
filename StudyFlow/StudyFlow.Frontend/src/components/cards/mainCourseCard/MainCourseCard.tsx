@@ -14,7 +14,7 @@ interface CourseCardProps {
     description: string;
     teacher: string;
     image: string;
-    userId: string; // userId del curso
+    userId: string;
     onCourseDeleted: (courseId: string) => void;
 }
 
@@ -40,7 +40,7 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
     };
 
     const handleCloseModal = () => {
-        setDeleteModalOpen(false); // Cierra el modal sin realizar ninguna acción
+        setDeleteModalOpen(false);
     };
 
     const canDelete = state.role === 'Admin' || state.userName === userId;
