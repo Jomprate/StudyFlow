@@ -8,63 +8,54 @@ import { AuthModal, LoginModal } from '../../components';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
 
-const Menu: React.FC = () => (
-    <>
-        <p>
-            <Link to="/">{useTranslation().t('Home')}</Link>
-        </p>
-        <p>
-            <Link to="/countries">{useTranslation().t('Countries')}</Link>
-        </p>
-
-        <p>
-            <Link to="/notification">{useTranslation().t('Notification')}</Link>
-        </p>
-
-        <p>
-            <Link to="/home_logged_in">test a</Link>
-        </p>
-        <p>
-            <a href="#testb">test b</a>
-        </p>
-        <p>
-            <a href="#about">About Us</a>
-        </p>
-    </>
-);
+const Menu: React.FC = () => {
+    const { t } = useTranslation();
+    return (
+        <>
+            <p>
+                <Link to="/">{t('Home')}</Link>
+            </p>
+            <p>
+                <Link to="/countries">{t('Countries')}</Link>
+            </p>
+            <p>
+                <Link to="/notification">{t('Notification')}</Link>
+            </p>
+            <p>
+                <Link to="/home_logged_in">test a</Link>
+            </p>
+            <p>
+                <a href="#testb">test b</a>
+            </p>
+            <p>
+                <a href="#about">{t('About_Us')}</a>
+            </p>
+        </>
+    );
+};
 
 const Navbar: React.FC = () => {
     const [toggleMenu, setToggleMenu] = useState(false);
     const [openLoginModal, setOpenLoginModal] = useState(false);
     const [openAuthModal, setOpenAuthModal] = useState(false);
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const savedLanguage = localStorage.getItem('language');
         if (savedLanguage && i18n.language !== savedLanguage) {
-            i18n
-                .changeLanguage(savedLanguage)
-                .then(() => {
-                    // eslint-disable-next-line no-console
-                    console.log('Idioma cambiado a:', savedLanguage);
-                })
-                .catch((error) => {
-                    console.error('Error al cambiar el idioma:', error);
-                });
+            i18n.changeLanguage(savedLanguage).catch((error) => {
+                console.error('Error al cambiar el idioma:', error);
+            });
         }
     }, [i18n]);
 
     const handleLanguageChange = (_e: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
-        i18n
-            .changeLanguage(value?.toString())
-            .then(() => {
-                localStorage.setItem('language', value?.toString() || '');
-            })
-            .catch((error) => {
-                console.error('Error al cambiar el idioma:', error);
-            });
+        i18n.changeLanguage(value?.toString()).catch((error) => {
+            console.error('Error al cambiar el idioma:', error);
+        });
+        localStorage.setItem('language', value?.toString() || '');
     };
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,7 +96,15 @@ const Navbar: React.FC = () => {
                         defaultValue={i18n.language}
                         onChange={handleLanguageChange}
                     />
-                    <div onClick={toggleTheme} style={{ cursor: 'pointer', marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+                    <div
+                        onClick={toggleTheme}
+                        style={{
+                            cursor: 'pointer',
+                            marginLeft: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
                         {theme === 'light' ? <RiSunLine size={24} /> : <RiMoonLine size={24} />}
                     </div>
                 </div>
@@ -113,9 +112,9 @@ const Navbar: React.FC = () => {
             {!toggleMenu && (
                 <div className="sf__navbar-sign-container">
                     <div className="sf__navbar-sign" style={{ marginLeft: '10px' }}>
-                        <p onClick={() => setOpenLoginModal(true)}>Sign in</p>
+                        <p onClick={() => setOpenLoginModal(true)}>{t('navBar_Login')}</p>
                         <button type="button" onClick={() => setOpenAuthModal(true)}>
-                            Sign up
+                            {t('navBar_SignUp')}
                         </button>
                     </div>
                 </div>
@@ -139,14 +138,17 @@ const Navbar: React.FC = () => {
                             />
                         </div>
                         <div className="sf__navbar-menu_container-theme sf__navbar-menu_container-group">
-                            <div onClick={toggleTheme} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                            <div
+                                onClick={toggleTheme}
+                                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                            >
                                 {theme === 'light' ? <RiSunLine size={24} /> : <RiMoonLine size={24} />}
                             </div>
                         </div>
                         <div className="sf__navbar-menu_container-group">
-                            <p onClick={() => setOpenLoginModal(true)}>Sign in</p>
+                            <p onClick={() => setOpenLoginModal(true)}>{t('navBar_Login')}</p>
                             <button type="button" onClick={() => setOpenAuthModal(true)}>
-                                Sign up
+                                {t('navBar_SignUp')}
                             </button>
                         </div>
                     </div>

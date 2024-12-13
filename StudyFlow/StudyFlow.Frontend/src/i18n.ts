@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import axios, { AxiosResponse } from 'axios';
 
+// Cargar las traducciones desde el backend
 const loadTranslations = async (lng: string): Promise<Record<string, string>> => {
     try {
         const response: AxiosResponse<Record<string, string>> = await axios.get(`https://localhost:7033/api/Localization/${lng}`);
@@ -24,6 +25,7 @@ const loadTranslations = async (lng: string): Promise<Record<string, string>> =>
     }
 };
 
+// Inicializar i18next con las traducciones cargadas
 const initializeI18next = async (): Promise<void> => {
     try {
         console.log("Initializing translations...");
@@ -41,6 +43,7 @@ const initializeI18next = async (): Promise<void> => {
             lng: savedLanguage,
             fallbackLng: 'en',
             interpolation: {
+                // Se desactiva el escape automático para permitir el uso de etiquetas HTML
                 escapeValue: false,
             },
             resources: {

@@ -15,15 +15,15 @@ const NavBarCourse: React.FC<NavBarCourseProps> = ({ setActiveSection }) => {
             <div className="navBarCourse-links">
                 <button onClick={() => setActiveSection('announcements')}>
                     <FaHome />
-                    {t('announcements')}
+                    {t('navBarCourse_Announcements')}
                 </button>
                 <button onClick={() => setActiveSection('classwork')}>
                     <FaBook />
-                    {t('classwork')}
+                    {t('navBarCourse_Classwork')}
                 </button>
                 <button onClick={() => setActiveSection('people')}>
                     <FaUsers />
-                    {t('people')}
+                    {t('navBarCourse_People')}
                 </button>
             </div>
         </nav>

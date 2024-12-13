@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import './deleteModal.css';
 import { useTheme } from '../../../ThemeContext';
@@ -10,7 +10,8 @@ interface DeleteModalProps {
     onDelete: (password?: string) => void; // Ahora acepta una contraseña opcional
     itemToDelete: string;
     deleteTitle?: string;
-    deleteMessage?: string;
+    /*deleteMessage?: string;*/
+    deleteMessage: ReactNode;
     deleteButtonText?: string;
     cancelButtonText?: string;
     requirePassword?: boolean; // Indica si se requiere contraseña

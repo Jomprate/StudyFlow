@@ -510,4 +510,25 @@
   <data name="main_loggedIn_created_courses_title" xml:space="preserve">
     <value>Cursos Creados</value>
   </data>
+  <data name="navBarCourse_Announcements" xml:space="preserve">
+    <value>Anuncios</value>
+  </data>
+  <data name="navBarCourse_Classwork" xml:space="preserve">
+    <value>Trabajos de Clase</value>
+  </data>
+  <data name="navBarCourse_People" xml:space="preserve">
+    <value>Estudiantes</value>
+  </data>
+  <data name="navBar_Login" xml:space="preserve">
+    <value>Ingresar</value>
+  </data>
+  <data name="navBar_SignUp" xml:space="preserve">
+    <value>Registrarse</value>
+  </data>
+  <data name="delete_course_title" xml:space="preserve">
+    <value>Eliminar Curso</value>
+  </data>
+  <data name="delete_course_message" xml:space="preserve">
+    <value>¿Estás seguro de que quieres eliminar el curso: &lt;strong&gt;{{item}}&lt;/strong&gt;? Esta acción no se puede deshacer.</value>
+  </data>
 </root>

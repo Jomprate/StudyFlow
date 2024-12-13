@@ -504,4 +504,25 @@
   <data name="main_loggedIn_created_courses_title" xml:space="preserve">
     <value>Created Courses</value>
   </data>
+  <data name="navBarCourse_Announcements" xml:space="preserve">
+    <value>Announcements</value>
+  </data>
+  <data name="navBarCourse_Classwork" xml:space="preserve">
+    <value>Classworks</value>
+  </data>
+  <data name="navBarCourse_People" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="navBar_Login" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="navBar_SignUp" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="delete_course_title" xml:space="preserve">
+    <value>Delete Course</value>
+  </data>
+  <data name="delete_course_message" xml:space="preserve">
+    <value>Are you sure you want to delete the course: &lt;strong&gt;{{item}}&lt;/strong&gt;? This action cannot be undone.</value>
+  </data>
 </root>

@@ -6,6 +6,7 @@ import CurseImage from '../../../assets/user_p.svg';
 import { courseApi } from '../../../services/api';
 import DeleteModal from '../../modals/deleteModal/DeleteModal';
 import { useAuth } from '../../../contexts/AuthContext';
+import { Trans } from 'react-i18next';
 
 interface CourseCardProps {
     id: string;
@@ -42,9 +43,6 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
         setDeleteModalOpen(false); // Cierra el modal sin realizar ninguna acción
     };
 
-    //console.log("the user id is:" + userId);
-
-    // Verificar si el botón de borrar debe mostrarse
     const canDelete = state.role === 'Admin' || state.userName === userId;
 
     return (
@@ -76,9 +74,15 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
                 onDelete={handleConfirmDelete}
                 itemToDelete={name}
                 deleteTitle={t('delete_course_title')}
-                deleteMessage={t('delete_course_message', { item: name })}
-                deleteButtonText={t('delete')}
-                cancelButtonText={t('cancel')}
+                deleteMessage={
+                    <Trans
+                        i18nKey="delete_course_message"
+                        values={{ item: name }}
+                        components={{ strong: <strong /> }}
+                    />
+                }
+                deleteButtonText={t('delModal_delete_button')}
+                cancelButtonText={t('delModal_cancel_button')}
                 requirePassword={false}
             />
         </div>
