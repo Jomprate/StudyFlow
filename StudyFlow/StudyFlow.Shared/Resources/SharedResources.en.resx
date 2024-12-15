@@ -543,4 +543,10 @@
   <data name="select" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="update_pass_error_invalid_new" xml:space="preserve">
+    <value>The new password does not meet the requirements.</value>
+  </data>
+  <data name="update_pass_error_incorrect_current" xml:space="preserve">
+    <value>The current password is not correct.</value>
+  </data>
 </root>

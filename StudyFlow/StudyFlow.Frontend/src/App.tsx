@@ -5,6 +5,7 @@ import { initializeI18next } from './i18n';
 import { ThemeProvider, useTheme } from './ThemeContext';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { UtcProvider } from '../src/contexts/UtcContext';
+import { CoursesProvider } from '../src/contexts/CoursesContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
 
@@ -104,7 +105,9 @@ const WrappedApp: React.FC = () => (
     <AuthProvider>
         <ThemeProvider>
             <UtcProvider>
-                <App />
+                <CoursesProvider>
+                    <App />
+                </CoursesProvider>
             </UtcProvider>
         </ThemeProvider>
     </AuthProvider>

@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import './navbarLoggedIn.css';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
-import { userApi } from '../../services/api'; // Importar getuserbyid para obtener el nombre completo del usuario
-import { useAuth } from '../../contexts/AuthContext'; // Importar el contexto de autenticación
+import { userApi } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import logo from '../../assets/logo_t.svg';
-//import { logoutUser } from '../../services/api'; // Importar la función logoutUser
 
 interface NavbarProps {
     sidebarVisible: boolean;
@@ -22,17 +21,14 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     const { isAuthenticated, role, userName } = state;
     const navigate = useNavigate();
 
-    // Estado para almacenar el nombre completo del usuario
     const [fullName, setFullName] = useState<string | null>(null);
     const [menuVisible, setMenuVisible] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Cambio de idioma
     const handleLanguageChange = (_e: React.SyntheticEvent<HTMLElement>, { value }: DropdownProps) => {
         i18n.changeLanguage(value?.toString()).catch(console.error);
     };
 
-    // Cerrar el menú al hacer clic fuera de él
     const handleClickOutside = (event: MouseEvent) => {
         if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
             setMenuVisible(false);
@@ -42,12 +38,11 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     useEffect(() => {
         console.log('Auth state updated:', isAuthenticated, role, userName);
 
-        // Obtener el nombre completo del usuario usando el ID (userName)
         const fetchUserFullName = async () => {
             if (userName) {
                 try {
                     const user = await userApi.getuserbyid(userName);
-                    console.log('User data:', user); // Muestra la data del usuario en consola
+                    console.log('User data:', user);
                     setFullName(`${user.data.firstName} ${user.data.lastName}`);
                 } catch (error) {
                     console.error('Error fetching user data:', error);
@@ -69,7 +64,6 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
         };
     }, [menuVisible]);
 
-    // Manejo de logout
     const handleLogout = async () => {
         try {
             await logout();

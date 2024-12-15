@@ -1,13 +1,12 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import NavbarLoggedIn from '../../navBarLoggedIn/NavbarLoggedIn';
 import SidebarMenu from '../../sideBarMenu/SideBarMenu';
-import Footer from '../../../containers/footer/Footer';
 import './loggedInMainLayout.css';
+import Footer from '../../../containers/footer/Footer';
 
 const LoggedInMainLayout: React.FC = () => {
     const [sidebarVisible, setSidebarVisible] = useState(true);
-    const sidebarRef = useRef<{ fetchCourses: () => void } | null>(null);
 
     const toggleSidebar = () => {
         setSidebarVisible(!sidebarVisible);
@@ -35,9 +34,9 @@ const LoggedInMainLayout: React.FC = () => {
         <div className="main-layout">
             <NavbarLoggedIn sidebarVisible={sidebarVisible} toggleSidebar={toggleSidebar} />
             <div className="layout-container">
-                <SidebarMenu visible={sidebarVisible} ref={sidebarRef} />
+                <SidebarMenu visible={sidebarVisible} />
                 <div className={`main-content ${sidebarVisible ? '' : 'hidden'}`}>
-                    <Outlet context={{ refreshCourses: sidebarRef.current?.fetchCourses }} />
+                    <Outlet />
                 </div>
             </div>
             <Footer />

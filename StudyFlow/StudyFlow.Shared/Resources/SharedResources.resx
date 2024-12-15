@@ -499,10 +499,10 @@
     <value>Passwords do not match.</value>
   </data>
   <data name="update_pass_error_invalid_new" xml:space="preserve">
-    <value></value>
+    <value>The new password does not meet the requirements.</value>
   </data>
   <data name="update_pass_error_incorrect_current" xml:space="preserve">
-    <value></value>
+    <value>The current password is not correct.</value>
   </data>
   <data name="unexpected_error" xml:space="preserve">
     <value>An unexpected error occurred.</value>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './main_loggedIn.css';
 import { useTheme } from '../../ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,8 +7,12 @@ import Popup from '../../components/modals/PopUp/PopUp';
 import { useTranslation } from 'react-i18next';
 import MainCourseCard from '../../components/cards/mainCourseCard/MainCourseCard';
 import Pagination from '@components/pagination/Pagination';
-import { courseApi, enrollStudentApi } from '../../services/api';
-import SidebarMenu from '../../components/sideBarMenu/SideBarMenu';
+import { useCourses } from '../../contexts/CoursesContext';
+
+interface Student {
+    id: string;
+    name: string;
+}
 
 interface Course {
     id: string;
@@ -22,17 +26,12 @@ interface Course {
     userId?: string;
 }
 
-interface Student {
-    id: string;
-    name: string;
-}
-
 const MainLoggedIn: React.FC = () => {
     const { theme } = useTheme();
     const { state } = useAuth();
     const { t } = useTranslation();
+    const { courses, fetchCourses } = useCourses();
 
-    const [allCourses, setAllCourses] = useState<Course[]>([]);
     const [paginatedCourses, setPaginatedCourses] = useState<Course[]>([]);
     const [students, _setStudents] = useState<Student[]>([]);
     const [isCreateCourseModalOpen, setIsCreateCourseModalOpen] = useState(false);
@@ -41,68 +40,17 @@ const MainLoggedIn: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(5);
-    const [refreshCourses, setRefreshCourses] = useState(false);
-    const sidebarMenuRef = useRef<any>(null);
-
-    useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const userRole = state.role;
-                const userId = state.userName;
-
-                console.log("User role: " + userRole);
-
-                if (userRole === 'Teacher' && userId) {
-                    const response = await courseApi.getCoursesByTeacherIdAsync(userId);
-
-                    if (response.statusCode === 404) {
-                        console.warn('No courses found for this teacher.');
-                        setAllCourses([]);
-                        setTotalPages(1);
-                    } else {
-                        const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
-                        setAllCourses(filteredCourses);
-                        setTotalPages(Math.ceil(filteredCourses.length / recordsPerPage));
-                    }
-                } else if (userRole === 'Student' && userId) {
-                    const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, currentPage, recordsPerPage);
-
-                    if (response.statusCode === 404) {
-                        console.warn('No courses found for this student.');
-                        setAllCourses([]);
-                        setTotalPages(1);
-                    } else {
-                        const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
-                        setAllCourses(filteredCourses);
-                        setTotalPages(Math.ceil(response.totalRecords / recordsPerPage));
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                setAllCourses([]);
-                setTotalPages(1);
-            }
-        };
-
-        fetchCourses();
-    }, [state.role, state.userName, refreshCourses, currentPage, recordsPerPage]);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * recordsPerPage;
         const endIndex = startIndex + recordsPerPage;
-        setPaginatedCourses(allCourses.slice(startIndex, endIndex));
-    }, [allCourses, currentPage, recordsPerPage]);
+        setPaginatedCourses(courses.slice(startIndex, endIndex) as Course[]);
+        setTotalPages(Math.ceil(courses.length / recordsPerPage));
+    }, [courses, currentPage, recordsPerPage]);
 
-    const handleRefreshCourses = () => {
-        if (sidebarMenuRef.current) {
-            sidebarMenuRef.current.fetchCourses();
-        }
-    };
-
-    const handleCourseCreated = () => {
-        setRefreshCourses((prev) => !prev);
+    const handleCourseCreated = async () => {
+        await fetchCourses();
         setCurrentPage(1);
-        handleRefreshCourses();
     };
 
     const handlePopupOpen = () => {
@@ -117,7 +65,6 @@ const MainLoggedIn: React.FC = () => {
 
     return (
         <div className={`main_loggedIn_page ${theme}`}>
-            <SidebarMenu ref={sidebarMenuRef} visible={true} />
             <div className="main_loggedIn-header">
                 <h1>{t('main_title')}</h1>
                 <p>{t('main_subtitle')}</p>
@@ -153,11 +100,9 @@ const MainLoggedIn: React.FC = () => {
                                                 description={course.description}
                                                 teacher={course.teacher}
                                                 image={course.logo || ""}
-                                                onCourseDeleted={(deletedCourseId) => {
-                                                    setAllCourses(prevCourses => prevCourses.filter(c => c.id !== deletedCourseId));
-                                                    handleRefreshCourses();
-                                                }}
-                                                userId={course.userId ?? ""} />
+                                                onCourseDeleted={fetchCourses}
+                                                userId={course.userId ?? ""}
+                                            />
                                         ))
                                     ) : (
                                         <p>{t('no_courses_message')}</p>
@@ -187,11 +132,9 @@ const MainLoggedIn: React.FC = () => {
                                                 description={course.description}
                                                 teacher={course.teacher}
                                                 image={course.logo || ""}
-                                                onCourseDeleted={(deletedCourseId) => {
-                                                    setAllCourses(prevCourses => prevCourses.filter(c => c.id !== deletedCourseId));
-                                                    handleRefreshCourses();
-                                                }}
-                                                userId={course.userId ?? ""} />
+                                                onCourseDeleted={fetchCourses}
+                                                userId={course.userId ?? ""}
+                                            />
                                         ))
                                     ) : (
                                         <p>{t('no_enrolled_courses_message')}</p>

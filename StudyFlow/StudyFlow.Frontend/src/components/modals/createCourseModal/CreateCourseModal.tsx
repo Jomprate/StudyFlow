@@ -7,9 +7,7 @@ import { courseApi } from '../../../services/api';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import { useAuth } from '../../../contexts/AuthContext';
-//import Toggle from 'react-toggle';
-import { useOutletContext } from 'react-router-dom';
-import 'react-toggle/style.css';
+import { useCourses } from '../../../contexts/CoursesContext';
 
 interface CreateCourseModalProps {
     open: boolean;
@@ -21,6 +19,8 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
     const { t } = useTranslation();
     const { theme } = useTheme();
     const { state } = useAuth();
+    const { fetchCourses } = useCourses();
+
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
@@ -36,7 +36,6 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
-    const { refreshCourses } = useOutletContext<{ refreshCourses: () => void }>();
 
     const handleCroppedImage = (croppedImage: string) => {
         const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
@@ -75,7 +74,6 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
 
     const onSubmit = async (data: any) => {
         const cleanLogo = croppedImage ? croppedImage.replace(/^data:image\/[a-z]+;base64,/, '') : '';
-        //
         const courseData = {
             teacherId: state.userName?.toString() ?? '',
             name: data.name,
@@ -91,8 +89,9 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
             setProblemMessage(t('course_created_successfully'));
 
             reset();
-            if (refreshCourses) refreshCourses();
             setOpen(false);
+
+            await fetchCourses();
 
             if (onCourseCreated) onCourseCreated();
         } catch (error: any) {
@@ -133,7 +132,6 @@ const CreateCourseModal: React.FC<CreateCourseModalProps> = ({ open, setOpen, on
                                     )}
                                 />
                                 {errors.description && <p className="modal-error">{errors.description.message}</p>}
-
                             </div>
 
                             {/*<div className="form-group toggle-group">*/}

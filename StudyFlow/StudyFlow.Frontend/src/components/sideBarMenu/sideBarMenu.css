@@ -15,7 +15,7 @@
         width: 80px;
     }
 
-    .custom-sidebar.open {
+    .custom-sidebar.visible {
         width: 250px;
         transform: translateX(0);
     }
