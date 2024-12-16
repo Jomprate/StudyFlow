@@ -51,7 +51,7 @@ html, body {
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center; /* Centra el texto */
+    text-align: center;
     margin-right: 20px;
 }
 
@@ -111,7 +111,6 @@ html, body {
 
 .create-course-button {
     background-color: var(--primary-color);
-    color: #ffffff;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -125,13 +124,6 @@ html, body {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     padding: 0;
-}
-
-/* Media query para pantallas pequeñas */
-@media (max-width: 768px) {
-    .course-list {
-        grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
-    }
 }
 
 .course-item {
@@ -155,4 +147,31 @@ html, body {
     border-radius: 5px;
     font-size: 1.1rem;
     color: var(--text-color);
+}
+
+/* Tema oscuro para columnas y contenedores */
+.courses_page.dark .column-box,
+.courses_page.dark .courses-header-box {
+    background-color: var(--color-dark-container-1);
+    border: 1px solid #fff;
+    color: var(--text-color);
+}
+
+.courses_page.light .column-box,
+.courses_page.light .courses-header-box {
+    /*background-color: #ffffff;*/
+    background-color: #74becb;
+    border: 1px solid #ccc;
+}
+
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .course-list {
+        grid-template-columns: 1fr;
+    }
+
+    .courses-header-box p {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 }
