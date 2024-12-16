@@ -549,4 +549,22 @@
   <data name="AppName" xml:space="preserve">
     <value>StudyFlow</value>
   </data>
+  <data name="courses_title" xml:space="preserve">
+    <value>Cursos</value>
+  </data>
+  <data name="courses_title_2" xml:space="preserve">
+    <value>Tus Cursos</value>
+  </data>
+  <data name="courses_subtitle_teacher" xml:space="preserve">
+    <value>¡Bienvenido a tu espacio de gestión de cursos! Aquí puedes crear nuevos cursos, editar los existentes y ver quiénes están inscritos. Además, recuerda que los cursos creados estarán disponibles en el menú lateral para un acceso rápido. Organiza tu aula de forma sencilla y eficiente.</value>
+  </data>
+  <data name="courses_subtitle_student" xml:space="preserve">
+    <value>¡Descubre tus cursos! Aquí encontrarás todos los cursos en los que estás inscrito, con acceso rápido a materiales, tareas y más. También puedes usar el menú lateral para explorar y acceder a tus cursos en cualquier momento.</value>
+  </data>
+  <data name="courses_created_courses_title" xml:space="preserve">
+    <value>Cursos Creados</value>
+  </data>
+  <data name="courses_enrolled_courses_title" xml:space="preserve">
+    <value>Cursos Inscritos</value>
+  </data>
 </root>

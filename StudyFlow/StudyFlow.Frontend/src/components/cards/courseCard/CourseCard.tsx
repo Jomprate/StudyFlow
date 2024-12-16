@@ -10,6 +10,8 @@ interface CourseCardProps {
     description: string;
     teacher: string;
     image: string;
+    userId: string;
+    id: string;
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({ name, description, teacher }) => {

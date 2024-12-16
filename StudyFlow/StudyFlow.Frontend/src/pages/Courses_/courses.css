@@ -12,77 +12,147 @@ html, body {
 .courses_page {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: stretch;
     min-height: 100vh;
     width: 100%;
-    padding: 20px;
+    padding: -10px;
     margin: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
+
+:root {
+    --background-color: #f4f4f4;
+    --text-color: #333;
+    --primary-color: #4169e1;
+}
+
+.courses_page.light {
+    --background-color: #fff;
+    --text-color: #0a3340;
+    --primary-color: #4169e1;
+}
+
+.courses_page.dark {
+    --background-color: #0a3340;
+    --text-color: #ffffff;
+    --primary-color: #80b3ff;
+}
+
+.courses-header-container {
+    grid-column: 1 / -1;
+    padding: 20px;
+    text-align: center;
+}
+
+.courses-header-box {
+    color: var(--text-color);
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Centra el texto */
+    margin-right: 20px;
+}
+
+    .courses-header-box h1 {
+        margin: 0;
+        color: var(--primary-color);
+        font-size: 2rem;
+    }
+
+    .courses-header-box p {
+        margin-top: 10px;
+        font-size: 1.5rem;
+        color: var(--text-color);
+        margin-left: 80px;
+        margin-right: 80px;
+    }
 
 .courses-container {
     padding: 20px;
-    font-family: var(--font-family);
+    font-family: Arial, sans-serif;
+    flex-grow: 1;
 }
 
-    .courses-container h1 {
-        color: #4169e1;
-        text-align: center;
-    }
-
-    .courses-container p {
-        font-size: 1.1rem;
-        color: #333;
-    }
-
-.course-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+.courses-header {
+    text-align: center;
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.become-instructor-btn {
-    display: block;
-    margin: 20px auto;
+    .courses-header h1 {
+        color: var(--primary-color);
+    }
+
+    .courses-header p {
+        font-size: 1.1rem;
+        color: var(--text-color);
+    }
+
+.courses-columns {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    align-items: flex-start;
+    margin-right: 20px;
+}
+
+.column-box {
+    width: 48%;
+    padding: 20px;
+    background-color: var(--background-color);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.create-course-button {
+    background-color: var(--primary-color);
+    color: #ffffff;
     padding: 10px 20px;
-    background-color: #4169e1;
-    color: white;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 1rem;
+    margin-bottom: 20px;
 }
 
-    .become-instructor-btn:hover {
-        background-color: #3151b7;
-    }
-
-.courses_page.dark {
-    background-color: var(--color-background-dark);
-    color: var(--color_text-light-1);
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 0;
 }
 
-    .courses_page.dark .courses-container h1 {
-        color: #80b3ff;
+/* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .course-list {
+        grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
     }
-
-    .courses_page.dark .courses-container p {
-        color: #bdc3c7;
-    }
-
-.courses_page.light {
-    background-color: var(--color-background-light);
-    color: var(--color_text-dark-1);
 }
 
-    .courses_page.light .courses-container h1 {
-        color: #4169e1;
-    }
+.course-item {
+    background-color: var(--background-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
 
-    .courses_page.light .courses-container p {
-        color: #666;
-    }
+.student-list {
+    list-style: none;
+    padding: 0;
+}
+
+.student-item {
+    background-color: var(--background-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}

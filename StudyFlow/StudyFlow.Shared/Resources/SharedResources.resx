@@ -549,4 +549,22 @@
   <data name="select" xml:space="preserve">
     <value>Select</value>
   </data>
+  <data name="courses_title" xml:space="preserve">
+    <value>Courses</value>
+  </data>
+  <data name="courses_title_2" xml:space="preserve">
+    <value>Your Courses</value>
+  </data>
+  <data name="courses_subtitle_teacher" xml:space="preserve">
+    <value>Welcome to your course management space! Here, you can create new courses, edit existing ones, and see who’s enrolled. Additionally, remember that your created courses are available in the sidebar for quick access. Organize your classroom easily and efficiently.</value>
+  </data>
+  <data name="courses_subtitle_student" xml:space="preserve">
+    <value>Discover your courses! Here, you’ll find all the courses you’re enrolled in, with quick access to materials, assignments, and more. You can also use the sidebar to explore and access your courses anytime.</value>
+  </data>
+  <data name="courses_created_courses_title" xml:space="preserve">
+    <value>Created Courses</value>
+  </data>
+  <data name="courses_enrolled_courses_title" xml:space="preserve">
+    <value>Enrolled Courses</value>
+  </data>
 </root>
