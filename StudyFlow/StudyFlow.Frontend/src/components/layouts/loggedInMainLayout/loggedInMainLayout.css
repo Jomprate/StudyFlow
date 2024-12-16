@@ -28,7 +28,7 @@ body > *:first-child {
     left: 0;
 }
 
-.layout-container {
+/*.layout-container {
     display: flex;
     flex-grow: 1;
     margin-top: -20px;
@@ -36,18 +36,29 @@ body > *:first-child {
     margin-right: -20px;
     transition: margin-left 0.3s ease;
     background-color: #f5f5f5;
+}*/
+
+.layout-container {
+    display: flex;
+    margin-top: -20px;
+    margin-left: 0px;
+    margin-right: -20px;
+    flex-grow: 1;
+    background-color: #f5f5f5;
+    transition: margin-left 0.3s ease;
 }
 
 .custom-sidebar {
     width: 250px;
     background-color: #2c3e50;
-    overflow-y: auto;
     transition: width 0.3s ease, transform 0.3s ease;
     flex-shrink: 0;
+    height: auto;
     position: fixed;
     top: 60px;
     left: 0;
     bottom: 0;
+    padding-bottom: 60px;
 }
 
     .custom-sidebar.collapsed {
