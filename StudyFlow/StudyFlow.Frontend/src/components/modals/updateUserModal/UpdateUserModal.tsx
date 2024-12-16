@@ -3,12 +3,13 @@ import { useForm, Controller } from 'react-hook-form';
 import './updateUserModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { userApi, countryApi } from '../../../services/api'; // Importar getuserbyid
+import { userApi, countryApi } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import UserCreatedModal from '../userCreatedModal/UserCreatedModal';
 import { useAuth } from "../../../contexts/AuthContext";
+import { cleanBase64, readFileAsBase64 } from '../../../utils/images/imageUtils';
 
 interface Country {
     id: number;
@@ -53,15 +54,14 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
     const { state } = useAuth();
     const [isEditable, setIsEditable] = useState(false);
-    //const [translatedUserType, setTranslatedUserType] = useState('');
 
-    const isSelfUpdate = !targetUserId; // Si no hay targetUserId, es una auto-actualización
+    const isSelfUpdate = !targetUserId;
 
-    const effectiveUserId = targetUserId || state.userName; // Usa targetUserId si está presente, sino el del contexto
+    const effectiveUserId = targetUserId || state.userName;
 
     const userType = state.role === 'Teacher' ? 'Teacher' :
         state.role === 'Student' ? 'Student' :
-            ''; // Maneja cualquier caso inesperado
+            '';
 
     const fetchCountries = async () => {
         try {
@@ -95,6 +95,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
                         profileId: userData.profileId || '',
                         image: userData.profilePicture || null,
                     });
+                    setProblemMessage('');
 
                     if (userData.profilePicture) {
                         setImagePreview(`data:image/png;base64,${userData.profilePicture}`);
@@ -102,17 +103,10 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
                         setImagePreview(null);
                     }
 
-                    // Traducción del tipo de usuario basado en profileId
                     switch (userData.profileId) {
-                        case 1:
-                            (t('global_teacher'));
-                            break;
-                        case 2:
-                            (t('global_student'));
-                            break;
-                        default:
-                            (t('global_unknown'));
-                            break;
+                        case 1: (t('global_teacher')); break;
+                        case 2: (t('global_student')); break;
+                        default: (t('global_unknown')); break;
                     }
                 } catch (error) {
                     console.error("Error loading user data:", error);
@@ -127,9 +121,7 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
 
     useEffect(() => {
         fetchCountries();
-
         i18n.on('languageChanged', fetchCountries);
-
         return () => {
             i18n.off('languageChanged', fetchCountries);
         };
@@ -155,12 +147,11 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
             return;
         }
 
-        // Define el profileId según el tipo de usuario seleccionado
         const validProfileId = isSelfUpdate && state.role === 'Admin' ? 0 : userType === 'Teacher' ? 1 : userType === 'Student' ? 2 : 0;
 
         const { firstName, lastName, email, password, phoneNumber, countryId } = data;
 
-        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
+        const cleanProfilePicture = cleanBase64(croppedImage || imagePreview || '');
 
         const finalData = {
             id: state.userName ?? "",
@@ -198,33 +189,33 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
     const handleCroppedImage = (croppedImage: string) => {
-        const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
+        const cleanCroppedImage = cleanBase64(croppedImage);
         setCroppedImage(cleanCroppedImage);
         setImagePreview(`data:image/png;base64,${cleanCroppedImage}`);
         setIsCropModalOpen(false);
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const ALLOWED_FILE_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-            const imageURL = reader.result?.toString() || "";
-            setImagePreview(imageURL);
-            setIsCropModalOpen(true);
-        });
-        reader.readAsDataURL(file);
-        setFileName(file.name);
-    };
+        if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+            setProblemMessage('Tipo de archivo no permitido. Solo PNG y JPEG.');
+            return;
+        }
 
-    <input
-        type="file"
-        ref={fileInputRef}
-        accept="image/png, image/jpeg, image/jpg"
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-    />
+        try {
+            const base64Image = await readFileAsBase64(file);
+            setImagePreview(base64Image);
+            setIsCropModalOpen(true);
+            setFileName(file.name);
+        } catch (error) {
+            setProblemMessage('Error al leer la imagen');
+            console.error('File reading error:', error);
+        }
+    };
 
     const handleSelectClick = () => {
         if (fileInputRef.current) {
@@ -434,12 +425,24 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
 
                         <div className="right-column">
                             <div className="form-group user-image">
+                                {/*<img*/}
+                                {/*    src={imagePreview || userPlaceholder}*/}
+                                {/*    alt="User"*/}
+                                {/*    className="user-placeholder"*/}
+                                {/*    style={{ objectFit: 'cover', width: '205px', height: '205px' }}*/}
+                                {/*/>*/}
                                 <img
                                     src={imagePreview || userPlaceholder}
                                     alt="User"
                                     className="user-placeholder"
-                                    style={{ objectFit: 'cover', width: '205px', height: '205px' }}
+                                    style={{
+                                        objectFit: 'cover',
+                                        width: '205px',
+                                        height: '205px',
+                                        border: imagePreview ? '2px solid green' : '2px dashed gray',
+                                    }}
                                 />
+
                             </div>
 
                             <div className={`form-group ${theme}-text`}>
@@ -508,13 +511,12 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
                     />
                 )}
 
-                {/* Modal para indicar que el usuario fue creado */}
                 <UserCreatedModal
                     open={isUserCreatedModalOpen}
                     setOpen={setIsUserCreatedModalOpen}
                     onBackToLogin={() => {
                         setIsUserCreatedModalOpen(false);
-                        setOpen(false); // Cerrar ambos modales
+                        setOpen(false);
                     }}
                 />
 
