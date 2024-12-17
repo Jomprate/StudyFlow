@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 import Router from '../src/router/index';
 import './App.css';
 import { initializeI18next } from './i18n';
@@ -8,6 +9,7 @@ import { UtcProvider } from '../src/contexts/UtcContext';
 import { CoursesProvider } from '../src/contexts/CoursesContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
+import ScrollToTop from '../src/components/scrollToTop/ScrollToTop';
 
 function App() {
     const [i18nReady, setI18nReady] = useState(false);
@@ -17,7 +19,7 @@ function App() {
     const [lastActivityTime, setLastActivityTime] = useState(Date.now());
     const [isMobile, setIsMobile] = useState(false);
 
-    const INACTIVITY_TIMEOUT = isMobile ? 2 * 60 * 1000 : 5 * 60 * 1000; // 2 minutos en m�vil, 5 minutos en escritorio
+    const INACTIVITY_TIMEOUT = isMobile ? 2 * 60 * 1000 : 5 * 60 * 1000; // 2 minutos en móvil, 5 minutos en escritorio
 
     useEffect(() => {
         const checkIfMobile = () => {
@@ -95,6 +97,7 @@ function App() {
     }
 
     return (
+
         <div className={`app ${theme}`}>
             <Router />
         </div>
@@ -106,7 +109,10 @@ const WrappedApp: React.FC = () => (
         <ThemeProvider>
             <UtcProvider>
                 <CoursesProvider>
-                    <App />
+                    <BrowserRouter>
+                        <ScrollToTop />
+                        <App />
+                    </BrowserRouter>
                 </CoursesProvider>
             </UtcProvider>
         </ThemeProvider>

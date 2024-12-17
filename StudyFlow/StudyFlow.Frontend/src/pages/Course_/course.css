@@ -2,25 +2,15 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     padding: 20px;
     padding-left: 20px;
     padding-right: 40px;
 }
-
-/*.course-header {
-    background-color: #4a90e2;
-    padding-left: 20px;
-    padding-right: 40px;
-    color: white;
-    text-align: center;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border: 2px solid #4a90e2;
-}*/
 
 .course-header {
     display: flex;
-    align-items: flex-start; /* Ajusta los elementos en la parte superior */
+    align-items: flex-start;
     justify-content: space-between;
     background-color: #135f78;
     padding: 20px;
@@ -29,23 +19,8 @@
     border-radius: 8px;
     margin-bottom: 20px;
     border: 2px solid #4a90e2;
-    flex-wrap: wrap; /* Permite que los elementos ocupen varias líneas si es necesario */
+    flex-wrap: wrap;
 }
-
-/*.course-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #135f78;
-    padding-left: 20px;
-    padding-right: 40px;
-    color: white;
-    text-align: left;
-    min-height: 200px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    border: 2px solid #4a90e2;
-}*/
 
 .course-header-content {
     display: flex;

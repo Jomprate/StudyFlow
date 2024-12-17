@@ -23,6 +23,18 @@ const Course_: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('announcements');
 
     useEffect(() => {
+        const handleScroll = () => {
+            console.log(`Scroll position: ${window.scrollY}px`);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
+    useEffect(() => {
         const fetchCourse = async () => {
             try {
                 const teacherId = state.userName;
@@ -73,19 +85,15 @@ const Course_: React.FC = () => {
     return (
         <div className={`course-page ${theme}`}>
             <NavBarCourse setActiveSection={setActiveSection} />
-            <div className="course-container">
+            <div className="course-container ">
                 <div className="course-header">
                     <div className="course-header-text">
                         <div className="course-title-container">
                             <h1>{course.data.name}</h1>
                         </div>
-
                         <div className="course-description-container">
                             <p>{course.data.description}</p>
                         </div>
-
-                        {/*<h1>{course.data.name}</h1>*/}
-                        {/*<h2>{course.data.description}</h2>*/}
                     </div>
                     <img
                         src={course.data.logo ? `data:image/png;base64,${course.data.logo}` : user_p}
