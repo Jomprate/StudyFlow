@@ -10,6 +10,7 @@ import { CoursesProvider } from '../src/contexts/CoursesContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
 import ScrollToTop from '../src/components/scrollToTop/ScrollToTop';
+import ScrollToTopButton from '../src/components/scrollToTop_Button/ScrollToTopButton';
 
 function App() {
     const [i18nReady, setI18nReady] = useState(false);
@@ -112,6 +113,7 @@ const WrappedApp: React.FC = () => (
                     <BrowserRouter>
                         <ScrollToTop />
                         <App />
+                        <ScrollToTopButton />
                     </BrowserRouter>
                 </CoursesProvider>
             </UtcProvider>
