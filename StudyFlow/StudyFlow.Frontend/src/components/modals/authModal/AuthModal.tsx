@@ -94,63 +94,126 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
 
     const [isUserCreatedModalOpen, setIsUserCreatedModalOpen] = useState(false);
 
+    const validatePasswords = (password: string, repeatPassword: string): string | null => {
+        if (password !== repeatPassword) return 'Las contraseñas no coinciden';
+        return null;
+    };
+
+    const getValidProfileId = (profileId: string): number => {
+        return profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
+    };
+
+    const cleanBase64Image = (image: string | null): string => {
+        return (image || '').replace(/^data:image\/[a-z]+;base64,/, '');
+    };
+
+    const handleApiError = (error: any): string => {
+        if (error.response && error.response.data) {
+            return typeof error.response.data === 'string'
+                ? error.response.data
+                : JSON.stringify(error.response.data);
+        }
+        return error.message || 'Ocurrió un error inesperado';
+    };
+
+    const prepareFinalData = (data: any, croppedImage: string | null, imagePreview: string | null) => {
+        return {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            password: data.password,
+            phoneNumber: data.phoneNumber || null,
+            countryId: data.countryId ? Number(data.countryId) : 1,
+            profilePicture: cleanBase64Image(croppedImage || imagePreview),
+            profileId: getValidProfileId(data.profileId),
+        };
+    };
+
+    const handleSuccess = () => {
+        setProblemMessage('Usuario creado con éxito');
+        reset();
+        setImagePreview(null);
+        setCroppedImage(null);
+        setFileName('');
+        setOpen(false);
+        setIsUserCreatedModalOpen(true);
+    };
+
     const onSubmit = async (data: any) => {
-        if (data.password !== data.repeatPassword) {
-            setProblemMessage('Las contraseñas no coinciden');
+        const passwordError = validatePasswords(data.password, data.repeatPassword);
+        if (passwordError) {
+            setProblemMessage(passwordError);
             return;
         }
 
-        const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
-
-        console.log("print only in development" + repeatPassword);
-
-        // Validar profileId y convertirlo a número
-        const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
-
-        // Remover prefijo MIME de la imagen si está en base64
-        const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
-
-        console.log("Base64 enviado al backend:", cleanProfilePicture);
-
-        const finalData = {
-            firstName,
-            lastName,
-            email,
-            password,
-            phoneNumber: phoneNumber || null,
-            countryId: countryId ? Number(countryId) : 1,
-            profilePicture: cleanProfilePicture,
-            profileId: validProfileId,
-        };
+        const finalData = prepareFinalData(data, croppedImage, imagePreview);
 
         console.log("Datos enviados al backend:", finalData);
 
         try {
             await userApi.createUser(finalData);
-            setProblemMessage('Usuario creado con éxito');
-            reset();
-            setImagePreview(null);
-            setCroppedImage(null);
-            setFileName('');
-            setOpen(false);
-            setIsUserCreatedModalOpen(true);
+            handleSuccess();
         } catch (error: any) {
-            let errorMessage = 'Ocurrió un error inesperado';
-            if (error.response && error.response.data) {
-                errorMessage = typeof error.response.data === 'string'
-                    ? error.response.data
-                    : JSON.stringify(error.response.data);
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-            setProblemMessage(errorMessage);
+            setProblemMessage(handleApiError(error));
         }
     };
+
+    //const onSubmit = async (data: any) => {
+    //    if (data.password !== data.repeatPassword) {
+    //        setProblemMessage('Las contraseñas no coinciden');
+    //        return;
+    //    }
+
+    //    const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
+
+    //    console.log("print only in development" + repeatPassword);
+
+    //    // Validar profileId y convertirlo a número
+    //    const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
+
+    //    // Remover prefijo MIME de la imagen si está en base64
+    //    const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
+
+    //    console.log("Base64 enviado al backend:", cleanProfilePicture);
+
+    //    const finalData = {
+    //        firstName,
+    //        lastName,
+    //        email,
+    //        password,
+    //        phoneNumber: phoneNumber || null,
+    //        countryId: countryId ? Number(countryId) : 1,
+    //        profilePicture: cleanProfilePicture,
+    //        profileId: validProfileId,
+    //    };
+
+    //    console.log("Datos enviados al backend:", finalData);
+
+    //    try {
+    //        await userApi.createUser(finalData);
+    //        setProblemMessage('Usuario creado con éxito');
+    //        reset();
+    //        setImagePreview(null);
+    //        setCroppedImage(null);
+    //        setFileName('');
+    //        setOpen(false);
+    //        setIsUserCreatedModalOpen(true);
+    //    } catch (error: any) {
+    //        let errorMessage = 'Ocurrió un error inesperado';
+    //        if (error.response && error.response.data) {
+    //            errorMessage = typeof error.response.data === 'string'
+    //                ? error.response.data
+    //                : JSON.stringify(error.response.data);
+    //        } else if (error.message) {
+    //            errorMessage = error.message;
+    //        }
+    //        setProblemMessage(errorMessage);
+    //    }
+    //};
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
     const handleCroppedImage = (croppedImage: string) => {
-        // Imprimir en consola la imagen recortada recibida (con prefijo MIME)
         console.log("Imagen recortada recibida (con prefijo MIME):", croppedImage);
 
         const cleanCroppedImage = croppedImage.replace(/^data:image\/[a-z]+;base64,/, '');
@@ -282,7 +345,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     name="phoneNumber"
                                     control={control}
                                     rules={{
-                                        required: t('auth_error_phoneNumberRequired'), // Agrega esta línea para hacer obligatorio el campo
+                                        required: t('auth_error_phoneNumberRequired'),
                                         pattern: {
                                             value: phoneRegex,
                                             message: t('auth_invalidPhoneNumber')
