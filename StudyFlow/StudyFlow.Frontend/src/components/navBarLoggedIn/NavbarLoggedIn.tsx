@@ -7,6 +7,7 @@ import { Dropdown, DropdownProps } from 'semantic-ui-react';
 import { useTheme } from '../../ThemeContext';
 import { userApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCourses } from '../../contexts/CoursesContext';
 import logo from '../../assets/logo_t.svg';
 
 interface NavbarProps {
@@ -18,6 +19,7 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
     const { i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
     const { state, logout } = useAuth();
+    const { resetCourses } = useCourses();
     const { isAuthenticated, role, userName } = state;
     const navigate = useNavigate();
 
@@ -66,7 +68,8 @@ const NavbarLoggedIn: React.FC<NavbarProps> = ({ sidebarVisible, toggleSidebar }
 
     const handleLogout = async () => {
         try {
-            await logout();
+            //await logout();
+            await logout(resetCourses);
             navigate('/');
         } catch (error) {
             console.error('Error logging out:', error);

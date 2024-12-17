@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
-import { courseApi, enrollStudentApi } from '../services/api';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { courseApi, enrollStudentApi } from '../services/api';
 
 interface Course {
     id: string;
@@ -12,6 +12,7 @@ interface Course {
 interface CoursesContextType {
     courses: Course[];
     fetchCourses: () => void;
+    resetCourses: () => void;
 }
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
@@ -42,6 +43,11 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
         }
     };
 
+    const resetCourses = () => {
+        setCourses([]);
+        setHasFetched(false);
+    };
+
     useEffect(() => {
         if (state.role && state.userName && !hasFetched) {
             fetchCourses();
@@ -51,6 +57,7 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const value = useMemo(() => ({
         courses,
         fetchCourses: () => fetchCourses(true),
+        resetCourses,
     }), [courses]);
 
     return (

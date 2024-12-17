@@ -30,13 +30,15 @@ html, body {
 .courses_page.light {
     --background-color: #fff;
     --text-color: #0a3340;
-    --primary-color: #4169e1;
+    /*--primary-color: #4169e1;*/
+    --primary-color: #ffffff;
 }
 
 .courses_page.dark {
     --background-color: #0a3340;
     --text-color: #ffffff;
-    --primary-color: #80b3ff;
+    /*--primary-color: #80b3ff;*/
+    --primary-color: #ffffff;
 }
 
 .courses-header-container {
@@ -150,18 +152,49 @@ html, body {
 }
 
 /* Tema oscuro para columnas y contenedores */
-.courses_page.dark .column-box,
+/*.courses_page.dark .column-box,
 .courses_page.dark .courses-header-box {
+    background-color: var(--color-dark-container-1);
+    border: 1px solid #fff;
+    color: var(--text-color);
+}*/
+
+.courses_page.dark .column-box {
     background-color: var(--color-dark-container-1);
     border: 1px solid #fff;
     color: var(--text-color);
 }
 
-.courses_page.light .column-box,
+.courses_page.dark .courses-header-box {
+    background-color: #135f78;
+    border: 2px solid #4a90e2;
+    color: var(--text-color);
+}
+
+/*.courses_page.dark .courses-header-box {
+    border: 1px solid #fff;
+    color: var(--text-color);
+}*/
+
+/*.courses_page.light .column-box,
 .courses_page.light .courses-header-box {
+    background-color: #ffffff;
+    background-color: #74becb;
+    border: 1px solid #ccc;
+}*/
+
+.courses_page.light .column-box {
     /*background-color: #ffffff;*/
     background-color: #74becb;
     border: 1px solid #ccc;
+    color: #fff;
+}
+
+.courses_page.light .courses-header-box {
+    background-color: #135f78;
+    border: 2px solid #4a90e2;
+    color: #ffffff;
+    --text-color: #ffffff;
 }
 
 /* Media query para pantallas pequeñas */

@@ -17,7 +17,7 @@ interface AuthState {
 interface AuthContextProps {
     state: AuthState;
     login: (role: UserRole, userName: string, token: string) => void;
-    logout: () => Promise<void>;
+    logout: (resetCourses?: () => void) => Promise<void>; // resetCourses es opcional
     fullName: string | null;
 }
 
@@ -87,7 +87,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const logout = async () => {
+    //const logout = async () => {
+    //    try {
+    //        console.log('Calling logout API...');
+    //        await authApi.logoutUser();
+
+    //        console.log('Logout successful, clearing auth data...');
+    //        localStorage.removeItem('authData');
+    //        localStorage.removeItem('authToken');
+
+    //        dispatch({ type: 'LOGOUT' });
+    //    } catch (error) {
+    //        console.error('Error during logout:', error);
+    //        throw error;
+    //    }
+    //};
+
+    const logout = async (resetCourses?: () => void) => {
         try {
             console.log('Calling logout API...');
             await authApi.logoutUser();
@@ -95,6 +111,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log('Logout successful, clearing auth data...');
             localStorage.removeItem('authData');
             localStorage.removeItem('authToken');
+
+            if (resetCourses) {
+                resetCourses(); // Llama a resetCourses si está disponible
+            }
 
             dispatch({ type: 'LOGOUT' });
         } catch (error) {
