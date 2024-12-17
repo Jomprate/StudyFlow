@@ -112,7 +112,7 @@ html, body {
 }
 
 .create-course-button {
-    background-color: var(--primary-color);
+    background-color: #4a90e2;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -171,6 +171,11 @@ html, body {
     color: var(--text-color);
 }
 
+.courses_page.dark .create-course-button {
+    background-color: #1e3a8a; /* Un tono más oscuro de azul */
+    color: #ffffff; /* Texto blanco */
+}
+
 /*.courses_page.dark .courses-header-box {
     border: 1px solid #fff;
     color: var(--text-color);
@@ -182,6 +187,10 @@ html, body {
     background-color: #74becb;
     border: 1px solid #ccc;
 }*/
+.courses_page.light .create-course-button {
+    background-color: #4a90e2; /* Restablece el azul predeterminado */
+    color: #ffffff; /* Texto blanco para mejor contraste */
+}
 
 .courses_page.light .column-box {
     /*background-color: #ffffff;*/
