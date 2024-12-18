@@ -69,12 +69,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         return true;
     };
 
-    //useEffect(() => {
-    //    if (editorRef.current) {
-    //        setIsPublishDisabled(editorRef.current.innerHTML.trim() === '' || title.trim() === '');
-    //    }
-    //}, [title]);
-
     useEffect(() => {
         const content = editorRef.current?.innerHTML.trim() || '';
         setIsPublishDisabled(content === '' || title.trim() === '');
@@ -100,7 +94,7 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
 
     const handleSubmit = async () => {
         const finalDates = validateClassworkDates();
-        if (!finalDates) return; // Ya valida y alerta en validateDates
+        if (!finalDates) return;
 
         try {
             const subjectPayload = buildSubjectPayload(finalDates);
