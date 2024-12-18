@@ -17,6 +17,7 @@ import { useLinksManager } from '../../../helpers/hooks/useLinksManager';
 import { useDatesManager } from '../../../helpers/hooks/useDatesManager';
 import FormattingControls from '../../announcementBox/announcementBox_Create/FormattingControls';
 import ExternalDataLinks from '../../../helpers/hooks/ExternalDataLinks';
+import { DAYS_OF_WEEK, MULTI_DATE_TYPES } from '../../../helpers/constants/constants';
 
 interface ClassworkBoxCreateProps {
     onClassworkCreated: (classwork: any) => void;
@@ -41,42 +42,42 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const { createSublist } = useSublistManagement(editorRef);
     const [activeModal, setActiveModal] = useState<'youtube' | 'googleDrive' | 'otherLinks' | null>(null);
     const { dates, setDates, isValidDate, generateRepeatedDates, selectedDays, toggleDaySelection } = useDatesManager();
+    const closeModal = () => setActiveModal(null);
+    const multiDateTypes = MULTI_DATE_TYPES;
+    const daysOfWeek = DAYS_OF_WEEK;
 
-    const multiDateTypes = ['Classroom', 'Exam', 'Project'];
+    const saveLink = (modalType: 'youtube' | 'googleDrive' | 'otherLinks', link: string) => {
+        const linkManager = modalType === 'youtube'
+            ? youtubeLinksManager
+            : modalType === 'googleDrive'
+                ? googleDriveLinksManager
+                : otherLinksManager;
 
-    const daysOfWeek = [
-        { label: 'Monday', value: 'Monday' },
-        { label: 'Tuesday', value: 'Tuesday' },
-        { label: 'Wednesday', value: 'Wednesday' },
-        { label: 'Thursday', value: 'Thursday' },
-        { label: 'Friday', value: 'Friday' },
-        { label: 'Saturday', value: 'Saturday' },
-    ];
+        linkManager.addLink(link);
+        closeModal();
+    };
 
-    //const validateClasswork = (): string[] | null => {
-    //    const isMultiDateType = multiDateTypes.includes(classworkType);
+    const validateDates = (dates: string[], isMultiDate: boolean): boolean => {
+        if (isMultiDate && dates.length === 0) {
+            alert(t('error_generate_dates'));
+            return false;
+        }
+        if (!isMultiDate && dates.length !== 1) {
+            alert(t('error_single_date_required'));
+            return false;
+        }
+        return true;
+    };
 
-    //    const finalDates = isMultiDateType
-    //        ? dates
-    //        : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
-
-    //    if (isMultiDateType && finalDates.length === 0) {
-    //        alert(t('error_generate_dates'));
-    //        return null;
+    //useEffect(() => {
+    //    if (editorRef.current) {
+    //        setIsPublishDisabled(editorRef.current.innerHTML.trim() === '' || title.trim() === '');
     //    }
-
-    //    if (!isMultiDateType && finalDates.length !== 1) {
-    //        alert(t('error_single_date_required'));
-    //        return null;
-    //    }
-
-    //    return finalDates;
-    //};
+    //}, [title]);
 
     useEffect(() => {
-        if (editorRef.current) {
-            setIsPublishDisabled(editorRef.current.innerHTML.trim() === '' || title.trim() === '');
-        }
+        const content = editorRef.current?.innerHTML.trim() || '';
+        setIsPublishDisabled(content === '' || title.trim() === '');
     }, [title]);
 
     const handleInput = () => {
@@ -99,11 +100,10 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
 
     const handleSubmit = async () => {
         const finalDates = validateClassworkDates();
-        if (!finalDates) return;
-
-        const subjectPayload = buildSubjectPayload(finalDates);
+        if (!finalDates) return; // Ya valida y alerta en validateDates
 
         try {
+            const subjectPayload = buildSubjectPayload(finalDates);
             const response = await submitSubject(subjectPayload);
             handleSuccessfulSubmission(response, finalDates);
         } catch (error: any) {
@@ -112,49 +112,43 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     };
 
     const validateClassworkDates = (): string[] | null => {
-        const isMultiDateType = multiDateTypes.includes(classworkType);
+        const isMultiDateType = MULTI_DATE_TYPES.includes(classworkType);
         const finalDates = isMultiDateType
             ? dates
             : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
-
-        if (isMultiDateType && finalDates.length === 0) {
-            alert(t('error_generate_dates'));
-            return null;
-        }
-
-        if (!isMultiDateType && finalDates.length !== 1) {
-            alert(t('error_single_date_required'));
-            return null;
-        }
-
-        return finalDates;
+        return validateDates(finalDates, isMultiDateType) ? finalDates : null;
     };
+
+    const buildCourse = () => ({
+        id: courseId || 'default_course_id',
+        teacherDTO: {
+            id: state.userName || 'unknown',
+            fullName: state.fullName || t('unknown_teacher'),
+        },
+        name: t('default_course_name'),
+        description: t('default_course_description'),
+        logo: t('default_course_logo'),
+        isEnabled: true,
+    });
+
+    const buildScheduledDates = (finalDates: string[]) =>
+        finalDates.map((date) => ({
+            id: crypto.randomUUID(),
+            scheduledDate: date,
+            link: 'string',
+        }));
 
     const buildSubjectPayload = (finalDates: string[]) => ({
         courseId: courseId || 'default_course_id',
         subjectDTO: {
-            course: {
-                id: courseId || 'default_course_id',
-                teacherDTO: {
-                    id: state.userName || 'unknown',
-                    fullName: state.fullName || t('unknown_teacher'),
-                },
-                name: t('default_course_name'),
-                description: t('default_course_description'),
-                logo: t('default_course_logo'),
-                isEnabled: true,
-            },
+            course: buildCourse(),
             name: title,
             htmlContent: editorRef.current?.innerHTML.trim() || '',
             type: classworkType,
             youTubeVideos: youtubeLinksManager.links || [],
             googleDriveLinks: googleDriveLinksManager.links || [],
             alternateLinks: otherLinksManager.links || [],
-            listScheduleds: finalDates.map((date) => ({
-                id: crypto.randomUUID(),
-                scheduledDate: date,
-                link: 'string',
-            })),
+            listScheduleds: buildScheduledDates(finalDates),
             creationDate: new Date().toISOString(),
             modifiedDate: new Date().toISOString(),
         },
@@ -165,6 +159,7 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     };
 
     const handleSuccessfulSubmission = (response: any, finalDates: string[]) => {
+        console.log('Submission successful:', response); // Log para depuración
         onClassworkCreated({
             id: response.id || '',
             title,
@@ -181,59 +176,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         console.error(t('error_submission'), error.response?.data || error.message);
         alert(t('error_submission_message'));
     };
-
-    //const handleSubmit = async () => {
-    //    const finalDates = validateClasswork();
-    //    if (!finalDates) return;
-
-    //    const subjectPayload = {
-    //        courseId: courseId || 'default_course_id',
-    //        subjectDTO: {
-    //            course: {
-    //                id: courseId || 'default_course_id',
-    //                teacherDTO: {
-    //                    id: state.userName || 'unknown',
-    //                    fullName: state.fullName || t('unknown_teacher'),
-    //                },
-    //                name: t('default_course_name'),
-    //                description: t('default_course_description'),
-    //                logo: t('default_course_logo'),
-    //                isEnabled: true,
-    //            },
-    //            name: title,
-    //            htmlContent: editorRef.current?.innerHTML.trim() || '',
-    //            type: classworkType,
-    //            youTubeVideos: youtubeLinksManager.links || [],
-    //            googleDriveLinks: googleDriveLinksManager.links || [],
-    //            alternateLinks: otherLinksManager.links || [],
-    //            listScheduleds: finalDates.map((date) => ({
-    //                id: crypto.randomUUID(),
-    //                scheduledDate: date,
-    //                link: 'string',
-    //            })),
-    //            creationDate: new Date().toISOString(),
-    //            modifiedDate: new Date().toISOString(),
-    //        },
-    //    };
-
-    //    try {
-    //        const response = await subjectApi.addSubjectByCourse(subjectPayload);
-
-    //        onClassworkCreated({
-    //            id: response.id || '',
-    //            title,
-    //            content: editorRef.current?.innerHTML.trim(),
-    //            date: finalDates,
-    //            creator: state.userName,
-    //        });
-
-    //        alert(t('success_subject_created'));
-    //        resetForm();
-    //    } catch (error: any) {
-    //        console.error(t('error_submission'), error.response?.data || error.message);
-    //        alert(t('error_submission_message'));
-    //    }
-    //};
 
     const handleSubjectTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setClassworkType(event.target.value);
@@ -394,36 +336,25 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
             {activeModal === 'youtube' && (
                 <AnnouncementsYouTubeModal
                     isOpen
-                    onClose={() => setActiveModal(null)}
-                    onSave={(link: string) => {
-                        youtubeLinksManager.addLink(link);
-                        console.log('YouTube Link Added:', link);
-                    }}
+                    onClose={closeModal}
+                    onSave={(link: string) => saveLink('youtube', link)}
                 />
-
             )}
 
             {activeModal === 'googleDrive' && (
                 <AnnouncementsGoogleDriveModal
                     isOpen
-                    onClose={() => setActiveModal(null)}
-                    onSave={(link: string) => {
-                        googleDriveLinksManager.addLink(link);
-                        console.log('Google Drive Link Added:', link);
-                    }}
+                    onClose={closeModal}
+                    onSave={(link: string) => saveLink('googleDrive', link)}
                 />
             )}
 
             {activeModal === 'otherLinks' && (
                 <AnnouncementsOtherLinksModal
                     isOpen
-                    onClose={() => setActiveModal(null)}
-                    onSave={(link: string) => {
-                        otherLinksManager.addLink(link);
-                        console.log('Other Link Added:', link);
-                    }}
+                    onClose={closeModal}
+                    onSave={(link: string) => saveLink('otherLinks', link)}
                 />
-
             )}
 
         </div>
