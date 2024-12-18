@@ -7,7 +7,7 @@ import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faUnderline, faListUl, faListOl, faIndent, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import AnnouncementsYouTubeModal from '../../announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsYouTubeModal';
 import AnnouncementsGoogleDriveModal from '../../announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsGoogleDriveModal';
@@ -15,6 +15,12 @@ import AnnouncementsOtherLinksModal from '../../announcementBox/announcementBox_
 import { subjectApi } from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
+import LinksList from '../../announcementBox/announcementBox_Create/linksList/LinksList';
+import { useTextFormatting } from '../../../helpers/hooks/useTextFormatting';
+import { useSublistManagement } from '../../../helpers/hooks/useSublistManagement';
+import { useLinksManager } from '../../../helpers/hooks/useLinksManager';
+import { useDatesManager } from '../../../helpers/hooks/useDatesManager';
+import FormattingControls from '../../announcementBox/announcementBox_Create/FormattingControls';
 
 interface ClassworkBoxCreateProps {
     onClassworkCreated: (classwork: any) => void;
@@ -26,25 +32,19 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     const { theme } = useTheme();
     const { courseId } = useParams<{ courseId: string }>();
     const [title, setTitle] = useState<string>('');
+    const [isPublishDisabled, setIsPublishDisabled] = useState(true);
     const [classworkType, setClassworkType] = useState<string>('Homework');
     const [scheduledDate, setScheduledDate] = useState<string>('');
-    const [isPublishDisabled, setIsPublishDisabled] = useState(true);
-    const [activeFormats, setActiveFormats] = useState({
-        bold: false,
-        italic: false,
-        underline: false,
-    });
-    const [youtubeLinks, setYouTubeLinks] = useState<string[]>([]);
-    const [googleDriveLinks, setGoogleDriveLinks] = useState<string[]>([]);
-    const [otherLinks, setOtherLinks] = useState<string[]>([]);
-    const [isYouTubeModalOpen, setIsYouTubeModalOpen] = useState(false);
-    const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
-    const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
 
-    const [scheduledDates, setScheduledDates] = useState<string[]>([]);
     const [repeatFrequency, setRepeatFrequency] = useState<number>(1);
-    const [selectedDays, setSelectedDays] = useState<string[]>(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
-    const [generatedDates, setGeneratedDates] = useState<string[]>([]);
+    const editorRef = useRef<HTMLDivElement>(null);
+    const { activeFormats, applyFormatting, updateActiveFormats } = useTextFormatting(editorRef);
+    const youtubeLinksManager = useLinksManager('youtubeLinks');
+    const googleDriveLinksManager = useLinksManager('googleDriveLinks');
+    const otherLinksManager = useLinksManager('otherLinks');
+    const { createSublist } = useSublistManagement(editorRef);
+    const [activeModal, setActiveModal] = useState<'youtube' | 'googleDrive' | 'otherLinks' | null>(null);
+    const { dates, setDates, isValidDate, generateRepeatedDates, selectedDays, toggleDaySelection } = useDatesManager();
 
     const multiDateTypes = ['Classroom', 'Exam', 'Project'];
 
@@ -57,66 +57,25 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         { label: 'Saturday', value: 'Saturday' },
     ];
 
-    const isValidDate = (date: string) => {
-        const parsedDate = new Date(date);
-        return !isNaN(parsedDate.getTime());
+    const validateClasswork = (): string[] | null => {
+        const isMultiDateType = multiDateTypes.includes(classworkType);
+
+        const finalDates = isMultiDateType
+            ? dates
+            : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
+
+        if (isMultiDateType && finalDates.length === 0) {
+            alert(t('error_generate_dates'));
+            return null;
+        }
+
+        if (!isMultiDateType && finalDates.length !== 1) {
+            alert(t('error_single_date_required'));
+            return null;
+        }
+
+        return finalDates;
     };
-
-    const generateRepeatedDates = (startDate: string) => {
-        if (!isValidDate(startDate)) {
-            alert(t('error_invalid_start_date'));
-            return;
-        }
-
-        if (selectedDays.length === 0) {
-            alert(t('error_no_days_selected'));
-            return;
-        }
-
-        if (repeatFrequency <= 0) {
-            alert(t('error_invalid_frequency'));
-            return;
-        }
-
-        const start = new Date(startDate);
-        const dates: string[] = [];
-        const maxOccurrences = 10;
-
-        for (let i = 0; dates.length < maxOccurrences; i++) {
-            const nextDate = new Date(start);
-            nextDate.setDate(start.getDate() + i * repeatFrequency);
-
-            const dayName = nextDate.toLocaleDateString('en-US', { weekday: 'long' });
-            if (selectedDays.includes(dayName) && isValidDate(nextDate.toISOString())) {
-                dates.push(nextDate.toISOString());
-            }
-        }
-
-        if (dates.length === 0) {
-            alert(t('error_no_dates_generated'));
-        } else {
-            setGeneratedDates(dates);
-            setScheduledDates(dates);
-        }
-    };
-
-    const toggleDaySelection = (day: string) => {
-        setSelectedDays((prev) =>
-            prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
-        );
-    };
-
-    useEffect(() => {
-        const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
-        const storedGoogleDriveLinks = sessionStorage.getItem('googleDriveLinks');
-        const storedOtherLinks = sessionStorage.getItem('otherLinks');
-
-        if (storedYouTubeLinks) setYouTubeLinks(JSON.parse(storedYouTubeLinks));
-        if (storedGoogleDriveLinks) setGoogleDriveLinks(JSON.parse(storedGoogleDriveLinks));
-        if (storedOtherLinks) setOtherLinks(JSON.parse(storedOtherLinks));
-    }, []);
-
-    const editorRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (editorRef.current) {
@@ -132,28 +91,19 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         }
     };
 
-    const updateActiveFormats = () => {
-        setActiveFormats({
-            bold: document.queryCommandState('bold'),
-            italic: document.queryCommandState('italic'),
-            underline: document.queryCommandState('underline'),
-        });
+    const resetForm = () => {
+        setTitle('');
+        setScheduledDate('');
+        editorRef.current!.innerHTML = '';
+        youtubeLinksManager.clearLinks();
+        googleDriveLinksManager.clearLinks();
+        otherLinksManager.clearLinks();
+        setDates([]);
     };
 
     const handleSubmit = async () => {
-        const isMultiDateType = multiDateTypes.includes(classworkType);
-
-        const finalDates = isMultiDateType
-            ? scheduledDates.filter(isValidDate)
-            : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
-
-        if (isMultiDateType && finalDates.length === 0) {
-            alert(t('error_generate_dates'));
-            return;
-        } else if (!isMultiDateType && finalDates.length !== 1) {
-            alert(t('error_single_date_required'));
-            return;
-        }
+        const finalDates = validateClasswork();
+        if (!finalDates) return;
 
         const subjectPayload = {
             courseId: courseId || 'default_course_id',
@@ -172,9 +122,9 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 name: title,
                 htmlContent: editorRef.current?.innerHTML.trim() || '',
                 type: classworkType,
-                youTubeVideos: youtubeLinks || [],
-                googleDriveLinks: googleDriveLinks || [],
-                alternateLinks: otherLinks || [],
+                youTubeVideos: youtubeLinksManager.links || [],
+                googleDriveLinks: googleDriveLinksManager.links || [],
+                alternateLinks: otherLinksManager.links || [],
                 listScheduleds: finalDates.map((date) => ({
                     id: crypto.randomUUID(),
                     scheduledDate: date,
@@ -186,7 +136,6 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         };
 
         try {
-            console.log('Submitting:', JSON.stringify(subjectPayload, null, 2));
             const response = await subjectApi.addSubjectByCourse(subjectPayload);
 
             onClassworkCreated({
@@ -196,40 +145,21 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 date: finalDates,
                 creator: state.userName,
             });
+
             alert(t('success_subject_created'));
+            resetForm();
         } catch (error: any) {
             console.error(t('error_submission'), error.response?.data || error.message);
             alert(t('error_submission_message'));
         }
     };
 
-    const applyFormatting = (command: string) => {
-        if (editorRef.current) {
-            document.execCommand(command, false);
-            handleInput();
-        }
-    };
-
     const handleSubjectTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setClassworkType(event.target.value);
-    };
 
-    const addYouTubeLink = (link: string) => {
-        const updatedLinks = [...youtubeLinks, link];
-        setYouTubeLinks(updatedLinks);
-        sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
-    };
-
-    const addGoogleDriveLink = (link: string) => {
-        const updatedLinks = [...googleDriveLinks, link];
-        setGoogleDriveLinks(updatedLinks);
-        sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
-    };
-
-    const addOtherLink = (link: string) => {
-        const updatedLinks = [...otherLinks, link];
-        setOtherLinks(updatedLinks);
-        sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
+        if (!multiDateTypes.includes(event.target.value)) {
+            toggleDaySelection(''); // Limpia los días seleccionados
+        }
     };
 
     return (
@@ -249,27 +179,14 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
                 onInput={handleInput}
             ></div>
 
+            <hr className="classworkBox_Create_separator" />
             <div className="classworkBox_Create_controls">
-                <button onClick={() => applyFormatting('bold')} className={`classworkBox_Create_control-button ${activeFormats.bold ? 'active' : ''}`}>
-                    <FontAwesomeIcon icon={faBold} />
-                </button>
-                <button onClick={() => applyFormatting('italic')} className={`classworkBox_Create_control-button ${activeFormats.italic ? 'active' : ''}`}>
-                    <FontAwesomeIcon icon={faItalic} />
-                </button>
-                <button onClick={() => applyFormatting('underline')} className={`classworkBox_Create_control-button ${activeFormats.underline ? 'active' : ''}`}>
-                    <FontAwesomeIcon icon={faUnderline} />
-                </button>
-                <button onClick={() => applyFormatting('insertUnorderedList')} className="classworkBox_Create_control-button">
-                    <FontAwesomeIcon icon={faListUl} />
-                </button>
-                <button onClick={() => applyFormatting('insertOrderedList')} className="classworkBox_Create_control-button">
-                    <FontAwesomeIcon icon={faListOl} />
-                </button>
-                <button onClick={() => applyFormatting('indent')} className="classworkBox_Create_control-button">
-                    <FontAwesomeIcon icon={faIndent} />
-                </button>
+                <FormattingControls
+                    activeFormats={activeFormats}
+                    applyFormatting={applyFormatting}
+                    createSublist={createSublist}
+                />
             </div>
-
             <hr className="classworkBox_Create_separator" />
 
             <div className="classworkBox_Create_date-container">
@@ -328,98 +245,116 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
 
                     <button
                         className="classworkBox_Create_generate-dates-button"
-                        onClick={() => generateRepeatedDates(scheduledDate)}
+                        onClick={() => {
+                            if (!scheduledDate) {
+                                alert(t('error_invalid_start_date'));
+                                return;
+                            }
+                            if (selectedDays.length === 0) {
+                                alert(t('error_no_days_selected'));
+                                return;
+                            }
+                            if (repeatFrequency <= 0) {
+                                alert(t('error_invalid_frequency'));
+                                return;
+                            }
+                            generateRepeatedDates(scheduledDate, selectedDays, repeatFrequency);
+                        }}
                     >
                         {t('generate_dates')}
                     </button>
 
                     <ul className="classworkBox_Create_generated-dates">
-                        {generatedDates.map((date, index) => (
+                        {dates.map((date, index) => (
                             <li key={index}>{new Date(date).toLocaleString()}</li>
                         ))}
                     </ul>
                 </div>
             )}
 
-            <div className="classworkBox_Create_external-data-links">
-                <button className="classworkBox_Create_control-button" onClick={() => setIsYouTubeModalOpen(true)}>
-                    <FontAwesomeIcon icon={faYoutube} />
-                </button>
-                <button className="classworkBox_Create_control-button" onClick={() => setIsGoogleDriveModalOpen(true)}>
-                    <FontAwesomeIcon icon={faGoogleDrive} />
-                </button>
-                <button className="classworkBox_Create_control-button" onClick={() => setIsOtherLinksModalOpen(true)}>
-                    <FontAwesomeIcon icon={faLink} />
-                </button>
-            </div>
+            <LinksList
+                links={youtubeLinksManager.links}
+                onRemove={youtubeLinksManager.removeLink}
+                CardComponent={YTVideoAnnounceCard}
+            />
 
-            <div className="youtube-video-list">
-                {youtubeLinks.map((link, index) => (
-                    <div key={index} className="youtube-video-item">
-                        <YTVideoAnnounceCard url={link} />
-                        <button
-                            className="remove-video-button"
-                            onClick={() => {
-                                const updatedLinks = youtubeLinks.filter((_, i) => i !== index);
-                                setYouTubeLinks(updatedLinks);
-                            }}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <LinksList
+                links={googleDriveLinksManager.links}
+                onRemove={googleDriveLinksManager.removeLink}
+                CardComponent={GoogleDriveAnnounceCard}
+            />
 
-            <div className="googledrive-links-list">
-                {googleDriveLinks.map((link, index) => (
-                    <div key={index} className="googledrive-link-item">
-                        <GoogleDriveAnnounceCard url={link} />
-                        <button
-                            className="remove-link-button"
-                            onClick={() => {
-                                const updatedLinks = googleDriveLinks.filter((_, i) => i !== index);
-                                setGoogleDriveLinks(updatedLinks);
-                            }}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
-
-            <div className="other-links-list">
-                {otherLinks.map((link, index) => (
-                    <div key={index} className="other-link-item">
-                        <OtherLinksAnnounceCard url={link} />
-                        <button
-                            className="remove-link-button"
-                            onClick={() => {
-                                const updatedLinks = otherLinks.filter((_, i) => i !== index);
-                                setOtherLinks(updatedLinks);
-                            }}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <LinksList
+                links={otherLinksManager.links}
+                onRemove={otherLinksManager.removeLink}
+                CardComponent={OtherLinksAnnounceCard}
+            />
 
             <div className="classworkBox_Create_footer">
-                <button className="classworkBox_Create_footer-button classworkBox_Create_cancel-button" onClick={() => setTitle('')}>
-                    {t('classwork_Cancel')}
-                </button>
-                <button
-                    className="classworkBox_Create_footer-button classworkBox_Create_publish-button"
-                    onClick={handleSubmit}
-                    disabled={isPublishDisabled}
-                >
-                    {t('classwork_Publish')}
-                </button>
+                <div className="classworkBox_Create_footer-links">
+                    <button className="classworkBox_Create_control-button youtube" onClick={() => setActiveModal('youtube')}>
+                        <FontAwesomeIcon icon={faYoutube} />
+                    </button>
+                    <button className="classworkBox_Create_control-button google-drive" onClick={() => setActiveModal('googleDrive')}>
+                        <FontAwesomeIcon icon={faGoogleDrive} />
+                    </button>
+                    <button className="classworkBox_Create_control-button links" onClick={() => setActiveModal('otherLinks')}>
+                        <FontAwesomeIcon icon={faLink} />
+                    </button>
+                </div>
+
+                <div className="classworkBox_Create_footer-buttons">
+                    <button
+                        className="classworkBox_Create_footer-cancel"
+                        onClick={resetForm}
+                    >
+                        {t('classwork_Cancel')}
+                    </button>
+                    <button
+                        className="classworkBox_Create_footer-publish"
+                        onClick={handleSubmit}
+                        disabled={isPublishDisabled}
+                    >
+                        {t('classwork_Publish')}
+                    </button>
+                </div>
             </div>
 
-            <AnnouncementsYouTubeModal isOpen={isYouTubeModalOpen} onClose={() => setIsYouTubeModalOpen(false)} onSave={addYouTubeLink} />
-            <AnnouncementsGoogleDriveModal isOpen={isGoogleDriveModalOpen} onClose={() => setIsGoogleDriveModalOpen(false)} onSave={addGoogleDriveLink} />
-            <AnnouncementsOtherLinksModal isOpen={isOtherLinksModalOpen} onClose={() => setIsOtherLinksModalOpen(false)} onSave={addOtherLink} />
+            {activeModal === 'youtube' && (
+                <AnnouncementsYouTubeModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        youtubeLinksManager.addLink(link);
+                        console.log('YouTube Link Added:', link);
+                    }}
+                />
+
+            )}
+
+            {activeModal === 'googleDrive' && (
+                <AnnouncementsGoogleDriveModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        googleDriveLinksManager.addLink(link);
+                        console.log('Google Drive Link Added:', link);
+                    }}
+                />
+            )}
+
+            {activeModal === 'otherLinks' && (
+                <AnnouncementsOtherLinksModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        otherLinksManager.addLink(link);
+                        console.log('Other Link Added:', link);
+                    }}
+                />
+
+            )}
+
         </div>
     );
 };

@@ -60,6 +60,14 @@
         list-style-position: outside;
     }
 
+.classworkBox_Create_separator {
+    width: 100%;
+    height: 1px;
+    background-color: #d1d1d1;
+    border: none;
+    margin: 10px 0;
+}
+
 .classworkBox_Create_external-data-links {
     display: flex;
     gap: 15px; /* Espacio entre botones */
@@ -94,15 +102,15 @@
 
     /* Hover y efecto */
     .classworkBox_Create_control-button:hover {
-        transform: scale(1.1); /* Aumenta ligeramente el tamaño al pasar el cursor */
-        opacity: 0.9; /* Reduce la opacidad para un efecto visual */
+        transform: scale(1.1);
+        opacity: 0.9;
     }
 
 .classworkBox_Create_controls {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
-    border-top: 1px solid #e0e0e0;
+    /*border-top: 1px solid #e0e0e0;*/
     padding-top: 10px;
 }
 
@@ -139,36 +147,82 @@
 
 .classworkBox_Create_footer {
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    margin-top: 20px;
+    justify-content: space-between; /* Espacio entre botones de links y botones de acción */
+    align-items: center; /* Alinea verticalmente los botones */
+    padding: 1rem;
+    margin-top: 1rem;
+    /*border-top: 1px solid #444;*/
 }
 
-.classworkBox_Create_footer-button {
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
+.classworkBox_Create_footer-links {
+    display: flex;
+    gap: 0.5rem; /* Espaciado entre los botones de YouTube, Google Drive y Links */
+}
+
+.classworkBox_Create_control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
     border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #fff;
+    transition: background-color 0.3s ease;
 }
 
-    .classworkBox_Create_footer-button[class*='cancel'] {
-        background-color: #f5f5f5;
-        color: #888;
+    .classworkBox_Create_control-button.youtube {
+        background-color: #ff0000;
     }
 
-    .classworkBox_Create_footer-button[class*='publish'] {
-        background-color: #4285f4;
-        color: #fff;
+    .classworkBox_Create_control-button.google-drive {
+        background-color: #0f9d58;
     }
 
-    .classworkBox_Create_footer-button:disabled {
-        background-color: #ccc;
+    .classworkBox_Create_control-button.links {
+        background-color: #007bff;
+    }
+
+    .classworkBox_Create_control-button:hover {
+        opacity: 0.8;
+    }
+
+.classworkBox_Create_footer-buttons {
+    display: flex;
+    gap: 1rem; /* Espaciado entre los botones Cancelar y Publicar */
+}
+
+.classworkBox_Create_footer-cancel,
+.classworkBox_Create_footer-publish {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #fff;
+}
+
+.classworkBox_Create_footer-cancel {
+    background-color: #444;
+}
+
+    .classworkBox_Create_footer-cancel:hover {
+        background-color: #666;
+    }
+
+.classworkBox_Create_footer-publish {
+    background-color: #007bff;
+}
+
+    .classworkBox_Create_footer-publish:disabled {
+        background-color: #aaa;
         cursor: not-allowed;
     }
 
-    .classworkBox_Create_footer-button:not(:disabled):hover {
-        background-color: #357ae8;
+    .classworkBox_Create_footer-publish:hover:not(:disabled) {
+        background-color: #0056b3;
     }
 
 .classworkBox_Create_create-container {
@@ -323,11 +377,6 @@
 .light .classworkBox_Create_date-label {
     color: #333; /* Color oscuro para texto en tema claro */
 }
-
-
-
-
-
 
 /* Dark Theme */
 .dark .classworkBox_Create_box {
