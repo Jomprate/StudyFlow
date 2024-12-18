@@ -53,25 +53,25 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
         { label: 'Saturday', value: 'Saturday' },
     ];
 
-    const validateClasswork = (): string[] | null => {
-        const isMultiDateType = multiDateTypes.includes(classworkType);
+    //const validateClasswork = (): string[] | null => {
+    //    const isMultiDateType = multiDateTypes.includes(classworkType);
 
-        const finalDates = isMultiDateType
-            ? dates
-            : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
+    //    const finalDates = isMultiDateType
+    //        ? dates
+    //        : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
 
-        if (isMultiDateType && finalDates.length === 0) {
-            alert(t('error_generate_dates'));
-            return null;
-        }
+    //    if (isMultiDateType && finalDates.length === 0) {
+    //        alert(t('error_generate_dates'));
+    //        return null;
+    //    }
 
-        if (!isMultiDateType && finalDates.length !== 1) {
-            alert(t('error_single_date_required'));
-            return null;
-        }
+    //    if (!isMultiDateType && finalDates.length !== 1) {
+    //        alert(t('error_single_date_required'));
+    //        return null;
+    //    }
 
-        return finalDates;
-    };
+    //    return finalDates;
+    //};
 
     useEffect(() => {
         if (editorRef.current) {
@@ -98,57 +98,142 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
     };
 
     const handleSubmit = async () => {
-        const finalDates = validateClasswork();
+        const finalDates = validateClassworkDates();
         if (!finalDates) return;
 
-        const subjectPayload = {
-            courseId: courseId || 'default_course_id',
-            subjectDTO: {
-                course: {
-                    id: courseId || 'default_course_id',
-                    teacherDTO: {
-                        id: state.userName || 'unknown',
-                        fullName: state.fullName || t('unknown_teacher'),
-                    },
-                    name: t('default_course_name'),
-                    description: t('default_course_description'),
-                    logo: t('default_course_logo'),
-                    isEnabled: true,
-                },
-                name: title,
-                htmlContent: editorRef.current?.innerHTML.trim() || '',
-                type: classworkType,
-                youTubeVideos: youtubeLinksManager.links || [],
-                googleDriveLinks: googleDriveLinksManager.links || [],
-                alternateLinks: otherLinksManager.links || [],
-                listScheduleds: finalDates.map((date) => ({
-                    id: crypto.randomUUID(),
-                    scheduledDate: date,
-                    link: 'string',
-                })),
-                creationDate: new Date().toISOString(),
-                modifiedDate: new Date().toISOString(),
-            },
-        };
+        const subjectPayload = buildSubjectPayload(finalDates);
 
         try {
-            const response = await subjectApi.addSubjectByCourse(subjectPayload);
-
-            onClassworkCreated({
-                id: response.id || '',
-                title,
-                content: editorRef.current?.innerHTML.trim(),
-                date: finalDates,
-                creator: state.userName,
-            });
-
-            alert(t('success_subject_created'));
-            resetForm();
+            const response = await submitSubject(subjectPayload);
+            handleSuccessfulSubmission(response, finalDates);
         } catch (error: any) {
-            console.error(t('error_submission'), error.response?.data || error.message);
-            alert(t('error_submission_message'));
+            handleSubmissionError(error);
         }
     };
+
+    const validateClassworkDates = (): string[] | null => {
+        const isMultiDateType = multiDateTypes.includes(classworkType);
+        const finalDates = isMultiDateType
+            ? dates
+            : [scheduledDate].filter(isValidDate).map((date) => new Date(date).toISOString());
+
+        if (isMultiDateType && finalDates.length === 0) {
+            alert(t('error_generate_dates'));
+            return null;
+        }
+
+        if (!isMultiDateType && finalDates.length !== 1) {
+            alert(t('error_single_date_required'));
+            return null;
+        }
+
+        return finalDates;
+    };
+
+    const buildSubjectPayload = (finalDates: string[]) => ({
+        courseId: courseId || 'default_course_id',
+        subjectDTO: {
+            course: {
+                id: courseId || 'default_course_id',
+                teacherDTO: {
+                    id: state.userName || 'unknown',
+                    fullName: state.fullName || t('unknown_teacher'),
+                },
+                name: t('default_course_name'),
+                description: t('default_course_description'),
+                logo: t('default_course_logo'),
+                isEnabled: true,
+            },
+            name: title,
+            htmlContent: editorRef.current?.innerHTML.trim() || '',
+            type: classworkType,
+            youTubeVideos: youtubeLinksManager.links || [],
+            googleDriveLinks: googleDriveLinksManager.links || [],
+            alternateLinks: otherLinksManager.links || [],
+            listScheduleds: finalDates.map((date) => ({
+                id: crypto.randomUUID(),
+                scheduledDate: date,
+                link: 'string',
+            })),
+            creationDate: new Date().toISOString(),
+            modifiedDate: new Date().toISOString(),
+        },
+    });
+
+    const submitSubject = async (payload: any) => {
+        return await subjectApi.addSubjectByCourse(payload);
+    };
+
+    const handleSuccessfulSubmission = (response: any, finalDates: string[]) => {
+        onClassworkCreated({
+            id: response.id || '',
+            title,
+            content: editorRef.current?.innerHTML.trim(),
+            date: finalDates,
+            creator: state.userName,
+        });
+
+        alert(t('success_subject_created'));
+        resetForm();
+    };
+
+    const handleSubmissionError = (error: any) => {
+        console.error(t('error_submission'), error.response?.data || error.message);
+        alert(t('error_submission_message'));
+    };
+
+    //const handleSubmit = async () => {
+    //    const finalDates = validateClasswork();
+    //    if (!finalDates) return;
+
+    //    const subjectPayload = {
+    //        courseId: courseId || 'default_course_id',
+    //        subjectDTO: {
+    //            course: {
+    //                id: courseId || 'default_course_id',
+    //                teacherDTO: {
+    //                    id: state.userName || 'unknown',
+    //                    fullName: state.fullName || t('unknown_teacher'),
+    //                },
+    //                name: t('default_course_name'),
+    //                description: t('default_course_description'),
+    //                logo: t('default_course_logo'),
+    //                isEnabled: true,
+    //            },
+    //            name: title,
+    //            htmlContent: editorRef.current?.innerHTML.trim() || '',
+    //            type: classworkType,
+    //            youTubeVideos: youtubeLinksManager.links || [],
+    //            googleDriveLinks: googleDriveLinksManager.links || [],
+    //            alternateLinks: otherLinksManager.links || [],
+    //            listScheduleds: finalDates.map((date) => ({
+    //                id: crypto.randomUUID(),
+    //                scheduledDate: date,
+    //                link: 'string',
+    //            })),
+    //            creationDate: new Date().toISOString(),
+    //            modifiedDate: new Date().toISOString(),
+    //        },
+    //    };
+
+    //    try {
+    //        const response = await subjectApi.addSubjectByCourse(subjectPayload);
+
+    //        onClassworkCreated({
+    //            id: response.id || '',
+    //            title,
+    //            content: editorRef.current?.innerHTML.trim(),
+    //            date: finalDates,
+    //            creator: state.userName,
+    //        });
+
+    //        alert(t('success_subject_created'));
+    //        resetForm();
+    //    } catch (error: any) {
+    //        console.error(t('error_submission'), error.response?.data || error.message);
+    //        alert(t('error_submission_message'));
+    //    }
+    //};
 
     const handleSubjectTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setClassworkType(event.target.value);
