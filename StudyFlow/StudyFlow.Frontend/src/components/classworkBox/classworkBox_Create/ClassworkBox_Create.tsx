@@ -6,12 +6,7 @@ import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCa
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLink } from '@fortawesome/free-solid-svg-icons';
-import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
-import AnnouncementsYouTubeModal from '../../announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsYouTubeModal';
-import AnnouncementsGoogleDriveModal from '../../announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsGoogleDriveModal';
-import AnnouncementsOtherLinksModal from '../../announcementBox/announcementBox_Create/AnnouncementsModals/AnnouncementsOtherLinksModal';
+import { AnnouncementsYouTubeModal, AnnouncementsGoogleDriveModal, AnnouncementsOtherLinksModal } from '../../announcementBox/announcementBox_Create/AnnouncementsModals';
 import { subjectApi } from '../../../services/api';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
@@ -21,6 +16,7 @@ import { useSublistManagement } from '../../../helpers/hooks/useSublistManagemen
 import { useLinksManager } from '../../../helpers/hooks/useLinksManager';
 import { useDatesManager } from '../../../helpers/hooks/useDatesManager';
 import FormattingControls from '../../announcementBox/announcementBox_Create/FormattingControls';
+import ExternalDataLinks from '../../../helpers/hooks/ExternalDataLinks';
 
 interface ClassworkBoxCreateProps {
     onClassworkCreated: (classwork: any) => void;
@@ -291,17 +287,7 @@ const ClassworkBox_Create: React.FC<ClassworkBoxCreateProps> = ({ onClassworkCre
             />
 
             <div className="classworkBox_Create_footer">
-                <div className="classworkBox_Create_footer-links">
-                    <button className="classworkBox_Create_control-button youtube" onClick={() => setActiveModal('youtube')}>
-                        <FontAwesomeIcon icon={faYoutube} />
-                    </button>
-                    <button className="classworkBox_Create_control-button google-drive" onClick={() => setActiveModal('googleDrive')}>
-                        <FontAwesomeIcon icon={faGoogleDrive} />
-                    </button>
-                    <button className="classworkBox_Create_control-button links" onClick={() => setActiveModal('otherLinks')}>
-                        <FontAwesomeIcon icon={faLink} />
-                    </button>
-                </div>
+                <ExternalDataLinks onOpenModal={setActiveModal} />
 
                 <div className="classworkBox_Create_footer-buttons">
                     <button
