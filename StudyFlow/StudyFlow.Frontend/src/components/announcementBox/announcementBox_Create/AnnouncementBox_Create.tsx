@@ -5,9 +5,6 @@ import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVid
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import { useTheme } from '../../../ThemeContext';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faLink } from '@fortawesome/free-solid-svg-icons';
-//import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
 import { AnnouncementsYouTubeModal, AnnouncementsGoogleDriveModal, AnnouncementsOtherLinksModal } from '../announcementBox_Create/AnnouncementsModals';
 import { announceApi } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
@@ -131,7 +128,7 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 onInput={handleInput}
                 onMouseUp={updateActiveFormats}
             ></div>
-
+            <hr className="announcementBox_Create_separator" />
             <div className="announcementBox_Create_controls">
                 <FormattingControls
                     activeFormats={activeFormats}

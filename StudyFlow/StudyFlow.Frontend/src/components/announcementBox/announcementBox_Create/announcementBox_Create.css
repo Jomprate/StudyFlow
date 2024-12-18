@@ -85,12 +85,13 @@
 .announcementBox_Create_controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin: 15px 0;
+    gap: 5px;
+    margin: 1px 0;
     border-top: 1px solid #e0e0e0;
-    padding-top: 10px;
+    padding-top: 2px;
     justify-content: flex-start;
     align-items: center;
+    border-top: none;
 }
 
 .announcementBox_Create_control-button {
@@ -103,6 +104,12 @@
     transition: color 0.3s, background-color 0.2s;
     border-radius: 50%;
 }
+
+    .announcementBox_Create_control-button:not(.active) {
+        opacity: 0.9;
+        border-radius: 8px;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
 
     .announcementBox_Create_control-button:hover,
     .announcementBox_Create_control-button.active {
@@ -131,10 +138,12 @@
 .announcementBox_Create_external-data-links {
     display: flex;
     gap: 15px;
+    margin-top: -5px;
 }
 
 .announcementBox_Create_action-buttons {
     display: flex;
+    margin-top: 15px;
     gap: 10px;
 }
 
