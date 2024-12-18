@@ -1,21 +1,24 @@
 import React, { useRef, useState } from 'react';
-import './announcementBox_Create.css';
+import '../announcementBox_Create/announcementBox_Create.css';
 import '../../cards/YoutubeVideoCard/ytvideoCard.css';
 import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
 import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
 import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import { useTheme } from '../../../ThemeContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faUnderline, faListUl, faListOl, faIndent, faLink } from '@fortawesome/free-solid-svg-icons';
-import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
-import AnnouncementsYouTubeModal from './AnnouncementsModals/AnnouncementsYouTubeModal';
-import AnnouncementsGoogleDriveModal from './AnnouncementsModals/AnnouncementsGoogleDriveModal';
-import AnnouncementsOtherLinksModal from './AnnouncementsModals/AnnouncementsOtherLinksModal';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faLink } from '@fortawesome/free-solid-svg-icons';
+//import { faYoutube, faGoogleDrive } from '@fortawesome/free-brands-svg-icons';
+import { AnnouncementsYouTubeModal, AnnouncementsGoogleDriveModal, AnnouncementsOtherLinksModal } from '../announcementBox_Create/AnnouncementsModals';
 import { announceApi } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
-import { useLinksManager } from '../announcementBox_Create/useLinksManager';
+import { useLinksManager } from '../../../helpers/hooks/useLinksManager';
+import { useTextFormatting } from '../../../helpers/hooks/useTextFormatting';
+import { useSublistManagement } from '../../../helpers/hooks/useSublistManagement';
+import LinksList from '../announcementBox_Create/linksList/LinksList';
+import FormattingControls from '../announcementBox_Create/FormattingControls';
+import ExternalDataLinks from '../../../helpers/hooks/ExternalDataLinks';
 
 interface AnnouncementBoxCreateProps {
     onAnnounceCreated: (announcement: any) => void;
@@ -29,11 +32,8 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
     const { courseId } = useParams<{ courseId: string }>();
     const [title, setTitle] = useState<string>('');
     const [isPublishDisabled, setIsPublishDisabled] = useState(true);
-    const [activeFormats, setActiveFormats] = useState({
-        bold: false,
-        italic: false,
-        underline: false,
-    });
+    const { activeFormats, applyFormatting, updateActiveFormats } = useTextFormatting(editorRef);
+    const { createSublist } = useSublistManagement(editorRef);
 
     const [activeModal, setActiveModal] = useState<'youtube' | 'googleDrive' | 'otherLinks' | null>(null);
 
@@ -49,97 +49,64 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
         }
     };
 
-    const updateActiveFormats = () => {
-        setActiveFormats({
-            bold: document.queryCommandState('bold'),
-            italic: document.queryCommandState('italic'),
-            underline: document.queryCommandState('underline'),
-        });
+    const validateForm = () => {
+        if (!editorRef.current || !courseId) {
+            console.error("Editor or courseId is missing.");
+            return false;
+        }
+        if (!state.userName) {
+            console.error("UserID is missing.");
+            return false;
+        }
+        return true;
     };
 
-    const applyFormatting = (command: string) => {
-        if (editorRef.current) {
-            document.execCommand(command, false);
-            handleInput();
-        }
+    const buildAnnounceDTO = () => {
+        return {
+            title,
+            htmlContent: editorRef.current!.innerHTML,
+            userId: state.userName!.toString(),
+            courseId: courseId!,
+            youTubeVideos: youtubeLinksManager.links,
+            googleDriveLinks: googleDriveLinksManager.links,
+            alternateLinks: otherLinksManager.links,
+        };
     };
 
-    const createSublist = (ordered: boolean) => {
-        if (editorRef.current) {
-            const selection = window.getSelection();
-            if (selection && selection.rangeCount > 0) {
-                const range = selection.getRangeAt(0);
-                const selectedElement = range.startContainer.parentElement;
-
-                if (selectedElement && selectedElement.tagName === 'LI') {
-                    const liElement = selectedElement as HTMLLIElement;
-
-                    let sublist = liElement.querySelector('ul, ol') as HTMLElement | null;
-                    if (!sublist) {
-                        sublist = document.createElement(ordered ? 'ol' : 'ul');
-                        sublist.style.listStyleType = ordered ? 'decimal' : 'disc';
-                        sublist.style.marginLeft = '20px';
-                        liElement.appendChild(sublist);
-                    }
-
-                    const newSubItem = document.createElement('li');
-                    newSubItem.textContent = t('announce_newSubitem');
-                    sublist.appendChild(newSubItem);
-                }
-            }
-        }
+    const resetForm = () => {
+        setTitle('');
+        if (editorRef.current) editorRef.current.innerHTML = '';
+        setIsPublishDisabled(true);
+        youtubeLinksManager.clearLinks();
+        googleDriveLinksManager.clearLinks();
+        otherLinksManager.clearLinks();
     };
 
     const handleSubmit = async () => {
-        if (editorRef.current && courseId) {
-            const content = editorRef.current.innerHTML;
-            const userID = state.userName?.toString();
+        if (!validateForm()) return;
 
-            if (!userID) {
-                console.error("UserID is missing. Cannot create announce.");
-                return;
+        const addAnnounceDTO = buildAnnounceDTO();
+
+        try {
+            const response = await announceApi.createAnnounce(addAnnounceDTO);
+
+            if (response.data) {
+                onAnnounceCreated({
+                    ...response.data,
+                    title,
+                    description: addAnnounceDTO.htmlContent,
+                    creationDate: new Date().toISOString(),
+                    userName: state.fullName || "Unknown User",
+                    youTubeVideos: youtubeLinksManager.links,
+                    googleDriveLinks: googleDriveLinksManager.links,
+                    alternateLinks: otherLinksManager.links,
+                });
+
+                console.log("Anuncio creado con éxito:", response.data);
+                resetForm();
             }
-
-            const addAnnounceDTO = {
-                title: title,
-                htmlContent: content,
-                userId: userID,
-                courseId: courseId,
-                youTubeVideos: youtubeLinksManager.links,
-                googleDriveLinks: googleDriveLinksManager.links,
-                alternateLinks: otherLinksManager.links,
-            };
-
-            try {
-                const response = await announceApi.createAnnounce(addAnnounceDTO);
-
-                if (response.data) {
-                    onAnnounceCreated({
-                        ...response.data,
-                        title: title,
-                        description: content,
-                        creationDate: new Date().toISOString(),
-                        userName: state.fullName || "Unknown User",
-                        youTubeVideos: youtubeLinksManager.links,
-                        googleDriveLinks: googleDriveLinksManager.links,
-                        alternateLinks: otherLinksManager.links,
-                    });
-
-                    console.log('Anuncio creado con éxito:', response.data);
-
-                    // Reiniciar el formulario
-                    setTitle('');
-                    if (editorRef.current) editorRef.current.innerHTML = '';
-                    setIsPublishDisabled(true);
-
-                    // Limpiar enlaces
-                    youtubeLinksManager.clearLinks();
-                    googleDriveLinksManager.clearLinks();
-                    otherLinksManager.clearLinks();
-                }
-            } catch (error) {
-                console.error('Error creando el anuncio:', error);
-            }
+        } catch (error) {
+            console.error("Error creando el anuncio:", error);
         }
     };
 
@@ -166,103 +133,36 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
             ></div>
 
             <div className="announcementBox_Create_controls">
-                <button
-                    onClick={() => applyFormatting('bold')}
-                    className={`announcementBox_Create_control-button ${activeFormats.bold ? 'active' : ''}`}
-                >
-                    <FontAwesomeIcon icon={faBold} />
-                </button>
-                <button
-                    onClick={() => applyFormatting('italic')}
-                    className={`announcementBox_Create_control-button ${activeFormats.italic ? 'active' : ''}`}
-                >
-                    <FontAwesomeIcon icon={faItalic} />
-                </button>
-                <button
-                    onClick={() => applyFormatting('underline')}
-                    className={`announcementBox_Create_control-button ${activeFormats.underline ? 'active' : ''}`}
-                >
-                    <FontAwesomeIcon icon={faUnderline} />
-                </button>
-                <button onClick={() => applyFormatting('insertUnorderedList')} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faListUl} />
-                </button>
-                <button onClick={() => applyFormatting('insertOrderedList')} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faListOl} />
-                </button>
-                <button onClick={() => createSublist(false)} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faIndent} />
-                </button>
-                <button onClick={() => createSublist(true)} className="announcementBox_Create_control-button">
-                    <FontAwesomeIcon icon={faIndent} />
-                </button>
+                <FormattingControls
+                    activeFormats={activeFormats}
+                    applyFormatting={applyFormatting}
+                    createSublist={createSublist}
+                />
+
             </div>
 
             <hr className="announcementBox_Create_separator" />
 
-            <div className="youtube-video-list">
-                {youtubeLinksManager.links.map((link, index) => (
-                    <div key={index} className="youtube-video-item">
-                        <YTVideoAnnounceCard url={link} />
-                        <button
-                            className="remove-video-button"
-                            onClick={() => youtubeLinksManager.removeLink(index)}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <LinksList
+                links={youtubeLinksManager.links}
+                onRemove={youtubeLinksManager.removeLink}
+                CardComponent={YTVideoAnnounceCard}
+            />
 
-            <div className="googledrive-links-list">
-                {googleDriveLinksManager.links.map((link, index) => (
-                    <div key={index} className="googledrive-link-item">
-                        <GoogleDriveAnnounceCard url={link} />
-                        <button
-                            className="remove-link-button"
-                            onClick={() => googleDriveLinksManager.removeLink(index)}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <LinksList
+                links={googleDriveLinksManager.links}
+                onRemove={googleDriveLinksManager.removeLink}
+                CardComponent={GoogleDriveAnnounceCard}
+            />
 
-            <div className="other-links-list">
-                {otherLinksManager.links.map((link, index) => (
-                    <div key={index} className="other-link-item">
-                        <OtherLinksAnnounceCard url={link} />
-                        <button
-                            className="remove-link-button"
-                            onClick={() => otherLinksManager.removeLink(index)}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            </div>
+            <LinksList
+                links={otherLinksManager.links}
+                onRemove={otherLinksManager.removeLink}
+                CardComponent={OtherLinksAnnounceCard}
+            />
 
             <div className="announcementBox_Create_footer-container">
-                <div className="classworkBox_Create_external-data-links">
-                    <button
-                        className="classworkBox_Create_control-button youtube"
-                        onClick={() => setActiveModal('youtube')}
-                    >
-                        <FontAwesomeIcon icon={faYoutube} />
-                    </button>
-                    <button
-                        className="classworkBox_Create_control-button google-drive"
-                        onClick={() => setActiveModal('googleDrive')}
-                    >
-                        <FontAwesomeIcon icon={faGoogleDrive} />
-                    </button>
-                    <button
-                        className="classworkBox_Create_control-button links"
-                        onClick={() => setActiveModal('otherLinks')}
-                    >
-                        <FontAwesomeIcon icon={faLink} />
-                    </button>
-                </div>
+                <ExternalDataLinks onOpenModal={setActiveModal} />
 
                 <div className="announcementBox_Create_action-buttons">
                     <button className="announcementBox_Create_footer-button announcementBox_Create_cancel-button">

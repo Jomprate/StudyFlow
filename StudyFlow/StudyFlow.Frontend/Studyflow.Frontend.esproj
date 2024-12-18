@@ -12,5 +12,6 @@
     <Folder Include="src\components\cards\Announces\YoutubeAnnounceCard\" />
     <Folder Include="src\components\modals\PopUp\" />
     <Folder Include="src\pages\RecoveryPassword\" />
+    <Folder Include="src\services\announces\" />
   </ItemGroup>
 </Project>
