@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './announcementBox_Create.css';
 import '../../cards/YoutubeVideoCard/ytvideoCard.css';
 import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
@@ -15,6 +15,7 @@ import { announceApi } from '../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
+import { useLinksManager } from '../announcementBox_Create/useLinksManager';
 
 interface AnnouncementBoxCreateProps {
     onAnnounceCreated: (announcement: any) => void;
@@ -34,23 +35,11 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
         underline: false,
     });
 
-    const [isYouTubeModalOpen, setIsYouTubeModalOpen] = useState(false);
-    const [isGoogleDriveModalOpen, setIsGoogleDriveModalOpen] = useState(false);
-    const [isOtherLinksModalOpen, setIsOtherLinksModalOpen] = useState(false);
+    const [activeModal, setActiveModal] = useState<'youtube' | 'googleDrive' | 'otherLinks' | null>(null);
 
-    const [youtubeLinks, setYouTubeLinks] = useState<string[]>([]);
-    const [googleDriveLinks, setGoogleDriveLinks] = useState<string[]>([]);
-    const [otherLinks, setOtherLinks] = useState<string[]>([]);
-
-    useEffect(() => {
-        const storedYouTubeLinks = sessionStorage.getItem('youtubeLinks');
-        const storedGoogleDriveLinks = sessionStorage.getItem('googleDriveLinks');
-        const storedOtherLinks = sessionStorage.getItem('otherLinks');
-
-        if (storedYouTubeLinks) setYouTubeLinks(JSON.parse(storedYouTubeLinks));
-        if (storedGoogleDriveLinks) setGoogleDriveLinks(JSON.parse(storedGoogleDriveLinks));
-        if (storedOtherLinks) setOtherLinks(JSON.parse(storedOtherLinks));
-    }, []);
+    const youtubeLinksManager = useLinksManager('youtubeLinks');
+    const googleDriveLinksManager = useLinksManager('googleDriveLinks');
+    const otherLinksManager = useLinksManager('otherLinks');
 
     const handleInput = () => {
         if (editorRef.current) {
@@ -116,9 +105,9 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 htmlContent: content,
                 userId: userID,
                 courseId: courseId,
-                youTubeVideos: youtubeLinks,
-                googleDriveLinks: googleDriveLinks,
-                alternateLinks: otherLinks,
+                youTubeVideos: youtubeLinksManager.links,
+                googleDriveLinks: googleDriveLinksManager.links,
+                alternateLinks: otherLinksManager.links,
             };
 
             try {
@@ -131,46 +120,27 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                         description: content,
                         creationDate: new Date().toISOString(),
                         userName: state.fullName || "Unknown User",
-                        youTubeVideos: youtubeLinks,
-                        googleDriveLinks: googleDriveLinks,
-                        alternateLinks: otherLinks,
+                        youTubeVideos: youtubeLinksManager.links,
+                        googleDriveLinks: googleDriveLinksManager.links,
+                        alternateLinks: otherLinksManager.links,
                     });
 
                     console.log('Anuncio creado con éxito:', response.data);
 
+                    // Reiniciar el formulario
                     setTitle('');
-                    setYouTubeLinks([]);
-                    setGoogleDriveLinks([]);
-                    setOtherLinks([]);
                     if (editorRef.current) editorRef.current.innerHTML = '';
                     setIsPublishDisabled(true);
 
-                    sessionStorage.removeItem('youtubeLinks');
-                    sessionStorage.removeItem('googleDriveLinks');
-                    sessionStorage.removeItem('otherLinks');
+                    // Limpiar enlaces
+                    youtubeLinksManager.clearLinks();
+                    googleDriveLinksManager.clearLinks();
+                    otherLinksManager.clearLinks();
                 }
             } catch (error) {
                 console.error('Error creando el anuncio:', error);
             }
         }
-    };
-
-    const addYouTubeLink = (link: string) => {
-        const updatedLinks = [...youtubeLinks, link];
-        setYouTubeLinks(updatedLinks);
-        sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
-    };
-
-    const addGoogleDriveLink = (link: string) => {
-        const updatedLinks = [...googleDriveLinks, link];
-        setGoogleDriveLinks(updatedLinks);
-        sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
-    };
-
-    const addOtherLink = (link: string) => {
-        const updatedLinks = [...otherLinks, link];
-        setOtherLinks(updatedLinks);
-        sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
     };
 
     return (
@@ -230,18 +200,13 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
 
             <hr className="announcementBox_Create_separator" />
 
-            {/* YouTube Video List */}
             <div className="youtube-video-list">
-                {youtubeLinks.map((link, index) => (
+                {youtubeLinksManager.links.map((link, index) => (
                     <div key={index} className="youtube-video-item">
                         <YTVideoAnnounceCard url={link} />
                         <button
                             className="remove-video-button"
-                            onClick={() => {
-                                const updatedLinks = youtubeLinks.filter((_, i) => i !== index);
-                                setYouTubeLinks(updatedLinks);
-                                sessionStorage.setItem('youtubeLinks', JSON.stringify(updatedLinks));
-                            }}
+                            onClick={() => youtubeLinksManager.removeLink(index)}
                         >
                             X
                         </button>
@@ -249,18 +214,13 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 ))}
             </div>
 
-            {/* Google Drive Links List */}
             <div className="googledrive-links-list">
-                {googleDriveLinks.map((link, index) => (
+                {googleDriveLinksManager.links.map((link, index) => (
                     <div key={index} className="googledrive-link-item">
                         <GoogleDriveAnnounceCard url={link} />
                         <button
                             className="remove-link-button"
-                            onClick={() => {
-                                const updatedLinks = googleDriveLinks.filter((_, i) => i !== index);
-                                setGoogleDriveLinks(updatedLinks);
-                                sessionStorage.setItem('googleDriveLinks', JSON.stringify(updatedLinks));
-                            }}
+                            onClick={() => googleDriveLinksManager.removeLink(index)}
                         >
                             X
                         </button>
@@ -268,18 +228,13 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 ))}
             </div>
 
-            {/* Other Links List */}
             <div className="other-links-list">
-                {otherLinks.map((link, index) => (
+                {otherLinksManager.links.map((link, index) => (
                     <div key={index} className="other-link-item">
                         <OtherLinksAnnounceCard url={link} />
                         <button
                             className="remove-link-button"
-                            onClick={() => {
-                                const updatedLinks = otherLinks.filter((_, i) => i !== index);
-                                setOtherLinks(updatedLinks);
-                                sessionStorage.setItem('otherLinks', JSON.stringify(updatedLinks));
-                            }}
+                            onClick={() => otherLinksManager.removeLink(index)}
                         >
                             X
                         </button>
@@ -291,24 +246,23 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 <div className="classworkBox_Create_external-data-links">
                     <button
                         className="classworkBox_Create_control-button youtube"
-                        onClick={() => setIsYouTubeModalOpen(true)}
+                        onClick={() => setActiveModal('youtube')}
                     >
                         <FontAwesomeIcon icon={faYoutube} />
                     </button>
                     <button
                         className="classworkBox_Create_control-button google-drive"
-                        onClick={() => setIsGoogleDriveModalOpen(true)}
+                        onClick={() => setActiveModal('googleDrive')}
                     >
                         <FontAwesomeIcon icon={faGoogleDrive} />
                     </button>
                     <button
                         className="classworkBox_Create_control-button links"
-                        onClick={() => setIsOtherLinksModalOpen(true)}
+                        onClick={() => setActiveModal('otherLinks')}
                     >
                         <FontAwesomeIcon icon={faLink} />
                     </button>
                 </div>
-
 
                 <div className="announcementBox_Create_action-buttons">
                     <button className="announcementBox_Create_footer-button announcementBox_Create_cancel-button">
@@ -324,21 +278,41 @@ const AnnouncementBox_Create: React.FC<AnnouncementBoxCreateProps> = ({ onAnnoun
                 </div>
             </div>
 
-            <AnnouncementsYouTubeModal
-                isOpen={isYouTubeModalOpen}
-                onClose={() => setIsYouTubeModalOpen(false)}
-                onSave={addYouTubeLink}
-            />
-            <AnnouncementsGoogleDriveModal
-                isOpen={isGoogleDriveModalOpen}
-                onClose={() => setIsGoogleDriveModalOpen(false)}
-                onSave={addGoogleDriveLink}
-            />
-            <AnnouncementsOtherLinksModal
-                isOpen={isOtherLinksModalOpen}
-                onClose={() => setIsOtherLinksModalOpen(false)}
-                onSave={addOtherLink}
-            />
+            {activeModal === 'youtube' && (
+                <AnnouncementsYouTubeModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        youtubeLinksManager.addLink(link);
+                        console.log('YouTube Link Added:', link);
+                    }}
+                />
+
+            )}
+
+            {activeModal === 'googleDrive' && (
+                <AnnouncementsGoogleDriveModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        googleDriveLinksManager.addLink(link);
+                        console.log('Google Drive Link Added:', link);
+                    }}
+                />
+            )}
+
+            {activeModal === 'otherLinks' && (
+                <AnnouncementsOtherLinksModal
+                    isOpen
+                    onClose={() => setActiveModal(null)}
+                    onSave={(link: string) => {
+                        otherLinksManager.addLink(link);
+                        console.log('Other Link Added:', link);
+                    }}
+                />
+
+            )}
+
         </div>
     );
 };
