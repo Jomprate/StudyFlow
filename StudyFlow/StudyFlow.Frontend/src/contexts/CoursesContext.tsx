@@ -22,22 +22,31 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const [courses, setCourses] = useState<Course[]>([]);
     const [hasFetched, setHasFetched] = useState(false);
 
+    const fetchCoursesForTeacher = async (userId: string) => {
+        const response = await courseApi.getCoursesByTeacherIdAsync(userId);
+        return response.data.filter((course: Course) => !course.isDeleted);
+    };
+
+    const fetchCoursesForStudent = async (userId: string) => {
+        const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
+        return response.data.filter((course: Course) => !course.isDeleted);
+    };
+
     const fetchCourses = async (forceRefresh = false) => {
         if (hasFetched && !forceRefresh) return;
         setHasFetched(true);
 
         try {
             const { role: userRole, userName: userId } = state;
+            if (!userId) return;
 
-            if (userRole === 'Teacher' && userId) {
-                const response = await courseApi.getCoursesByTeacherIdAsync(userId);
-                const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
-                setCourses(filteredCourses);
-            } else if (userRole === 'Student' && userId) {
-                const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
-                const filteredCourses = response.data.filter((course: Course) => !course.isDeleted);
-                setCourses(filteredCourses);
-            }
+            const fetchedCourses =
+                userRole === 'Teacher'
+                    ? await fetchCoursesForTeacher(userId)
+                    : userRole === 'Student'
+                        ? await fetchCoursesForStudent(userId)
+                        : [];
+            setCourses(fetchedCourses);
         } catch (error) {
             console.error('Error fetching courses:', error);
         }
