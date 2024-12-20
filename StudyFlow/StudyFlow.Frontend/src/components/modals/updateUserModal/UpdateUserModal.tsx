@@ -3,19 +3,14 @@ import { useForm, Controller } from 'react-hook-form';
 import './updateUserModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { userApi, countryApi } from '../../../services/api';
+import { userApi } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import UserCreatedModal from '../userCreatedModal/UserCreatedModal';
 import { useAuth } from "../../../contexts/AuthContext";
 import { cleanBase64, readFileAsBase64 } from '../../../utils/images/imageUtils';
-
-interface Country {
-    id: number;
-    name: string;
-    isoCode: string;
-}
+import { useTranslatedCountries } from '../../../helpers/hooks/useTranslatedCountries';
 
 interface AuthModalProps {
     open: boolean;
@@ -25,9 +20,9 @@ interface AuthModalProps {
 }
 
 const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId }) => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { theme } = useTheme();
-    const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
+    const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
             firstName: '',
@@ -42,13 +37,15 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
         }
     });
 
+    const { countries, loading, error } = useTranslatedCountries();
+
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [problemMessage, setProblemMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-    const [countries, setCountries] = useState<Country[]>([]);
+    /*const [countries, setCountries] = useState<Country[]>([]);*/
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
@@ -62,21 +59,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
     const userType = state.role === 'Teacher' ? 'Teacher' :
         state.role === 'Student' ? 'Student' :
             '';
-
-    const fetchCountries = async () => {
-        try {
-            const countriesList = await countryApi.getCountriesWithLanguage();
-            const sortedCountries = countriesList.map((country, index) => ({
-                id: index + 1,  // Temp Id for TS
-                name: country.name,
-                isoCode: country.isoCode
-            })).sort((a, b) => a.name.localeCompare(b.name));
-
-            setCountries(sortedCountries);
-        } catch (error) {
-            setProblemMessage('Error al obtener los países');
-        }
-    };
 
     useEffect(() => {
         if (open && effectiveUserId != null) {
@@ -118,20 +100,6 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
             fetchUserData();
         }
     }, [open, effectiveUserId, reset, setImagePreview, t]);
-
-    useEffect(() => {
-        fetchCountries();
-        i18n.on('languageChanged', fetchCountries);
-        return () => {
-            i18n.off('languageChanged', fetchCountries);
-        };
-    }, [i18n, setValue]);
-
-    useEffect(() => {
-        if (open) {
-            fetchCountries();
-        }
-    }, [open, setValue]);
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -385,40 +353,30 @@ const UpdateUserModal: React.FC<AuthModalProps> = ({ open, setOpen, targetUserId
                             </div>
 
                             <div className={`form-group ${theme}-text`}>
-                                <label>{t('global_country')}</label>
-                                <Controller
-                                    name="countryId"
-                                    control={control}
-                                    rules={{ required: t('Country is required') }}
-                                    render={({ field }) => (
-                                        <select
-                                            className={`${theme}-input`}
-                                            value={field.value ? countries.find(country => country.id === Number(field.value))?.isoCode : ''}
-                                            onChange={(e) => {
-                                                const selectedIso = e.target.value;
-
-                                                const selectedCountry = countries.find(country => country.isoCode === selectedIso);
-
-                                                if (selectedCountry) {
-                                                    setValue('countryId', String(selectedCountry.id));
-                                                    console.log("País seleccionado:", selectedCountry);
-                                                    console.log("ID del país seleccionado:", selectedCountry.id);
-                                                }
-                                            }}
-                                        >
-                                            <option value="">{t('auth_selectCountry')}</option>
-                                            {countries.length > 0 ? (
-                                                countries.map((country) => (
-                                                    <option key={country.isoCode} value={country.isoCode}>
+                                <div className="form-group">
+                                    <label>{t('global_country')}</label>
+                                    <Controller
+                                        name="countryId"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <select
+                                                {...field}
+                                                className="country-dropdown"
+                                                disabled={loading}
+                                            >
+                                                <option value="">{t('auth_selectCountry')}</option>
+                                                {countries.map((country) => (
+                                                    <option key={country.id} value={country.id}>
                                                         {country.name}
                                                     </option>
-                                                ))
-                                            ) : (
-                                                <option value="" disabled>{t('auth_loadingCountries')}</option>
-                                            )}
-                                        </select>
-                                    )}
-                                />
+                                                ))}
+                                            </select>
+                                        )}
+                                    />
+                                    {loading && <p>{t('auth_loadingCountries')}</p>}
+                                    {error && <p>{t('error_loadingCountries')}</p>}
+                                    {errors.countryId && <span>{t('Country is required')}</span>}
+                                </div>
                                 {errors.countryId && <p className="update-user-modal-error">{errors.countryId.message}</p>}
                             </div>
                         </div>

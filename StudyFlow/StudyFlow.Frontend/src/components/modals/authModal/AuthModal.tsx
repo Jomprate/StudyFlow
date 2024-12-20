@@ -3,17 +3,12 @@ import { useForm, Controller } from 'react-hook-form';
 import './authModal.css';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
-import { userApi, countryApi } from '../../../services/api';
+import { userApi } from '../../../services/api';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
 import userPlaceholder from '../../../assets/user_p.svg';
 import ImageCropModal from '../imageCropModal/ImageCropModal';
 import UserCreatedModal from '../userCreatedModal/UserCreatedModal';
-
-interface Country {
-    id: number;
-    name: string;
-    isoCode: string;
-}
+import { useTranslatedCountries } from '../../../helpers/hooks/useTranslatedCountries';
 
 interface AuthModalProps {
     open: boolean;
@@ -21,9 +16,9 @@ interface AuthModalProps {
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { theme } = useTheme();
-    const { control, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm({
+    const { control, handleSubmit, watch, formState: { errors }, reset } = useForm({
         mode: 'onSubmit',
         defaultValues: {
             firstName: '',
@@ -38,53 +33,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
         }
     });
 
+    const { countries, loading, error } = useTranslatedCountries();
     const [isCropModalOpen, setIsCropModalOpen] = useState(false);
     const [problemMessage, setProblemMessage] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [fileName, setFileName] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
-    const [countries, setCountries] = useState<Country[]>([]);
+    /*const [countries, setCountries] = useState<Country[]>([]);*/
     const password = watch('password');
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
-
-    const fetchCountries = async () => {
-        try {
-            const countriesList = await countryApi.getCountriesWithLanguage();
-            const sortedCountries = countriesList.map((country, index) => ({
-                id: index + 1,  // Temp Id for TS
-                name: country.name,
-                isoCode: country.isoCode
-            })).sort((a, b) => a.name.localeCompare(b.name));
-
-            setCountries(sortedCountries);
-        } catch (error) {
-            setProblemMessage('Error al obtener los países');
-        }
-    };
 
     useEffect(() => {
         if (open) {
             reset(); // Limpiar el formulario al abrir AuthModal
         }
     }, [open, reset]);
-
-    useEffect(() => {
-        fetchCountries();
-
-        i18n.on('languageChanged', fetchCountries);
-
-        return () => {
-            i18n.off('languageChanged', fetchCountries);
-        };
-    }, [i18n, setValue]);
-
-    useEffect(() => {
-        if (open) {
-            fetchCountries();
-        }
-    }, [open, setValue]);
 
     const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -157,59 +122,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
             setProblemMessage(handleApiError(error));
         }
     };
-
-    //const onSubmit = async (data: any) => {
-    //    if (data.password !== data.repeatPassword) {
-    //        setProblemMessage('Las contraseñas no coinciden');
-    //        return;
-    //    }
-
-    //    const { repeatPassword, firstName, lastName, email, password, phoneNumber, countryId, profileId } = data;
-
-    //    console.log("print only in development" + repeatPassword);
-
-    //    // Validar profileId y convertirlo a número
-    //    const validProfileId = profileId && !isNaN(Number(profileId)) ? Number(profileId) : 0;
-
-    //    // Remover prefijo MIME de la imagen si está en base64
-    //    const cleanProfilePicture = (croppedImage || imagePreview || '').replace(/^data:image\/[a-z]+;base64,/, '');
-
-    //    console.log("Base64 enviado al backend:", cleanProfilePicture);
-
-    //    const finalData = {
-    //        firstName,
-    //        lastName,
-    //        email,
-    //        password,
-    //        phoneNumber: phoneNumber || null,
-    //        countryId: countryId ? Number(countryId) : 1,
-    //        profilePicture: cleanProfilePicture,
-    //        profileId: validProfileId,
-    //    };
-
-    //    console.log("Datos enviados al backend:", finalData);
-
-    //    try {
-    //        await userApi.createUser(finalData);
-    //        setProblemMessage('Usuario creado con éxito');
-    //        reset();
-    //        setImagePreview(null);
-    //        setCroppedImage(null);
-    //        setFileName('');
-    //        setOpen(false);
-    //        setIsUserCreatedModalOpen(true);
-    //    } catch (error: any) {
-    //        let errorMessage = 'Ocurrió un error inesperado';
-    //        if (error.response && error.response.data) {
-    //            errorMessage = typeof error.response.data === 'string'
-    //                ? error.response.data
-    //                : JSON.stringify(error.response.data);
-    //        } else if (error.message) {
-    //            errorMessage = error.message;
-    //        }
-    //        setProblemMessage(errorMessage);
-    //    }
-    //};
 
     const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -422,33 +334,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ open, setOpen }) => {
                                     rules={{ required: t('auth_error_countryIsRequired') }}
                                     render={({ field }) => (
                                         <select
+                                            {...field}
                                             className={`${theme}-input`}
-                                            value={field.value ? countries.find(country => country.id === Number(field.value))?.isoCode : ''}
-                                            onChange={(e) => {
-                                                const selectedIso = e.target.value;
-
-                                                const selectedCountry = countries.find(country => country.isoCode === selectedIso);
-
-                                                if (selectedCountry) {
-                                                    setValue('countryId', String(selectedCountry.id));
-                                                    console.log("País seleccionado:", selectedCountry);
-                                                    console.log("ID del país seleccionado:", selectedCountry.id);
-                                                }
-                                            }}
+                                            disabled={loading}
                                         >
                                             <option value="">{t('auth_selectCountry')}</option>
-                                            {countries.length > 0 ? (
-                                                countries.map((country) => (
-                                                    <option key={country.isoCode} value={country.isoCode}>
-                                                        {country.name}
-                                                    </option>
-                                                ))
-                                            ) : (
-                                                <option value="" disabled>{t('auth_loadingCountries')}</option>
-                                            )}
+                                            {countries.map((country) => (
+                                                <option key={country.id} value={country.id}>
+                                                    {country.name}
+                                                </option>
+                                            ))}
                                         </select>
                                     )}
                                 />
+                                {loading && <p>{t('auth_loadingCountries')}</p>}
+                                {error && <p>{t('error_loadingCountries')}</p>}
                                 {errors.countryId && <p className="auth-modal-error">{errors.countryId.message}</p>}
                             </div>
                         </div>
