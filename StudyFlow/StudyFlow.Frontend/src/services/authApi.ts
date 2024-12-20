@@ -1,138 +1,75 @@
 import api, { setAuthToken } from './apiConfig';
 
-export const loginUser = async (loginDTO: { email: string; password: string }): Promise<string> => {
+const API_ROUTES = {
+    LOGIN: '/Auth/Login',
+    LOGOUT: '/Auth/LogOut',
+    RESEND_CONFIRM_EMAIL: '/User/ResendConfirmEmailByEmail',
+    RECOVER_PASSWORD: '/Auth/RecoverPasswordByEmail',
+    RESET_PASSWORD: '/Auth/ResetPasswordAsync',
+    UPDATE_PASSWORD: '/User/UpdatePassword',
+    CONFIRM_EMAIL: '/User/ConfirmEmail',
+};
+
+const handleApiError = (error: any): string => {
+    return error.response?.data || error.message || 'An unexpected error occurred';
+};
+
+const makePostRequest = async (url: string, data: any, headers: object = {}): Promise<any> => {
     try {
-        const response = await api.post('/Auth/Login', loginDTO, {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        const token = response.data;
-
-        if (!token || typeof token !== 'string') {
-            throw new Error('Invalid login response: token is missing or not a string');
-        }
-
-        localStorage.setItem('token', token);
-
-        setAuthToken(token);
-        console.log(api.defaults.headers.common['Authorization']);
-
-        return token;
+        const response = await api.post(url, data, { headers });
+        return response.data;
     } catch (error: any) {
-        throw new Error(error.response?.data || error.message || 'An unexpected error occurred during login');
+        throw new Error(handleApiError(error));
     }
+};
+
+export const loginUser = async (loginDTO: { email: string; password: string }): Promise<string> => {
+    const token = await makePostRequest(API_ROUTES.LOGIN, loginDTO, {
+        'Content-Type': 'application/json',
+    });
+
+    if (!token || typeof token !== 'string') {
+        throw new Error('Invalid login response: token is missing or not a string');
+    }
+
+    localStorage.setItem('token', token);
+    setAuthToken(token);
+
+    return token;
 };
 
 export const logoutUser = async (): Promise<void> => {
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('No token found, unable to log out.');
-        }
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No token found, unable to log out.');
 
-        const response = await api.post('/Auth/LogOut', {}, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+    await makePostRequest(API_ROUTES.LOGOUT, {}, {
+        Authorization: `Bearer ${token}`,
+    });
 
-        if (response.status === 200) {
-            localStorage.removeItem('token');
-            setAuthToken(null);
-            console.log('Logout successful.');
-        } else {
-            throw new Error('Logout failed.');
-        }
-    } catch (error: any) {
-        console.error('Error during logout:', error.message || error);
-        throw new Error(error.response?.data || 'An unexpected error occurred during logout.');
-    }
+    localStorage.removeItem('token');
+    setAuthToken(null);
+};
+
+const handleLinkBasedAction = async (url: string, email: string): Promise<string> => {
+    const response = await makePostRequest(url, { Email: email });
+    return JSON.stringify(response.data);
 };
 
 export const ResendEmailConfirm = async (email: string): Promise<string> => {
-    const emailObj = { Email: email };
-
-    try {
-        const response = await api.post('/User/ResendConfirmEmailByEmail', emailObj);
-
-        if (response.status == 400) {
-            return JSON.stringify(response.data.data);
-        }
-
-        return JSON.stringify(response.data.data);
-    } catch (error: any) {
-        const errorMessage = error.response?.data || error.message || 'An unexpected error occurred during email confirmation';
-        if (error.status == 500) {
-            throw new Error(errorMessage);
-        }
-
-        return errorMessage.error.message;
-    }
+    return handleLinkBasedAction(API_ROUTES.RESEND_CONFIRM_EMAIL, email);
 };
 
 export const RecoveryPassword = async (email: string): Promise<string> => {
-    const emailObj = { Email: email };
-
-    try {
-        const response = await api.post('/Auth/RecoverPasswordByEmail', emailObj);
-
-        if (response.status == 400) {
-            return JSON.stringify(response.data.data);
-        }
-
-        return JSON.stringify(response.data.data);
-    } catch (error: any) {
-        const errorMessage = error.response?.data || error.message || 'An unexpected error occurred during email confirmation';
-        if (error.status == 500) {
-            throw new Error(errorMessage);
-        }
-
-        return errorMessage.error.message;
-    }
+    return handleLinkBasedAction(API_ROUTES.RECOVER_PASSWORD, email);
 };
 
-export const ResetPassword = async (ResetPasswordRequestDTO: { UserId: string; NewPassword: string; Token: string; }): Promise<string> => {
-    try {
-        const response = await api.post('/Auth/ResetPasswordAsync', ResetPasswordRequestDTO);
-
-        if (response.status == 400) {
-            return JSON.stringify(response.data.data);
-        }
-
-        return JSON.stringify(response.data.data);
-    } catch (error: any) {
-        const errorMessage = error.response?.data || error.message || 'An unexpected error occurred during email confirmation';
-        if (error.status == 500) {
-            throw new Error(errorMessage);
-        }
-
-        return errorMessage.error.message;
-    }
+export const ResetPassword = async (ResetPasswordRequestDTO: { UserId: string; NewPassword: string; Token: string }): Promise<string> => {
+    const response = await makePostRequest(API_ROUTES.RESET_PASSWORD, ResetPasswordRequestDTO);
+    return JSON.stringify(response.data);
 };
 
 export const confirmEmail = async (userId: string, token: string): Promise<void> => {
-    try {
-        const response = await api.post('/user/ConfirmEmail', {
-            userId,
-            token,
-        });
-        return response.data;
-    } catch (error: any) {
-        let errorMessage = 'An unexpected error occurred';
-
-        if (error.response && error.response.data) {
-            errorMessage = typeof error.response.data === 'string'
-                ? error.response.data
-                : JSON.stringify(error.response.data);
-        } else if (error.message) {
-            errorMessage = error.message;
-        }
-
-        console.error(errorMessage);
-        throw new Error(errorMessage);
-    }
+    await makePostRequest(API_ROUTES.CONFIRM_EMAIL, { userId, token });
 };
 
 export const updatePassword = async (updatePasswordDTO: {
@@ -140,37 +77,22 @@ export const updatePassword = async (updatePasswordDTO: {
     newPassword: string;
     confirmNewPassword: string;
 }): Promise<string> => {
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            throw new Error('User is not authenticated.');
-        }
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('User is not authenticated.');
 
-        const decodedToken: any = JSON.parse(atob(token.split('.')[1]));
-        const userId = decodedToken?.unique_name;
+    const decodedToken: any = JSON.parse(atob(token.split('.')[1]));
+    const userId = decodedToken?.unique_name;
+    if (!userId) throw new Error('UserId is missing in the token.');
 
-        if (!userId) {
-            throw new Error('UserId is missing in the token.');
-        }
+    const payload = {
+        ...updatePasswordDTO,
+        UserId: userId,
+    };
 
-        const payload = {
-            ...updatePasswordDTO,
-            UserId: userId,
-        };
+    const response = await makePostRequest(API_ROUTES.UPDATE_PASSWORD, payload, {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+    });
 
-        const response = await api.put('/User/UpdatePassword', payload, {
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        return response.data.message || 'Password updated successfully.';
-    } catch (error: any) {
-        const errorMessage =
-            error.response?.data?.message ||
-            error.response?.data ||
-            'An unexpected error occurred.';
-        throw new Error(errorMessage);
-    }
+    return response.message || 'Password updated successfully.';
 };
