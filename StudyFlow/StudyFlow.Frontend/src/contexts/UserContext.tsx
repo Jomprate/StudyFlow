@@ -39,6 +39,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const response = await userApi.getuserbyid(userId);
             const { email, firstName, lastName, profilePicture } = response.data;
+
+            console.log("Fetched user data:", {
+                email,
+                fullName: `${firstName} ${lastName}`,
+                imageBase64: profilePicture ? `data:image/png;base64,${profilePicture}` : null,
+            });
+
             dispatch({
                 type: 'SET_USER_DATA',
                 payload: {

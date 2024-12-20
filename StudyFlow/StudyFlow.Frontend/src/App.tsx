@@ -107,8 +107,8 @@ function App() {
 }
 
 const WrappedApp: React.FC = () => (
-    <AuthProvider>
-        <UserProvider>
+    <UserProvider>
+        <AuthProvider>
             <ThemeProvider>
                 <UtcProvider>
                     <CoursesProvider>
@@ -120,8 +120,8 @@ const WrappedApp: React.FC = () => (
                     </CoursesProvider>
                 </UtcProvider>
             </ThemeProvider>
-        </UserProvider>
-    </AuthProvider>
+        </AuthProvider>
+    </UserProvider>
 );
 
 export default WrappedApp;

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { createContext, useContext, useReducer, ReactNode } from 'react';
 import { authApi, userApi } from '../services/api';
+import { useUser } from '../contexts/UserContext';
 
 // Definir el tipo de roles permitidos
 type UserRole = 'Student' | 'Teacher' | 'Admin' | null;
@@ -63,16 +64,30 @@ const authReducer = (state: AuthState, action: { type: string; payload?: any }):
 // Proveedor del contexto de autenticación
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [state, dispatch] = useReducer(authReducer, initialState);
+    const { updateUserData, clearUserData } = useUser();
+    //const login = (role: UserRole, userName: string, token: string) => {
+    //    console.log('Dispatching login with role:', role, 'and userName:', userName);
 
-    const login = (role: UserRole, userName: string, token: string) => {
-        console.log('Dispatching login with role:', role, 'and userName:', userName);
+    //    localStorage.setItem('authData', JSON.stringify({ role, userName }));
+    //    localStorage.setItem('authToken', token);
 
+    //    dispatch({ type: 'LOGIN', payload: { role, userName, token } });
+
+    //    fetchUserFullName(userName);
+    //};
+
+    const login = async (role: UserRole, userName: string, token: string) => {
         localStorage.setItem('authData', JSON.stringify({ role, userName }));
         localStorage.setItem('authToken', token);
 
         dispatch({ type: 'LOGIN', payload: { role, userName, token } });
 
-        fetchUserFullName(userName);
+        // Obtener datos del usuario después de iniciar sesión
+        try {
+            updateUserData(userName); // Llamar a la función del UserContext
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
     };
 
     const fetchUserFullName = async (userId: string) => {
@@ -103,6 +118,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     //    }
     //};
 
+    //const logout = async (resetCourses?: () => void) => {
+    //    try {
+    //        console.log('Calling logout API...');
+    //        await authApi.logoutUser();
+
+    //        console.log('Logout successful, clearing auth data...');
+    //        localStorage.removeItem('authData');
+    //        localStorage.removeItem('authToken');
+
+    //        if (resetCourses) {
+    //            resetCourses(); // Llama a resetCourses si está disponible
+    //        }
+
+    //        dispatch({ type: 'LOGOUT' });
+    //    } catch (error) {
+    //        console.error('Error during logout:', error);
+    //        throw error;
+    //    }
+    //};
+
     const logout = async (resetCourses?: () => void) => {
         try {
             console.log('Calling logout API...');
@@ -117,6 +152,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
 
             dispatch({ type: 'LOGOUT' });
+
+            // Limpia los datos del UserContext
+            clearUserData();
+            console.log('User data cleared from UserContext');
         } catch (error) {
             console.error('Error during logout:', error);
             throw error;
