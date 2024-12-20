@@ -53,7 +53,7 @@ const Course_: React.FC = () => {
                 console.log("Course fetched:", courseData);
 
                 if (courseData && courseData.data) {
-                    setCourse(courseData);
+                    setCourse(courseData as CourseResponse);
                 } else {
                     console.error("Unexpected response structure:", courseData);
                 }

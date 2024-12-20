@@ -4,7 +4,7 @@ import { countryApi } from '../../services/api';
 
 export interface Country {
     id: number;
-    name: string; // Nombre traducido
+    name: string;
     isoCode: string;
 }
 
@@ -23,10 +23,10 @@ export const useTranslatedCountries = () => {
             console.log("Response from API:", response);
 
             const sortedCountries = response
-                .filter((country: any) => country.isoCode && country.name) // Filter invalid data
+                .filter((country: any) => country.isoCode && country.name)
                 .map((country: any, index: number) => ({
                     id: index + 1,
-                    name: t(`countries.${country.isoCode}`, country.name) as string, // Cast to string
+                    name: t(`countries.${country.isoCode}`, country.name) as string,
                     isoCode: country.isoCode,
                 }))
                 .sort((a, b) => a.name.localeCompare(b.name));
@@ -41,7 +41,7 @@ export const useTranslatedCountries = () => {
     };
 
     useEffect(() => {
-        if (!i18n.language) return; // Asegurar que el idioma esté definido
+        if (!i18n.language) return;
         fetchCountries();
     }, [i18n.language]);
 
