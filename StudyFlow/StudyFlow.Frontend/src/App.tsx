@@ -7,6 +7,7 @@ import { ThemeProvider, useTheme } from './ThemeContext';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { UtcProvider } from '../src/contexts/UtcContext';
 import { CoursesProvider } from '../src/contexts/CoursesContext';
+import { UserProvider } from '../src/contexts/UserContext';
 import LoadingScreen from '../src/components/LoadingScreen/LoadingScreen';
 import { checkBackendStatus } from '../src/services/api';
 import ScrollToTop from '../src/components/scrollToTop/ScrollToTop';
@@ -107,17 +108,19 @@ function App() {
 
 const WrappedApp: React.FC = () => (
     <AuthProvider>
-        <ThemeProvider>
-            <UtcProvider>
-                <CoursesProvider>
-                    <BrowserRouter>
-                        <ScrollToTop />
-                        <App />
-                        <ScrollToTopButton />
-                    </BrowserRouter>
-                </CoursesProvider>
-            </UtcProvider>
-        </ThemeProvider>
+        <UserProvider>
+            <ThemeProvider>
+                <UtcProvider>
+                    <CoursesProvider>
+                        <BrowserRouter>
+                            <ScrollToTop />
+                            <App />
+                            <ScrollToTopButton />
+                        </BrowserRouter>
+                    </CoursesProvider>
+                </UtcProvider>
+            </ThemeProvider>
+        </UserProvider>
     </AuthProvider>
 );
 

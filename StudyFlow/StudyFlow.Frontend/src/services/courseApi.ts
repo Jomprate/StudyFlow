@@ -110,52 +110,6 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
     }
 };
 
-//export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ statusCode: number, data: CourseDTO[] }> => {
-//    try {
-//        const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
-//            params: { TeacherId: teacherId }
-//        });
-
-//        console.log("Full response data:", response.data);
-
-//        const { value } = response.data || {};
-
-//        const coursesData = Array.isArray(value) ? value : (value?.data || response.data);
-
-//        if (coursesData && Array.isArray(coursesData)) {
-//            const coursesArray: CourseDTO[] = coursesData
-//                .filter((course: any) => !course.isDeleted)
-//                .map((course: any) => ({
-//                    id: course.id,
-//                    name: course.name,
-//                    description: course.description,
-//                    teacher: course.teacherDTO?.fullName || "Unknown",
-//                    logo: course.logo || "",
-//                    userId: course.teacherDTO?.id || null,
-//                    isEnabled: course.isEnabled,
-//                    data: ""
-//                }));
-
-//            return {
-//                statusCode: response.status,
-//                data: coursesArray
-//            };
-//        } else {
-//            console.error("Unexpected response format:", response.data);
-//            throw new Error('Unexpected response format');
-//        }
-//    } catch (error: any) {
-//        const errorMessage = error.response
-//            ? `API response error: ${error.response.data}`
-//            : error.request
-//                ? 'No response received from API'
-//                : `Request setup error: ${error.message}`;
-
-//        console.error(errorMessage);
-//        throw new Error(errorMessage);
-//    }
-//};
-
 export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ statusCode: number, data: CourseDTO[] }> => {
     try {
         const response = await api.get(`/OnBoardingTeacher/GetCoursesByTeacherId`, {
@@ -167,21 +121,20 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
         const { value } = response.data || {};
         const coursesData = Array.isArray(value?.data) ? value.data : [];
 
-        // Debugging para confirmar la estructura de los datos
         console.log("Courses Data (Raw):", coursesData);
 
         if (coursesData.length > 0) {
             const coursesArray: CourseDTO[] = coursesData
                 .filter((course: any) => !course.isDeleted)
                 .map((course: any) => {
-                    console.log("Mapping Course:", course); // Debug para cada curso
+                    console.log("Mapping Course:", course);
                     return {
                         id: course.id,
                         name: course.name,
                         description: course.description,
                         teacher: course.teacherDTO?.fullName || "Unknown",
                         logo: course.logo || "",
-                        userId: course.teacherDTO?.id || null, // Extrae el ID del maestro
+                        userId: course.teacherDTO?.id || null,
                         isEnabled: course.isEnabled,
                         data: ""
                     };
