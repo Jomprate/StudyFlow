@@ -8,6 +8,7 @@ import * as enrollTeacherApi from './enrollmentsTeacherApi';
 import * as enrollStudentApi from './enrollmentsStudentApi';
 import * as subjectApi from './subjectApi';
 import * as utcOffset from './utcOffset';
+import * as loadTranslations from './translationsService'; // Importa loadTranslations
 
 export {
     checkBackendStatus,
@@ -19,5 +20,6 @@ export {
     enrollTeacherApi,
     enrollStudentApi,
     subjectApi,
-    utcOffset
+    utcOffset,
+    loadTranslations
 };

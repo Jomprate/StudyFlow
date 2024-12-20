@@ -1,10 +1,7 @@
 import React, { useRef, useState } from 'react';
 import '../announcementBox_Create/announcementBox_Create.css';
-import '../../cards/YoutubeVideoCard/ytvideoCard.css';
-import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
-import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
-import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
 import { useTheme } from '../../../ThemeContext';
+import { YTVideoAnnounceCard, GoogleDriveAnnounceCard, OtherLinksAnnounceCard } from '../../cards/Announces';
 import { AnnouncementsYouTubeModal, AnnouncementsGoogleDriveModal, AnnouncementsOtherLinksModal } from '../announcementBox_Create/AnnouncementsModals';
 import { announceApi } from '../../../services/api';
 import { useTranslation } from 'react-i18next';

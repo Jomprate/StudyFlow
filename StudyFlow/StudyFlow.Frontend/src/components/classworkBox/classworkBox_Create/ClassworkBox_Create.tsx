@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './classworkBox_Create.css';
 import '../../cards/YoutubeVideoCard/ytvideoCard.css';
-import YTVideoAnnounceCard from '../../cards/Announces/YoutubeAnnounceCard/YTVideoAnnounceCard';
-import GoogleDriveAnnounceCard from '../../cards/Announces/GoogleDriveAnnounceCard/GoogleDriveAnnounceCard';
-import OtherLinksAnnounceCard from '../../cards/Announces/OtherLinksAnnounceCard/OtherLinksAnnounceCard';
+import { YTVideoAnnounceCard, GoogleDriveAnnounceCard, OtherLinksAnnounceCard } from '../../cards/Announces';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../../ThemeContext';
 import { AnnouncementsYouTubeModal, AnnouncementsGoogleDriveModal, AnnouncementsOtherLinksModal } from '../../announcementBox/announcementBox_Create/AnnouncementsModals';
