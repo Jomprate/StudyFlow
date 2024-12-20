@@ -112,7 +112,12 @@ const WrappedApp: React.FC = () => (
             <ThemeProvider>
                 <UtcProvider>
                     <CoursesProvider>
-                        <BrowserRouter>
+                        <BrowserRouter
+                            future={{
+                                v7_startTransition: true,
+                                v7_relativeSplatPath: true,
+                            }}
+                        >
                             <ScrollToTop />
                             <App />
                             <ScrollToTopButton />

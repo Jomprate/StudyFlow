@@ -1,6 +1,57 @@
 import api from './apiConfig';
 import i18n from '../i18n';
 
+const handleApiError = (error: any): never => {
+    const errorMessage = error.response
+        ? `API response error: ${JSON.stringify(error.response.data)}`
+        : error.request
+            ? 'No response received from API'
+            : `Request setup error: ${error.message}`;
+    console.error(errorMessage);
+    throw new Error(errorMessage);
+};
+
+export interface CourseDTO {
+    id: string;
+    name: string;
+    description: string;
+    teacher: string;
+    logo?: string;
+    isEnabled: boolean;
+    userId?: string;
+    creationDate?: string;
+    modifiedDate?: string;
+    data?: any;
+}
+
+const mapAnnouncement = (announcement: any) => ({
+    id: announcement.id,
+    title: announcement.title,
+    description: announcement.htmlContent,
+    userName: announcement.userName,
+    userId: announcement.userId,
+    creationDate: announcement.creationDate,
+    youTubeVideos: announcement.youTubeVideos,
+    googleDriveLinks: announcement.googleDriveLinks,
+    alternateLinks: announcement.alternateLinks,
+});
+
+const mapCourse = (course: any): CourseDTO => {
+    const { id, name, description, teacherDTO, logo, isEnabled, creationDate, modifiedDate, ...extraData } = course;
+
+    return {
+        id,
+        name,
+        description: description || "",
+        teacher: teacherDTO?.fullName || "Unknown",
+        logo: logo || "",
+        isEnabled,
+        creationDate: creationDate || null,
+        modifiedDate: modifiedDate || null,
+        data: extraData, // Incluye todo lo demás como `data`
+    };
+};
+
 export const createCourse = async (courseDTO: {
     id?: string;
     teacherId: string;
@@ -47,16 +98,6 @@ export const createCourse = async (courseDTO: {
     }
 };
 
-export interface CourseDTO {
-    id: string;
-    name: string;
-    description: string;
-    teacher: string;
-    logo?: string;
-    isEnabled: boolean;
-    data: any;
-}
-
 export const getCoursesByTeacherIdPaginatedAsync = async (
     teacherId: string,
     page: number,
@@ -67,46 +108,26 @@ export const getCoursesByTeacherIdPaginatedAsync = async (
             params: {
                 TeacherId: teacherId,
                 'Pagination.Page': page,
-                'Pagination.RecordsNumber': recordsNumber
-            }
+                'Pagination.RecordsNumber': recordsNumber,
+            },
         });
 
-        console.log("Full response data:", response.data);
+        const { listResult, pagination } = response.data.value?.data || {};
 
-        const { value } = response.data;
-        if (value && value.data?.listResult) {
-            const { listResult, pagination } = value.data;
+        if (!Array.isArray(listResult)) throw new Error('Unexpected response format');
 
-            const coursesArray: CourseDTO[] = listResult
-                .filter((course: any) => !course.isDeleted)
-                .map((course: any) => ({
-                    id: course.id,
-                    name: course.name,
-                    description: course.description,
-                    teacher: course.teacherDTO?.fullName || "Unknown",
-                    logo: course.logo || "",
-                    userId: course.userId,
-                    isEnabled: course.isEnabled,
-                }));
+        const coursesArray = listResult
+            .filter((course: any) => !course.isDeleted)
+            .map(mapCourse);
 
-            return {
-                data: coursesArray,
-                totalPages: pagination.totalPages,
-                totalRecords: pagination.totalRecords
-            };
-        } else {
-            console.error("Unexpected response format:", response.data);
-            throw new Error('Unexpected response format');
-        }
-    } catch (error: any) {
-        const errorMessage = error.response
-            ? `Error en la respuesta de la API: ${error.response.data}`
-            : error.request
-                ? 'No response received from API'
-                : `Error setting up request: ${error.message}`;
-
-        console.error(errorMessage);
-        throw new Error(errorMessage);
+        return {
+            data: coursesArray,
+            totalPages: pagination?.totalPages || 0,
+            totalRecords: pagination?.totalRecords || 0,
+        };
+    } catch (error) {
+        handleApiError(error);
+        throw error;
     }
 };
 
@@ -185,15 +206,6 @@ interface PaginatedResponse<T> {
     totalPages: number;
 }
 
-export interface CourseDTO {
-    id: string;
-    name: string;
-    description: string;
-    teacher: string;
-    logo?: string;
-    isEnabled: boolean;
-}
-
 export const getCourseAnnouncesPaginated = async (
     courseId: string,
     page: number = 1,
@@ -201,50 +213,22 @@ export const getCourseAnnouncesPaginated = async (
 ): Promise<PaginatedResponse<any>> => {
     try {
         const response = await api.get(`/Announce/GetAnnouncesByCourse/${courseId}`, {
-            params: { page, recordsNumber }
+            params: { page, recordsNumber },
         });
-
-        console.log("Full response from API:", response.data);
 
         const listResult = response.data.value?.data?.listResult || response.data.value?.listResult;
 
-        if (!Array.isArray(listResult)) {
-            console.warn("Unexpected response format", response.data);
-            return { data: [], totalPages: 0 };
-        }
+        if (!Array.isArray(listResult)) throw new Error('Unexpected response format');
 
-        const announcementsArray = listResult.map((announcement: any) => ({
-            id: announcement.id,
-            title: announcement.title,
-            description: announcement.htmlContent,
-            userName: announcement.userName,
-            userId: announcement.userId,
-            creationDate: announcement.creationDate,
-            youTubeVideos: announcement.youTubeVideos,
-            googleDriveLinks: announcement.googleDriveLinks,
-            alternateLinks: announcement.alternateLinks,
-        }));
-
-        console.log("Mapped announcementsArray:", announcementsArray);
+        const announcementsArray = listResult.map(mapAnnouncement);
 
         return {
             data: announcementsArray,
-            totalPages: response.data.value?.data?.totalPages || response.data.value?.totalPages || 0
+            totalPages: response.data.value?.data?.totalPages || response.data.value?.totalPages || 0,
         };
-    } catch (error: any) {
-        if (error.response && error.response.status === 404) {
-            console.log("No announcements found for this course. Returning empty result.");
-            return { data: [], totalPages: 0 };
-        } else {
-            const errorMessage = error.response
-                ? i18n.t('global_error_apiResponse', { message: error.response.data })
-                : error.request
-                    ? i18n.t('global_error_noResponse')
-                    : i18n.t('global_error_requestSetup', { message: error.message });
-
-            console.error("Error configuring the request:", errorMessage);
-            throw new Error(errorMessage);
-        }
+    } catch (error) {
+        handleApiError(error);
+        throw error;
     }
 };
 
@@ -270,20 +254,6 @@ export const addEnrollmentByStudent = async (enrollmentDTO: {
         throw new Error(errorMessage);
     }
 };
-
-//export const deleteCourse = async (courseId: string): Promise<void> => {
-//    try {
-//        const response = await api.delete(`/OnBoardingTeacher/DeleteCourse/${courseId}`);
-//        console.log('Course deleted successfully:', response.data);
-//    } catch (error: any) {
-//        const errorMessage = error.response
-//            ? `Error deleting course: ${error.response.data}`
-//            : error.request
-//                ? 'No response received from the server.'
-//                : `Error setting up the request: ${error.message}`;
-//        throw new Error(errorMessage);
-//    }
-//};
 
 export const deleteCourse = async (courseId: string): Promise<void> => {
     try {
