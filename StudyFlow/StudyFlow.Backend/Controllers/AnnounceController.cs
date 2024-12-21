@@ -204,5 +204,36 @@ namespace StudyFlow.API.Controllers
                     new { Error = "An unexpected error occurred.", Details = ex.Message });
             }
         }
+
+        [HttpGet("GetAnnouncesPagedByCourse/{courseId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAnnouncesPagedByCourseIdAsync(Guid courseId, [FromQuery] Pagination pagination)
+        {
+            // Validar courseId
+            if (courseId == Guid.Empty)
+            {
+                return BadRequest(new { Error = "Course Id is required." });
+            }
+
+            // Validar datos de paginación
+            if (pagination == null || pagination.Page <= 0 || pagination.RecordsNumber <= 0)
+            {
+                return BadRequest(new { Error = "Valid pagination data is required. Page and RecordsNumber must be greater than 0." });
+            }
+
+            try
+            {
+                // Llamar al servicio
+                return await _announceService.GetAnnouncesPagedByCourseIdAsync(courseId, pagination);
+            }
+            catch (Exception ex)
+            {
+                // Manejar excepciones generales
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "An unexpected error occurred.", Details = ex.Message });
+            }
+        }
     }
 }

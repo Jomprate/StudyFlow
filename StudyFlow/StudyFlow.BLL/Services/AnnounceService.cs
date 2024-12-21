@@ -375,6 +375,46 @@ namespace StudyFlow.BLL.Services
             }
         }
 
+        public async Task<IActionResult> GetAnnouncesPagedByCourseIdAsync(Guid courseId, Pagination pagination)
+        {
+            if (courseId == Guid.Empty)
+            {
+                return ApiResponseHelper.BadRequest("Course Id is required.");
+            }
+
+            if (pagination == null)
+            {
+                return ApiResponseHelper.BadRequest("Pagination data is required.");
+            }
+
+            try
+            {
+                // Obtener los anuncios desde el repositorio, ya ordenados por UpdatedAt (descendente)
+                var announcesResult = await _announceRepository.GetAnnouncesPagedByCourseIdAsync(courseId, pagination);
+
+                if (!announcesResult.ListResult.Any())
+                {
+                    return ApiResponseHelper.NotFound("No announces found for the specified course.");
+                }
+
+                // Mapear los resultados a DTOs
+                var mappedList = announcesResult.ListResult.Select(a => MapToDTO(a)).ToList();
+
+                // Retornar el resultado paginado
+                return ApiResponseHelper.Success(new PaginationResult<GetAnnounceDTO>
+                {
+                    ListResult = mappedList,
+                    TotalRecords = announcesResult.TotalRecords,
+                    TotalPages = announcesResult.TotalPages,
+                    Pagination = announcesResult.Pagination
+                });
+            }
+            catch (Exception ex)
+            {
+                return ApiResponseHelper.InternalServerError("Error fetching paged announces.", ex.Message);
+            }
+        }
+
         private static GetAnnounceDTO MapToDTO(Announce announce)
         {
             return new GetAnnounceDTO

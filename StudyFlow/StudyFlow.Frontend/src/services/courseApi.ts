@@ -48,7 +48,7 @@ const mapCourse = (course: any): CourseDTO => {
         isEnabled,
         creationDate: creationDate || null,
         modifiedDate: modifiedDate || null,
-        data: extraData, // Incluye todo lo demás como `data`
+        data: extraData,
     };
 };
 
@@ -201,32 +201,63 @@ export const getCourseByIdAsync = async (courseId: string, teacherId: string): P
     }
 };
 
-interface PaginatedResponse<T> {
-    data: T[];
-    totalPages: number;
-}
-
 export const getCourseAnnouncesPaginated = async (
     courseId: string,
-    page: number = 1,
-    recordsNumber: number = 10
-): Promise<PaginatedResponse<any>> => {
+    page: number,
+    recordsNumber: number,
+    filter: string | null
+): Promise<{
+    data: any[];
+    pagination: {
+        page: number;
+        recordsNumber: number;
+        filter: string | null;
+    };
+    totalPages: number;
+    totalRecords: number;
+}> => {
     try {
-        const response = await api.get(`/Announce/GetAnnouncesByCourse/${courseId}`, {
-            params: { page, recordsNumber },
+        const response = await api.get(`/Announce/GetAnnouncesPagedByCourse/${courseId}`, {
+            params: { page, recordsNumber, filter },
         });
 
-        const listResult = response.data.value?.data?.listResult || response.data.value?.listResult;
+        //console.log('API Response:', response.data);
 
-        if (!Array.isArray(listResult)) throw new Error('Unexpected response format');
+        const responseData = response.data;
 
-        const announcementsArray = listResult.map(mapAnnouncement);
+        if (
+            !responseData ||
+            typeof responseData !== 'object' ||
+            !responseData.success ||
+            !responseData.data
+        ) {
+            throw new Error('Response format is invalid or missing required fields.');
+        }
+
+        const { listResult, pagination, totalPages, totalRecords } = responseData.data;
+
+        if (!Array.isArray(listResult)) {
+            throw new Error('listResult is not an array in the response.');
+        }
+
+        const announcementsArray = listResult
+            .map(mapAnnouncement)
+            .sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime());
+
+        const currentPagination = {
+            page: pagination?.page || page || 1,
+            recordsNumber: pagination?.recordsNumber || recordsNumber || 10,
+            filter: pagination?.filter || filter || null,
+        };
 
         return {
             data: announcementsArray,
-            totalPages: response.data.value?.data?.totalPages || response.data.value?.totalPages || 0,
+            pagination: currentPagination,
+            totalPages: totalPages || Math.ceil(totalRecords / recordsNumber) || 1,
+            totalRecords: totalRecords || announcementsArray.length,
         };
     } catch (error) {
+        console.error('Error fetching paginated course announcements:', error);
         handleApiError(error);
         throw error;
     }

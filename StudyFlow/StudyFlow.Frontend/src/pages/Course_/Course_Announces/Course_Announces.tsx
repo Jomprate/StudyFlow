@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import './course_announces.css';
@@ -8,114 +8,85 @@ import AnnouncementBox from '@components/announcementBox/announcementBox/Announc
 import user_p from '../../../assets/user_p.svg';
 import { courseApi, userApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
-import { useAuth } from "../../../contexts/AuthContext";
-import { useConvertUtcToLocal } from "../../../utils/date/dateUtils.ts";
+import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
+import { useConvertUtcToLocal } from '../../../utils/date/dateUtils.ts';
 
 const Announces: React.FC = () => {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const { courseId } = useParams<{ courseId: string }>();
     const [currentPage, setCurrentPage] = useState(1);
+    const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [announcements, setAnnouncements] = useState<any[]>([]);
     const [totalPages, setTotalPages] = useState(1);
-    const [recordsPerPage, setRecordsPerPage] = useState(10);
     const [showAnnouncementBox, setShowAnnouncementBox] = useState(false);
     const [noAnnouncements, setNoAnnouncements] = useState(false);
-    const [_announcementsFetched, setAnnouncementsFetched] = useState(false);
-    const { state } = useAuth();
-    const [userProfileImage, setUserProfileImage] = useState<string>(user_p);
-    const convertUtcToLocal = useConvertUtcToLocal(); // Obtener la función para convertir
-
-    useEffect(() => {
-        const fetchAuthenticatedUserProfileImage = async () => {
-            try {
-                const userId = state.userName;
-                if (!userId) return;
-                const response = await userApi.getuserbyid(userId);
-                const userData = response.data;
-
-                if (userData.profilePicture) {
-                    const imageBase64 = `data:image/png;base64,${userData.profilePicture}`;
-                    setUserProfileImage(imageBase64);
-                }
-            } catch (error) {
-                console.error("Error fetching authenticated user profile image:", error);
-                setUserProfileImage(user_p);
-            }
-        };
-
-        fetchAuthenticatedUserProfileImage();
-    }, [state.userName]);
+    const { state: authState } = useAuth();
+    const { state: userState } = useUser();
+    const convertUtcToLocal = useConvertUtcToLocal();
 
     const fetchUserProfileImage = async (userId: string) => {
+        if (userId === authState.userName && userState.imageBase64) {
+            return userState.imageBase64; // Usa la imagen del contexto si está disponible
+        }
         try {
             const response = await userApi.getuserbyid(userId);
             const userData = response.data;
             return userData.profilePicture
                 ? `data:image/png;base64,${userData.profilePicture}`
-                : user_p;
+                : user_p; // Imagen predeterminada
         } catch (error) {
             console.error(`Error fetching profile image for user ${userId}:`, error);
-            return user_p;
+            return user_p; // Imagen predeterminada en caso de error
         }
     };
 
-    useEffect(() => {
-        setAnnouncements([]);
-        setNoAnnouncements(false);
-        setAnnouncementsFetched(false);
+    const fetchAnnouncements = useCallback(async () => {
+        if (!courseId) return;
 
-        const fetchAnnouncements = async () => {
-            if (!courseId) return;
+        try {
+            const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage, '');
 
-            try {
-                const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage);
+            if (!data || data.data.length === 0) {
+                setNoAnnouncements(true);
+                setAnnouncements([]);
+            } else {
+                const sortedAnnouncements = await Promise.all(
+                    data.data
+                        .filter((announcement) => !announcement.isDeleted)
+                        .map(async (announcement) => {
+                            const creatorProfileImageUrl = await fetchUserProfileImage(announcement.userId);
+                            return {
+                                ...announcement,
+                                creatorProfileImageUrl,
+                            };
+                        })
+                );
 
-                if (data && data.data.length === 0) {
-                    setNoAnnouncements(true);
-                } else {
-                    const sortedAnnouncements = await Promise.all(
-                        data.data
-                            .filter((announcement) => !announcement.isDeleted)
-                            .sort((a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime())
-                            .map(async (announcement) => {
-                                const creatorProfileImageUrl = await fetchUserProfileImage(announcement.userId);
-                                return {
-                                    ...announcement,
-                                    creatorProfileImageUrl,
-                                };
-                            })
-                    );
+                // Ordenar del más reciente al más antiguo
+                const orderedAnnouncements = sortedAnnouncements.sort(
+                    (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+                );
 
-                    setAnnouncements(sortedAnnouncements);
-                    setTotalPages(data.totalPages);
-                    setNoAnnouncements(false);
-                }
-                setAnnouncementsFetched(true);
-            } catch (error: any) {
-                if (error.response && error.response.status === 404) {
-                    setNoAnnouncements(true);
-                } else {
-                    console.error('Error fetching paginated announcements:', error);
-                }
+                setAnnouncements(orderedAnnouncements);
+                setTotalPages(data.totalPages);
+                setNoAnnouncements(false);
             }
-        };
-
-        fetchAnnouncements();
+        } catch (error: any) {
+            if (error.response && error.response.status === 404) {
+                setNoAnnouncements(true);
+            } else {
+                console.error('Error fetching paginated announcements:', error);
+            }
+        }
     }, [courseId, currentPage, recordsPerPage]);
 
-    const handleAnnouncementClick = () => {
-        setShowAnnouncementBox(!showAnnouncementBox);
-    };
+    useEffect(() => {
+        fetchAnnouncements();
+    }, [fetchAnnouncements]);
 
-    const handleRecordsPerPageChange = (newRecordsPerPage: number) => {
-        const firstItemIndex = (currentPage - 1) * recordsPerPage;
-        const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
-        setRecordsPerPage(newRecordsPerPage);
-        setCurrentPage(newPage);
-    };
-
-    const handleNewAnnouncement = (newAnnouncement: any) => {
+    const handleNewAnnouncement = async (newAnnouncement: any) => {
         const safeAnnouncement = {
             ...newAnnouncement,
             title: newAnnouncement.title || t('announce_defaultTitle'),
@@ -124,13 +95,15 @@ const Announces: React.FC = () => {
             alternateLinks: newAnnouncement.alternateLinks || [],
         };
 
-        setAnnouncements((prevAnnouncements) =>
-            [safeAnnouncement, ...prevAnnouncements].sort(
-                (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
-            )
-        );
+        // Inserta el nuevo anuncio temporalmente
+        setAnnouncements((prevAnnouncements) => [
+            { ...safeAnnouncement },
+            ...prevAnnouncements,
+        ]);
         setShowAnnouncementBox(false);
-        setNoAnnouncements(false);
+
+        // Refresca los anuncios desde el backend
+        await fetchAnnouncements();
     };
 
     return (
@@ -138,9 +111,15 @@ const Announces: React.FC = () => {
             <div className="announces-container">
                 <div className="announces-layout">
                     <div className="announces-main">
-                        <div className="announcement-create-container" onClick={handleAnnouncementClick}>
-                            <img src={userProfileImage} alt="User Icon" className="announcement-icon" />
-                            <span className="announcement-create-text">{t('announce_announceSomething')}</span>
+                        <div className="announcement-create-container" onClick={() => setShowAnnouncementBox(!showAnnouncementBox)}>
+                            <img
+                                src={userState.imageBase64 || user_p}
+                                alt="User Icon"
+                                className="announcement-icon"
+                            />
+                            <span className="announcement-create-text">
+                                {t('announce_announceSomething')}
+                            </span>
                         </div>
 
                         {showAnnouncementBox && <AnnouncementBox_Create onAnnounceCreated={handleNewAnnouncement} />}
@@ -157,15 +136,13 @@ const Announces: React.FC = () => {
                                                 announceId={announcement.id}
                                                 title={announcement.title}
                                                 description={announcement.description}
-                                                date={convertUtcToLocal(announcement.creationDate)} // Conversión aquí
+                                                date={convertUtcToLocal(announcement.creationDate)}
                                                 user={announcement.userName}
                                                 creatorProfileImageUrl={announcement.creatorProfileImageUrl || user_p}
                                                 videos={(announcement.youTubeVideos || []).map((url: string) => ({ url }))}
                                                 googleDriveLinks={(announcement.googleDriveLinks || []).map((url: string) => ({ url }))}
                                                 otherLinks={(announcement.alternateLinks || []).map((url: string) => ({ url }))}
-                                                isCreator={(() => {
-                                                    return state.userName === announcement.userId;
-                                                })()}
+                                                isCreator={authState.userName === announcement.userId}
                                             />
                                         </li>
                                     ))}
@@ -176,9 +153,14 @@ const Announces: React.FC = () => {
                         <Pagination
                             totalPages={totalPages}
                             currentPage={currentPage}
-                            onPageChange={setCurrentPage}
                             recordsPerPage={recordsPerPage}
-                            onRecordsPerPageChange={handleRecordsPerPageChange}
+                            onPageChange={(page) => {
+                                setCurrentPage(page);
+                            }}
+                            onRecordsPerPageChange={(newRecordsPerPage) => {
+                                setRecordsPerPage(newRecordsPerPage);
+                                setCurrentPage(1); // Reiniciar a la primera página al cambiar los registros por página
+                            }}
                         />
                     </div>
 

@@ -30,5 +30,7 @@ namespace StudyFlow.BLL.Interfaces
         Task<IActionResult> GetAllAnnouncesWithDetailsAsync();
 
         Task<IActionResult> GetAllAnnouncesWithDetailsAsync(Pagination pagination);
+
+        Task<IActionResult> GetAnnouncesPagedByCourseIdAsync(Guid courseId, Pagination pagination);
     }
 }

@@ -177,6 +177,49 @@ namespace StudyFlow.DAL.Repositories
             };
         }
 
+        public async Task<PaginationResult<Announce>> GetAnnouncesPagedByCourseIdAsync(Guid courseId, Pagination pagination)
+        {
+            if (pagination == null)
+            {
+                throw new ArgumentNullException(nameof(pagination), "Pagination data is required.");
+            }
+
+            // Filtrar por curso y excluir los anuncios eliminados
+            var query = _context.Set<Announce>()
+                .AsNoTracking()
+                .Where(a => !a.IsDeleted && a.CourseId == courseId)
+                .Include(a => a.User)
+                .Include(a => a.Course)
+                .AsQueryable();
+
+            // Aplicar filtro si existe
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                query = query.Where(a => a.Title.Contains(pagination.Filter, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Ordenar por fecha de modificación descendente
+            query = query.OrderByDescending(a => a.UpdatedAt);
+
+            // Contar el total de registros
+            int totalRecords = await query.CountAsync();
+
+            // Obtener los datos paginados
+            var items = await query
+                .Skip((pagination.Page - 1) * pagination.RecordsNumber)
+                .Take(pagination.RecordsNumber)
+                .ToListAsync();
+
+            // Retornar el resultado paginado
+            return new PaginationResult<Announce>
+            {
+                ListResult = items,
+                TotalRecords = totalRecords,
+                TotalPages = (int)Math.Ceiling(totalRecords / (double)pagination.RecordsNumber),
+                Pagination = pagination
+            };
+        }
+
         public async Task<IEnumerable<Announce>> GetAllAnnouncesWithDetailsAsync()
         {
             return await _context.Set<Announce>()
