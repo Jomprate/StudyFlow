@@ -6,7 +6,7 @@ import { useTheme } from '../../../ThemeContext';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
-import { courseApi, userApi } from '../../../services/api';
+import { courseApi, userApi, announceApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useUser } from '../../../contexts/UserContext';
@@ -46,7 +46,7 @@ const Announces: React.FC = () => {
         if (!courseId) return;
 
         try {
-            const data = await courseApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage, '');
+            const data = await announceApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage, '');
 
             if (!data || data.data.length === 0) {
                 setNoAnnouncements(true);
