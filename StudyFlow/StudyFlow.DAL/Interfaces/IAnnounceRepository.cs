@@ -26,10 +26,6 @@ namespace StudyFlow.DAL.Interfaces
 
         Task<Announce?> GetAnnounceWithDetailsAsync(Guid id);
 
-        Task<IEnumerable<Announce>> GetAnnouncesByCourseIdAsync(Guid courseId);
-
-        Task<PaginationResult<Announce>> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination);
-
         Task<IEnumerable<Announce>> GetAllAnnouncesWithDetailsAsync();
 
         Task<PaginationResult<Announce>> GetAllAnnouncesWithDetailsAsync(Pagination pagination);

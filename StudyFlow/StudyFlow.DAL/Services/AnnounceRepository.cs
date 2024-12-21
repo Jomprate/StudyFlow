@@ -4,10 +4,6 @@ using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
 using StudyFlow.DAL.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StudyFlow.DAL.Repositories
 {
@@ -27,7 +23,6 @@ namespace StudyFlow.DAL.Repositories
             return announce;
         }
 
-        // Implementación de eliminación lógica manteniendo el nombre `DeleteAnnounceAsync`
         public async Task<bool> DeleteAnnounceAsync(Guid id)
         {
             var announce = await _context.Set<Announce>().FindAsync(id);
@@ -140,43 +135,6 @@ namespace StudyFlow.DAL.Repositories
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<IEnumerable<Announce>> GetAnnouncesByCourseIdAsync(Guid courseId)
-        {
-            return await _context.Set<Announce>()
-                .AsNoTracking()
-                .Where(a => !a.IsDeleted && a.Course.Id == courseId)
-                .Include(a => a.User)
-                .ToListAsync();
-        }
-
-        public async Task<PaginationResult<Announce>> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination)
-        {
-            var query = _context.Set<Announce>()
-                .AsNoTracking()
-                .Where(a => !a.IsDeleted && a.Course.Id == courseId)
-                .Include(a => a.User)
-                .AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(pagination.Filter))
-            {
-                query = query.Where(a => a.Title.Contains(pagination.Filter, StringComparison.OrdinalIgnoreCase));
-            }
-
-            int totalRecords = await query.CountAsync();
-            var items = await query
-                .Skip((pagination.Page - 1) * pagination.RecordsNumber)
-                .Take(pagination.RecordsNumber)
-                .ToListAsync();
-
-            return new PaginationResult<Announce>
-            {
-                ListResult = items,
-                TotalRecords = totalRecords,
-                TotalPages = (int)Math.Ceiling(totalRecords / (double)pagination.RecordsNumber),
-                Pagination = pagination
-            };
-        }
-
         public async Task<PaginationResult<Announce>> GetAnnouncesPagedByCourseIdAsync(Guid courseId, Pagination pagination)
         {
             if (pagination == null)
@@ -184,7 +142,6 @@ namespace StudyFlow.DAL.Repositories
                 throw new ArgumentNullException(nameof(pagination), "Pagination data is required.");
             }
 
-            // Filtrar por curso y excluir los anuncios eliminados
             var query = _context.Set<Announce>()
                 .AsNoTracking()
                 .Where(a => !a.IsDeleted && a.CourseId == courseId)
@@ -192,25 +149,20 @@ namespace StudyFlow.DAL.Repositories
                 .Include(a => a.Course)
                 .AsQueryable();
 
-            // Aplicar filtro si existe
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 query = query.Where(a => a.Title.Contains(pagination.Filter, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Ordenar por fecha de modificación descendente
             query = query.OrderByDescending(a => a.UpdatedAt);
 
-            // Contar el total de registros
             int totalRecords = await query.CountAsync();
 
-            // Obtener los datos paginados
             var items = await query
                 .Skip((pagination.Page - 1) * pagination.RecordsNumber)
                 .Take(pagination.RecordsNumber)
                 .ToListAsync();
 
-            // Retornar el resultado paginado
             return new PaginationResult<Announce>
             {
                 ListResult = items,

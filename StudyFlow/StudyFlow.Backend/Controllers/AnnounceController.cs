@@ -3,9 +3,6 @@ using StudyFlow.BLL.DTOS.Announce;
 using StudyFlow.BLL.DTOS.ApiResponse;
 using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities.Helper;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace StudyFlow.API.Controllers
 {
@@ -121,50 +118,6 @@ namespace StudyFlow.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { Error = "An unexpected error occurred.", Details = ex.Message });
-            }
-        }
-
-        [HttpGet("GetAnnouncesByCourse/{courseId}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId, [FromQuery] int page = 1, [FromQuery] int recordsNumber = 10)
-        {
-            if (courseId == Guid.Empty)
-            {
-                return BadRequest(new { Error = "Course Id is required." });
-            }
-
-            try
-            {
-                var pagination = new Pagination { Page = page, RecordsNumber = recordsNumber };
-
-                // Llama al servicio y devuelve el resultado directamente
-                var result = await _announceService.GetAnnouncesByCourseIdAsync(courseId, pagination);
-
-                // Verifica el tipo de resultado devuelto por el servicio para manejar diferentes respuestas
-                if (result is NotFoundObjectResult notFoundResult)
-                {
-                    return NotFound(notFoundResult.Value);
-                }
-                else if (result is BadRequestObjectResult badRequestResult)
-                {
-                    return BadRequest(badRequestResult.Value);
-                }
-                else if (result is ObjectResult objectResult && objectResult.StatusCode == StatusCodes.Status500InternalServerError)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, objectResult.Value);
-                }
-
-                // Devuelve el resultado exitoso si no hay errores
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                // Manejo de errores no controlados
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new { Error = "An unexpected error occurred.", Details = ex.Message });
             }

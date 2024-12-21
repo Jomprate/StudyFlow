@@ -7,10 +7,6 @@ using StudyFlow.BLL.Interfaces;
 using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StudyFlow.BLL.Services
 {
@@ -312,67 +308,6 @@ namespace StudyFlow.BLL.Services
             }
 
             return ApiResponseHelper.NoContent();
-        }
-
-        public async Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId)
-        {
-            if (courseId == Guid.Empty)
-            {
-                return ApiResponseHelper.BadRequest("Course Id is required.");
-            }
-
-            var announces = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId);
-            var filteredAnnounces = announces
-                .Where(a => !a.IsDeleted)
-                .Select(a => MapToDTO(a));
-
-            if (!filteredAnnounces.Any())
-            {
-                return ApiResponseHelper.NotFound("No announces found for the specified course.");
-            }
-
-            return ApiResponseHelper.Success(filteredAnnounces);
-        }
-
-        public async Task<IActionResult> GetAnnouncesByCourseIdAsync(Guid courseId, Pagination pagination)
-        {
-            if (courseId == Guid.Empty)
-            {
-                return ApiResponseHelper.BadRequest("Course Id is required.");
-            }
-
-            try
-            {
-                // Obtener los anuncios desde el repositorio
-                var announcesResult = await _announceRepository.GetAnnouncesByCourseIdAsync(courseId, pagination);
-
-                // Filtrar y mapear los resultados a DTOs
-                var mappedList = announcesResult.ListResult
-                    .Where(a => !a.IsDeleted)
-                    .Select(a => MapToDTO(a))
-                    .ToList();
-
-                // Verifica si la lista de anuncios está vacía
-                if (mappedList.Count == 0)
-                {
-                    return ApiResponseHelper.NotFound("No announces found for the specified course.");
-                }
-
-                // Empaquetar el resultado paginado y devolver como IActionResult
-                var paginatedResult = new PaginationResult<GetAnnounceDTO>
-                {
-                    ListResult = mappedList,
-                    TotalRecords = announcesResult.TotalRecords,
-                    TotalPages = announcesResult.TotalPages,
-                    Pagination = pagination
-                };
-
-                return ApiResponseHelper.Success(paginatedResult);
-            }
-            catch (Exception ex)
-            {
-                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-            }
         }
 
         public async Task<IActionResult> GetAnnouncesPagedByCourseIdAsync(Guid courseId, Pagination pagination)
