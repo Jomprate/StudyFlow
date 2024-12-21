@@ -567,4 +567,19 @@
   <data name="courses_enrolled_courses_title" xml:space="preserve">
     <value>Cursos Inscritos</value>
   </data>
+  <data name="googleDriveModal_error_empty" xml:space="preserve">
+    <value>El enlace no puede estar vacío.</value>
+  </data>
+  <data name="googleDriveModal_checking" xml:space="preserve">
+    <value>Verificando enlace...</value>
+  </data>
+  <data name="googleDriveModal_error_accessible" xml:space="preserve">
+    <value>El archivo no es accesible públicamente.</value>
+  </data>
+  <data name="googleDriveModal_error_notGoogleDomain" xml:space="preserve">
+    <value>El enlace debe pertenecer a Google Drive o Docs.</value>
+  </data>
+  <data name="googleDriveModal_placeholder" xml:space="preserve">
+    <value>Introduzca aquí el enlace de Google Drive</value>
+  </data>
 </root>

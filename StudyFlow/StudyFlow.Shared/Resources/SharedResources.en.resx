@@ -567,4 +567,19 @@
   <data name="courses_enrolled_courses_title" xml:space="preserve">
     <value>Enrolled Courses</value>
   </data>
+  <data name="googleDriveModal_error_empty" xml:space="preserve">
+    <value>The link cannot be empty.</value>
+  </data>
+  <data name="googleDriveModal_error_accessible" xml:space="preserve">
+    <value>The file is not publicly accessible.</value>
+  </data>
+  <data name="googleDriveModal_checking" xml:space="preserve">
+    <value>Checking link accessibility...</value>
+  </data>
+  <data name="googleDriveModal_error_notGoogleDomain" xml:space="preserve">
+    <value>The link must belong to Google Drive or Docs.</value>
+  </data>
+  <data name="googleDriveModal_placeholder" xml:space="preserve">
+    <value>Enter the Google Drive link here</value>
+  </data>
 </root>

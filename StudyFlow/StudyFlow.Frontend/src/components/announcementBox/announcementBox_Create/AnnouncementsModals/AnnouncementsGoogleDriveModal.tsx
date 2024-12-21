@@ -13,14 +13,57 @@ const AnnouncementsGoogleDriveModal: React.FC<AnnouncementsGoogleDriveModalProps
     const { t } = useTranslation();
     const { theme } = useTheme();
     const [googleDriveLink, setGoogleDriveLink] = useState<string>('');
+    const [isChecking, setIsChecking] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleAddLink = () => {
-        if (googleDriveLink.trim() !== '') {
-            console.log('Google Drive Link Added:', googleDriveLink);
-            onSave(googleDriveLink);
-            setGoogleDriveLink('');
-            onClose();
+    const isGoogleDomain = (link: string): boolean => {
+        try {
+            const url = new URL(link);
+            return (
+                url.hostname.endsWith('google.com') &&
+                (url.hostname.startsWith('drive.') || url.hostname.startsWith('docs.'))
+            );
+        } catch {
+            return false;
         }
+    };
+
+    const checkLinkAccessibility = async (link: string): Promise<boolean> => {
+        try {
+            setIsChecking(true);
+            const response = await fetch(link, { method: 'HEAD' });
+            setIsChecking(false);
+            return response.ok;
+        } catch (error) {
+            console.error('Error verificando el enlace:', error);
+            setIsChecking(false);
+            return false;
+        }
+    };
+
+    const handleAddLink = async () => {
+        if (googleDriveLink.trim() === '') {
+            setError(t('googleDriveModal_error_empty'));
+            return;
+        }
+
+        if (!isGoogleDomain(googleDriveLink)) {
+            setError(t('googleDriveModal_error_notGoogleDomain'));
+            return;
+        }
+
+        const isAccessible = await checkLinkAccessibility(googleDriveLink);
+
+        if (!isAccessible) {
+            setError(t('googleDriveModal_error_accessible'));
+            return;
+        }
+
+        console.log('Google Drive Link Added:', googleDriveLink);
+        onSave(googleDriveLink);
+        setGoogleDriveLink('');
+        setError(null);
+        onClose();
     };
 
     return (
@@ -37,10 +80,15 @@ const AnnouncementsGoogleDriveModal: React.FC<AnnouncementsGoogleDriveModalProps
                     type="text"
                     id="googleDriveLink"
                     value={googleDriveLink}
-                    onChange={(e) => setGoogleDriveLink(e.target.value)}
+                    onChange={(e) => {
+                        setGoogleDriveLink(e.target.value);
+                        setError(null);
+                    }}
                     className="announcements-modal-input"
-                    placeholder={t('googleDriveModal.placeholder')}
+                    placeholder={t('googleDriveModal_placeholder')}
                 />
+                {isChecking && <p>{t('googleDriveModal_checking')}</p>}
+                {error && <p style={{ color: 'red' }}>{error}</p>}
             </div>
         </AnnouncementsModalBase>
     );

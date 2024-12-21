@@ -28,6 +28,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+}
+
+.googledriveAnnounceCard_image {
+    width: 100%; /* Asegura que los íconos ocupen todo el contenedor */
+    height: auto;
+    object-fit: contain; /* No distorsiona los íconos */
 }
 
 .googledriveAnnounceCard_details {
