@@ -92,3 +92,32 @@
     background-color: #333;
     color: #fff;
 }
+
+@media (max-width: 600px) {
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 10px;
+    }
+
+        .pagination-container button {
+            background: none;
+            border: none;
+            font-size: 1.5rem; /* Tamaño para flechas */
+            color: #4a90e2;
+            cursor: pointer;
+            padding: 0;
+        }
+
+            .pagination-container button:disabled {
+                color: #ccc;
+            }
+
+        .pagination-container span {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+}
+
+

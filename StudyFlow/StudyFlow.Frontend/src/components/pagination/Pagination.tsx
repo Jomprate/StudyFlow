@@ -1,4 +1,4 @@
-import React from 'react';
+ï»¿import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../ThemeContext';
 import { useTranslation } from 'react-i18next';
 import './pagination.css';
@@ -20,55 +20,65 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
     const { theme } = useTheme();
     const { t } = useTranslation();
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 600);
 
-    enum RecordsPerPageOptions {
-        Five = 5,
-        Ten = 10,
-        Twenty = 20,
-        Fifty = 50,
-        All = 1000, // Usa un número dinámico seguro
-    }
+    useEffect(() => {
+        const handleResize = () => setIsSmallScreen(window.innerWidth <= 600);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-    const handlePrev = () => {
-        if (currentPage > 1) onPageChange(currentPage - 1);
+    const RecordsPerPageOptions = {
+        Five: 5,
+        Ten: 10,
+        Twenty: 20,
+        Fifty: 50,
+        All: 1000,
     };
 
-    const handleNext = () => {
-        if (currentPage < totalPages) onPageChange(currentPage + 1);
-    };
+    const handlePrev = () => currentPage > 1 && onPageChange(currentPage - 1);
+    const handleNext = () => currentPage < totalPages && onPageChange(currentPage + 1);
 
     const handleRecordsPerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newRecordsPerPage = parseInt(event.target.value, 10);
-
-        const firstItemIndex = (currentPage - 1) * recordsPerPage;
-        const newPage = Math.floor(firstItemIndex / newRecordsPerPage) + 1;
-
+        const newPage = Math.floor(((currentPage - 1) * recordsPerPage) / newRecordsPerPage) + 1;
         onRecordsPerPageChange(newRecordsPerPage, newPage);
     };
 
     return (
         <div className={`pagination-container ${theme}`}>
             <button onClick={handlePrev} disabled={currentPage === 1}>
-                {t('pagination_previous')}
+                {isSmallScreen ? 'â—€' : t('pagination_previous')}
             </button>
-            <span>{t('pagination_pageInfo', { currentPage, totalPages })}</span>
+
+            <span>
+                {isSmallScreen
+                    ? `${currentPage}/${totalPages}`
+                    : t('pagination_pageInfo', { currentPage, totalPages })}
+            </span>
+
             <button onClick={handleNext} disabled={currentPage >= totalPages}>
-                {t('pagination_next')}
+                {isSmallScreen ? 'â–¶' : t('pagination_next')}
             </button>
-            <div className="records-per-page-container">
-                <label htmlFor="recordsPerPage">{t('pagination_recordsPerPage')}</label>
-                <select
-                    id="recordsPerPage"
-                    value={recordsPerPage}
-                    onChange={handleRecordsPerPageChange}
-                >
-                    <option value={RecordsPerPageOptions.Five}>5</option>
-                    <option value={RecordsPerPageOptions.Ten}>10</option>
-                    <option value={RecordsPerPageOptions.Twenty}>20</option>
-                    <option value={RecordsPerPageOptions.Fifty}>50</option>
-                    <option value={RecordsPerPageOptions.All}>{t('pagination_showAll')}</option>
-                </select>
-            </div>
+
+            {!isSmallScreen && (
+                <div className="records-per-page-container">
+                    <label htmlFor="recordsPerPage">{t('pagination_recordsPerPage')}</label>
+                    <select
+                        id="recordsPerPage"
+                        value={recordsPerPage}
+                        onChange={handleRecordsPerPageChange}
+                    >
+                        {Object.values(RecordsPerPageOptions).map((value) => (
+                            <option key={value} value={value}>
+                                {value === RecordsPerPageOptions.All
+                                    ? t('pagination_showAll')
+                                    : value}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )}
         </div>
     );
 };

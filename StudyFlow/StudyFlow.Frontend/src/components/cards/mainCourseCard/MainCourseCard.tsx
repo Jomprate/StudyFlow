@@ -47,6 +47,15 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
 
     return (
         <div className={`main_course-card ${theme}`}>
+            {canDelete && (
+                <button
+                    className="delete-course-x-button"
+                    onClick={handleDeleteClick}
+                    aria-label={t('delete_course')} // Accesibilidad
+                >
+                    &times;
+                </button>
+            )}
             <img
                 src={image ? `data:image/png;base64,${image}` : CurseImage}
                 alt={name}
@@ -56,16 +65,19 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
                 <div className="main_course-title-container">
                     <h2 className="main_course-title">{name}</h2>
                 </div>
-                <p className="main_course-teacher">{t('teacher')}: {teacher}</p>
+                <p className="main_course-teacher">{t('global_teacher')}: {teacher}</p>
                 <p className="main_course-description">{description}</p>
-                {canDelete && (
-                    <button
-                        className="delete-course-button"
-                        onClick={handleDeleteClick}
-                    >
-                        {t('delete_course')}
-                    </button>
-                )}
+                {/*{canDelete && (*/}
+                {/*    <button*/}
+                {/*        className="delete-course-button"*/}
+                {/*        onClick={handleDeleteClick}*/}
+                {/*    >*/}
+                {/*        {t('delete_course')}*/}
+                {/*    </button>*/}
+
+                {/*)}*/}
+
+
             </div>
 
             <DeleteModal

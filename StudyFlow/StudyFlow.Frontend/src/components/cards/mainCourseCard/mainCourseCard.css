@@ -45,6 +45,7 @@
 .main_course-title-container {
     padding: 5px;
     margin: 0;
+    margin-right:10px;
     text-align: left;
     border-radius: 8px;
     color: #ffffff !important; /* Forzamos el color blanco en modo oscuro */
@@ -77,6 +78,32 @@
     white-space: normal;
     word-break: break-word;
 }
+
+.delete-course-x-button {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    background-color: transparent;
+    border: none;
+    color: #ff4d4d; /* Color rojo para indicar acción destructiva */
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+    .delete-course-x-button:hover {
+        color: #e60000; /* Rojo más oscuro al pasar el mouse */
+    }
+
+    .delete-course-x-button:focus {
+        outline: 2px solid #e60000; /* Mejor accesibilidad al enfocarse */
+    }
+
+    .delete-course-x-button:active {
+        color: #cc0000; /* Color más oscuro al hacer clic */
+    }
+
 
 /* Tema oscuro */
 .main_course-card.dark {
