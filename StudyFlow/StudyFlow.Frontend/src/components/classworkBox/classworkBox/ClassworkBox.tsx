@@ -54,6 +54,10 @@ const ClassworkBox: React.FC<ClassworkBoxProps> = ({
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
 
+    console.log("Videos: ", videos);
+    console.log("Google Drive Links: ", googleDriveLinks);
+    console.log("Other Links: ", otherLinks);
+
     const formattedCreationDate = creationDate ? formatDate(creationDate, true) : t('unknown_creation_date');
 
     const truncateDate = (date: string): string => {
