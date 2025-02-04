@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { useTheme } from '../../../ThemeContext';
 import AnnouncementBox_Create from '@components/announcementBox/announcementBox_Create/AnnouncementBox_Create';
 import AnnouncementBox from '@components/announcementBox/announcementBox/AnnouncementBox';
 import user_p from '../../../assets/user_p.svg';
-import { courseApi, userApi, announceApi } from '../../../services/api';
+import { userApi, announceApi } from '../../../services/api';
 import Pagination from '@components/pagination/Pagination';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useUser } from '../../../contexts/UserContext';
@@ -26,24 +27,27 @@ const Announces: React.FC = () => {
     const { state: userState } = useUser();
     const convertUtcToLocal = useConvertUtcToLocal();
 
-    const fetchUserProfileImage = async (userId: string) => {
+    const fetchUserProfileImage = useCallback(async (userId: string) => {
         if (userId === authState.userName && userState.imageBase64) {
-            return userState.imageBase64; // Usa la imagen del contexto si está disponible
+            return userState.imageBase64;
         }
         try {
             const response = await userApi.getuserbyid(userId);
             const userData = response.data;
             return userData.profilePicture
                 ? `data:image/png;base64,${userData.profilePicture}`
-                : user_p; // Imagen predeterminada
+                : user_p;
         } catch (error) {
             console.error(`Error fetching profile image for user ${userId}:`, error);
-            return user_p; // Imagen predeterminada en caso de error
+            return user_p;
         }
-    };
+    }, [authState.userName, userState.imageBase64]);
 
     const fetchAnnouncements = useCallback(async () => {
         if (!courseId) return;
+
+        setAnnouncements([]); // Clear announcements when courseId changes
+        setNoAnnouncements(false); // Reset noAnnouncements flag
 
         try {
             const data = await announceApi.getCourseAnnouncesPaginated(courseId, currentPage, recordsPerPage, '');
@@ -64,7 +68,6 @@ const Announces: React.FC = () => {
                         })
                 );
 
-                // Ordenar del más reciente al más antiguo
                 const orderedAnnouncements = sortedAnnouncements.sort(
                     (a, b) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
                 );
@@ -80,11 +83,11 @@ const Announces: React.FC = () => {
                 console.error('Error fetching paginated announcements:', error);
             }
         }
-    }, [courseId, currentPage, recordsPerPage]);
+    }, [courseId, currentPage, fetchUserProfileImage, recordsPerPage]);
 
     useEffect(() => {
         fetchAnnouncements();
-    }, [fetchAnnouncements]);
+    }, [fetchAnnouncements, courseId]); // Trigger on courseId change
 
     const handleNewAnnouncement = async (newAnnouncement: any) => {
         const safeAnnouncement = {
@@ -95,14 +98,12 @@ const Announces: React.FC = () => {
             alternateLinks: newAnnouncement.alternateLinks || [],
         };
 
-        // Inserta el nuevo anuncio temporalmente
         setAnnouncements((prevAnnouncements) => [
             { ...safeAnnouncement },
             ...prevAnnouncements,
         ]);
         setShowAnnouncementBox(false);
 
-        // Refresca los anuncios desde el backend
         await fetchAnnouncements();
     };
 
@@ -154,12 +155,10 @@ const Announces: React.FC = () => {
                             totalPages={totalPages}
                             currentPage={currentPage}
                             recordsPerPage={recordsPerPage}
-                            onPageChange={(page) => {
-                                setCurrentPage(page);
-                            }}
+                            onPageChange={(page) => setCurrentPage(page)}
                             onRecordsPerPageChange={(newRecordsPerPage) => {
                                 setRecordsPerPage(newRecordsPerPage);
-                                setCurrentPage(1); // Reiniciar a la primera página al cambiar los registros por página
+                                setCurrentPage(1);
                             }}
                         />
                     </div>

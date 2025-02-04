@@ -582,4 +582,22 @@
   <data name="googleDriveModal_placeholder" xml:space="preserve">
     <value>Enter the Google Drive link here</value>
   </data>
+  <data name="global_error_network" xml:space="preserve">
+    <value>Network error. Please check your connection.</value>
+  </data>
+  <data name="global_error_noSubjects" xml:space="preserve">
+    <value>No papers, assignments or exams added.</value>
+  </data>
+  <data name="global_error_no_classworks" xml:space="preserve">
+    <value>No papers, assignments or exams added.</value>
+  </data>
+  <data name="global_error_unexpected" xml:space="preserve">
+    <value>An unexpected error occurred.</value>
+  </data>
+  <data name="global_error_validation" xml:space="preserve">
+    <value>Invalid data provided.</value>
+  </data>
+  <data name="global_error_server" xml:space="preserve">
+    <value>Internal server error. Please try again later.</value>
+  </data>
 </root>

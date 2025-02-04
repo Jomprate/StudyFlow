@@ -582,4 +582,22 @@
   <data name="googleDriveModal_placeholder" xml:space="preserve">
     <value>Introduzca aquí el enlace de Google Drive</value>
   </data>
+  <data name="global_error_no_classworks" xml:space="preserve">
+    <value>No hay trabajos, tareas o examenes agregados.</value>
+  </data>
+  <data name="global_error_network" xml:space="preserve">
+    <value>Error de red. Por favor, verifica tu conexión.</value>
+  </data>
+  <data name="global_error_noSubjects" xml:space="preserve">
+    <value>No hay trabajos, tareas o examenes agregados.</value>
+  </data>
+  <data name="global_error_server" xml:space="preserve">
+    <value>Error interno del servidor. Intenta más tarde.</value>
+  </data>
+  <data name="global_error_unexpected" xml:space="preserve">
+    <value>Ocurrió un error inesperado.</value>
+  </data>
+  <data name="global_error_validation" xml:space="preserve">
+    <value>Datos inválidos proporcionados.</value>
+  </data>
 </root>

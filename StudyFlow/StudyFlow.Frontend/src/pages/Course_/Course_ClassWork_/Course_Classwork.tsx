@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import './course_classwork.css';
 import { useTranslation } from 'react-i18next';
@@ -68,7 +69,7 @@ const Course_Classwork: React.FC = () => {
                 setTotalPages(response.data.paginationResult.totalPages);
                 setError(null);
             } catch (error: any) {
-                setError(t('error_loading_classworks'));
+                setError(t('global_error_no_classworks'));
                 console.error('Error fetching classworks:', error);
             } finally {
                 setLoading(false);
@@ -139,7 +140,7 @@ const Course_Classwork: React.FC = () => {
                             ) : error ? (
                                 <p className="error-message">{error}</p>
                             ) : classworks.length === 0 ? (
-                                <p>{t('no_classworks')}</p>
+                                <p>{t('global_error_no_classworks')}</p>
                             ) : (
                                 classworks.map((classwork, index) => (
                                     <ClassworkBox

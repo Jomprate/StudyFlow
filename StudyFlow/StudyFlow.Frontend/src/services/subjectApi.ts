@@ -1,5 +1,29 @@
+/* eslint-disable no-console */
+import i18n from '../i18n';
 import api from './apiConfig';
-//import i18n from '../i18n';
+import { AxiosError } from 'axios';
+
+const handleError = (error: unknown) => {
+    let errorKey = 'errors.unexpected';
+
+    if (error instanceof AxiosError) {
+        if (!error.response) {
+            errorKey = 'errors.network';
+        } else if (error.response.status >= 500) {
+            errorKey = 'errors.server';
+        } else if (error.response.status === 400) {
+            errorKey = 'errors.validation';
+        } else if (error.response.data?.message?.includes('No subjects found')) {
+            errorKey = 'errors.noSubjects';
+        }
+    } else if (error instanceof Error) {
+        errorKey = 'errors.unexpected';
+    }
+
+    const translatedMessage = i18n.t(errorKey);
+    console.error('API Error:', error);
+    throw new Error(translatedMessage);
+};
 
 export interface SubjectDTO {
     id?: string;
@@ -32,33 +56,7 @@ export interface SubjectDTO {
 
 export const addSubjectByCourse = async (payload: {
     courseId: string;
-    subjectDTO: {
-        course: {
-            id: string;
-            teacherDTO: {
-                id: string;
-                fullName: string;
-            };
-            name: string;
-            description: string;
-            logo: string;
-            isEnabled: boolean;
-        };
-        name: string;
-        htmlContent: string;
-        type: string;
-        link?: string;
-        youTubeVideos?: string[];
-        googleDriveLinks?: string[];
-        alternateLinks?: string[];
-        listScheduleds?: Array<{
-            id: string;
-            scheduledDate: string;
-            link: string;
-        }>;
-        creationDate?: string;
-        modifiedDate?: string;
-    };
+    subjectDTO: SubjectDTO;
 }): Promise<{ id: string }> => {
     try {
         const response = await api.post('/OnBoardingTeacher/AddSubjectByCourse/', {
@@ -67,50 +65,19 @@ export const addSubjectByCourse = async (payload: {
         });
 
         return response.data;
-    } catch (error: any) {
-        console.error('API Error:', error);
-
-        const errorMessage = error.response?.data?.message
-            ? error.response.data.message
-            : error.message || 'An unexpected error occurred';
-
-        throw new Error(errorMessage);
+    } catch (error: unknown) {
+        handleError(error);
+        throw error;
     }
 };
 
 export const setSubjectSchedules = async (scheduleDTO: {
     courseId: string;
-    subjectDTO: {
-        id: string;
-        course: {
-            id: string;
-            teacherDTO: {
-                id: string;
-                fullName: string;
-            };
-            name: string;
-            description: string;
-            logo: string;
-            isEnabled: boolean;
-        };
-        listScheduleds?: Array<{
-            id?: string;
-            scheduledDate: string;
-            link?: string;
-        }>;
-        name: string;
-        htmlContent: string;
-        type: string;
-        link?: string;
-        youTubeVideos?: string[];
-        googleDriveLinks?: string[];
-        alternateLinks?: string[];
-    };
+    subjectDTO: SubjectDTO;
 }): Promise<void> => {
     try {
         const { subjectDTO } = scheduleDTO;
 
-        // Validación de `listScheduleds`
         const listScheduleds = subjectDTO.listScheduleds?.map((schedule) => ({
             id: schedule.id || crypto.randomUUID(),
             subjectId: subjectDTO.id,
@@ -122,22 +89,16 @@ export const setSubjectSchedules = async (scheduleDTO: {
             courseId: scheduleDTO.courseId,
             subjectDTO: {
                 ...subjectDTO,
-                listScheduleds, // Usar la lista procesada
+                listScheduleds,
             },
         };
 
         const response = await api.put('/OnBoardingTeacher/SetSubjectByCourse/', payload);
 
         console.log('Schedules successfully added:', response.data);
-    } catch (error: any) {
-        console.error('API Error:', error);
-
-        const errorMessage = error.response?.data?.message
-            ? error.response.data.message
-            : error.message || 'An unexpected error occurred while adding schedules.';
-
-        console.error('Error Message:', errorMessage);
-        throw new Error(errorMessage);
+    } catch (error: unknown) {
+        handleError(error);
+        throw error;
     }
 };
 
@@ -164,45 +125,10 @@ export const getSubjectsByCourseId = async (
             },
         });
 
-        console.log('Subjects fetched successfully:', response.data);
-
-        const updatedResponse = {
-            ...response.data,
-            data: {
-                ...response.data.data,
-                paginationResult: {
-                    ...response.data.data.paginationResult,
-                    listResult: response.data.data.paginationResult.listResult.map(
-                        (subject: SubjectDTO) => ({
-                            ...subject,
-                            creationDate: subject.creationDate || 'Unknown',
-                            modifiedDate: subject.modifiedDate || null,
-                            course: {
-                                id: courseId,
-                                teacherDTO: {
-                                    id: subject.course?.teacherDTO?.id || '',
-                                    fullName: subject.course?.teacherDTO?.fullName || 'Unknown Teacher',
-                                },
-                                name: subject.course?.name || 'Unknown Course',
-                                description: subject.course?.description || 'No Description',
-                                logo: subject.course?.logo || '',
-                                isEnabled: subject.course?.isEnabled ?? true,
-                            },
-                        })
-                    ),
-                },
-            },
-        };
-
-        return updatedResponse;
-    } catch (error: any) {
-        console.error('API Error:', error);
-
-        const errorMessage = error.response?.data?.message
-            ? error.response.data.message
-            : error.message || 'An unexpected error occurred while fetching subjects.';
-
-        throw new Error(errorMessage);
+        return response.data;
+    } catch (error: unknown) {
+        handleError(error);
+        throw error;
     }
 };
 
@@ -219,13 +145,8 @@ export const updateSubjectSchedules = async (payload: {
         const response = await api.put('/OnBoardingTeacher/UpdateSubjectSchedules', payload);
 
         console.log('Schedules updated successfully:', response.data);
-    } catch (error: any) {
-        console.error('API Error:', error);
-
-        const errorMessage = error.response?.data?.message
-            ? error.response.data.message
-            : error.message || 'An unexpected error occurred while updating schedules.';
-
-        throw new Error(errorMessage);
+    } catch (error: unknown) {
+        handleError(error);
+        throw error;
     }
 };
