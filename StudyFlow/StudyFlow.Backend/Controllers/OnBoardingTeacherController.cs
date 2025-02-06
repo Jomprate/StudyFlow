@@ -27,13 +27,11 @@ namespace StudyFlow.Backend.Controllers
         {
             try
             {
-                // Verificar si falta teacherId
                 if (!teacherId.HasValue)
                 {
                     return BadRequest(new { Error = "TeacherId is required." });
                 }
 
-                // Crear el DTO de solicitud con ambos IDs
                 var getCourseTeacherDTORequest = new GetCourseTeacherDTORequest
                 {
                     CourseId = courseId,

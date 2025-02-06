@@ -27,14 +27,16 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return response.data.filter((course: Course) => !course.isDeleted);
     };
 
+    
+
     const fetchCoursesForStudent = async (userId: string) => {
         const response = await enrollStudentApi.getCoursesByStudentIdAsync(userId, 1, 100);
         return response.data.filter((course: Course) => !course.isDeleted);
     };
 
+
     const fetchCourses = async (forceRefresh = false) => {
         if (hasFetched && !forceRefresh) return;
-        setHasFetched(true);
 
         try {
             const { role: userRole, userName: userId } = state;
@@ -46,11 +48,14 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
                     : userRole === 'Student'
                         ? await fetchCoursesForStudent(userId)
                         : [];
+
             setCourses(fetchedCourses);
+            setHasFetched(true);  
         } catch (error) {
             console.error('Error fetching courses:', error);
         }
     };
+
 
     const resetCourses = () => {
         setCourses([]);
@@ -58,10 +63,12 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
 
     useEffect(() => {
-        if (state.role && state.userName && !hasFetched) {
-            fetchCourses();
+        if (state.role && state.userName) {
+            resetCourses();       
+            fetchCourses(true);   
         }
-    }, [state.role, state.userName, hasFetched]);
+    }, [state.role, state.userName]);
+
 
     const value = useMemo(() => ({
         courses,

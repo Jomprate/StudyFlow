@@ -126,12 +126,10 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         console.log('Courses updated:', courses);
     }, [courses]);
 
-    // Función auxiliar para verificar si la ruta está activa
     const isActive = (path: string) => location.pathname === path;
 
-    // Función para renderizar elementos de navegación
     const renderNavItem = (path: string, Icon: React.ElementType, label: string) => (
-        <li className={`item ${isActive(path) ? 'active' : ''}`}>
+        <li className={`item ${isActive(path) ? 'active' : ''}`} key={path}>
             <Link to={path}>
                 <Icon className="icon" />
                 {visible && <span>{label}</span>}
@@ -139,12 +137,11 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ visible }) => {
         </li>
     );
 
-    // Función para renderizar cursos
     const renderCourses = () =>
         courses.length > 0 ? (
             courses.map((course) => (
                 <li
-                    key={course.id}
+                    key={`${course.id}-${course.logo}`}
                     className={`sub-item ${isActive(`/home_logged_in/course/${course.id}`) ? 'active' : ''}`}
                 >
                     <Link to={`/home_logged_in/course/${course.id}`} className="course-link">

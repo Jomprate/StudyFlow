@@ -9,16 +9,19 @@ using StudyFlow.DAL.Entities;
 using StudyFlow.DAL.Entities.Helper;
 using StudyFlow.DAL.Enumeration;
 using StudyFlow.DAL.Interfaces;
+using StudyFlow.Infrastructure.Interfaces;
 
 namespace StudyFlow.BLL.Services
 {
     public class OnBoardingStudentService : IOnBoardingStudentService
     {
         private IUnitOfWork _unitOfWork;
+        private IStorageService _storageService;
 
-        public OnBoardingStudentService(IUnitOfWork unitOfWork)
+        public OnBoardingStudentService(IUnitOfWork unitOfWork, IStorageService blobStorage)
         {
             _unitOfWork = unitOfWork;
+            _storageService = blobStorage;
         }
 
         public async Task<IActionResult> GetCoursesByStudentIdAsync(GetCourseStudentDTORequest getCourseStudentDTORequest)
@@ -37,11 +40,22 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Don´t exists courses for this student.");
             }
 
+            var coursesWithLogos = new List<CourseDTO>();
+            foreach (var course in paginationResult.ListResult)
+            {
+                var courseDto = course.ToDTO();
+                if (course.HaveLogo)
+                {
+                    courseDto.Logo = await _storageService.DownloadAsync(course.Id.ToString());
+                }
+                coursesWithLogos.Add(courseDto);
+            }
+
             OnBoardingStudentCourseDTOResponse onBoardingStudentCourseDTOResponse = new()
             {
                 PaginationResult = new PaginationResult<CourseDTO>
                 {
-                    ListResult = paginationResult.ListResult.Select(s => s.ToDTO()).ToList(),
+                    ListResult = coursesWithLogos,
                     TotalRecords = paginationResult.TotalRecords,
                     TotalPages = paginationResult.TotalPages,
                     Pagination = paginationResult.Pagination
@@ -50,6 +64,7 @@ namespace StudyFlow.BLL.Services
 
             return ApiResponseHelper.Success(onBoardingStudentCourseDTOResponse);
         }
+
 
         public async Task<IActionResult> GetCoursesByTeacherNameAsync(GetCourseStudentDTORequest getCourseStudentDTORequest)
         {
