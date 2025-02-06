@@ -1,0 +1,320 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+.update-course-modal {
+    padding: 30px;
+    background-color: var(--color-background-light);
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .update-course-modal.dark {
+        background-color: var(--color-background-dark);
+        color: var(--color_text-dark-1);
+    }
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-close-button);
+    transition: color 0.3s ease;
+}
+
+    .close-button:hover {
+        color: #e74c3c;
+    }
+
+.modal-header {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.form-columns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.left-column,
+.right-column {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+    .form-group label {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: inherit;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        width: 100%;
+        background-color: var(--input-background-light);
+        color: var(--input-color-light);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        height: 205px;
+        min-height: 205px;
+    }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+.update-course-modal.dark .form-group input,
+.update-course-modal.dark .form-group textarea {
+    background-color: var(--input-background-dark);
+    color: var(--input-color-dark);
+}
+
+.modal-error {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 1px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.submit-button {
+    padding: 12px 20px;
+    background-color: var(--color-submits_1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    width: 40%;
+}
+
+    .submit-button:hover {
+        background-color: var(--color-hover);
+    }
+
+.user-placeholder {
+    width: 205px;
+    height: 205px;
+    background-color: #f5f5f5;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.uploaded-image {
+    display: block;
+    max-width: 100%; /* Escala correctamente la imagen */
+    max-height: 100%; /* Evita que se desborde */
+    object-fit: contain; /* Mantiene las proporciones */
+    border-radius: 15px; /* Opcional: estiliza los bordes */
+    border: 1px solid #ccc;
+}
+
+.image-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-name-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: var(--input-background-light);
+    color: var(--input-color-light);
+}
+
+.select-button {
+    padding: 10px 20px;
+    background-color: var(--color-submits_1);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .select-button:hover {
+        background-color: var(--color-hover);
+    }
+
+/* Toggle switch styling */
+.toggle-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toggle-label-text {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* react-toggle default styles */
+.react-toggle {
+    touch-action: pan-x;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+.react-toggle-screenreader-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.react-toggle--checked .react-toggle-track {
+    background-color: var(--color-submits_1);
+}
+
+.react-toggle--checked .react-toggle-thumb {
+    left: 27px;
+    border-color: white;
+}
+
+.react-toggle-track {
+    width: 50px;
+    height: 25px;
+    padding: 0;
+    border-radius: 30px;
+    background-color: #ccc;
+    transition: all 0.2s ease;
+}
+
+.react-toggle-thumb {
+    transition: all 0.25s ease;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 23px;
+    height: 23px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+/* Dark mode toggle switch */
+.update-course-modal.dark .react-toggle-track {
+    background-color: #555;
+}
+
+.update-course-modal.dark .react-toggle--checked .react-toggle-track {
+    background-color: var(--color-submits_1);
+}
+
+@media screen and (max-width: 650px) {
+    .update-course-modal {
+        max-width: 90%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .form-columns {
+        flex-direction: column;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    .update-course-modal {
+        max-width: 95%;
+        margin: 0 auto;
+        padding: 15px;
+    }
+
+    .modal-header {
+        font-size: 1.5rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 8px;
+    }
+}

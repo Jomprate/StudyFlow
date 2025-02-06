@@ -232,10 +232,13 @@ namespace StudyFlow.BLL.Services
                 return ApiResponseHelper.NotFound($"Not found course with the Id {courseDTO.Id}.");
             }
 
-            course.Description = courseDTO.Description ?? course.Description;
-            course.Name = courseDTO.Name ?? course.Name;
+            Console.WriteLine($"Updating Course - ID: {course.Id}, Name: {courseDTO.Name}, Description: {courseDTO.Description}, IsEnabled: {courseDTO.IsEnabled}");
+
+            course.Description = string.IsNullOrWhiteSpace(courseDTO.Description) ? course.Description : courseDTO.Description;
+            course.Name = string.IsNullOrWhiteSpace(courseDTO.Name) ? course.Name : courseDTO.Name;
             course.IsEnabled = courseDTO.IsEnabled ?? course.IsEnabled;
             course.HaveLogo = !string.IsNullOrEmpty(courseDTO.Logo) || course.HaveLogo;
+
             bool result;
 
             try
@@ -244,10 +247,10 @@ namespace StudyFlow.BLL.Services
 
                 if (!string.IsNullOrEmpty(courseDTO.Logo) && result)
                 {
-                    _storageService.UploadAsync(courseDTO.Logo, course.Id.ToString());
+                    await _storageService.UploadAsync(courseDTO.Logo, course.Id.ToString());
                 }
 
-                _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -257,6 +260,7 @@ namespace StudyFlow.BLL.Services
 
             return ApiResponseHelper.NoContent();
         }
+
 
         public async Task<IActionResult> DeleteCourseAsync(Guid courseId)
         {
