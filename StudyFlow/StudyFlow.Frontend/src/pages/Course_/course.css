@@ -3,7 +3,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    gap: 10px; /* Espacio entre la imagen y el botón */
+    gap: 10px;
 }
 
 .course-image {
@@ -17,13 +17,13 @@
 .edit-course-button {
     position: absolute;
     top: 0;
-    right: -15px; /* Mover el botón fuera del borde derecho de la imagen */
+    right: -15px; 
     width: 30px;
     height: 30px;
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
     border: none;
-    border-radius: 8px; /* Cuadrado */
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
     font-size: 18px;

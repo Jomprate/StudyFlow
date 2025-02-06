@@ -39,7 +39,6 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
     const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log("UpdateCourseModal opened with courseId:", courseId); // Verificación del courseId
         if (open && courseId) {
 
             (async () => {
@@ -47,10 +46,9 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
                     const course = await courseApi.getCourseByIdAsync(courseId, state.userName?.toString() ?? '');
                     setValue('name', course.data.name);
                     setValue('description', course.data.description);
-                    console.log("Logo:", course.data.logo); // Verificación del logo)
                     setImagePreview(`data:image/png;base64,${course.data.logo}`);
-                    //setImagePreview(course.data.logo ?? userPlaceholder);
                 } catch (error) {
+                    console.error('Error loading course:', error); 
                     setProblemMessage(t('error_loading_course'));
                 }
             })();
@@ -95,7 +93,7 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
     const onSubmit = async (data: any) => {
         const cleanLogo = croppedImage ? croppedImage.replace(/^data:image\/[^;]+;base64,/, '') : '';
         const courseData = {
-            id: courseId,  // Asegúrate de incluir el ID del curso aquí
+            id: courseId,
             teacherId: state.userName?.toString() ?? '',
             name: data.name,
             description: data.description,
@@ -104,7 +102,7 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
         };
 
         try {
-            await courseApi.updateCourse(courseData);  // Envía todo el objeto con el ID incluido
+            await courseApi.updateCourse(courseData);
 
             setProblemMessage(t('course_updated_successfully'));
             reset();
@@ -114,7 +112,7 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
             if (onCourseUpdated) onCourseUpdated();
         } catch (error: any) {
             setProblemMessage(t('error_updating_course'));
-            console.error("Update error:", error.response?.data || error.message);  // Log de error para depuración
+            console.error("Update error:", error.response?.data || error.message);  
         }
     };
 
@@ -124,7 +122,7 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
         <div className={`modal-overlay ${open ? 'show' : ''}`} onClick={handleOverlayClick}>
             <div className={`update-course-modal ${theme}`}>
                 <button className="close-button" onClick={() => setOpen(false)}>&times;</button>
-                <h2 className={`modal-header ${theme}-text`}>{t('course_Update_Title')}</h2>
+                <h2 className={`modal-header ${theme}-text`}>{t('course_update_Title')}</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="form-container">
                     <div className="form-columns">

@@ -600,4 +600,10 @@
   <data name="global_error_validation" xml:space="preserve">
     <value>Datos inválidos proporcionados.</value>
   </data>
+  <data name="update_course" xml:space="preserve">
+    <value>Actualizar Curso</value>
+  </data>
+  <data name="course_update_Title" xml:space="preserve">
+    <value>Actualizar curso</value>
+  </data>
 </root>
