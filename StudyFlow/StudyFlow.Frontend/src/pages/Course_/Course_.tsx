@@ -19,7 +19,7 @@ const Course_: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const { state } = useAuth();
     const { theme } = useTheme();
-
+    
     const [course, setCourse] = useState<CourseResponse | null>(null);
     const [activeSection, setActiveSection] = useState<string>('announcements');
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
@@ -49,13 +49,9 @@ const Course_: React.FC = () => {
         }
     }, [courseId, state.userName]);
 
-    // Llama a fetchCourse en useEffect cuando cargue el componente
     useEffect(() => {
         fetchCourse();
     }, [courseId, fetchCourse, state.userName]);
-
-
-    
 
     const renderSection = () => {
         switch (activeSection) {
@@ -93,14 +89,16 @@ const Course_: React.FC = () => {
                             alt="Course Logo"
                             className="course-image"
                         />
-                        <button
-                            className="edit-course-button"
-                            onClick={() => {
-                                setIsUpdateModalOpen(true);
-                            }}
-                        >
-                            ✏️
-                        </button>
+                        {(state.role === 'Admin' || state.role === 'Teacher') && (
+                            <button
+                                className="edit-course-button"
+                                onClick={() => {
+                                    setIsUpdateModalOpen(true);
+                                }}
+                            >
+                                ✏️
+                            </button>
+                        )}
                     </div>
                 </div>
                 <div className="course-layout">

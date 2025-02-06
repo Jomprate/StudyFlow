@@ -134,56 +134,6 @@ export const updateCourse = async (courseDTO: {
     }
 };
 
-
-
-
-//export const updateCourse = async (courseId: string, courseDTO: {
-//    teacherId: string;
-//    name: string;
-//    description?: string;
-//    logo?: string;
-//    isEnabled?: boolean;
-//}): Promise<void> => {
-//    try {
-//        console.log("Payload enviado al backend para actualización:", {
-//            id: courseId,
-//            teacherDTO: {
-//                id: courseDTO.teacherId,
-//                fullName: "string",
-//            },
-//            name: courseDTO.name,
-//            description: courseDTO.description,
-//            logo: courseDTO.logo,
-//            isEnabled: courseDTO.isEnabled ?? true,
-//        });
-
-//        const response = await api.put(`/OnBoardingTeacher/UpdateCourse/${courseId}`, {
-//            id: courseId,
-//            teacherDTO: {
-//                id: courseDTO.teacherId,
-//                fullName: "string",
-//            },
-//            name: courseDTO.name,
-//            description: courseDTO.description,
-//            logo: courseDTO.logo,
-//            isEnabled: courseDTO.isEnabled ?? true,
-//        });
-
-//        console.log('Course updated successfully:', response.data);
-//    } catch (error: any) {
-//        const errorMessage = error.response
-//            ? i18n.t('global_error_apiResponse', { message: error.response.data })
-//            : error.request
-//                ? i18n.t('global_error_noResponse')
-//                : i18n.t('global_error_requestSetup', { message: error.message });
-
-//        console.error(errorMessage);
-//        throw new Error(errorMessage);
-//    }
-//};
-
-
-
 export const getCoursesByTeacherIdPaginatedAsync = async (
     teacherId: string,
     page: number,
@@ -247,7 +197,7 @@ export const getCoursesByTeacherIdAsync = async (teacherId: string): Promise<{ s
                     };
                 });
 
-            console.log("Mapped Courses Array:", coursesArray); // Debug después del mapeo
+            console.log("Mapped Courses Array:", coursesArray); 
 
             return {
                 statusCode: response.status,
@@ -313,7 +263,7 @@ export const addEnrollmentByStudent = async (enrollmentDTO: {
 export const deleteCourse = async (courseId: string): Promise<void> => {
     try {
         const response = await api.delete(`/OnBoardingTeacher/DeleteCourse`, {
-            params: { courseId }, // Enviar el parámetro como query
+            params: { courseId }, 
         });
         console.log('Course deleted successfully:', response.data);
     } catch (error: any) {
