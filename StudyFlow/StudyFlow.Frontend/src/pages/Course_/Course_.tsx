@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect,useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { courseApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -24,34 +24,38 @@ const Course_: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string>('announcements');
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchCourse = async () => {
-            try {
-                const teacherId = state.userName;
+    const fetchCourse = useCallback(async () => {
+        try {
+            const teacherId = state.userName;
 
-                if (!courseId) {
-                    console.error("CourseId is missing.");
-                    return;
-                }
-                if (!teacherId) {
-                    console.error("TeacherId is missing.");
-                    return;
-                }
-
-                const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
-
-                if (courseData && courseData.data) {
-                    setCourse(courseData as CourseResponse);
-                } else {
-                    console.error("Unexpected response structure:", courseData);
-                }
-            } catch (error) {
-                console.error("Error fetching course:", error);
+            if (!courseId) {
+                console.error("CourseId is missing.");
+                return;
             }
-        };
+            if (!teacherId) {
+                console.error("TeacherId is missing.");
+                return;
+            }
 
-        fetchCourse();
+            const courseData = await courseApi.getCourseByIdAsync(courseId, teacherId);
+
+            if (courseData && courseData.data) {
+                setCourse(courseData as CourseResponse);
+            } else {
+                console.error("Unexpected response structure:", courseData);
+            }
+        } catch (error) {
+            console.error("Error fetching course:", error);
+        }
     }, [courseId, state.userName]);
+
+    // Llama a fetchCourse en useEffect cuando cargue el componente
+    useEffect(() => {
+        fetchCourse();
+    }, [courseId, fetchCourse, state.userName]);
+
+
+    
 
     const renderSection = () => {
         switch (activeSection) {
@@ -92,7 +96,6 @@ const Course_: React.FC = () => {
                         <button
                             className="edit-course-button"
                             onClick={() => {
-                                console.log("Opening UpdateCourseModal with courseId:", courseId);
                                 setIsUpdateModalOpen(true);
                             }}
                         >
@@ -109,7 +112,7 @@ const Course_: React.FC = () => {
                     open={isUpdateModalOpen}
                     setOpen={setIsUpdateModalOpen}
                     courseId={courseId!}
-                    onCourseUpdated={() => setCourse(null)}
+                    onCourseUpdated={fetchCourse}
                 />
             )}
         </div>
