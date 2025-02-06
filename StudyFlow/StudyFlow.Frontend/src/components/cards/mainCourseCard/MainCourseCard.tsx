@@ -16,24 +16,25 @@ interface CourseCardProps {
     image: string;
     userId: string;
     onCourseDeleted: (courseId: string) => void;
+    onClick?: () => void;  // Nueva propiedad para manejar el clic en la tarjeta
 }
 
-const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teacher, image, userId, onCourseDeleted }) => {
+const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teacher, image, userId, onCourseDeleted, onClick }) => {
     const { theme } = useTheme();
     const { t } = useTranslation();
     const { state } = useAuth();
     const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const handleDeleteClick = () => {
-        setDeleteModalOpen(true); // Abre el modal
+        setDeleteModalOpen(true);
     };
 
     const handleConfirmDelete = async () => {
         try {
-            await courseApi.deleteCourse(id); // Llama al servicio para eliminar el curso
+            await courseApi.deleteCourse(id);
             console.log(t('course_deleted_successfully'));
-            setDeleteModalOpen(false); // Cierra el modal
-            onCourseDeleted(id); // Notifica al padre que el curso fue eliminado
+            setDeleteModalOpen(false);
+            onCourseDeleted(id);
         } catch (error) {
             console.error(t('error_deleting_course'), error);
         }
@@ -46,12 +47,19 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
     const canDelete = state.role === 'Admin' || state.userName === userId;
 
     return (
-        <div className={`main_course-card ${theme}`}>
+        <div
+            className={`main_course-card ${theme}`}
+            onClick={onClick}  // Manejar el clic en la tarjeta completa
+            style={{ cursor: onClick ? 'pointer' : 'default' }} // Cambiar el cursor si hay una acción de clic
+        >
             {canDelete && (
                 <button
                     className="delete-course-x-button"
-                    onClick={handleDeleteClick}
-                    aria-label={t('delete_course')} // Accesibilidad
+                    onClick={(e) => {
+                        e.stopPropagation();  // Evita que el clic en el botón de eliminar dispare el evento del contenedor
+                        handleDeleteClick();
+                    }}
+                    aria-label={t('delete_course')}
                 >
                     &times;
                 </button>
@@ -67,17 +75,6 @@ const MainCourseCard: React.FC<CourseCardProps> = ({ id, name, description, teac
                 </div>
                 <p className="main_course-teacher">{t('global_teacher')}: {teacher}</p>
                 <p className="main_course-description">{description}</p>
-                {/*{canDelete && (*/}
-                {/*    <button*/}
-                {/*        className="delete-course-button"*/}
-                {/*        onClick={handleDeleteClick}*/}
-                {/*    >*/}
-                {/*        {t('delete_course')}*/}
-                {/*    </button>*/}
-
-                {/*)}*/}
-
-
             </div>
 
             <DeleteModal

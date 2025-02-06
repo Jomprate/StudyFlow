@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import MainCourseCard from '../../components/cards/mainCourseCard/MainCourseCard';
 import Pagination from '@components/pagination/Pagination';
 import { useCourses } from '../../contexts/CoursesContext';
+import { announceApi } from '../../services/api';
+import CourseDataCard from '../../components/cards/courseDataCard/courseDataCard';
 
 interface Student {
     id: string;
@@ -39,6 +41,9 @@ const Courses: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [recordsPerPage, setRecordsPerPage] = useState(5);
+    const [activeTab, setActiveTab] = useState<'students' | 'courseData'>('students');
+    const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+    const [announcementCount, setAnnouncementCount] = useState(0);
 
     useEffect(() => {
         const startIndex = (currentPage - 1) * recordsPerPage;
@@ -46,6 +51,29 @@ const Courses: React.FC = () => {
         setPaginatedCourses(courses.slice(startIndex, endIndex) as Course[]);
         setTotalPages(Math.ceil(courses.length / recordsPerPage));
     }, [courses, currentPage, recordsPerPage]);
+
+    useEffect(() => {
+        if (activeTab === 'courseData' && selectedCourseId) {
+            fetchAnnouncementsCount(selectedCourseId);
+        }
+    }, [activeTab, selectedCourseId]);
+
+    const fetchAnnouncementsCount = async (courseId: string) => {
+        try {
+            const data = await announceApi.getCourseAnnouncesPaginated(courseId, 1, 1000, '');
+            const totalAnnouncements = data.data.length || 0;
+
+            setAnnouncementCount(totalAnnouncements);
+        } catch (error) {
+            console.error('Error fetching announcements count:', error);
+            setAnnouncementCount(0);
+        }
+    };
+
+    const handleCourseClick = (courseId: string) => {
+        setSelectedCourseId(courseId);
+        setActiveTab('courseData');
+    };
 
     const handleCourseCreated = async () => {
         await fetchCourses();
@@ -64,19 +92,6 @@ const Courses: React.FC = () => {
 
     return (
         <div className={`courses_page ${theme}`}>
-            {/*<div className="courses-header">*/}
-            {/*    <h1>{t('courses_title_2')}</h1>*/}
-
-            {/*    */}{/* <p>{t('courses_subtitle')}</p>*/}
-
-            {/*    <p>*/}
-            {/*        {state.role === 'Teacher'*/}
-            {/*            ? t('courses_subtitle_teacher') // Subtítulo para profesores*/}
-            {/*            : t('courses_subtitle_student') // Subtítulo para estudiantes*/}
-            {/*        }*/}
-            {/*    </p>*/}
-            {/*</div>*/}
-
             <div className="courses-header-container">
                 <div className="courses-header-box">
                     <h1>{t('courses_title_2')}</h1>
@@ -119,6 +134,7 @@ const Courses: React.FC = () => {
                                                 image={course.logo || ""}
                                                 onCourseDeleted={fetchCourses}
                                                 userId={course.userId ?? ""}
+                                                onClick={() => handleCourseClick(course.id)}
                                             />
                                         ))
                                     ) : (
@@ -151,6 +167,7 @@ const Courses: React.FC = () => {
                                                 image={course.logo || ""}
                                                 onCourseDeleted={fetchCourses}
                                                 userId={course.userId ?? ""}
+                                                onClick={() => handleCourseClick(course.id)}
                                             />
                                         ))
                                     ) : (
@@ -172,18 +189,49 @@ const Courses: React.FC = () => {
 
                 <div className="column-box">
                     <div className="courses-right">
-                        {state.role === 'Teacher' && (
+                        {state.role === 'Teacher' || state.role === 'Admin' ? (
                             <>
-                                <h2>{t('enrolled_students_title')}</h2>
-                                <ul className="student-list">
-                                    {students.map(student => (
-                                        <li key={student.id} className="student-item">
-                                            {student.name}
-                                        </li>
-                                    ))}
-                                </ul>
+                                <div className="button-group">
+                                    <button
+                                        className={`toggle-button ${activeTab === 'students' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('students')}
+                                    >
+                                        {t('show_students_button')}
+                                    </button>
+                                    <button
+                                        className={`toggle-button ${activeTab === 'courseData' ? 'active' : ''}`}
+                                        onClick={() => selectedCourseId && setActiveTab('courseData')}
+                                        disabled={!selectedCourseId}
+                                    >
+                                        {t('show_course_data_button')}
+                                    </button>
+                                </div>
+
+                                {activeTab === 'students' && (
+                                    <>
+                                        <h2>{t('enrolled_students_title')}</h2>
+                                        <ul className="student-list">
+                                            {students.map(student => (
+                                                <li key={student.id} className="student-item">
+                                                    {student.name}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                )}
+
+                                {activeTab === 'courseData' && selectedCourseId && (
+                                    <>
+                                        <h2>{t('course_data_title')}</h2>
+                                        <div className="course-data-list">
+                                            <CourseDataCard title={t('created_announcements')} value={announcementCount} />
+                                            <CourseDataCard title={t('created_classwork')} value={0} />
+                                            <CourseDataCard title={t('deleted_classwork')} value={0} />
+                                        </div>
+                                    </>
+                                )}
                             </>
-                        )}
+                        ) : null}
                     </div>
                 </div>
             </div>

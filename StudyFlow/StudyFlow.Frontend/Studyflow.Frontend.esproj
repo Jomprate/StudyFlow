@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\components\cards\Announces\YoutubeAnnounceCard\" />
+    <Folder Include="src\components\cards\courseDataCard\" />
     <Folder Include="src\components\modals\updateCourseModal\" />
     <Folder Include="src\components\modals\PopUp\" />
     <Folder Include="src\pages\RecoveryPassword\" />
