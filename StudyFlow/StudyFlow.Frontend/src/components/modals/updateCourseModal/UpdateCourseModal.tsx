@@ -92,33 +92,6 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
         }
     };
 
-    //const onSubmit = async (data: any) => {
-    //    const cleanLogo = croppedImage ? croppedImage.replace(/^data:image\/[^;]+;base64,/, '') : '';
-    //    const courseData = {
-    //        id: courseId,
-    //        teacherId: state.userName?.toString() ?? '',
-    //        name: data.name,
-    //        description: data.description,
-    //        logo: cleanLogo || imagePreview?.replace(/^data:image\/[^;]+;base64,/, '') || '',
-    //        isEnabled: true,
-    //    };
-
-    //    try {
-    //        await courseApi.updateCourse(courseData);
-
-    //        setProblemMessage(t('course_updated_successfully'));
-    //        reset();
-    //        setOpen(false);
-    //        fetchCourses();
-
-    //        if (onCourseUpdated) onCourseUpdated();
-    //    } catch (error: any) {
-    //        setProblemMessage(t('error_updating_course'));
-    //        console.error("Update error:", error.response?.data || error.message);  
-    //    }
-    //};
-
-
     const onSubmit = async (data: any) => {
         const cleanLogo = croppedImage ? croppedImage.replace(/^data:image\/[^;]+;base64,/, '') : '';
         const courseData = {
@@ -137,7 +110,7 @@ const UpdateCourseModal: React.FC<UpdateCourseModalProps> = ({ open, setOpen, co
             reset();
             setOpen(false);
 
-            await fetchCourses(true);  // Forzar actualización para reflejar el cambio de imagen
+            await fetchCourses(true);
 
             if (onCourseUpdated) onCourseUpdated();
         } catch (error: any) {

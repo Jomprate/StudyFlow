@@ -1,3 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { courseApi, enrollStudentApi } from '../services/api';
@@ -11,7 +14,7 @@ interface Course {
 
 interface CoursesContextType {
     courses: Course[];
-    fetchCourses: () => void;
+    fetchCourses: (forceRefresh?: boolean) => void;
     resetCourses: () => void;
 }
 
